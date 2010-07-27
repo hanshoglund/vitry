@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="StrictJava" basedir="." default="build">
+
+	<description>
+Vitry
+
+Music composition environment for JavaScript
+
+This program is free software, see COPYING.txt for details.
+ABSOLUTELY NO WARRANTY IMPLIED.
+	</description>
+
+    <!-- =============================================================== -->
+	<target name="clean" description="">
+		<!-- TODO -->
+	</target>
+
+    <!-- =============================================================== -->
+	<target name="compile" description="">
+        <!-- TODO -->
+	</target>
+
+    <!-- =============================================================== -->
+	<target name="jar">
+		<jar destfile="vitry.jar" description="">
+			<fileset dir="bin">
+				<filename name="**/*" />
+			</fileset>
+		</jar>
+	</target>
+
+    <!-- =============================================================== -->
+	<target name="javadoc" description="">
+		<javadoc access="protected"
+			classpath="."
+			destdir="doc"
+			doctitle="Vitry"
+			nodeprecated="false"
+			nodeprecatedlist="false"
+			version="true">
+
+			<doclet name="com.visural.doclets.markdown.standard.Standard"
+				path="${user.home}/Library/Java/MarkdownDoclet-3.0.jar" />
+			<link href="http://java.sun.com/javase/6/docs/api/" />
+
+			<fileset dir="src">
+				<filename name="**/*.java" />
+			</fileset>
+
+			<classpath>
+				<path path="${user.home}/Library/Java" />
+			</classpath>
+
+		</javadoc>
+	</target>
+
+    <!-- =============================================================== -->
+	<target name="show">
+	  <exec executable="open">
+	    <arg value="doc/index.html"/>
+	  </exec>
+	</target>
+
+
+	<!-- =============================================================== -->
+	<target name="build" depends="clean, compile, jar, javadoc" description="">
+	</target>
+
+</project>
