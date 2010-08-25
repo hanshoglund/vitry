@@ -5,13 +5,13 @@ import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
 
 /**
- * Provides some Java hooks.
+ * Provides some java hooks.
  *
  * @author Hans Höglund
  */
-public class Java {
+public class java {
 
-    private Java(){}
+    private java(){}
 
     public static Object executeScript(Script s, Context cx, Scriptable scope) {
 	return s.exec(cx, scope);

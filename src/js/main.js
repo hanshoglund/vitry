@@ -30,12 +30,17 @@
  */
 // ======================================================================
 
-var MODULES = {};
+/*
+ * Globals for the core.vitry module.
+ */
 
-var JAVA    = Packages.vitry.core.Java;
+var CLASSPATH = Packages;
+
+var JAVA    = CLASSPATH.vitry.core.java;
 
 var LANG    = {};
 
+var MODULES = {};
 
 /**
  * Returns the specified module or null if no such module could be found.
@@ -175,6 +180,7 @@ function exec(script, mixin) {
 // Run application
 
 requireModule("vitry/core/vitry", {
+  CLASSPATH : this.CLASSPATH,
   JAVA : this.JAVA,
   LANG : this.LANG,
   print : this.print
