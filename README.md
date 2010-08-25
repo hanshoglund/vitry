@@ -1,5 +1,10 @@
 ##Vitry
-A JavaScript-based music composition environment
+A music composition environment
+
+
+### Features
+- Reads and writes music from [Sibelius](http://www.sibelius.com/)
+- MusicXML export
 
 ### Requirements
 - [Java SE 6](http://www.java.com/en/download/) or better

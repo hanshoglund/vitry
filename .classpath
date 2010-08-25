@@ -4,5 +4,6 @@
 	<classpathentry kind="src" path="src/javascript"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="lib" path="lib/js.jar"/>
+	<classpathentry kind="src" path="sh"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
