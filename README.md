@@ -1,5 +1,5 @@
 ##Vitry
-A music composition environment
+A music composition environment aimed at non-realtime notated music.
 
 
 ### Features
