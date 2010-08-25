@@ -34,6 +34,8 @@ var MODULES = {};
 
 var JAVA    = Packages.vitry.core.Java;
 
+var LANG    = {};
+
 
 /**
  * Returns the specified module or null if no such module could be found.
@@ -46,58 +48,17 @@ var JAVA    = Packages.vitry.core.Java;
  */
 function requireModule(id, mixin) {
   if (!MODULES[id]) {
-    loadModule(id, mixin);
+    if (mixin) {
+      loadModule(id, (mixin));
+    } else {
+      loadModule(id, (LANG));
+    }
   }
   if (MODULES[id]) {
       return MODULES[id];
   } else {
       return null;
   }
-}
-
-
-/**
- * Executes the given script in a standard global context.
- *
- * @param script
- *    An instance of a class implementing org.mozilla.javascript.Script.
- * @param mixin
- *    Optional enumeration of objects to add to the global scope. These will
- *    replace any standard object (such as Array) of the same name.
- *
- */
-function exec(script, mixin) {
-  var ctxt = (new Packages.org.mozilla.javascript.ContextFactory()).enterContext();
-  var global = ctxt.initStandardObjects();
-
-  try {
-    // Delete some java-specific stuff
-    delete global.JavaException;
-    delete global.With;
-    delete global.Call;
-    delete global.Script;
-    delete global.Packages;
-    delete global.java;
-    delete global.javax;
-    delete global.org;
-    delete global.com;
-    delete global.edu;
-    delete global.net;
-    delete global.getClass;
-    delete global.JavaAdapter;
-    delete global.JavaImporter;
-    delete global.Continuation;
-    delete global.Namespace;
-    delete global.QName;
-    delete global.Java;
-  } catch (e){}
-
-  if (mixin) {
-    for (k in mixin) {
-      global[k] = mixin[k];
-    }
-  }
-  JAVA.executeScript(script, ctxt, global);
 }
 
 
@@ -164,11 +125,58 @@ function moduleIdToClass(id) {
 }
 
 
+/**
+ * Executes the given script in a standard global context.
+ *
+ * @param script
+ *    An instance of a class implementing org.mozilla.javascript.Script.
+ * @param mixin
+ *    Optional enumeration of objects to add to the global scope. These will
+ *    replace any standard object (such as Array) of the same name.
+ *
+ */
+function exec(script, mixin) {
+  var ctxt = (new Packages.org.mozilla.javascript.ContextFactory()).enterContext();
+  var global = ctxt.initStandardObjects();
+
+  try {
+    // Delete some java-specific stuff
+    delete global.JavaException;
+    delete global.With;
+    delete global.Call;
+    delete global.Script;
+    delete global.Packages;
+    delete global.java;
+    delete global.javax;
+    delete global.org;
+    delete global.com;
+    delete global.edu;
+    delete global.net;
+    delete global.getClass;
+    delete global.JavaAdapter;
+    delete global.JavaImporter;
+    delete global.Continuation;
+    delete global.Namespace;
+    delete global.QName;
+    delete global.Java;
+  } catch (e){}
+
+  if (mixin) {
+    for (k in mixin) {
+      global[k] = mixin[k];
+    }
+  }
+  JAVA.executeScript(script, ctxt, global);
+}
+
+
+
 // ======================================================================
 // Run application
 
 requireModule("vitry/core/vitry", {
   JAVA : this.JAVA,
+  LANG : this.LANG,
   print : this.print
 }).main(arguments);
 
