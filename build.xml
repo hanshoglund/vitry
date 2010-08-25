@@ -11,7 +11,7 @@ ABSOLUTELY NO WARRANTY IMPLIED.
 	</description>
 
 	<property name="javascriptVersion" value="180"/>
-
+    <property name="src.js"            value="src/js"/>
 
 
     <!-- =============================================================== -->
@@ -43,9 +43,9 @@ ABSOLUTELY NO WARRANTY IMPLIED.
                 <arg value="-version"/>
                 <arg value="${javascriptVersion}"/>
 
-                <arg value="src/javascript/core/vitry.js"/>
-                <arg value="src/javascript/core/other.js"/>
-                <arg value="src/javascript/core/beautifier.js"/>
+                <arg value="${src.js}/core/vitry.js"/>
+                <arg value="${src.js}/core/other.js"/>
+                <arg value="${src.js}/core/beautifier.js"/>
             </java>
 
 		<java fork="true"
@@ -62,7 +62,7 @@ ABSOLUTELY NO WARRANTY IMPLIED.
                 <arg value="-version"/>
 		        <arg value="${javascriptVersion}"/>
 
-		        <arg value="src/javascript/main.js"/>
+		        <arg value="${src.js}/main.js"/>
 		</java>
 	</target>
 
