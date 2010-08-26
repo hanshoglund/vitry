@@ -27,6 +27,9 @@
  * Main script, bootstraps the module system.
  *
  * See http://wiki.commonjs.org/wiki/Modules/1.1.1 for details.
+ * 
+ * @author Hans Höglund 
+ * @date 2010
  */
 // ======================================================================
 
@@ -51,13 +54,20 @@ var MODULES = {};
  *    Optional enumeration of objects to add to the global scope. These will
  *    replace any standard object (such as Array) of the same name.
  */
-function requireModule(id, mixin) {
+function require(id) {
   if (!MODULES[id]) {
-    if (mixin) {
-      loadModule(id, (mixin));
-    } else {
-      loadModule(id, (LANG));
-    }
+    loadModule(id, LANG);
+  }
+  if (MODULES[id]) {
+      return MODULES[id];
+  } else {
+      return null;
+  }
+}    
+
+function requireFirst(id, mixin) {
+  if (!MODULES[id]) {
+    loadModule(id, mixin);
   }
   if (MODULES[id]) {
       return MODULES[id];
@@ -73,9 +83,9 @@ function requireModule(id, mixin) {
 function loadModule(id, mixin) {
   var exportObj = {};
   var moduleObj = { id : id };
-  var requireObj = requireModule.bind({});
+  var requireObj = require.bind({});
 
-  Object.defineProperty(requireObj, "main", { value : moduleObj});
+  Object.defineProperty(requireObj, "main", { value : moduleObj });
 
   var global = {
     "module" : moduleObj,
@@ -179,10 +189,14 @@ function exec(script, mixin) {
 // ======================================================================
 // Run application
 
-requireModule("vitry/core/vitry", {
+requireFirst("vitry/core/vitry", {
+    
   CLASSPATH : this.CLASSPATH,
   JAVA : this.JAVA,
   LANG : this.LANG,
+  
   print : this.print
-}).main(arguments);
+  
+})
+.main(arguments);
 
