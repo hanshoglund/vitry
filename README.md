@@ -7,9 +7,9 @@ A music composition environment manily aimed at notated music.
 ### Features
 - Textual interface with built-in interpreter and compiler
 - Various language front-end, including:
-    - Java
     - JavaScript
     - VitryScript (an simple functional language)
+- Runs on all platform
 
 - Powerful notation model, including:
     - Variable event types (pitched, percussion etc)

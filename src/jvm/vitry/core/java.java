@@ -1,3 +1,6 @@
+/* 
+ * Vitry, copyright (c) Hans Höglund 2010, see COPYING.txt for details
+ */
 package vitry.core;
 
 import org.mozilla.javascript.Context;
