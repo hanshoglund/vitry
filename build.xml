@@ -30,40 +30,44 @@ ABSOLUTELY NO WARRANTY IMPLIED.
 		out common code -->
 
         <java fork="true"
-            classpath="lib/js.jar:lib/jline.jar:bin"
-            classname="org.mozilla.javascript.tools.jsc.Main"
-            failonerror="true">
-                <arg value="-d"/>
-                <arg value="bin"/>
-                <arg value="-nosource"/>
-                <arg value="-opt"/>
-                <arg value="0"/>
-                <arg value="-package"/>
-                <arg value="vitry.core"/>
-                <arg value="-version"/>
-                <arg value="${javascriptVersion}"/>
-
-                <arg value="${src.js}/vitry/core/vitry.js"/>
-                <arg value="${src.js}/vitry/core/other.js"/>
-                <arg value="${src.js}/vitry/core/beautifier.js"/>
-            </java>
-
-		<java fork="true"
 		    classpath="lib/js.jar:lib/jline.jar:bin"
 		    classname="org.mozilla.javascript.tools.jsc.Main"
 		    failonerror="true">
-		        <arg value="-d"/>
-                <arg value="bin"/>
-		        <arg value="-nosource"/>
-		        <arg value="-opt"/>
-		        <arg value="0"/>
-                <arg value="-package"/>
-                <arg value="vitry"/>
-                <arg value="-version"/>
-		        <arg value="${javascriptVersion}"/>
+	        <arg value="-d"/>
+            <arg value="bin"/>
+	        <arg value="-nosource"/>
+	        <arg value="-opt"/>
+	        <arg value="0"/>
+            <arg value="-version"/>
+	        <arg value="${javascriptVersion}"/>
+            <arg value="-package"/>
+            <arg value="vitry"/>
 
-		        <arg value="${src.js}/vitry/main.js"/>
+            <arg value="${src.js}/vitry/core.js"/>
+            <arg value="${src.js}/vitry/main.js"/>
+            <arg value="${src.js}/vitry/music.js"/>
+            <arg value="${src.js}/vitry/readers.js"/>
+            <arg value="${src.js}/vitry/writers.js"/>
 		</java>
+
+
+        <java fork="true"
+            classpath="lib/js.jar:lib/jline.jar:bin"
+            classname="org.mozilla.javascript.tools.jsc.Main"
+            failonerror="true">
+
+            <arg value="-d"/>
+            <arg value="bin"/>
+            <arg value="-nosource"/>
+            <arg value="-opt"/>
+            <arg value="0"/>
+            <arg value="-version"/>
+            <arg value="${javascriptVersion}"/>
+            <arg value="-package"/>
+            <arg value="vitry.util"/>
+
+            <arg value="${src.js}/vitry/util/javascript.js"/>
+        </java>
 	</target>
 
     <!-- =============================================================== -->
