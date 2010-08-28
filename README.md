@@ -6,10 +6,8 @@ A music composition environment for notated music. See the [Vitry wiki](http://w
 
 ### Requirements
 - [Java SE 6](http://www.java.com/en/download/) or better
-- [Apache Ant](http://ant.apache.org/) (for building)'
-- [JLine](http://jline.sourceforge.net/)
-- [ANTLR](http://www.antlr.org/) 3.2 or better
-- [StringTemplate](http://www.stringtemplate.org/) 3.2 or better
+- [Apache Ant](http://ant.apache.org/) (for building)
+
 
 ### Build
 For complete build:
