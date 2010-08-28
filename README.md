@@ -1,31 +1,15 @@
 ##Vitry
-A music composition environment manily aimed at notated music.
+**Pre-alpha**
 
-*Pre-alpha and experimental*.
+A music composition environment for notated music. See the [Vitry wiki](http://wiki.github.com/hanshoglund/Vitry/) for details.                   
 
-
-### Features
-- Textual interface with built-in interpreter and compiler
-- Various language front-end, including:
-    - JavaScript
-    - VitryScript (an simple functional language)
-- Runs on all platform
-
-- Powerful notation model, including:
-    - Variable event types (pitched, percussion etc)
-    - Music theory concepts: scales, harmony, voice leading, tuning systems
-    - Powerful time model        
-    - Various interpolation techniques  
-
-- Import and export music to various working environments on-the-fly:
-    - MusicXML
-    - [Sibelius](http://www.sibelius.com/)
-    - GNU LilyPond 
-    
 
 ### Requirements
 - [Java SE 6](http://www.java.com/en/download/) or better
-- [Apache Ant](http://ant.apache.org/) (for building)
+- [Apache Ant](http://ant.apache.org/) (for building)'
+- [JLine](http://jline.sourceforge.net/)
+- [ANTLR](http://www.antlr.org/) 3.2 or better
+- [StringTemplate](http://www.stringtemplate.org/) 3.2 or better
 
 ### Build
 For complete build:
