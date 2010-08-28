@@ -12,19 +12,16 @@ A music composition environment manily aimed at notated music.
     - VitryScript (an simple functional language)
 
 - Powerful notation model, including:
-    - Variable event types:
-        - Pitched, percussion and custom
-    - Music theory concepts:
-        - Scales, harmony, voice leading, tuning system
-        - Time model
-    - Tempo with continous change        
-    - Dynamics
+    - Variable event types (pitched, percussion etc)
+    - Music theory concepts: scales, harmony, voice leading, tuning systems
+    - Powerful time model        
     - Various interpolation techniques  
 
-- Import and export music to various working environments on-the-fly
+- Import and export music to various working environments on-the-fly:
     - MusicXML
     - [Sibelius](http://www.sibelius.com/)
-    - GNU LilyPond
+    - GNU LilyPond 
+    
 
 ### Requirements
 - [Java SE 6](http://www.java.com/en/download/) or better
