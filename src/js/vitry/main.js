@@ -4,12 +4,12 @@
 
 /**
  * Launcher script, bootstraps and calls vitry.core.main(args).
- *
  * Usage: java vitry.main [args]
- *
+ * 
  * @author Hans Höglund
- * @date 2010
  */
 var JAVA = Packages.vitry.java.core;
-
-JAVA.doBootstrapRequire("vitry/core", {}).main(arguments);
+JAVA.doBootstrapRequire(
+  "vitry/core", 
+  {}
+).main(arguments);

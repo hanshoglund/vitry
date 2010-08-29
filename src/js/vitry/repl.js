@@ -2,54 +2,61 @@
  * Vitry, copyright (c) Hans Höglund 2010, see COPYING.txt for details
  */
 
-/**
- * Provides the music model.
- *
- * @author Hans Höglund
- * @date 2010
- */
 exports.addAll = {
  repl : repl,
 };
 
-// Visible functions    
+var core = require("vitry/core");
+
+
+// Visible
 
 function help() {
-  
+  print();
+  print("   show()     Displays all objects and functions in the current scope");
+  print();
 }
 
-function quit() {           
+function quit() {
   print("Bye!")
-  java.lang.System.exit(0);
+  Packages.java.lang.System.exit(0);
 }
 
+function version() {
+  return core.version();
+}
 
-// ----------------------------------------------------------------------
-       
 function repl(prompt) {
+
   var consoleReader = new Packages.jline.ConsoleReader();
   var line;
   var res;
 
-  // TODO auto completion    
-  
-  print("Try help(), show() or quit() if you get stuck");
+  var scope = {
+    show:show,
+    help:help,
+    quit:quit,
+    version:version
+  };
+
+  function show(object) {
+    Object.keys(object || scope)
+      .forEach(function(k) print(k));
+  }
+
+  // TODO auto completion
+
   print();
 
   while (true) {
     line = consoleReader.readLine(prompt);
     try {
-      res = eval("" + line);
+      res = eval("" + line, scope);
       res === undefined || print(res);
     } catch (e) {
       print(e.constructor.name + ": " + e.message);
     }
   }
-}   
-
-var avoid = [ "exports", "module", "require", "repl", "avoid", "show" ];
-
-function show(object) {
-  Object.keys(object || this)
-    .forEach(function(k) avoid.indexOf(k) < 0 ? print(k) : null);
 }
+
+

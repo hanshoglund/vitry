@@ -1,7 +1,6 @@
 /*
  * Vitry, copyright (c) Hans Höglund 2010, see COPYING.txt for details
  */
-
 /**
  * Core data structures.
  *
@@ -12,16 +11,13 @@ exports.addAll = {
   Type    : Type,
   Integer : Integer,
   Ratio   : Ratio,
-
+  version : version,
+  versionString : versionString,
   main    : main
-};           
-
-var repl = require("vitry/repl");
+};
 
 
-// Core values
-
-var version = [0, 0, 2];
+// Canonical require
 
 var require = JAVA.coreRequire(
   {
@@ -47,8 +43,18 @@ var require = JAVA.coreRequire(
     spawn         : undefined,
     sync          : undefined,
     quit          : undefined,
-    version       : undefined
-  });
+    version       : undefined,
+
+    print         : print,
+    Packages      : Packages,
+    vitry         : {}
+ });
+
+// Imports
+var repl = require("vitry/repl");
+
+// Environment version
+var versionArray = [0, 0, 2];
 
 
 
@@ -65,15 +71,15 @@ function Type() {
   // TODO
 }
 
+
 function Integer (value) {
   // TODO
 }
 
+
 function Ratio (nom, denom) {
   // TODO
 }
-
-
 
 
 // Interpreter
@@ -83,17 +89,19 @@ function main(args) {
     // TODO load and execute files
 
   } else {
-
     print("Vitry, version " + versionString());
     print("See http://github.com/hanshoglund/Vitry")
     print("Starting JavaScript interpreter...");
-              
+
     repl.repl("Vitry> ");
   }
 }
 
+function version() {
+  return versionArray;
+}
 
 function versionString() {
-  return version.join(".");
+  return version().join(".");
 }
 
