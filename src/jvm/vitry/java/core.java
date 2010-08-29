@@ -31,8 +31,8 @@ public class core {
               return new ModuleScript(script, null);
             }
           }),
-          getScriptInClasspath("vitry/__header"),
-          getScriptInClasspath("vitry/__footer"),
+          getScriptInClasspath("vitry/header"),
+          getScriptInClasspath("vitry/footer"),
           false));
     } catch (Exception e) {
       return null;
