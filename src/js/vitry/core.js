@@ -8,23 +8,23 @@
  * @author Hans Höglund
  * @date 2010
  */
-exports.addAll = { 
+exports.addAll = {
   version : version,
-  
+
   Type    : Type,
   Integer : Integer,
   Ratio   : Ratio,
-  
+
   main    : main
-};    
-  
+};
+
 
 // Core values
 
 var version = [0, 0, 2];
-              
-var require = JAVA.coreRequire( 
-  {                        
+
+var require = JAVA.coreRequire(
+  {
     Packages      : undefined,
     java          : undefined,
     JAVA          : undefined,
@@ -48,9 +48,9 @@ var require = JAVA.coreRequire(
     sync          : undefined,
     quit          : undefined,
     version       : undefined
-  });   
-            
-  
+  });
+
+
 
 // Data types
 
@@ -69,19 +69,19 @@ function Ratio () {
 
 
 
-// Interpreter       
+// Interpreter
 
-function main(args) { 
+function main(args) {
   if (args.length > 0) {
     // TODO
 
   } else {
 
     print("Vitry, version " + versionString());
-    print("For more information see http://github.com/hanshoglund/Vitry")        
+    print("For more information see http://github.com/hanshoglund/Vitry")
     print("Starting JavaScript interpreter");
-    
-    
+
+
   }
 }
 
@@ -91,5 +91,5 @@ function show(object) {
 
 function versionString() {
   return version.join(".");
-}   
+}
 

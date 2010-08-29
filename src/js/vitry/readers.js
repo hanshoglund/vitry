@@ -9,9 +9,9 @@
  * @author Hans Höglund
  * @date 2010
  */
-exports.addAll = { 
+exports.addAll = {
 };
 
-SibeliusReader  = Type();
-MusicXMLReader  = Type();
-MIDIReader      = Type();
+var SibeliusReader  = Type();
+var MusicXMLReader  = Type();
+var MIDIReader      = Type();

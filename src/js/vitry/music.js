@@ -20,32 +20,32 @@ exports.addAll = {
   Notation : Notation,
   Notation : Notation,
   Notation : Notation,
-  Notation : Notation,  
+  Notation : Notation,
 };
 
-Music           = Type();
+var Music           = Type();
 
-Notation        = Type();
-DynamicNotation = Type();
-PitchNotation   = Type();
-TimeNotation    = Type();
+var Notation        = Type();
+var DynamicNotation = Type();
+var PitchNotation   = Type();
+var TimeNotation    = Type();
 
-Event           = Type();
-Note            = Type();
-Sound           = Type();
-Curve           = Type();
+var Event           = Type();
+var Note            = Type();
+var Sound           = Type();
+var Curve           = Type();
 
-Position        = Type();
-Duration        = Type();
+var Position        = Type();
+var Duration        = Type();
 
-Pitch           = Type();
-PitchClass      = Type();
-PitchName       = Type();
-Accidental      = Type();
-Octave          = Type();
+var Pitch           = Type();
+var PitchClass      = Type();
+var PitchName       = Type();
+var Accidental      = Type();
+var Octave          = Type();
 
-Location        = Type();
+var Location        = Type();
 
-Key             = Type();
-Time            = Type();
-Tonality        = Type();
+var Key             = Type();
+var Time            = Type();
+var Tonality        = Type();
