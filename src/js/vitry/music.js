@@ -9,33 +9,38 @@
  * @date 2010
  */
 
-var Music           = Type();
+var Music           = function(){};
 
-var Notation        = Type();
-var DynamicNotation = Type();
-var PitchNotation   = Type();
-var TimeNotation    = Type();
+var Notation        = function(){};
+var DynamicNotation = function(){};
+var PitchNotation   = function(){};
+var TimeNotation    = function(){};
 
-var Event           = Type();
-var Note            = Type();
-var Sound           = Type();
-var Curve           = Type();
+var Event           = function(){};
+var Note            = function(){};
+var Sound           = function(){};
+var Curve           = function(){};
 
-var Position        = Type();
-var Duration        = Type();
+var Position        = function(){};
+var Duration        = function(){};
 
-var Pitch           = Type();
-var PitchClass      = Type();
-var PitchName       = Type();
-var Accidental      = Type();
-var Octave          = Type();
+var Pitch           = function(){};
+var PitchClass      = function(){};
+var PitchName       = function(){};
+var Accidental      = function(){};
+var Octave          = function(){};
 
-var Location        = Type();
+var Location        = function(){};
 
-var Key             = Type();
-var Time            = Type();
-var Tonality        = Type();
+var Key             = function(){};
+var Time            = function(){};
+var Tonality        = function(){};
 
 
-
-exports.add( );
+exports.add ( Music,
+              Notation, DynamicNotation, PitchNotation, TimeNotation,
+              Event, Note, Sound, Curve,
+              Position, Duration,
+              Pitch, PitchClass, PitchName, Accidental, Octave,
+              Location,
+              Key, Time, Tonality );

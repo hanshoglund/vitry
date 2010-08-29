@@ -9,14 +9,11 @@
  * @author Hans Höglund
  * @date 2010
  */
-exports.all = {
-};
 
-var core = require("vitry/core");
-var Type = core.Type;
+var SibeliusWriter  = function(){};
+var LilyPondWriter  = function(){};
+var MusicXMLWriter  = function(){};
+var MIDIWriter      = function(){};
 
 
-var SibeliusWriter  = Type();
-var LilyPondWriter  = Type();
-var MusicXMLWriter  = Type();
-var MIDIWriter      = Type();
+exports.add ( SibeliusWriter, LilyPondWriter, MusicXMLWriter, MIDIWriter);

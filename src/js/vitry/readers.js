@@ -9,11 +9,10 @@
  * @author Hans Höglund
  * @date 2010
  */
-exports.all = { SibeliusReader : SibeliusReader }
 
-var Type = vitry.core.Type;
+var SibeliusReader  = function(){};
+var MusicXMLReader  = function(){};
+var MIDIReader      = function(){};
 
 
-var SibeliusReader  = Type();
-var MusicXMLReader  = Type();
-var MIDIReader      = Type();
+exports.add ( SibeliusReader, MusicXMLReader, MIDIReader );

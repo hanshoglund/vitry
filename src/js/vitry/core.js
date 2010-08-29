@@ -7,43 +7,26 @@
  * @author Hans Höglund
  * @date 2010
  */
-exports.add ( Type, Natural, Integer, Ratio, 
-              version, versionString, main );
 
-/*
- * Meta-information.
- */
 var about = {
   name    : "Vitry",
   url     : "http://github.com/hanshoglund/Vitry",
   version : [0, 0, 2]
 };
 
-/*
- * Canonical require function (used to load the rest of the environment).
- */ 
 var require;
 
 /*
- * Global providing simple access to the vitry modules
- * E.g. vitry.music is equivalent to require("vitry.music")
+ * Shortcut to the vitry modules
  */
-var vitry;
-
-
-vitry = Object.create(Object.prototype, {
-
-  core    : { get : function() require("vitry/core") },
-  music   : { get : function() require("vitry/music") },
-  readers : { get : function() require("vitry/readers") },
-  writers : { get : function() require("vitry/writers") }
-
+var vitry = Object.create(Object.prototype, {
+  core    : { get : function() require( "vitry/core"    ) },
+  music   : { get : function() require( "vitry/music"   ) },
+  readers : { get : function() require( "vitry/readers" ) },
+  writers : { get : function() require( "vitry/writers" ) }
 });
 
 require = Packages.vitry.java.core.getSimpleRequire({
-
-// Needed by the current require implementation
-//  Packages      : undefined,
   java          : undefined,
   environment   : undefined,
   history       : undefined,
@@ -73,7 +56,7 @@ require = Packages.vitry.java.core.getSimpleRequire({
 
 //======================================================================
 // Language extensions
-        
+
 Object.extend = function(to, from) {
   for (k in from) to[k] = from[k];
 }
@@ -84,7 +67,7 @@ Object.clone = function(obj) {
 
 Object.values = function(val) {
   return [v for each (v in val)];
-}   
+}
 
 
 // Property utils
@@ -112,7 +95,7 @@ Object.prototype.enumerable = function(properties, status) {
   for each (property in [].concat(properties)) {
     Object.enumerable(this, property, status);
   }
-}                        
+}
 
 Object.prototype.preventChanges = function(properties) {
   for each (property in [].concat(properties)) {
@@ -136,7 +119,7 @@ Boolean.isBoolean = function(val) {
 }
 
 Number.isNumber = function(val) {
-  return (typeof val === "number");  
+  return (typeof val === "number");
 }
 
 String.isString = function(val) {
@@ -196,7 +179,7 @@ Object.defineProperties(Array, {
 Object.defineProperties(Function, {
   check : { enumerable : false },
   isFunction : { enumerable : false }
-});   
+});
 
 Object.defineProperties(Boolean, {
   check : { enumerable : false },
@@ -216,52 +199,41 @@ Object.defineProperties(String, {
 //======================================================================
 // Data types
 
-function Type() {
-
-  // Atom type
-  if (arguments.length == 0) {
-    let f = function(){ return f };
-    return f;
-  }
-
-  // TODO
-}
-
 
 function Natural(value) {
   // XXX ?
-  var obj = (this instanceof Natural ? 
-    this : 
-    Object.create(Natural.prototype));
-  return obj;
+//  var obj = (this instanceof Natural ?
+//    this :
+//    Object.create(Natural.prototype));
+//  return obj;
 }
 
 Natural.prototype = {
-  
+
   add : function(n) {
     return Natural(this.valueOf + n);
   },
-  
+
   subtract : function() {
-    return Natural(this.valueOf - n);    
+    return Natural(this.valueOf - n);
   },
-  
+
   multiply : function() {
-    return Natural(this.valueOf * n);    
+    return Natural(this.valueOf * n);
   },
-  
+
   divide : function() {
-    return Natural(this.valueOf / n);    
+    return Natural(this.valueOf / n);
   },
-  
+
   modulo : function() {
-    return Natural(this.valueOf % n);    
+    return Natural(this.valueOf % n);
   },
-  
+
   succ : function() {
-    return this.valueOf + 1;    
+    return this.valueOf + 1;
   },
-  
+
   op : function(op, n) {
     switch (op) {
       case("+"): return this.add(n);
@@ -275,9 +247,9 @@ Natural.prototype = {
 
 
 function Integer(value) {
- 
-  
-  
+
+
+
 }
 Integer.prototype = Object.extend(new Natural(), {
 });
@@ -301,7 +273,7 @@ function main(args) {
     print(about.name + ", version " + versionString());
     print("See " + about.url)
     print("Starting JavaScript interpreter...");
-          
+
     load("~/.vitry.js");
     repl(about.name + "> ");
   }
@@ -339,12 +311,12 @@ function help() {
   print("               in the console).");
   print("  quit()       Leaves Vitry.");
   print();
-}      
+}
 
 function quit() {
   print("Leaving " + about.name + "...")
   Packages.java.lang.System.exit(0);
-}     
+}
 
 function load(fileName) {
   if (arguments.length > 1) {
@@ -353,7 +325,7 @@ function load(fileName) {
   }
   if (fileName) {
     var file = fileName;
-    file = file.replace("~", environment["user.home"]);  
+    file = file.replace("~", environment["user.home"]);
     try {
       eval(readFile(file));
     } catch (e if e instanceof JavaException) {
@@ -382,3 +354,10 @@ function repl(prompt) {
     }
   }
 }
+
+
+
+//======================================================================
+
+exports.add ( Natural, Integer, Ratio,
+              version, versionString, main );
