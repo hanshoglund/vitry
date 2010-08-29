@@ -8,4 +8,10 @@
  *
  * @author Hans Höglund
  */
-Packages.vitry.java.core.doBootstrapRequire("vitry/core", {}).main(arguments);
+version(180);        
+
+Packages.vitry.java.core
+.doBootstrapRequire(
+  "vitry/core", 
+  {})
+  .main(arguments);

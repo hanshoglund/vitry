@@ -31,8 +31,8 @@ public class core {
               return new ModuleScript(script, null);
             }
           }),
-          getScriptInClasspath("vitry/prelude"),
-          null,
+          getScriptInClasspath("vitry/__header"),
+          getScriptInClasspath("vitry/__footer"),
           false));
     } catch (Exception e) {
       return null;
@@ -66,8 +66,8 @@ public class core {
               return new ModuleScript(script, null);
             }
           }),
-          getScriptInClasspath("vitry/prelude"),
-          null,
+          getScriptInClasspath("vitry/__header"),
+          getScriptInClasspath("vitry/__footer"),
           false))
           .requireMain(context, id);
     } catch (Exception e) {
@@ -79,7 +79,7 @@ public class core {
     try {
       return (Script) Class.forName(id.replace("/", ".")).newInstance();
     } catch (Exception e) {
-      throw new RuntimeException("Could not initialize.");
+      return null;
     }
   }
 }

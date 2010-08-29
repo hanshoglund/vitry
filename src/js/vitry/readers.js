@@ -9,11 +9,9 @@
  * @author Hans Höglund
  * @date 2010
  */
-exports.all = {
-};
+exports.all = { SibeliusReader : SibeliusReader }
 
-var core = require("vitry/core");
-var Type = core.Type;
+var Type = vitry.core.Type;
 
 
 var SibeliusReader  = Type();

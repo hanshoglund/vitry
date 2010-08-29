@@ -7,19 +7,21 @@
  * @author Hans Höglund
  * @date 2010
  */
-exports.all = [
-  Type
-  , Integer
-  , Ratio
-  , version
-  , versionString
-  , main          
-]
+exports.all = [ Type, Integer, Ratio, version, versionString, main ]
+      
+var req;
+var vitry;
 
-var require = Packages.vitry.java.core.coreRequire(
+vitry = Object.create(Object.prototype, {
+  core    : { get : function() req("vitry/core") },
+  music   : { get : function() req("vitry/music") },
+  readers : { get : function() req("vitry/readers") },
+  writers : { get : function() req("vitry/writers") }
+});
+
+req = Packages.vitry.java.core.coreRequire(
   {
     java          : undefined,
-    JAVA          : undefined,
     environment   : undefined,
     history       : undefined,
     importPackage : undefined,
@@ -42,21 +44,14 @@ var require = Packages.vitry.java.core.coreRequire(
     version       : undefined,
 
     print         : print,
-    vitry         : {}
+    vitry         : vitry
   }
-);   
+);
 
-var vitry = Object.create(Object.prototype, {
-  core    : { get : function() require("vitry/core") },
-  music   : { get : function() require("vitry/music") },
-  readers : { get : function() require("vitry/readers") },
-  writers : { get : function() require("vitry/writers") }  
-});
 
 // ======================================================================
 
 var versionArray = [0, 0, 2];
-
 
 
 //======================================================================
@@ -95,7 +90,7 @@ function main(args) {
     print("Vitry, version " + versionString());
     print("See http://github.com/hanshoglund/Vitry")
     print("Starting JavaScript interpreter...");
-                   
+
     repl("Vitry> ");
   }
 }
@@ -117,7 +112,7 @@ function help() {
 }
 
 function quit() {
-  print("Bye!")
+  print("Leaving Vitry...")
   Packages.java.lang.System.exit(0);
 }
 
@@ -127,7 +122,8 @@ function repl(prompt) {
   var line;
   var res;
 
-  var scope = { 
+  var scope = {
+    require:req,
     vitry:vitry,
     show:show,
     help:help,
@@ -136,7 +132,7 @@ function repl(prompt) {
     versionString:versionString
   };
 
-  function show(object) {       
+  function show(object) {
     for (k in (object || scope)) print("  " + k);
   }
 

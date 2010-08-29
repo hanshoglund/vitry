@@ -9,13 +9,13 @@
  * @date 2010
  */
 exports.all = [   
-  Music
-  , Notation
+//  Music
+//  , Notation
 ]   
 
-var core = require("vitry/core");
+var core = vitry.core;
 var Type = core.Type;
-
+/*
 
 var Music           = Type();
 
@@ -43,3 +43,5 @@ var Location        = Type();
 var Key             = Type();
 var Time            = Type();
 var Tonality        = Type();
+                 
+*/
