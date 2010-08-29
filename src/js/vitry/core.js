@@ -8,16 +8,14 @@
  * @author Hans Höglund
  * @date 2010
  */
-var music = require("vitry/music");
-var readers = require("vitry/readers");
+exports.addAll = {
+  main: main
+};
 
-exports.main = main;
+var require = JAVA.coreRequire( {
+  Packages: null
+});
 
-
-
-function main (args) {
-  print("Welcome!");
+function main(args) {
+  print("Welcome " + args[0]);
 }
-
-
-

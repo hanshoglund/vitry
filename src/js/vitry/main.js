@@ -10,7 +10,6 @@
  * @author Hans Höglund
  * @date 2010
  */
-var CLASSPATH = Packages;
+var JAVA = Packages.vitry.java.core;
 
-var core = CLASSPATH.vitry.java.main.require("vitry/core", this);
-core.main(arguments);
+JAVA.doBootstrapRequire("vitry/core", {}).main(arguments);
