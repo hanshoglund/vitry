@@ -9,7 +9,7 @@ Object.defineProperty(
   "all", {
     set : function (from) {
       if (Array.isArray(from)) {
-        if (from.length > 0) {
+        if (from.length > 0 && from[0]) {
           var parent = from[0].__parent__;
           for (k in parent) {
             if (from.indexOf(parent[k]) > -1) {

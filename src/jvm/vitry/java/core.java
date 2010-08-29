@@ -14,7 +14,7 @@ public class core {
 
   private core(){}
 
-  public static Scriptable coreRequire(Scriptable scope) {
+  public static Scriptable getSimpleRequire(Scriptable scope) {
     Context context = Context.enter();
     try {
       return (new Require(
@@ -34,42 +34,6 @@ public class core {
           getScriptInClasspath("vitry/__header"),
           getScriptInClasspath("vitry/__footer"),
           false));
-    } catch (Exception e) {
-      return null;
-    }
-  }
-
-  /**
-   * Returns the module of the given id. This is resolved by simply searching
-   * the classpath for a Java class of the given id, where slashes are replaced
-   * by dots.
-   *
-   * @param id
-   * @param scope
-   * @return
-   */
-  public static Scriptable doBootstrapRequire(String id, Scriptable scope) {
-    Context context = Context.enter();
-
-    try {
-      return
-      (new Require(
-          context,
-          scope,
-          (new ModuleScriptProvider(){
-            public ModuleScript getModuleScript(
-              Context context,
-              String id,
-              Scriptable paths)
-            throws Exception {
-              Script script = getScriptInClasspath(id);
-              return new ModuleScript(script, null);
-            }
-          }),
-          getScriptInClasspath("vitry/__header"),
-          getScriptInClasspath("vitry/__footer"),
-          false))
-          .requireMain(context, id);
     } catch (Exception e) {
       return null;
     }

@@ -7,51 +7,64 @@
  * @author Hans Höglund
  * @date 2010
  */
-exports.all = [ Type, Integer, Ratio, version, versionString, main ]
-      
+exports.all = [ Type, Integer, Ratio, version, versionString, main ];
+
+/*
+ * About sVitry
+ */
+var meta = {      
+  name    : "Vitry",
+  url     : "http://github.com/hanshoglund/Vitry",
+  version : [0, 0, 2]
+};
+
+/*
+ * Canonical require function (used to load the rest of the environment).
+ */      
 var req;
+
+/*
+ * Global providing simple access to the vitry modules
+ * E.g. vitry.music is equivalent to require("vitry.music")
+ */
 var vitry;
+
 
 vitry = Object.create(Object.prototype, {
   core    : { get : function() req("vitry/core") },
   music   : { get : function() req("vitry/music") },
   readers : { get : function() req("vitry/readers") },
   writers : { get : function() req("vitry/writers") }
+});        
+
+req = Packages.vitry.java.core.getSimpleRequire({
+  Packages      : undefined,
+  java          : undefined,
+  environment   : undefined,
+  history       : undefined,
+  importPackage : undefined,
+  importClass   : undefined,
+  help          : undefined,
+  defineClass   : undefined,
+  deserialize   : undefined,
+  gc            : undefined,
+  load          : undefined,
+  loadClass     : undefined,
+  print         : undefined,
+  readFile      : undefined,
+  readUrl       : undefined,
+  runCommand    : undefined,
+  seal          : undefined,
+  serialize     : undefined,
+  spawn         : undefined,
+  sync          : undefined,
+  quit          : undefined,
+  version       : undefined,
+
+  vitry         : vitry,
+  print         : print,
 });
 
-req = Packages.vitry.java.core.coreRequire(
-  {
-    java          : undefined,
-    environment   : undefined,
-    history       : undefined,
-    importPackage : undefined,
-    importClass   : undefined,
-    help          : undefined,
-    defineClass   : undefined,
-    deserialize   : undefined,
-    gc            : undefined,
-    load          : undefined,
-    loadClass     : undefined,
-    print         : undefined,
-    readFile      : undefined,
-    readUrl       : undefined,
-    runCommand    : undefined,
-    seal          : undefined,
-    serialize     : undefined,
-    spawn         : undefined,
-    sync          : undefined,
-    quit          : undefined,
-    version       : undefined,
-
-    print         : print,
-    vitry         : vitry
-  }
-);
-
-
-// ======================================================================
-
-var versionArray = [0, 0, 2];
 
 
 //======================================================================
@@ -87,18 +100,18 @@ function main(args) {
     // TODO load and execute files
 
   } else {
-    print("Vitry, version " + versionString());
-    print("See http://github.com/hanshoglund/Vitry")
+    print(meta.name + ", version " + versionString());
+    print("See " + meta.url)
     print("Starting JavaScript interpreter...");
 
-    repl("Vitry> ");
+    repl(meta.name + "> ");
   }
 }
 
 //Visible
 
 function version() {
-  return versionArray;
+  return meta.version;
 }
 
 function versionString() {
@@ -107,12 +120,12 @@ function versionString() {
 
 function help() {
   print();
-  print("   show()     Displays all objects and functions in the current scope");
+  print("  show()     Displays all objects and functions in the current scope");
   print();
 }
 
 function quit() {
-  print("Leaving Vitry...")
+  print("Leaving " + meta.name + "...")
   Packages.java.lang.System.exit(0);
 }
 
@@ -142,7 +155,7 @@ function repl(prompt) {
 
   while (true) {
     line = consoleReader.readLine(prompt);
-    try {
+    try {        
       res = eval("" + line, scope);
       res === undefined || print(res);
     } catch (e) {

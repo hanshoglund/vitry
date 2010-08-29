@@ -13,8 +13,8 @@ exports.all = [
 //  , Notation
 ]   
 
-var core = vitry.core;
-var Type = core.Type;
+print(Packages);
+
 /*
 
 var Music           = Type();
