@@ -10,16 +10,20 @@
  */
 exports.addAll = {
   main: main
-};
-
+};        
+   
+var version = [0, 0, 2];
+var site    = "http://github.com/hanshoglund/Vitry";
+    
+// Canonical require method
 var require = JAVA.coreRequire( 
-  { 
+  {                        
+    // Remove Rhino globals
     Packages      : undefined,
     java          : undefined,
-    java          : undefined,
+    JAVA          : undefined,
     environment   : undefined,
     history       : undefined,
-
     importPackage : undefined,
     importClass   : undefined,
     help          : undefined,
@@ -28,7 +32,7 @@ var require = JAVA.coreRequire(
     gc            : undefined,
     load          : undefined,
     loadClass     : undefined,
-//    print         : undefined,
+    print         : undefined,
     readFile      : undefined,
     readUrl       : undefined,
     runCommand    : undefined,
@@ -38,10 +42,44 @@ var require = JAVA.coreRequire(
     sync          : undefined,
     quit          : undefined,
     version       : undefined
-  });
+  });   
   
-require("vitry/music");      
+  
+function show(object) {
+   Object.keys(object || this).map(function(n) print(n));
+}
+
+function arrayToJavaList(array) {
+  return new java.util.List({
+     // TODO
+  });
+}
+
+function javaListToArray(list) {
+  Object.create(nulls, [
+    // TODO
+  ]);
+}
+
+function objectToJavaMap(obj) {
+  return new java.util.Map({
+     // TODO
+  });
+}
+
+function javaMapToObject(map) {
+  Object.create(nulls, [
+    // TODO
+  ]);
+}    
+
+function versionString() {
+  return version.join(".");
+}
 
 function main(args) {
-  print("Welcome " + args[0]);
+  print("Vitry, version " + versionString());
+  print("For more information see " + site)        
+  print("Starting JavaScript interpreter");
+  
 }
