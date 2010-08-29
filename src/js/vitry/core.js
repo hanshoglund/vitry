@@ -48,8 +48,6 @@ var require = JAVA.coreRequire(
   }
 );
 
-//var repl = require("vitry/repl");
-
 // ======================================================================
 
 var versionArray = [0, 0, 2];
@@ -83,6 +81,19 @@ function Ratio (nom, denom) {
 
 //======================================================================
 // Interpreter
+
+function main(args) {
+  if (args.length > 0) {
+    // TODO load and execute files
+
+  } else {
+    print("Vitry, version " + versionString());
+    print("See http://github.com/hanshoglund/Vitry")
+    print("Starting JavaScript interpreter...");
+
+    repl("Vitry> ");
+  }
+}
 
 //Visible
 
