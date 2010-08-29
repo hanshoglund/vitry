@@ -8,17 +8,23 @@
  * @author Hans Höglund
  * @date 2010
  */
-exports.addAll = {
-  main: main
-};        
-   
+exports.addAll = { 
+  version : version,
+  
+  Type    : Type,
+  Integer : Integer,
+  Ratio   : Ratio,
+  
+  main    : main
+};    
+  
+
+// Core values
+
 var version = [0, 0, 2];
-var site    = "http://github.com/hanshoglund/Vitry";
-    
-// Canonical require method
+              
 var require = JAVA.coreRequire( 
   {                        
-    // Remove Rhino globals
     Packages      : undefined,
     java          : undefined,
     JAVA          : undefined,
@@ -43,43 +49,47 @@ var require = JAVA.coreRequire(
     quit          : undefined,
     version       : undefined
   });   
+            
   
-  
+
+// Data types
+
+function Type() {
+  // TODO
+}
+
+function Integer () {
+  // TODO
+}
+
+function Ratio () {
+  // TODO
+}
+
+
+
+
+// Interpreter       
+
+function main(args) { 
+  if (args.length > 0) {
+    // TODO
+
+  } else {
+
+    print("Vitry, version " + versionString());
+    print("For more information see http://github.com/hanshoglund/Vitry")        
+    print("Starting JavaScript interpreter");
+    
+    
+  }
+}
+
 function show(object) {
    Object.keys(object || this).map(function(n) print(n));
 }
 
-function arrayToJavaList(array) {
-  return new java.util.List({
-     // TODO
-  });
-}
-
-function javaListToArray(list) {
-  Object.create(nulls, [
-    // TODO
-  ]);
-}
-
-function objectToJavaMap(obj) {
-  return new java.util.Map({
-     // TODO
-  });
-}
-
-function javaMapToObject(map) {
-  Object.create(nulls, [
-    // TODO
-  ]);
-}    
-
 function versionString() {
   return version.join(".");
-}
+}   
 
-function main(args) {
-  print("Vitry, version " + versionString());
-  print("For more information see " + site)        
-  print("Starting JavaScript interpreter");
-  
-}

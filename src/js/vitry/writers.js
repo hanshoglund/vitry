@@ -9,3 +9,10 @@
  * @author Hans Höglund
  * @date 2010
  */
+exports.addAll = { 
+};
+
+SibeliusWriter  = Type();
+LilyPondWriter  = Type();
+MusicXMLWriter  = Type();
+MIDIWriter      = Type();
