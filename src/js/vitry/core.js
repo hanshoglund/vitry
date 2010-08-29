@@ -20,8 +20,8 @@ var meta = Object.freeze({
 
 /*
  * Canonical require function (used to load the rest of the environment).
- */
-var req;
+ */ 
+var require;
 
 /*
  * Global providing simple access to the vitry modules
@@ -32,16 +32,17 @@ var vitry;
 
 vitry = Object.create(Object.prototype, {
 
-  core    : { get : function() req("vitry/core") },
-  music   : { get : function() req("vitry/music") },
-  readers : { get : function() req("vitry/readers") },
-  writers : { get : function() req("vitry/writers") }
+  core    : { get : function() require("vitry/core") },
+  music   : { get : function() require("vitry/music") },
+  readers : { get : function() require("vitry/readers") },
+  writers : { get : function() require("vitry/writers") }
 
 });
 
-req = Packages.vitry.java.core.getSimpleRequire({
+require = Packages.vitry.java.core.getSimpleRequire({
 
-  Packages      : undefined,
+// Needed by the current require implementation
+//  Packages      : undefined,
   java          : undefined,
   environment   : undefined,
   history       : undefined,
@@ -65,7 +66,7 @@ req = Packages.vitry.java.core.getSimpleRequire({
   version       : undefined,
 
   vitry         : vitry,
-  print         : print,
+  print         : print
 });
 
 
@@ -111,15 +112,20 @@ function main(args) {
   }
 }
 
-//Visible   
+var visible = {
+  require:require,
+  vitry:vitry,
+  show:show,
+  help:help,
+  load:load,
+  quit:quit,
+  version:version,
+  versionString:versionString
+};
 
-function version() {
-  return meta.version;
+function show(object) {
+  for (k in (object || visible)) print("  " + k);
 }
-
-function versionString() {
-  return version().join(".");
-}                
 
 function help() {
   print("  show([obj])  Displays all properties of the given object.");
@@ -130,7 +136,7 @@ function help() {
   print("               in the console).");
   print("  quit()       Leaves Vitry.");
   print();
-}         
+}      
 
 function load(fileName) {
   if (arguments.length > 1) {
@@ -152,26 +158,19 @@ function quit() {
   Packages.java.lang.System.exit(0);
 }
 
+function version() {
+  return meta.version;
+}
+
+function versionString() {
+  return version().join(".");
+}
+
 function repl(prompt) {
 
   var consoleReader = new Packages.jline.ConsoleReader();
   var line;
   var res;
-
-  var scope = {
-    require:req,
-    vitry:vitry,
-    show:show,
-    help:help,
-    load:load,
-    quit:quit,
-    version:version,
-    versionString:versionString
-  };
-
-  function show(object) {
-    for (k in (object || scope)) print("  " + k);
-  }
 
   // TODO auto completion
 
@@ -180,7 +179,7 @@ function repl(prompt) {
   while (true) {
     line = "" + consoleReader.readLine(prompt);
     try {
-      res = eval(line, scope);
+      res = eval(line);
       res === undefined || print(res);
     } catch (e) {
       print(e.constructor.name + ": " + e.message);
