@@ -12,15 +12,15 @@ exports.all = [ Type, Integer, Ratio, version, versionString, main ];
 /*
  * Meta-information.
  */
-var meta = {      
+var meta = Object.freeze({
   name    : "Vitry",
   url     : "http://github.com/hanshoglund/Vitry",
   version : [0, 0, 2]
-};
+});
 
 /*
  * Canonical require function (used to load the rest of the environment).
- */      
+ */
 var req;
 
 /*
@@ -30,17 +30,17 @@ var req;
 var vitry;
 
 
-vitry = Object.create(Object.prototype, { 
-  
+vitry = Object.create(Object.prototype, {
+
   core    : { get : function() req("vitry/core") },
   music   : { get : function() req("vitry/music") },
   readers : { get : function() req("vitry/readers") },
   writers : { get : function() req("vitry/writers") }
-  
-});        
 
-req = Packages.vitry.java.core.getSimpleRequire({     
-  
+});
+
+req = Packages.vitry.java.core.getSimpleRequire({
+
   Packages      : undefined,
   java          : undefined,
   environment   : undefined,
@@ -105,12 +105,13 @@ function main(args) {
     print(meta.name + ", version " + versionString());
     print("See " + meta.url)
     print("Starting JavaScript interpreter...");
-
+          
+    load("~/.vitry.js");
     repl(meta.name + "> ");
   }
 }
 
-//Visible
+//Visible   
 
 function version() {
   return meta.version;
@@ -118,12 +119,32 @@ function version() {
 
 function versionString() {
   return version().join(".");
-}
+}                
 
 function help() {
+  print("  show([obj])  Displays all properties of the given object.");
+  print("               If none is given, displays all top-level functions.");
+  print("  help([obj])  Displays help text about the given object.");
+  print("               If none is given, displays this text.");
+  print("  load()       Loads and interprets a file (as if it had been entered.");
+  print("               in the console).");
+  print("  quit()       Leaves Vitry.");
   print();
-  print("  show()     Displays all objects and functions in the current scope");
-  print();
+}         
+
+function load(fileName) {
+  if (arguments.length > 1) {
+    for each (v in arguments) load(v);
+  }
+  if (fileName) {
+    var file = fileName;
+    file = file.replace("~", environment["user.home"]);  
+    try {
+      eval(readFile(file));
+    } catch (e if e instanceof JavaException) {
+      return null;
+    }
+  }
 }
 
 function quit() {
@@ -142,6 +163,7 @@ function repl(prompt) {
     vitry:vitry,
     show:show,
     help:help,
+    load:load,
     quit:quit,
     version:version,
     versionString:versionString
@@ -156,9 +178,9 @@ function repl(prompt) {
   print();
 
   while (true) {
-    line = consoleReader.readLine(prompt);
-    try {        
-      res = eval("" + line, scope);
+    line = "" + consoleReader.readLine(prompt);
+    try {
+      res = eval(line, scope);
       res === undefined || print(res);
     } catch (e) {
       print(e.constructor.name + ": " + e.message);

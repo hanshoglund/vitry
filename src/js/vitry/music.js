@@ -8,12 +8,10 @@
  * @author Hans Höglund
  * @date 2010
  */
-exports.all = [   
+exports.all = [
 //  Music
 //  , Notation
-]   
-
-print(Packages);
+]
 
 /*
 
@@ -43,5 +41,5 @@ var Location        = Type();
 var Key             = Type();
 var Time            = Type();
 var Tonality        = Type();
-                 
+
 */
