@@ -8,20 +8,10 @@
  * @author Hans Höglund
  * @date 2010
  */
-exports.all = {
-  Music    : Music,
-  Notation : Notation,
-  Notation : Notation,
-  Notation : Notation,
-  Notation : Notation,
-  Notation : Notation,
-  Notation : Notation,
-  Notation : Notation,
-  Notation : Notation,
-  Notation : Notation,
-  Notation : Notation,
-  Notation : Notation,
-};
+exports.all = [   
+  Music
+  , Notation
+]   
 
 var core = require("vitry/core");
 var Type = core.Type;

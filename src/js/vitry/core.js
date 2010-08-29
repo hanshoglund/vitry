@@ -7,18 +7,17 @@
  * @author Hans Höglund
  * @date 2010
  */
-exports.all = {
-  Type          : Type,
-  Integer       : Integer,
-  Ratio         : Ratio,
-  version       : version,
-  versionString : versionString,
-  main          : main
-};
+exports.all = [
+  Type
+  , Integer
+  , Ratio
+  , version
+  , versionString
+  , main          
+]
 
-var require = JAVA.coreRequire(
+var require = Packages.vitry.java.core.coreRequire(
   {
-    Packages      : undefined,
     java          : undefined,
     JAVA          : undefined,
     environment   : undefined,
@@ -43,10 +42,16 @@ var require = JAVA.coreRequire(
     version       : undefined,
 
     print         : print,
-    Packages      : Packages,
     vitry         : {}
   }
-);
+);   
+
+var vitry = Object.create(Object.prototype, {
+  core    : { get : function() require("vitry/core") },
+  music   : { get : function() require("vitry/music") },
+  readers : { get : function() require("vitry/readers") },
+  writers : { get : function() require("vitry/writers") }  
+});
 
 // ======================================================================
 
@@ -90,7 +95,7 @@ function main(args) {
     print("Vitry, version " + versionString());
     print("See http://github.com/hanshoglund/Vitry")
     print("Starting JavaScript interpreter...");
-
+                   
     repl("Vitry> ");
   }
 }
@@ -122,7 +127,8 @@ function repl(prompt) {
   var line;
   var res;
 
-  var scope = {
+  var scope = { 
+    vitry:vitry,
     show:show,
     help:help,
     quit:quit,
@@ -130,9 +136,8 @@ function repl(prompt) {
     versionString:versionString
   };
 
-  function show(object) {
-    Object.keys(object || scope)
-      .forEach(function(k) print(k));
+  function show(object) {       
+    for (k in (object || scope)) print("  " + k);
   }
 
   // TODO auto completion

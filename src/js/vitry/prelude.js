@@ -9,7 +9,14 @@ Object.defineProperty(
   "all", {
     set : function (from) {
       if (Array.isArray(from)) {
-        // TODO
+        if (from.length > 0) {
+          var parent = from[0].__parent__;
+          for (k in parent) {
+            if (from.indexOf(parent[k]) > -1) {
+              exports[k] = parent[k];
+            }
+          }
+        }
       } else {
         for (k in from) exports[k] = from[k];
       }
