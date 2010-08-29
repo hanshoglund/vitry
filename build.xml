@@ -49,6 +49,7 @@ ABSOLUTELY NO WARRANTY IMPLIED.
             <arg value="${src.js}/vitry/readers.js"/>
             <arg value="${src.js}/vitry/writers.js"/>
             <arg value="${src.js}/vitry/prelude.js"/>
+            <arg value="${src.js}/vitry/repl.js"/>
 		</java>
 
 

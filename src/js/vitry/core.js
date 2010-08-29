@@ -9,14 +9,15 @@
  * @date 2010
  */
 exports.addAll = {
-  version : version,
-
   Type    : Type,
   Integer : Integer,
   Ratio   : Ratio,
 
   main    : main
 };
+
+var repl = require("vitry/repl");
+
 
 
 // Core values
@@ -52,17 +53,26 @@ var require = JAVA.coreRequire(
 
 
 
+
+
 // Data types
 
 function Type() {
+
+  // Atom type
+  if (arguments.length == 0) {
+    let f = function(){ return f };
+    return f;
+  }
+
   // TODO
 }
 
-function Integer () {
+function Integer (value) {
   // TODO
 }
 
-function Ratio () {
+function Ratio (nom, denom) {
   // TODO
 }
 
@@ -73,21 +83,19 @@ function Ratio () {
 
 function main(args) {
   if (args.length > 0) {
-    // TODO
+    // TODO load and execute files
 
   } else {
 
     print("Vitry, version " + versionString());
-    print("For more information see http://github.com/hanshoglund/Vitry")
-    print("Starting JavaScript interpreter");
+    print("See http://github.com/hanshoglund/Vitry")
+    print("Starting JavaScript interpreter...");
+    print();
 
-
+    repl.repl("Vitry> ");
   }
 }
 
-function show(object) {
-   Object.keys(object || this).map(function(n) print(n));
-}
 
 function versionString() {
   return version.join(".");
