@@ -36,7 +36,7 @@ Packages.vitry.java.core.getSimpleRequire({
 //  version       : undefined,
 
 })
-.apply(
+.call(
   this, 
-  [ "vitry/core" ])
+  "vitry/core")
 .main(arguments);

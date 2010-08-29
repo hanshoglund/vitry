@@ -71,6 +71,146 @@ require = Packages.vitry.java.core.getSimpleRequire({
 
 
 //======================================================================
+// Language extensions
+        
+Object.extend = function(to, from) {
+  for (k in from) to[k] = from[k];
+}
+
+Object.clone = function(obj) {
+  return Object.extend({}, obj);
+}
+
+Object.values = function(val) {
+  return [v for each (v in val)];
+}   
+
+
+// Property utils
+
+/*
+Object.writable = function(val, property, status) {
+  Object.defineProperty(val, property, { writable : status });
+}
+
+Object.enumerable = function(val, property, status) {
+  Object.defineProperty(val, property, { enumerable : status });
+}
+
+Object.preventChanges = function(val, property) {
+  Object.defineProperty(val, property, { configurable : false });
+}
+
+Object.prototype.writable = function(properties, status) {
+  for each (property in [].concat(properties)) {
+    Object.writable(this, property, status);
+  }
+}
+
+Object.prototype.enumerable = function(properties, status) {
+  for each (property in [].concat(properties)) {
+    Object.enumerable(this, property, status);
+  }
+}                        
+
+Object.prototype.preventChanges = function(properties) {
+  for each (property in [].concat(properties)) {
+    Object.preventChanges(this, property);
+  }
+}
+*/
+
+// Type checks
+
+Object.isObject = function(val) {
+  return (typeof val === "valect") || (typeof val === "function");
+}
+
+Function.isFunction = function(val) {
+  return (typeof val === "function") || (val.__proto__ === Function.prototype);
+}
+
+Boolean.isBoolean = function(val) {
+  return (typeof val === "boolean");
+}
+
+Number.isNumber = function(val) {
+  return (typeof val === "number");  
+}
+
+String.isString = function(val) {
+  return (typeof val === "string");
+}
+
+Object.check = function(val) {
+  if (!Object.isObject(val)) {
+    throw TypeError("Type of " + val + " is not valect");
+  }
+}
+
+Array.check = function(val) {
+  if (!Array.isArray(val)) {
+    throw TypeError("Type of " + val + " is not array");
+  }
+}
+
+Function.check = function(val) {
+  if (!Function.isFunction(val)) {
+    throw TypeError("Type of " + val + " is not function");
+  }
+}
+
+Boolean.check = function(val) {
+  if (!Boolean.isBoolean(val)) {
+    throw TypeError("Type of " + val + " is not boolean");
+  }
+}
+
+Number.check = function(val) {
+  if (!Number.isNumber(val)) {
+    throw TypeError("Type of " + val + " is not number");
+  }
+}
+
+String.check = function(val) {
+  if (!String.isString(val)) {
+    throw TypeError("Type of " + val + " is not string");
+  }
+}
+
+Object.defineProperties(Object, {
+  extend : { enumerable : false },
+  clone : { enumerable : false },
+  values : { enumerable : false },
+  isObject : { enumerable : false },
+  check : { enumerable : false }
+});
+
+Object.defineProperties(Array, {
+  check : { enumerable : false }
+});
+
+Object.defineProperties(Function, {
+  check : { enumerable : false },
+  isFunction : { enumerable : false }
+});   
+
+Object.defineProperties(Boolean, {
+  check : { enumerable : false },
+  isBoolean : { enumerable : false }
+});
+
+Object.defineProperties(Number, {
+  check : { enumerable : false },
+  isNumber : { enumerable : false }
+});
+
+Object.defineProperties(String, {
+  check : { enumerable : false },
+  isString : { enumerable : false }
+});
+
+//======================================================================
 // Data types
 
 function Type() {
@@ -100,7 +240,7 @@ function Ratio (nom, denom) {
 
 function main(args) {
   if (args.length > 0) {
-    // TODO load and execute files
+    load.apply(null, args);
 
   } else {
     print(meta.name + ", version " + versionString());
@@ -115,22 +255,30 @@ function main(args) {
 var visible = {
   require:require,
   vitry:vitry,
+  version:version,
+  versionString:versionString,
   show:show,
   help:help,
   load:load,
-  quit:quit,
-  version:version,
-  versionString:versionString
+  quit:quit
 };
 
-function show(object) {
-  for (k in (object || visible)) print("  " + k);
+function version() {
+  return meta.version;
+}
+
+function versionString() {
+  return version().join(".");
+}
+
+function show(valect) {
+  for (k in (valect || visible)) print("  " + k);
 }
 
 function help() {
-  print("  show([obj])  Displays all properties of the given object.");
+  print("  show([val])  Displays all properties of the given valect.");
   print("               If none is given, displays all top-level functions.");
-  print("  help([obj])  Displays help text about the given object.");
+  print("  help([val])  Displays help text about the given valect.");
   print("               If none is given, displays this text.");
   print("  load()       Loads and interprets a file (as if it had been entered.");
   print("               in the console).");
@@ -138,9 +286,15 @@ function help() {
   print();
 }      
 
+function quit() {
+  print("Leaving " + meta.name + "...")
+  Packages.java.lang.System.exit(0);
+}     
+
 function load(fileName) {
   if (arguments.length > 1) {
     for each (v in arguments) load(v);
+    return null;
   }
   if (fileName) {
     var file = fileName;
@@ -151,19 +305,6 @@ function load(fileName) {
       return null;
     }
   }
-}
-
-function quit() {
-  print("Leaving " + meta.name + "...")
-  Packages.java.lang.System.exit(0);
-}
-
-function version() {
-  return meta.version;
-}
-
-function versionString() {
-  return version().join(".");
 }
 
 function repl(prompt) {
