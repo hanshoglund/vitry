@@ -10,7 +10,7 @@
 exports.all = [ Type, Integer, Ratio, version, versionString, main ];
 
 /*
- * About sVitry
+ * Meta-information.
  */
 var meta = {      
   name    : "Vitry",
@@ -30,14 +30,17 @@ var req;
 var vitry;
 
 
-vitry = Object.create(Object.prototype, {
+vitry = Object.create(Object.prototype, { 
+  
   core    : { get : function() req("vitry/core") },
   music   : { get : function() req("vitry/music") },
   readers : { get : function() req("vitry/readers") },
   writers : { get : function() req("vitry/writers") }
+  
 });        
 
-req = Packages.vitry.java.core.getSimpleRequire({
+req = Packages.vitry.java.core.getSimpleRequire({     
+  
   Packages      : undefined,
   java          : undefined,
   environment   : undefined,
@@ -64,7 +67,6 @@ req = Packages.vitry.java.core.getSimpleRequire({
   vitry         : vitry,
   print         : print,
 });
-
 
 
 //======================================================================

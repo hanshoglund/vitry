@@ -11,6 +11,7 @@
 version(180);             
 
 Packages.vitry.java.core.getSimpleRequire({
+
 //  Packages      : undefined,
 //  java          : undefined,
 //  environment   : undefined,
@@ -33,6 +34,9 @@ Packages.vitry.java.core.getSimpleRequire({
 //  sync          : undefined,
 //  quit          : undefined,
 //  version       : undefined,
+
 })
-.apply(this, ["vitry/core"])
+.apply(
+  this, 
+  [ "vitry/core" ])
 .main(arguments);
