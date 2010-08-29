@@ -2,7 +2,7 @@
  * Vitry, copyright (c) Hans Höglund 2010, see COPYING.txt for details
  */
 /**
- * Core data structures.
+ * Core environment.
  *
  * @author Hans Höglund
  * @date 2010
@@ -15,9 +15,6 @@ exports.addAll = {
   versionString : versionString,
   main    : main
 };
-
-
-// Canonical require
 
 var require = JAVA.coreRequire(
   {
@@ -48,16 +45,18 @@ var require = JAVA.coreRequire(
     print         : print,
     Packages      : Packages,
     vitry         : {}
- });
+  }
+);
 
-// Imports
 var repl = require("vitry/repl");
 
-// Environment version
+// ======================================================================
+
 var versionArray = [0, 0, 2];
 
 
 
+//======================================================================
 // Data types
 
 function Type() {
@@ -82,6 +81,7 @@ function Ratio (nom, denom) {
 }
 
 
+//======================================================================
 // Interpreter
 
 function main(args) {

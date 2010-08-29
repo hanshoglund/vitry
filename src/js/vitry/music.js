@@ -9,7 +9,7 @@
  * @date 2010
  */
 exports.addAll = {
-  Music : Music,
+  Music    : Music,
   Notation : Notation,
   Notation : Notation,
   Notation : Notation,
@@ -21,7 +21,7 @@ exports.addAll = {
   Notation : Notation,
   Notation : Notation,
   Notation : Notation,
-};        
+};
 
 var core = require("vitry/core");
 var Type = core.Type;
