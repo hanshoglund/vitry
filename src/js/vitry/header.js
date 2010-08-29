@@ -4,22 +4,35 @@
 
 // Some utilities for exports and require
 
+//FIXME still only works for core
 Object.defineProperty(
   exports,
-  "all", {
-    set : function (from) {
-      if (Array.isArray(from)) {
-        if (from.length > 0 && from[0]) {
-          var parent = from[0].__parent__;
-          for (k in parent) {
-            if (from.indexOf(parent[k]) > -1) {
-              exports[k] = parent[k];
-            }
-          }
-        }
-      } else {
-        for (k in from) exports[k] = from[k];
+  "add", 
+  {
+    value : function() { 
+      var parent;
+      var supplied = [];      
+      for each (a in arguments) {
+        supplied.push(a);
       }
+      parent = supplied.reduce(
+        (function(p, v) p || v.__parent__), null);
+                
+      Object.keys(parent).
+      filter(function(k) supplied.indexOf(parent[k]) >= 0).
+      forEach(function(k) {    
+        exports[k] = parent[k];
+      });        
+    }
+  }
+);
+
+Object.defineProperty(
+  exports,
+  "addAll", 
+  {
+    value : function(from) {
+      for (k in from) exports[k] = from[k];
     }
   }
 );

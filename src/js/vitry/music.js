@@ -8,11 +8,9 @@
  * @author Hans Höglund
  * @date 2010
  */
-exports.all = [
-//  Music
-//  , Notation
-] 
+exports.addAll({ Foo : Foo });
 
+var Foo = function(){}
 /*
 
 var Music           = Type();

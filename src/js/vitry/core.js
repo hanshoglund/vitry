@@ -7,12 +7,13 @@
  * @author Hans Höglund
  * @date 2010
  */
-exports.all = [ Type, Integer, Ratio, version, versionString, main ];
+exports.add ( Type, Natural, Integer, Ratio, 
+              version, versionString, main );
 
 /*
  * Meta-information.
  */
-var meta = {
+var about = {
   name    : "Vitry",
   url     : "http://github.com/hanshoglund/Vitry",
   version : [0, 0, 2]
@@ -123,7 +124,7 @@ Object.prototype.preventChanges = function(properties) {
 // Type checks
 
 Object.isObject = function(val) {
-  return (typeof val === "valect") || (typeof val === "function");
+  return (typeof val === "object") || (typeof val === "function");
 }
 
 Function.isFunction = function(val) {
@@ -144,7 +145,7 @@ String.isString = function(val) {
 
 Object.check = function(val) {
   if (!Object.isObject(val)) {
-    throw TypeError("Type of " + val + " is not valect");
+    throw TypeError("Type of " + val + " is not object");
   }
 }
 
@@ -297,12 +298,12 @@ function main(args) {
     load.apply(null, args);
 
   } else {
-    print(meta.name + ", version " + versionString());
-    print("See " + meta.url)
+    print(about.name + ", version " + versionString());
+    print("See " + about.url)
     print("Starting JavaScript interpreter...");
           
     load("~/.vitry.js");
-    repl(meta.name + "> ");
+    repl(about.name + "> ");
   }
 }
 
@@ -318,21 +319,21 @@ var visible = {
 };
 
 function version() {
-  return meta.version;
+  return about.version;
 }
 
 function versionString() {
   return version().join(".");
 }
 
-function show(valect) {
-  for (k in (valect || visible)) print("  " + k);
+function show(object) {
+  for (k in (object || visible)) print("  " + k);
 }
 
 function help() {
-  print("  show([val])  Displays all properties of the given valect.");
+  print("  show([val])  Displays all properties of the given object.");
   print("               If none is given, displays all top-level functions.");
-  print("  help([val])  Displays help text about the given valect.");
+  print("  help([val])  Displays help text about the given object.");
   print("               If none is given, displays this text.");
   print("  load()       Loads and interprets a file (as if it had been entered.");
   print("               in the console).");
@@ -341,7 +342,7 @@ function help() {
 }      
 
 function quit() {
-  print("Leaving " + meta.name + "...")
+  print("Leaving " + about.name + "...")
   Packages.java.lang.System.exit(0);
 }     
 
