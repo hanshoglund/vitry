@@ -48,7 +48,7 @@ ABSOLUTELY NO WARRANTY IMPLIED.
             <arg value="${src.js}/vitry/music.js"/>
             <arg value="${src.js}/vitry/readers.js"/>
             <arg value="${src.js}/vitry/writers.js"/>
-            <arg value="${src.js}/vitry/__header.js"/>
+            <arg value="${src.js}/vitry/header.js"/>
 		</java>
 
 
