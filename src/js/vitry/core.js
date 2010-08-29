@@ -12,11 +12,11 @@ exports.all = [ Type, Integer, Ratio, version, versionString, main ];
 /*
  * Meta-information.
  */
-var meta = Object.freeze({
+var meta = {
   name    : "Vitry",
   url     : "http://github.com/hanshoglund/Vitry",
   version : [0, 0, 2]
-});
+};
 
 /*
  * Canonical require function (used to load the rest of the environment).
@@ -178,6 +178,8 @@ String.check = function(val) {
   }
 }
 
+// Encapsulation
+
 Object.defineProperties(Object, {
   extend : { enumerable : false },
   clone : { enumerable : false },
@@ -225,14 +227,66 @@ function Type() {
 }
 
 
-function Integer (value) {
-  // TODO
+function Natural(value) {
+  // XXX ?
+  var obj = (this instanceof Natural ? 
+    this : 
+    Object.create(Natural.prototype));
+  return obj;
 }
 
+Natural.prototype = {
+  
+  add : function(n) {
+    return Natural(this.valueOf + n);
+  },
+  
+  subtract : function() {
+    return Natural(this.valueOf - n);    
+  },
+  
+  multiply : function() {
+    return Natural(this.valueOf * n);    
+  },
+  
+  divide : function() {
+    return Natural(this.valueOf / n);    
+  },
+  
+  modulo : function() {
+    return Natural(this.valueOf % n);    
+  },
+  
+  succ : function() {
+    return this.valueOf + 1;    
+  },
+  
+  op : function(op, n) {
+    switch (op) {
+      case("+"): return this.add(n);
+      case("-"): return this.subtract(n);
+      case("*"): return this.multiply(n);
+      case("/"): return this.divide(n);
+      case("%"): return this.modulo(n);
+    }
+  }
+};
 
-function Ratio (nom, denom) {
+
+function Integer(value) {
+ 
+  
+  
+}
+Integer.prototype = Object.extend(new Natural(), {
+});
+
+
+function Ratio(nom, denom) {
   // TODO
 }
+Ratio.prototype = Object.extend(new Integer(), {
+});
 
 
 //======================================================================
