@@ -48,7 +48,7 @@ var require = JAVA.coreRequire(
   }
 );
 
-var repl = require("vitry/repl");
+//var repl = require("vitry/repl");
 
 // ======================================================================
 
@@ -93,9 +93,11 @@ function main(args) {
     print("See http://github.com/hanshoglund/Vitry")
     print("Starting JavaScript interpreter...");
 
-    repl.repl("Vitry> ");
+    repl("Vitry> ");
   }
 }
+
+//Visible
 
 function version() {
   return versionArray;
@@ -105,3 +107,47 @@ function versionString() {
   return version().join(".");
 }
 
+function help() {
+  print();
+  print("   show()     Displays all objects and functions in the current scope");
+  print();
+}
+
+function quit() {
+  print("Bye!")
+  Packages.java.lang.System.exit(0);
+}
+
+function repl(prompt) {
+
+  var consoleReader = new Packages.jline.ConsoleReader();
+  var line;
+  var res;
+
+  var scope = {
+    show:show,
+    help:help,
+    quit:quit,
+    version:version,
+    versionString:versionString
+  };
+
+  function show(object) {
+    Object.keys(object || scope)
+      .forEach(function(k) print(k));
+  }
+
+  // TODO auto completion
+
+  print();
+
+  while (true) {
+    line = consoleReader.readLine(prompt);
+    try {
+      res = eval("" + line, scope);
+      res === undefined || print(res);
+    } catch (e) {
+      print(e.constructor.name + ": " + e.message);
+    }
+  }
+}
