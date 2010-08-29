@@ -8,10 +8,6 @@
  * @author Hans Höglund
  * @date 2010
  */
-exports.addAll({ Foo : Foo });
-
-var Foo = function(){}
-/*
 
 var Music           = Type();
 
@@ -40,4 +36,6 @@ var Key             = Type();
 var Time            = Type();
 var Tonality        = Type();
 
-*/
+
+
+exports.add( );

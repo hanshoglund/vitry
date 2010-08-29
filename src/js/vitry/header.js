@@ -7,29 +7,31 @@
 //FIXME still only works for core
 Object.defineProperty(
   exports,
-  "add", 
+  "add",
   {
-    value : function() { 
+    value : function() {
       var parent;
-      var supplied = [];      
+      var supplied = [];
       for each (a in arguments) {
         supplied.push(a);
       }
       parent = supplied.reduce(
         (function(p, v) p || v.__parent__), null);
-                
-      Object.keys(parent).
-      filter(function(k) supplied.indexOf(parent[k]) >= 0).
-      forEach(function(k) {    
-        exports[k] = parent[k];
-      });        
+
+      if (parent) {
+        Object.keys(parent).
+        filter(function(k) supplied.indexOf(parent[k]) >= 0).
+        forEach(function(k) {
+          exports[k] = parent[k];
+        });
+      }
     }
   }
 );
 
 Object.defineProperty(
   exports,
-  "addAll", 
+  "addAll",
   {
     value : function(from) {
       for (k in from) exports[k] = from[k];
