@@ -21,7 +21,11 @@ exports.addAll = {
   Notation : Notation,
   Notation : Notation,
   Notation : Notation,
-};
+};        
+
+var core = require("vitry/core");
+var Type = core.Type;
+
 
 var Music           = Type();
 

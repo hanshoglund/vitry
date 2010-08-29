@@ -9,18 +9,32 @@
  * @date 2010
  */
 exports.addAll = {
- repl : repl
+ repl : repl,
 };
 
+// Visible functions    
 
+function help() {
+  
+}
+
+function quit() {           
+  print("Bye!")
+  java.lang.System.exit(0);
+}
+
+
+// ----------------------------------------------------------------------
+       
 function repl(prompt) {
-  var consoleReader;
+  var consoleReader = new Packages.jline.ConsoleReader();
   var line;
   var res;
 
-  consoleReader = new Packages.jline.ConsoleReader();
-
-  // TODO auto completion
+  // TODO auto completion    
+  
+  print("Try help(), show() or quit() if you get stuck");
+  print();
 
   while (true) {
     line = consoleReader.readLine(prompt);
@@ -31,9 +45,9 @@ function repl(prompt) {
       print(e.constructor.name + ": " + e.message);
     }
   }
-}
+}   
 
-var avoid = [ "exports", "module", "require", "show", "repl", "avoid" ];
+var avoid = [ "exports", "module", "require", "repl", "avoid", "show" ];
 
 function show(object) {
   Object.keys(object || this)

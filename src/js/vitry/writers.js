@@ -12,6 +12,10 @@
 exports.addAll = {
 };
 
+var core = require("vitry/core");
+var Type = core.Type;
+
+
 var SibeliusWriter  = Type();
 var LilyPondWriter  = Type();
 var MusicXMLWriter  = Type();

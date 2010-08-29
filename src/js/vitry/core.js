@@ -14,10 +14,9 @@ exports.addAll = {
   Ratio   : Ratio,
 
   main    : main
-};
+};           
 
 var repl = require("vitry/repl");
-
 
 
 // Core values
@@ -50,8 +49,6 @@ var require = JAVA.coreRequire(
     quit          : undefined,
     version       : undefined
   });
-
-
 
 
 
@@ -90,8 +87,7 @@ function main(args) {
     print("Vitry, version " + versionString());
     print("See http://github.com/hanshoglund/Vitry")
     print("Starting JavaScript interpreter...");
-    print();
-
+              
     repl.repl("Vitry> ");
   }
 }

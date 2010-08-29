@@ -12,6 +12,10 @@
 exports.addAll = {
 };
 
+var core = require("vitry/core");
+var Type = core.Type;
+
+
 var SibeliusReader  = Type();
 var MusicXMLReader  = Type();
 var MIDIReader      = Type();

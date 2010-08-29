@@ -1,7 +1,7 @@
 ##Vitry
 **Pre-alpha**
 
-A music composition environment for notated music. See the [Vitry wiki](http://wiki.github.com/hanshoglund/Vitry/) for details.                   
+A music composition environment for notated music. See the [wiki](http://wiki.github.com/hanshoglund/Vitry/) for details.                   
 
 
 ### Requirements
