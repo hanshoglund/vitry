@@ -8,7 +8,7 @@
  * @author Hans Höglund
  * @date 2010
  */
-exports.addAll = {
+exports.all = {
   Music    : Music,
   Notation : Notation,
   Notation : Notation,

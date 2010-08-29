@@ -6,7 +6,7 @@
 
 Object.defineProperty(
   exports,
-  "addAll", {
+  "all", {
     set : function (from) {
       if (Array.isArray(from)) {
         // TODO

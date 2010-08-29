@@ -9,7 +9,7 @@
  * @author Hans Höglund
  * @date 2010
  */
-exports.addAll = {
+exports.all = {
 };
 
 var core = require("vitry/core");

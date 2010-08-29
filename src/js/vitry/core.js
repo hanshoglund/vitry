@@ -7,13 +7,13 @@
  * @author Hans Höglund
  * @date 2010
  */
-exports.addAll = {
-  Type    : Type,
-  Integer : Integer,
-  Ratio   : Ratio,
-  version : version,
+exports.all = {
+  Type          : Type,
+  Integer       : Integer,
+  Ratio         : Ratio,
+  version       : version,
   versionString : versionString,
-  main    : main
+  main          : main
 };
 
 var require = JAVA.coreRequire(
