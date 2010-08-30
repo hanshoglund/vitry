@@ -11,7 +11,7 @@
 var about = {
   name    : "Vitry",
   url     : "http://github.com/hanshoglund/Vitry",
-  version : [0, 0, 3]
+  version : [0, 0, 4]
 }
 
 //======================================================================
@@ -66,7 +66,6 @@ Object.entries = function(obj) {
   return [{ key: k, value : obj[k] } for (k in obj)];
 }
 
-
 /**
  * Updates writable status for the specified properties.
  *
@@ -113,7 +112,6 @@ Object.preventChanges = function(obj, prop) {
   Object.defineAllProperties(obj, prop, { configurable : false });
 }
 
-
 /**
  * Redefine properties for the given object using the specified descriptor
  *
@@ -137,6 +135,14 @@ Object.defineAllProperties = function (obj, prop, descr) {
     Object.defineProperty(obj, prop, descr);
   }
 }
+
+Object.fromEntries = function(entries, prototype) {
+  var obj = ( prototype ? Object.create(prototype) : {} );
+  entries.forEach(function({ key:k, value:v }) {
+    obj[k] = v;
+  });          
+  return obj;
+}
      
 /**
  * Converts an object containing functions to an object with 
@@ -147,12 +153,30 @@ Object.defineAllProperties = function (obj, prop, descr) {
  *   construcor to create the new object (optional)
  */
 Object.fromGetters = function(accessors, prototype) {
-  var obj = (prototype ? Object.create(prototype) : {} );
+  var obj = ( prototype ? Object.create(prototype) : {} );
   for (k in accessors) {
     Object.defineProperty(obj, k, { get : accessors[k] });
   }      
   return obj;
 }
+   
+Object.map = function(obj, f, thisValue) {
+  return Object.fromEntries(obj.entries().map(f, thisValue));
+}
+
+Object.reduce = function(obj, f, init) {
+  return Object.fromEntries(obj.entries().reduce(f, init));
+}
+
+
+Object.mapKeys = function(obj, f, thisValue) {
+  // TODO
+}
+              
+Object.mapValues = function(obj, f, thisValue) {
+  // TODO
+}
+
 
 
 // Function
@@ -190,7 +214,6 @@ Function.flip = function() {
 }
 
 
-
 Function.and = function() {
   // TODO
 }
@@ -218,6 +241,7 @@ Function.greaterThan = function() {
 Function.lessThan = function() {
   // TODO
 }
+
 
 Function.some = function() {
   // TODO
@@ -262,13 +286,11 @@ Function.bindPrototype = function(constructor, name) {
   var prototypeFunction;
 
   if (Function.check(constructor) && Function.check(constructorFunction)) {
-
     prototypeFunction = (function() {
       var newArgs = [this];
       Array.prototype.push.apply(newArgs, arguments);
       return constructorFunction.apply(null, newArgs);
     });
-
     // TODO use setter to read original length (in case it is changed)
 //    prototypeFunction.length = Math.max(0, constructorFunction.length - 1);
     constructor.prototype[name] = prototypeFunction;
@@ -287,13 +309,11 @@ Function.bindConstructor = function(constructor, name) {
     var constructorFunction;
 
     if (Function.check(prototypeFunction)) {
-
       constructorFunction = (function() {
         var given = [];
         Array.prototype.push.apply(given, arguments);
         return prototypeFunction.apply(given.shift(), given);
       });
-
       // TODO use setter to read original length (in case it is changed)
 //      constructorFunction.length = prototypeFunction.length + 1;
       constructor[name] = constructorFunction;
@@ -302,9 +322,14 @@ Function.bindConstructor = function(constructor, name) {
 }
 
 
+
 // Array
 
 // TODO Naive implementations. Replace with more efficient variants as needed.
+
+Array.prototype.clone = function() {
+  return [v for each (v in this)];
+}
 
 /**
  * Returns the union of the given objects.
@@ -336,12 +361,6 @@ Array.intersection = function(first, second) {
   return intersection;
 }
 
-
-
-Array.prototype.clone = function() {
-  return [v for (v in this)];
-}
-
 Array.prototype.removeLast = function(){
   return Array.prototype.pop.apply(this.clone(), arguments);
 }
@@ -358,11 +377,6 @@ Array.prototype.addBefore = function(){
   return Array.prototype.unshift.apply(this.clone(), arguments);
 }
 
-// XXX Any need to replace slice (compare slice/splice)?
-// Array.prototype.section = function(){
-//   Array.prototype.splice.apply(this.clone(), arguments);
-// }
-
 Array.prototype.reversed = function(){
   return Array.prototype.reverse.apply(this.clone(), arguments);
 }
@@ -371,8 +385,6 @@ Array.prototype.sorted = function(){
   return Array.prototype.sort.apply(this.clone(), arguments);
 }
 
-
-//Array.prototype.union
 
 
 // Type checks
@@ -397,85 +409,83 @@ String.isString = function(val) {
   return (typeof val === "string");
 }
 
+
 Object.check = function(val) {
-  if (!Object.isObject(val)) {
+  if (!Object.isObject(val))
     throw TypeError("Type of " + val + " is not object");
-  }
   return true;
 }
 
 Array.check = function(val) {
-  if (!Array.isArray(val)) {
+  if (!Array.isArray(val))
     throw TypeError("Type of " + val + " is not array");
-  }
   return true;
 }
 
 Function.check = function(val) {
-  if (!Function.isFunction(val)) {
+  if (!Function.isFunction(val))
     throw TypeError("Type of " + val + " is not function");
-  }
   return true;
 }
 
 Boolean.check = function(val) {
-  if (!Boolean.isBoolean(val)) {
+  if (!Boolean.isBoolean(val))
     throw TypeError("Type of " + val + " is not boolean");
-  }
   return true;
 }
 
 Number.check = function(val) {
-  if (!Number.isNumber(val)) {
+  if (!Number.isNumber(val))
     throw TypeError("Type of " + val + " is not number");
-  }
   return true;
 }
 
 String.check = function(val) {
-  if (!String.isString(val)) {
+  if (!String.isString(val))
     throw TypeError("Type of " + val + " is not string");
-  }
   return true;
-}
+} 
+
+
 
 // Double-binding
 
-Function.bindPrototype(Object, "extend");
-Function.bindPrototype(Object, "clone");
-Function.bindPrototype(Object, "keys");
-Function.bindPrototype(Object, "values");
+Function.bindPrototype( Object,   "extend"                   );
+Function.bindPrototype( Object,   "clone"                    );
+Function.bindPrototype( Object,   "keys"                     );
+Function.bindPrototype( Object,   "values"                   );
+Function.bindPrototype( Object,   "entries"                  );
+Function.bindPrototype( Object,   "defineProperty"           );
+Function.bindPrototype( Object,   "getOwnPropertyDescriptor" );
+Function.bindPrototype( Object,   "getOwnPropertyNames"      );
 
-// XXX Will binding in these pollute Object.property to much?
-// Function.bindPrototype(Object, "writable");
-// Function.bindPrototype(Object, "enumerable");
-// Function.bindPrototype(Object, "preventChanges");
-// Function.bindPrototype(Object, "seal");
-// Function.bindPrototype(Object, "freeze");
-// Function.bindPrototype(Object, "preventExtensions");    
-
-Function.bindPrototype(Object, "defineProperty");
-Function.bindPrototype(Object, "getOwnPropertyDescriptor");
-Function.bindPrototype(Object, "getOwnPropertyNames");
-
-Function.bindPrototype(Function, "curry");
-Function.bindPrototype(Function, "uncurry");
-Function.bindPrototype(Function, "sequence");
-Function.bindPrototype(Function, "and");
-Function.bindPrototype(Function, "or");
-Function.bindPrototype(Function, "not");
-Function.bindPrototype(Function, "equalTo");
-Function.bindPrototype(Function, "strictlyEqualTo");
-Function.bindPrototype(Function, "greaterThan");
-Function.bindPrototype(Function, "lessThan");
-Function.bindPrototype(Function, "some");
-Function.bindPrototype(Function, "all");
-Function.bindPrototype(Function, "memberOf");
-Function.bindPrototype(Function, "empty");
-Function.bindPrototype(Function, "isNull");
-Function.bindPrototype(Function, "isUndefined");
-Function.bindPrototype(Function, "isNotNull");
-Function.bindPrototype(Function, "isDefined");
+Function.bindPrototype( Object,   "map"                      );
+Function.bindPrototype( Object,   "reduce"                   );
+Function.bindPrototype( Object,   "mapKeys"                  );
+Function.bindPrototype( Object,   "mapValues"                 );
+                                                             
+Function.bindPrototype( Array,    "union"                    );
+Function.bindPrototype( Array,    "intersection"             );
+                                                             
+                                                             
+Function.bindPrototype( Function, "curry"                    );
+Function.bindPrototype( Function, "uncurry"                  );
+Function.bindPrototype( Function, "sequence"                 );
+Function.bindPrototype( Function, "and"                      );
+Function.bindPrototype( Function, "or"                       );
+Function.bindPrototype( Function, "not"                      );
+Function.bindPrototype( Function, "equalTo"                  );
+Function.bindPrototype( Function, "strictlyEqualTo"          );
+Function.bindPrototype( Function, "greaterThan"              );
+Function.bindPrototype( Function, "lessThan"                 );
+Function.bindPrototype( Function, "some"                     );
+Function.bindPrototype( Function, "all"                      );
+Function.bindPrototype( Function, "memberOf"                 );
+Function.bindPrototype( Function, "empty"                    );
+Function.bindPrototype( Function, "isNull"                   );
+Function.bindPrototype( Function, "isUndefined"              );
+Function.bindPrototype( Function, "isNotNull"                );
+Function.bindPrototype( Function, "isDefined"                );
 
 
 
@@ -491,6 +501,11 @@ Object.enumerable(Object, [
   "preventChanges",
   "defineAllProperties",
   "fromGetters",
+  "fromEntries",
+  "map",
+  "reduce",
+  "mapKeys",
+  "mapValues",
   "isObject",
   "check"
 ], false);
@@ -500,9 +515,14 @@ Object.enumerable(Object.prototype, [
   "clone",
   "keys",
   "values",
+  "entries",
   "defineProperty",
   "getOwnPropertyDescriptor",
-  "getOwnPropertyNames"
+  "getOwnPropertyNames",
+  "map",
+  "reduce",
+  "mapKeys",
+  "mapValues"
 ], false);
 
 Object.enumerable(Function.prototype, [
@@ -574,6 +594,7 @@ Object.enumerable(Array, [
 ], false);
 
 
+
 //======================================================================
 // New types
 
@@ -641,19 +662,19 @@ Ratio.prototype = Object.extend(new Integer(), {
 //======================================================================
 // Module system
 
+var vitry = Object.fromGetters(
+  { 
+    core    : "vitry/core",
+    music   : "vitry/music",
+    readers : "vitry/readers",
+    writers : "vitry/writers"
+  }.mapValues(function(v) (function() require(v)))
+);
+
 /**
  * Global require function (set below).
  */
-var require;
-
-var vitry = Object.fromGetters({
-  core    : function() require( "vitry/core"    ),
-  music   : function() require( "vitry/music"   ),
-  readers : function() require( "vitry/readers" ),
-  writers : function() require( "vitry/writers" )
-});  
-
-require = Packages.vitry.java.core.getSimpleRequire({
+var require = Packages.vitry.java.core.getSimpleRequire({
   java          : undefined,
   environment   : undefined,
   history       : undefined,
@@ -675,7 +696,6 @@ require = Packages.vitry.java.core.getSimpleRequire({
   sync          : undefined,
   quit          : undefined,
   version       : undefined,
-
   vitry         : vitry,
   print         : print
 });  
