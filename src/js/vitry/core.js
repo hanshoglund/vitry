@@ -7,13 +7,20 @@
  * @author Hans Höglund
  * @date 2010
  */
-
 var about = {
   name    : "Vitry",
   url     : "http://github.com/hanshoglund/Vitry",
   version : [0, 0, 2]
 };
 
+/**
+ * Reference to java peer.
+ */
+var java = Packages.vitry.java.core;
+
+/**
+ * Global require function (set below so).
+ */
 var require;
 
 /*
@@ -25,8 +32,6 @@ var vitry = Object.create(Object.prototype, {
   readers : { get : function() require( "vitry/readers" ) },
   writers : { get : function() require( "vitry/writers" ) }
 });
-
-var java = Packages.vitry.java.core;
 
 require = java.getSimpleRequire({
   java          : undefined,
