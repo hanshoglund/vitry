@@ -446,15 +446,15 @@ var outStream = java.getOut();
 var errStream = java.getErr();
 
 function print(val) {
-  if (val === undefined && arguments.length === 0) {
+  if (val === undefined && arguments.length === 0)
     return print("");
-  }
-  if (Function.isFunction(val)) {
-    return print(val.toString())
-  }
-  if (Object.isObject(val)) {
+
+  if (Function.isFunction(val))
+    return print(val.toString());
+
+  if (Object.isObject(val))
     return print(JSON.stringify(val));
-  }
+
   outStream.println("" + val);
 }
 
@@ -489,21 +489,21 @@ function quit() {
 function load(fileName) {
   if (arguments.length > 1) {
     for each (v in arguments) load(v);
-    return null;
-  }
-  if (fileName) {
-    var file = fileName;
-    file = file.replace("~", environment["user.home"]);
-    try {
-      eval(readFile(file));
-    } catch (e if e instanceof JavaException) {
-      return null;
+
+  } else {
+    if (fileName) {
+      var file = fileName;
+      file = file.replace("~", environment["user.home"]);
+      try {
+        eval(readFile(file));
+      } catch (e if e instanceof JavaException) {
+        return null;
+      }
     }
   }
 }
 
 function repl(prompt) {
-
   var consoleReader = new Packages.jline.ConsoleReader();
   var line;
   var res;
