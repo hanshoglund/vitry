@@ -11,7 +11,7 @@
 var about = {
   name    : "Vitry",
   url     : "http://github.com/hanshoglund/Vitry",
-  version : [0, 0, 2]
+  version : [0, 0, 3]
 };
 
 /**
