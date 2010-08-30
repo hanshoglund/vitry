@@ -12,12 +12,7 @@ var about = {
   name    : "Vitry",
   url     : "http://github.com/hanshoglund/Vitry",
   version : [0, 0, 3]
-};
-
-/**
- * Reference to java peer.
- */
-var java = Packages.vitry.java.core;
+}
 
 /**
  * Global require function (set below so).
@@ -34,7 +29,7 @@ var vitry = Object.create(Object.prototype, {
   writers : { get : function() require( "vitry/writers" ) }
 });
 
-require = java.getSimpleRequire({
+require = Packages.vitry.java.core.getSimpleRequire({
   java          : undefined,
   environment   : undefined,
   history       : undefined,
@@ -67,17 +62,51 @@ require = java.getSimpleRequire({
 
 // Object
 
+/**
+ * Copies all enumerable properties of a given object to another.
+ * (This function behaves exactly as in Prototype).
+ *
+ * @param to
+ *  Object to receive properties
+ * @param from
+ *  Object to enumerate for properties
+ */
 Object.extend = function(to, from) {
   for (k in from) to[k] = from[k];
   return to;
 }
 
+/**
+ * Returns a shallow copy of the given object.
+ * (This function behaves exactly as in Prototype).
+ *
+ * @param obj
+ *  Object to copy
+ */
 Object.clone = function(obj) {
   return Object.extend({}, obj);
 }
 
-Object.values = function(val) {
-  return [v for each (v in val)];
+/**
+ * Return the values of all enumerable properties in this object.
+ * (This function behaves exactly as in Prototype).
+ *
+ * @param obj
+ *  Object to enumerate for properties
+ */
+Object.values = function(obj) {
+  return [v for each (v in obj)];
+}
+
+/**
+ * Returns an array of [key, value] pairs for all enumerable properties
+ * in this object.
+ *
+ * @param obj
+ *  Object to enumerate for properties
+ */
+Object.entries = function(obj) {
+  return [[k, obj[k]] for (k in obj)];
 }
 
 
@@ -152,6 +181,9 @@ Object.preventChanges = function(obj, prop) {
 }
 
 
+
+
+
 // Function
 
 Function.constant = function(val) {
@@ -162,20 +194,20 @@ Function.identity = function() {
   return (function(val) val);
 }
 
-Function.curry = function() {
+Function.curry = function(f) {
   // TODO
 }
 
-Function.uncurry = function() {
+Function.uncurry = function(f) {
   // TODO
 }
 
-Function.compose = function() {
-  // TODO
+Function.compose = function(f, g) {
+  // TODO any number of fns
 }
 
-Function.sequence = function() {
-  // TODO
+Function.sequence = function(f, g) {
+  // TODO any number of fns
 }
 
 Function.power = function() {
@@ -244,26 +276,133 @@ Function.isNotNull = function() {
   // TODO
 }
 
-Function.isNotUndefined = function() {
+Function.isDefined = function() {
   // TODO
 }
 
 
 /**
- * Binds an function owned by a construcor to its prototype.
- * @param ct
+ * Binds an function owned by a constructor to its prototype.
+ * @param constructor
  * @param name
  */
-Function.bindPrototype = function(ct, name) {
-  var fn = ct[name];
-  if (Function.check(ct) && Function.check(fn)) {
-    ct.prototype[name] = (function() {
-      var args = [this];
-      Array.prototype.push.apply(args, arguments);
-      return fn.apply(null, args);
+Function.bindPrototype = function(constructor, name) {
+  var constructorFunction = constructor[name];
+  var prototypeFunction;
+
+  if (Function.check(constructor) && Function.check(constructorFunction)) {
+
+    prototypeFunction = (function() {
+      var newArgs = [this];
+      Array.prototype.push.apply(newArgs, arguments);
+      return constructorFunction.apply(null, newArgs);
     });
+
+    // TODO use setter to read original length (in case it is changed)
+//    prototypeFunction.length = Math.max(0, constructorFunction.length - 1);
+    constructor.prototype[name] = prototypeFunction;
   }
 }
+
+/**
+ * Binds an function owned by a prototype to its constructor.
+ * @param constructor
+ * @param name
+ */
+Function.bindConstructor = function(constructor, name) {
+  if (Function.check(constructor)) {
+
+    var prototypeFunction = constructor.prototype[name];
+    var constructorFunction;
+
+    if (Function.check(prototypeFunction)) {
+
+      constructorFunction = (function() {
+        var given = [];
+        Array.prototype.push.apply(given, arguments);
+        return prototypeFunction.apply(given.shift(), given);
+      });
+
+      // TODO use setter to read original length (in case it is changed)
+//      constructorFunction.length = prototypeFunction.length + 1;
+      constructor[name] = constructorFunction;
+    }
+  }
+}
+
+
+// Array
+
+// TODO Naive implementations. Replace with more efficient variants as needed.
+
+/**
+ * Returns the union of the given objects.
+ *
+ * This function will retain duplicates in the first objects but not the second.
+ */
+Array.union = function(first, second) {
+  var union = first.clone();
+  for each (v in second) {
+    if (first.indexOf(v) < 0) {
+      union.push(v);
+    }
+  }
+  return union;
+}
+
+/**
+ * Returns the intersection of the given objects.
+ *
+ * This function will retain duplicates in the first objects but not the second.
+ */
+Array.intersection = function(first, second) {
+  var intersection = [];
+  for each (v in first) {
+    if (second.indexOf(v) >= 0) {
+      intersection.push(v);
+    }
+  }
+  return intersection;
+}
+
+//Array.
+
+
+Array.prototype.clone = function() {
+  return [v for (v in this)];
+}
+
+Array.prototype.removeLast = function(){
+  return Array.prototype.pop.apply(this.clone(), arguments);
+}
+
+Array.prototype.add = function(){
+  return Array.prototype.push.apply(this.clone(), arguments);
+}
+
+Array.prototype.removeFirst = function(){
+  return Array.prototype.shift.apply(this.clone(), arguments);
+}
+
+Array.prototype.addBefore = function(){
+  return Array.prototype.unshift.apply(this.clone(), arguments);
+}
+
+// XXX Any need to replace slice (compare slice/splice)?
+//Array.prototype.section = function(){
+//  Array.prototype.splice.apply(this.clone(), arguments);
+//}
+
+Array.prototype.reversed = function(){
+  return Array.prototype.reverse.apply(this.clone(), arguments);
+}
+
+Array.prototype.sorted = function(){
+  return Array.prototype.sort.apply(this.clone(), arguments);
+}
+
+
+//Array.prototype.union
 
 
 // Type checks
@@ -329,6 +468,46 @@ String.check = function(val) {
   }
   return true;
 }
+
+// Double-binding
+
+Function.bindPrototype(Object, "extend");
+Function.bindPrototype(Object, "clone");
+Function.bindPrototype(Object, "keys");
+Function.bindPrototype(Object, "values");
+
+// XXX Will binding in these pollute Object.property to much?
+//Function.bindPrototype(Object, "writable");
+//Function.bindPrototype(Object, "enumerable");
+//Function.bindPrototype(Object, "preventChanges");
+//Function.bindPrototype(Object, "seal");
+//Function.bindPrototype(Object, "freeze");
+//Function.bindPrototype(Object, "preventExtensions");
+
+Function.bindPrototype(Object, "defineProperty");
+Function.bindPrototype(Object, "getOwnPropertyDescriptor");
+Function.bindPrototype(Object, "getOwnPropertyNames");
+
+Function.bindPrototype(Function, "curry");
+Function.bindPrototype(Function, "uncurry");
+Function.bindPrototype(Function, "sequence");
+Function.bindPrototype(Function, "and");
+Function.bindPrototype(Function, "or");
+Function.bindPrototype(Function, "not");
+Function.bindPrototype(Function, "equalTo");
+Function.bindPrototype(Function, "strictlyEqualTo");
+Function.bindPrototype(Function, "greaterThan");
+Function.bindPrototype(Function, "lessThan");
+Function.bindPrototype(Function, "some");
+Function.bindPrototype(Function, "all");
+Function.bindPrototype(Function, "memberOf");
+Function.bindPrototype(Function, "empty");
+Function.bindPrototype(Function, "isNull");
+Function.bindPrototype(Function, "isUndefined");
+Function.bindPrototype(Function, "isNotNull");
+Function.bindPrototype(Function, "isDefined");
+
+
 
 // Encapsulate extensions
 
@@ -441,9 +620,9 @@ var visible = {
   quit:quit
 };
 
-var inStream = java.getIn();
-var outStream = java.getOut();
-var errStream = java.getErr();
+var inStream = Packages.vitry.java.core.getIn();
+var outStream = Packages.vitry.java.core.getOut();
+var errStream = Packages.vitry.java.core.getErr();
 
 function print(val) {
   if (val === undefined && arguments.length === 0)
