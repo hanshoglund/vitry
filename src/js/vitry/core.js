@@ -428,20 +428,6 @@ Ratio.prototype = Object.extend(new Integer(), {
 //======================================================================
 // Interpreter
 
-function main(args) {
-  if (args.length > 0) {
-    load.apply(null, args);
-
-  } else {
-    print(about.name + ", version " + versionString());
-    print("See " + about.url)
-    print("Starting JavaScript interpreter...");
-
-    load("~/.vitry.js");
-    repl(about.name + "> ");
-  }
-}
-
 var visible = {
   require:require,
   vitry:vitry,
@@ -532,6 +518,20 @@ function repl(prompt) {
     } catch (e) {
       print(e.constructor.name + ": " + e.message);
     }
+  }
+}
+
+function main(args) {
+  if (args.length > 0) {
+    load.apply(null, args);
+
+  } else {
+    print(about.name + ", version " + versionString());
+    print("See " + about.url)
+    print("Starting JavaScript interpreter...");
+
+    load("~/.vitry.js");
+    repl(about.name + "> ");
   }
 }
 
