@@ -14,49 +14,6 @@ var about = {
   version : [0, 0, 3]
 }
 
-/**
- * Global require function (set below so).
- */
-var require;
-
-/*
- * Shortcut to the vitry modules
- */
-var vitry = Object.create(Object.prototype, {
-  core    : { get : function() require( "vitry/core"    ) },
-  music   : { get : function() require( "vitry/music"   ) },
-  readers : { get : function() require( "vitry/readers" ) },
-  writers : { get : function() require( "vitry/writers" ) }
-});
-
-require = Packages.vitry.java.core.getSimpleRequire({
-  java          : undefined,
-  environment   : undefined,
-  history       : undefined,
-  importPackage : undefined,
-  importClass   : undefined,
-  help          : undefined,
-  defineClass   : undefined,
-  deserialize   : undefined,
-  gc            : undefined,
-  load          : undefined,
-  loadClass     : undefined,
-  print         : undefined,
-  readFile      : undefined,
-  readUrl       : undefined,
-  runCommand    : undefined,
-  seal          : undefined,
-  serialize     : undefined,
-  spawn         : undefined,
-  sync          : undefined,
-  quit          : undefined,
-  version       : undefined,
-
-  vitry         : vitry,
-  print         : print
-});
-
-
 //======================================================================
 // Standard objects
 
@@ -99,14 +56,14 @@ Object.values = function(obj) {
 }
 
 /**
- * Returns an array of [key, value] pairs for all enumerable properties
+ * Returns an array of {key: , value: } pairs for all enumerable properties
  * in this object.
  *
  * @param obj
  *  Object to enumerate for properties
  */
 Object.entries = function(obj) {
-  return [[k, obj[k]] for (k in obj)];
+  return [{ key: k, value : obj[k] } for (k in obj)];
 }
 
 
@@ -190,7 +147,7 @@ Object.defineAllProperties = function (obj, prop, descr) {
  *   construcor to create the new object (optional)
  */
 Object.fromGetters = function(accessors, prototype) {
-  var obj = Object.create(prototype);
+  var obj = (prototype ? Object.create(prototype) : {} );
   for (k in accessors) {
     Object.defineProperty(obj, k, { get : accessors[k] });
   }      
@@ -678,6 +635,50 @@ function Ratio(nom, denom) {
 Ratio.prototype = Object.extend(new Integer(), {
   // TODO
 });
+
+
+
+//======================================================================
+// Module system
+
+/**
+ * Global require function (set below).
+ */
+var require;
+
+var vitry = Object.fromGetters({
+  core    : function() require( "vitry/core"    ),
+  music   : function() require( "vitry/music"   ),
+  readers : function() require( "vitry/readers" ),
+  writers : function() require( "vitry/writers" )
+});  
+
+require = Packages.vitry.java.core.getSimpleRequire({
+  java          : undefined,
+  environment   : undefined,
+  history       : undefined,
+  importPackage : undefined,
+  importClass   : undefined,
+  help          : undefined,
+  defineClass   : undefined,
+  deserialize   : undefined,
+  gc            : undefined,
+  load          : undefined,
+  loadClass     : undefined,
+  print         : undefined,
+  readFile      : undefined,
+  readUrl       : undefined,
+  runCommand    : undefined,
+  seal          : undefined,
+  serialize     : undefined,
+  spawn         : undefined,
+  sync          : undefined,
+  quit          : undefined,
+  version       : undefined,
+
+  vitry         : vitry,
+  print         : print
+});  
 
 
 
