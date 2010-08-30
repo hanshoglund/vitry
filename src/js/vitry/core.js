@@ -1,6 +1,7 @@
 /*
  * Vitry, copyright (c) Hans Höglund 2010, see COPYING.txt for details
  */
+
 /**
  * Core environment.
  *
@@ -62,8 +63,7 @@ require = java.getSimpleRequire({
 
 
 //======================================================================
-// Language extensions
-
+// Standard objects
 
 // Object
 
@@ -330,7 +330,7 @@ String.check = function(val) {
   return true;
 }
 
-// Encapsulation
+// Encapsulate extensions
 
 Object.defineProperties(Object, {
   extend : { enumerable : false },
@@ -365,15 +365,10 @@ Object.defineProperties(String, {
 });
 
 //======================================================================
-// Data types
-
+// New types
 
 function Natural(value) {
-  // XXX ?
-//  var obj = (this instanceof Natural ?
-//    this :
-//    Object.create(Natural.prototype));
-//  return obj;
+  // TODO
 }
 
 Natural.prototype = {
@@ -415,18 +410,20 @@ Natural.prototype = {
 
 
 function Integer(value) {
-
-
-
+  // TODO
 }
+
 Integer.prototype = Object.extend(new Natural(), {
+  // TODO
 });
 
 
 function Ratio(nom, denom) {
   // TODO
 }
+
 Ratio.prototype = Object.extend(new Integer(), {
+  // TODO
 });
 
 
