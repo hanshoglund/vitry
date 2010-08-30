@@ -63,7 +63,7 @@ Object.values = function(obj) {
  *  Object to enumerate for properties
  */
 Object.entries = function(obj) {
-  return [{ key: k, value : obj[k] } for (k in obj)];
+  return [{ key:k, value:obj[k] } for (k in obj)];
 }
 
 /**
@@ -125,22 +125,18 @@ Object.preventChanges = function(obj, prop) {
  *  Status to set
  */
 Object.defineAllProperties = function (obj, prop, descr) {
-  if (Function.isFunction(prop)) {
-    Object.defineAllProperties(obj, Object.keys(obj).filter(prop), descr);
-    
-  } else if (Array.isArray(prop)) {
-    prop.forEach(function(prop) Object.defineAllProperties(obj, prop, descr));
-  
-  } else {
-    Object.defineProperty(obj, prop, descr);
-  }
+  if (Function.isFunction(prop))
+    Object.defineAllProperties( obj, Object.keys(obj).filter(prop), descr);
+  else if (Array.isArray(prop))
+    prop.forEach(function(p) Object.defineAllProperties( obj, p, descr ));
+  else
+    Object.defineProperty( obj, prop, descr );
 }
 
 Object.fromEntries = function(entries, prototype) {
   var obj = ( prototype ? Object.create(prototype) : {} );
-  entries.forEach(function({ key:k, value:v }) {
+  for each ({key:k,value:v} in entries)
     obj[k] = v;
-  });          
   return obj;
 }
      
@@ -158,7 +154,7 @@ Object.fromGetters = function(accessors, prototype) {
     Object.defineProperty(obj, k, { get : accessors[k] });
   }      
   return obj;
-}
+}                        
    
 Object.map = function(obj, f, thisValue) {
   return Object.fromEntries(obj.entries().map(f, thisValue));
@@ -168,13 +164,24 @@ Object.reduce = function(obj, f, init) {
   return Object.fromEntries(obj.entries().reduce(f, init));
 }
 
+Object.reduceRight = function(obj, f, init) {
+  return Object.fromEntries(obj.entries().reduceRight(f, init));
+}
 
 Object.mapKeys = function(obj, f, thisValue) {
-  // TODO
+  return obj.map(
+    function ({key : k, value : v}) {
+      return { key : f.call(thisValue, k), value : v };
+    }
+  );
 }
               
 Object.mapValues = function(obj, f, thisValue) {
-  // TODO
+  return obj.map(
+    function ({key : k, value : v}) {
+      return { key : k, value : f.call(thisValue, v) };
+    }
+  );
 }
 
 
@@ -504,6 +511,7 @@ Object.enumerable(Object, [
   "fromEntries",
   "map",
   "reduce",
+  "reduceRight",
   "mapKeys",
   "mapValues",
   "isObject",
@@ -577,6 +585,8 @@ Object.enumerable(Function, [
 ], false);
 
 Object.enumerable(Array.prototype, [
+  "union",
+  "intersection",
   "clone",
   "removeLast",
   "add",
@@ -674,31 +684,33 @@ var vitry = Object.fromGetters(
 /**
  * Global require function (set below).
  */
-var require = Packages.vitry.java.core.getSimpleRequire({
-  java          : undefined,
-  environment   : undefined,
-  history       : undefined,
-  importPackage : undefined,
-  importClass   : undefined,
-  help          : undefined,
-  defineClass   : undefined,
-  deserialize   : undefined,
-  gc            : undefined,
-  load          : undefined,
-  loadClass     : undefined,
-  print         : undefined,
-  readFile      : undefined,
-  readUrl       : undefined,
-  runCommand    : undefined,
-  seal          : undefined,
-  serialize     : undefined,
-  spawn         : undefined,
-  sync          : undefined,
-  quit          : undefined,
-  version       : undefined,
-  vitry         : vitry,
-  print         : print
-});  
+var require = Packages.vitry.java.core.getSimpleRequire(
+  {
+    java          : undefined,
+    environment   : undefined,
+    history       : undefined,
+    importPackage : undefined,
+    importClass   : undefined,
+    help          : undefined,
+    defineClass   : undefined,
+    deserialize   : undefined,
+    gc            : undefined,
+    load          : undefined,
+    loadClass     : undefined,
+    print         : undefined,
+    readFile      : undefined,
+    readUrl       : undefined,
+    runCommand    : undefined,
+    seal          : undefined,
+    serialize     : undefined,
+    spawn         : undefined,
+    sync          : undefined,
+    quit          : undefined,
+    version       : undefined,
+    vitry         : vitry,
+    print         : print
+  }
+);  
 
 
 
