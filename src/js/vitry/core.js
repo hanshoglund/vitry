@@ -123,15 +123,7 @@ Object.entries = function(obj) {
  *  Status to set
  */
 Object.writable = function(obj, prop, status) {
-  if (Function.isFunction(prop)) {
-    Object.writable(obj, Object.keys(obj).filter(prop), status);
-
-  } else if (Array.isArray(prop)) {
-    prop.forEach(function(prop) Object.writable(obj, prop, status));
-
-  } else {
-    Object.defineProperty(obj, prop, { writable : status });
-  }
+  Object.defineAllProperties(obj, prop, { writable : status });
 }
 
 /**
@@ -147,15 +139,7 @@ Object.writable = function(obj, prop, status) {
  *  Status to set
  */
 Object.enumerable = function(obj, prop, status) {
-  if (Function.isFunction(prop)) {
-    Object.enumerable(obj, Object.keys(obj).filter(prop), status);
-
-  } else if (Array.isArray(prop)) {
-    prop.forEach(function(prop) Object.enumerable(obj, prop, status));
-
-  } else {
-    Object.defineProperty(obj, prop, { enumerable : status });
-  }
+  Object.defineAllProperties(obj, prop, { enumerable : status });
 }
 
 /**
@@ -169,19 +153,49 @@ Object.enumerable = function(obj, prop, status) {
  *  Function property selector
  */
 Object.preventChanges = function(obj, prop) {
-  if (Function.isFunction(prop)) {
-    Object.preventChanges(obj, Object.keys(obj).filter(prop));
-
-  } else if (Array.isArray(prop)) {
-    prop.forEach(function(prop) Object.preventChanges(obj, prop));
-
-  } else {
-    Object.defineProperty(obj, prop, { configurable : false });
-  }
+  Object.defineAllProperties(obj, prop, { configurable : false });
 }
 
 
-
+/**
+ * Redefine properties for the given object using the specified descriptor
+ *
+ * @obj
+ *  Object to modify.
+ * @prop
+ *  String property name OR
+ *  Array property names OR
+ *  Function property selector
+ * @status
+ *  Status to set
+ */
+Object.defineAllProperties = function (obj, prop, descr) {
+  if (Function.isFunction(prop)) {
+    Object.defineAllProperties(obj, Object.keys(obj).filter(prop), descr);
+    
+  } else if (Array.isArray(prop)) {
+    prop.forEach(function(prop) Object.defineAllProperties(obj, prop, descr));
+  
+  } else {
+    Object.defineProperty(obj, prop, descr);
+  }
+}
+     
+/**
+ * Converts an object containing functions to an object with 
+ * accessor properties.
+ * @param 
+ *   accessors
+ * @param
+ *   construcor to create the new object (optional)
+ */
+Object.fromGetters = function(accessors, prototype) {
+  var obj = Object.create(prototype);
+  for (k in accessors) {
+    Object.defineProperty(obj, k, { get : accessors[k] });
+  }      
+  return obj;
+}
 
 
 // Function
@@ -365,7 +379,6 @@ Array.intersection = function(first, second) {
   return intersection;
 }
 
-//Array.
 
 
 Array.prototype.clone = function() {
@@ -389,9 +402,9 @@ Array.prototype.addBefore = function(){
 }
 
 // XXX Any need to replace slice (compare slice/splice)?
-//Array.prototype.section = function(){
-//  Array.prototype.splice.apply(this.clone(), arguments);
-//}
+// Array.prototype.section = function(){
+//   Array.prototype.splice.apply(this.clone(), arguments);
+// }
 
 Array.prototype.reversed = function(){
   return Array.prototype.reverse.apply(this.clone(), arguments);
@@ -477,12 +490,12 @@ Function.bindPrototype(Object, "keys");
 Function.bindPrototype(Object, "values");
 
 // XXX Will binding in these pollute Object.property to much?
-//Function.bindPrototype(Object, "writable");
-//Function.bindPrototype(Object, "enumerable");
-//Function.bindPrototype(Object, "preventChanges");
-//Function.bindPrototype(Object, "seal");
-//Function.bindPrototype(Object, "freeze");
-//Function.bindPrototype(Object, "preventExtensions");
+// Function.bindPrototype(Object, "writable");
+// Function.bindPrototype(Object, "enumerable");
+// Function.bindPrototype(Object, "preventChanges");
+// Function.bindPrototype(Object, "seal");
+// Function.bindPrototype(Object, "freeze");
+// Function.bindPrototype(Object, "preventExtensions");    
 
 Function.bindPrototype(Object, "defineProperty");
 Function.bindPrototype(Object, "getOwnPropertyDescriptor");
@@ -510,38 +523,99 @@ Function.bindPrototype(Function, "isDefined");
 
 
 // Encapsulate extensions
+                      
+Object.enumerable(Object, [
+  "extend",
+  "clone",
+  "values",
+  "entries",
+  "writable",
+  "enumerable",
+  "preventChanges",
+  "defineAllProperties",
+  "fromGetters",
+  "isObject",
+  "check"
+], false);
+  
+Object.enumerable(Object.prototype, [
+  "extend",
+  "clone",
+  "keys",
+  "values",
+  "defineProperty",
+  "getOwnPropertyDescriptor",
+  "getOwnPropertyNames"
+], false);
 
-Object.defineProperties(Object, {
-  extend : { enumerable : false },
-  clone : { enumerable : false },
-  values : { enumerable : false },
-  isObject : { enumerable : false },
-  check : { enumerable : false }
-});
+Object.enumerable(Function.prototype, [
+  "curry",
+  "uncurry",
+  "sequence",
+  "and",
+  "or",
+  "not",
+  "equalTo",
+  "strictlyEqualTo",
+  "greaterThan",
+  "lessThan",
+  "some",
+  "all",
+  "memberOf",
+  "empty",
+  "isNull",
+  "isUndefined",
+  "isNotNull",
+  "isDefined"
+], false);
 
-Object.defineProperties(Array, {
-  check : { enumerable : false }
-});
+Object.enumerable(Function, [
+  "constant",
+  "identity",
+  "curry",
+  "uncurry",
+  "compose",
+  "sequence",
+  "power",
+  "flip",
+  "and",
+  "or",
+  "not",
+  "equalTo",
+  "strictlyEqualTo",
+  "greaterThan",
+  "lessThan",
+  "some",
+  "all",
+  "memberOf",
+  "empty",
+  "isNull",
+  "isUndefined",
+  "isNotNull",
+  "isDefined",
+  "bindPrototype",
+  "bindConstructor",
+  "isFunction",
+  "check"
+], false);
 
-Object.defineProperties(Function, {
-  check : { enumerable : false },
-  isFunction : { enumerable : false }
-});
+Object.enumerable(Array.prototype, [
+  "clone",
+  "removeLast",
+  "add",
+  "removeFirst",
+  "addBefore",
+  "reversed",
+  "sorted"
+], false);
 
-Object.defineProperties(Boolean, {
-  check : { enumerable : false },
-  isBoolean : { enumerable : false }
-});
+Object.enumerable(Array, [
+  "union",
+  "intersection",
+  "check",
+  "some"
+], false);
 
-Object.defineProperties(Number, {
-  check : { enumerable : false },
-  isNumber : { enumerable : false }
-});
-
-Object.defineProperties(String, {
-  check : { enumerable : false },
-  isString : { enumerable : false }
-});
 
 //======================================================================
 // New types
@@ -606,6 +680,7 @@ Ratio.prototype = Object.extend(new Integer(), {
 });
 
 
+
 //======================================================================
 // Interpreter
 
@@ -645,18 +720,27 @@ function versionString() {
   return version().join(".");
 }
 
-function show(object) {
-  for (k in (object || visible)) print("  " + k);
+function show(obj) {
+  for (k in (obj && obj != this ? obj : visible)) 
+    print("  " + k);
+}
+
+function showOwn(obj) {
+  for (k in (obj && obj != this ? obj : visible)) 
+    if ((obj || visible).hasOwnProperty(k)) 
+      print("  " + k);
 }
 
 function help() {
-  print("  show([val])  Displays all properties of the given object.");
-  print("               If none is given, displays all top-level functions.");
-  print("  help([val])  Displays help text about the given object.");
-  print("               If none is given, displays this text.");
-  print("  load()       Loads and interprets a file (as if it had been entered.");
-  print("               in the console).");
-  print("  quit()       Leaves Vitry.");
+  print("  show([val])  Displays all enumerable properties of the given object.         ");
+  print("               If none is given, displays all top-level objects.               ");
+  print("  show([val])  Displays all non-inherited, enumerable properties of the given  ");
+  print("               object. If none is given, displays all top-level objects.       ");
+  print("  help([val])  Displays help text about the given object.                      ");
+  print("               If none is given, displays this text.                           ");
+  print("  load()       Loads and interprets a file (as if it had been entered          ");
+  print("               in the console).                                                ");
+  print("  quit()       Leaves Vitry.                                                   ");
   print();
 }
 
