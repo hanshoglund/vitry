@@ -3,6 +3,9 @@
  */
 package vitry.java;
 
+import java.io.InputStream;
+import java.io.PrintStream;
+
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
@@ -45,5 +48,15 @@ public class core {
     } catch (Exception e) {
       return null;
     }
+  }
+
+  public static InputStream getIn() {
+    return System.in;
+  }
+  public static PrintStream getOut() {
+    return System.out;
+  }
+  public static PrintStream getErr() {
+    return System.err;
   }
 }

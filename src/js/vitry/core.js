@@ -26,7 +26,9 @@ var vitry = Object.create(Object.prototype, {
   writers : { get : function() require( "vitry/writers" ) }
 });
 
-require = Packages.vitry.java.core.getSimpleRequire({
+var java = Packages.vitry.java.core;
+
+require = java.getSimpleRequire({
   java          : undefined,
   environment   : undefined,
   history       : undefined,
@@ -57,8 +59,12 @@ require = Packages.vitry.java.core.getSimpleRequire({
 //======================================================================
 // Language extensions
 
+
+// Object
+
 Object.extend = function(to, from) {
   for (k in from) to[k] = from[k];
+  return to;
 }
 
 Object.clone = function(obj) {
@@ -70,39 +76,190 @@ Object.values = function(val) {
 }
 
 
-// Property utils
+/**
+ * Updates writable status for the specified properties.
+ *
+ * @obj
+ *  Object to modify.
+ * @prop
+ *  String property name OR
+ *  Array property names OR
+ *  Function property selector
+ * @status
+ *  Status to set
+ */
+Object.writable = function(obj, prop, status) {
+  if (Function.isFunction(prop)) {
+    Object.writable(obj, Object.keys(obj).filter(prop), status);
 
-/*
-Object.writable = function(val, property, status) {
-  Object.defineProperty(val, property, { writable : status });
-}
+  } else if (Array.isArray(prop)) {
+    prop.forEach(function(prop) Object.writable(obj, prop, status));
 
-Object.enumerable = function(val, property, status) {
-  Object.defineProperty(val, property, { enumerable : status });
-}
-
-Object.preventChanges = function(val, property) {
-  Object.defineProperty(val, property, { configurable : false });
-}
-
-Object.prototype.writable = function(properties, status) {
-  for each (property in [].concat(properties)) {
-    Object.writable(this, property, status);
+  } else {
+    Object.defineProperty(obj, prop, { writable : status });
   }
 }
 
-Object.prototype.enumerable = function(properties, status) {
-  for each (property in [].concat(properties)) {
-    Object.enumerable(this, property, status);
+/**
+ * Updates enumerable status for the specified properties.
+ *
+ * @obj
+ *  Object to modify.
+ * @prop
+ *  String property name OR
+ *  Array property names OR
+ *  Function property selector
+ * @status
+ *  Status to set
+ */
+Object.enumerable = function(obj, prop, status) {
+  if (Function.isFunction(prop)) {
+    Object.enumerable(obj, Object.keys(obj).filter(prop), status);
+
+  } else if (Array.isArray(prop)) {
+    prop.forEach(function(prop) Object.enumerable(obj, prop, status));
+
+  } else {
+    Object.defineProperty(obj, prop, { enumerable : status });
   }
 }
 
-Object.prototype.preventChanges = function(properties) {
-  for each (property in [].concat(properties)) {
-    Object.preventChanges(this, property);
+/**
+ * Makes the specified properties unconfigurable.
+ *
+ * @obj
+ *  Object to modify.
+ * @prop
+ *  String property name OR
+ *  Array property names OR
+ *  Function property selector
+ */
+Object.preventChanges = function(obj, prop) {
+  if (Function.isFunction(prop)) {
+    Object.preventChanges(obj, Object.keys(obj).filter(prop));
+
+  } else if (Array.isArray(prop)) {
+    prop.forEach(function(prop) Object.preventChanges(obj, prop));
+
+  } else {
+    Object.defineProperty(obj, prop, { configurable : false });
   }
 }
-*/
+
+
+// Function
+
+Function.constant = function(val) {
+  return (function() val);
+}
+
+Function.identity = function() {
+  return (function(val) val);
+}
+
+Function.curry = function() {
+  // TODO
+}
+
+Function.uncurry = function() {
+  // TODO
+}
+
+Function.compose = function() {
+  // TODO
+}
+
+Function.sequence = function() {
+  // TODO
+}
+
+Function.power = function() {
+  // TODO
+}
+
+Function.flip = function() {
+  // TODO
+}
+
+
+
+Function.and = function() {
+  // TODO
+}
+
+Function.or = function() {
+  // TODO
+}
+
+Function.not = function() {
+  // TODO
+}
+
+Function.equalTo = function() {
+  // TODO
+}
+
+Function.strictlyEqualTo = function() {
+  // TODO
+}
+
+Function.greaterThan = function() {
+  // TODO
+}
+
+Function.lessThan = function() {
+  // TODO
+}
+
+Function.some = function() {
+  // TODO
+}
+
+Function.all = function() {
+  // TODO
+}
+
+Function.memberOf = function() {
+  // TODO
+}
+
+Function.empty = function() {
+  // TODO
+}
+
+Function.isNull = function() {
+  // TODO
+}
+
+Function.isUndefined = function() {
+  // TODO
+}
+
+Function.isNotNull = function() {
+  // TODO
+}
+
+Function.isNotUndefined = function() {
+  // TODO
+}
+
+
+/**
+ * Binds an function owned by a construcor to its prototype.
+ * @param ct
+ * @param name
+ */
+Function.bindPrototype = function(ct, name) {
+  var fn = ct[name];
+  if (Function.check(ct) && Function.check(fn)) {
+    ct.prototype[name] = (function() {
+      var args = [this];
+      Array.prototype.push.apply(args, arguments);
+      return fn.apply(null, args);
+    });
+  }
+}
+
 
 // Type checks
 
@@ -111,7 +268,7 @@ Object.isObject = function(val) {
 }
 
 Function.isFunction = function(val) {
-  return (typeof val === "function") || (val.__proto__ === Function.prototype);
+  return (typeof val === "function");
 }
 
 Boolean.isBoolean = function(val) {
@@ -130,36 +287,42 @@ Object.check = function(val) {
   if (!Object.isObject(val)) {
     throw TypeError("Type of " + val + " is not object");
   }
+  return true;
 }
 
 Array.check = function(val) {
   if (!Array.isArray(val)) {
     throw TypeError("Type of " + val + " is not array");
   }
+  return true;
 }
 
 Function.check = function(val) {
   if (!Function.isFunction(val)) {
     throw TypeError("Type of " + val + " is not function");
   }
+  return true;
 }
 
 Boolean.check = function(val) {
   if (!Boolean.isBoolean(val)) {
     throw TypeError("Type of " + val + " is not boolean");
   }
+  return true;
 }
 
 Number.check = function(val) {
   if (!Number.isNumber(val)) {
     throw TypeError("Type of " + val + " is not number");
   }
+  return true;
 }
 
 String.check = function(val) {
   if (!String.isString(val)) {
     throw TypeError("Type of " + val + " is not string");
   }
+  return true;
 }
 
 // Encapsulation
@@ -289,6 +452,23 @@ var visible = {
   load:load,
   quit:quit
 };
+
+var inStream = java.getIn();
+var outStream = java.getOut();
+var errStream = java.getErr();
+
+function print(val) {
+  if (val === undefined && arguments.length === 0) {
+    return print("");
+  }
+  if (Function.isFunction(val)) {
+    return print(val.toString())
+  }
+  if (Object.isObject(val)) {
+    return print(JSON.stringify(val));
+  }
+  outStream.println("" + val);
+}
 
 function version() {
   return about.version;
