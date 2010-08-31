@@ -547,6 +547,8 @@ Object.enumerable(Object, [
 ], false);
   
 Object.enumerable(Object.prototype, [
+  "hash",
+  "hashCode",
   "extend",
   "clone",
   "keys",
@@ -775,7 +777,7 @@ function print(val) {
   if (val === undefined && arguments.length === 0)
     return print("");
     
-  if (Object.isObject(val) && !Function.isFunction(val) && !isNative(val))
+  if (Object.isObject(val) && !Function.isFunction(val) && !isNative(val) && (val.toString() === Object.prototype.toString()))
     return print(JSON.stringify(val));
 
   outStream.println("" + val);

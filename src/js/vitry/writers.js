@@ -263,7 +263,7 @@ function Proxy(object, type, socket) {
    */
   this.object = object;
   
-  var constr = this;
+  var that = this;
 
   if (!socket) {
       socket = new Socket();
@@ -281,14 +281,14 @@ function Proxy(object, type, socket) {
     typeDescr.methods.keys().forEach(function (name) {
       var sibName = toSibeliusName(name);
       var type    = typeDescr.methods[name];
-      print([name, sibName, type]);
+      // print([name, sibName, type]);
       var proxy = (function () {
         var args  = parseArgs(arguments);
         var cont  = extractContinuation(args);
         return this.call(sibName, type, args, cont);
       });
-      constr[name]  = proxy;
-      constr[sibName] = proxy;
+      that[name]  = proxy;
+      that[sibName] = proxy;
     });                    
       
       // for (field in typeDescr.fields) {
