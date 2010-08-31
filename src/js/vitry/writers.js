@@ -17,9 +17,6 @@ function SibeliusWriter(){
   
 }
 
-// synchronizeScript = getNormalizedPath() +
-// "sibelius/sync.applescript";
-
 var files = {
   bind :            "bind",
   synchronize :     "synchronize",
@@ -32,27 +29,18 @@ var referencePrefix       = "sibobj_";
 // Cached global objects.
 var globals               = [];
 
-// Listeners and taks
-var fileMonitorTask       = null;
-var fileMonitorInterval   = 80;
-var scriptingBindListener = null;
-
 var startTime             = new Date();
 var sendTime              = null;
 var synchronizationTime   = null;
-
 var sentMessagesCount     = 0;
 var receivedMessagesCount = 0;
 
-var fileListeners         = [];
+// Listeners and taks
 var bindListeners         = [];
-var notifyFileListeners   = null;
-var notifyBindListeners   = null;
-
-var defaultAddressPart  = "vitry";
-var defaultSocketPrefix = "socket";
-var defaultSocketsCount = 0;
-var defaultReceiver     = function(){};
+var fileListeners         = [];
+var fileMonitor;
+var fileMonitorInterval = 200;
+//var scriptingBindListener;
 
 /**
  * Prints a message in the Sibelius trace window.
@@ -65,9 +53,7 @@ function trace(msg) {
  * Returns the global Sibelius object.
  */
 function getSibelius () {
-  return getGlobal(
-    /* name */ "Sibelius",
-    /* type */ "Sibelius");
+  return getGlobal("Sibelius", "Sibelius");
 }
 
 /**
@@ -80,9 +66,7 @@ function getSibelius () {
  *   a type of this name and proxy methos are created.
  */
 function getGlobal(name, type) {
-  if (!globals.hasOwnProperty[name]) {
-      globals[name] = new Proxy(name, type);
-  }
+  if (!globals[name]) globals[name] = new Proxy(name, type);
   return globals[name];
 }
 
@@ -91,107 +75,106 @@ function getGlobal(name, type) {
  * event in Sibelius automatically using any platform-dependent means.
  */
 function addBindListener(event) {
-  var pos = bindListeners.indexOf(event);
-  if (pos < 0) 
-    bindListeners.push(event);
+  if (bindListeners.indexOf(event) < 0)  bindListeners.push(event);
 }
 
 /**
  * Removes the given bind listener.
  */
 function removeBindListener(event) {
-  var pos = bindListeners.indexOf(event);
-  if (pos >= 0)
-    delete bindListeners[poss];
+  if (bindListeners.indexOf(event) >= 0) delete bindListeners[poss];
 }
 
 /**
  * Notifies receivers of a change in the synchronize file.
  */
 function fileChanged() {
-  if (this.isSynchronized())
-    notifyFileListeners();
+  if (this.isSynchronized()) notifyFileListeners();
 }
 
 /**
  * Enable or disable file monitoring.
  */
-function setFileMonitoring(state) {
-  // FIXME Max Task
-  if (state) {
-    if (!fileMonitorTask) {
-      fileMonitorTask = new Task(function() {
-        fileChanged();
-      });
-      fileMonitorTask.interval = fileMonitorInterval;
-    }
-    fileMonitorTask.repeat(-1, fileMonitorInterval);
-  } else {
-    fileMonitorInterval.cancel();
-  }
-}
-
-
-function useSynchronizeScript(status) {
-// FIXME depends Shell
-  var stdIn;
-
+function setFileMonitoring(status) {
+  var Thread = Packages.java.lang.Thread;
+  var Runnable = Packages.java.lang.Runnable;
+  
   if (status) {
-    stdIn = new Shell().getInputStream()
-    scriptingBindListener = function() {
-        // Echo to prevent "no output" message
-        stdIn("osascript " + synchronizeScript)
+    if (!fileMonitor || !fileMonitor.isAlive()) {
+      fileMonitor = new Thread(
+        new Runnable({ run : function() {
+          try {
+            while(true) {
+              Thread.sleep(fileMonitorInterval);
+              fileChanged();                  
+            }
+          } catch (e if e instanceof JavaException){}
+        }})
+      );      
+      fileMonitor.start();                     
     }
-    addBindListener(scriptingBindListener)
   } else {
-    removeBindListener(scriptingBindListener)
+    fileMonitor.interrupt();
   }
 }
+
+
+// function useSynchronizeScript(status) {
+  // TODO
+  
+  // var stdIn;
+  // 
+  // if (status) {
+  //   stdIn = new Shell().getInputStream()
+  //   scriptingBindListener = function() {
+  //       // Echo to prevent "no output" message
+  //       stdIn("osascript " + synchronizeScript)
+  //   }
+  //   addBindListener(scriptingBindListener)
+  // } else {
+  //   removeBindListener(scriptingBindListener)
+  // }
+// }
 
 /**
- * Returns true if Sibelius has been synchronized to Max at least once since the
+ * Returns true if Sibelius has been synchronized to Vitry at least once since the
  * latest message was transmitted.
  */
 function isSynchronized() {
-  return sendTime !== null &&
-    sendTime < this.getSynchronizationTime();
+  return sendTime !== null && sendTime < getSynchronizationTime();
 }
 
 /**
- * Returns true if Sibelius has been synchronized to Max at least once since
+ * Returns true if Sibelius has been synchronized to Vitry at least once since
  * startup time.
  */
 function isSynchronizedSinceStartup() {
-  return startTime < this.getSynchronizationTime();
+  return startTime < getSynchronizationTime();
 }
 
 /**
- * Returns the last time Sibelius were synchronized to Max.
+ * Returns the last time Sibelius were synchronized to Vitry.
  *
  * @returns time of last response.
  * @type Date
  */
 function getSynchronizationTime() {
 
-  // TODO Should not reopen file for each invocation, just reset position
-
   var d = new Date();
-  var f;
   var fin;
 
-  if (d > synchronizationTime) {
-    f = getSynchronizeFile();
+  if (!synchronizationTime || d > synchronizationTime) {
+    fin = getSynchronize();
 
     try {
-      fin = f.readline();
-      d.setISO8601(fin);
-    } catch (e) {
+      d.setISO8601("" + fin.readLine());
+    } catch (e if (! e instanceof JavaException)) {
       // Could not parse date, usually because it is still
       // being written
       return synchronizationTime;
-    }
+    } 
 
-    // Sibelius writes local date, but Max reads UTC
+    // Sibelius writes local date, but we read UTC
     // Compensate by adding UTC offset
     d.setMinutes(d.getMinutes() + d.getTimezoneOffset());
     synchronizationTime = d;
@@ -199,7 +182,7 @@ function getSynchronizationTime() {
     return synchronizationTime;
   }
 
-  f.close();
+  fin.close();
   return d; 
 }
 
@@ -228,41 +211,6 @@ function notifyBindListeners() {
   }
 }
 
-function getBindFile() {
-  var name = vitry.music.setup.sibelius.socketDir + "/" + files.bind;
-  return openFile(name, "readwrite", "Could not open bind file");
-}
-
-function getSynchronizeFile() {
-    var name = vitry.music.setup.sibelius.socketDirectory + "/" + files.synchronize;
-    return openFile(name, "read", "Could not open synchronization file");
-}
-
-function getReceiveFile(address) {
-    var name = vitry.music.setup.sibelius.socketDirectory + "/" +
-            address + "_" + files.receive,
-        msg = "Could not open receive file on address " + address;
-    return openFile(name, "write", msg);
-}
-
-function getSendFile(address) {
-    var name = vitry.music.setup.sibelius.socketDirectory + "/" +
-            address + "_" + files.send,
-        msg = "Could not open send file on address " + address;
-    return openFile(name, "read", msg);
-}
-
-function openFile(name, mode, errorMessage) {
-  // FIXME Depends on MAx
-    var f = new File(name, mode);
-    if (f.isopen) {
-        return f;
-    }
-    throw new Error(errorMessage || "Could not open file");
-}
-
-
-
 
 /**
  * Represents a Sibelius dictionary
@@ -274,20 +222,7 @@ function Dictionary(obj) {
 }
 
 
-/**
- * A message expression.
- * @param object
- *   {String} Name of object.
- * @param method
- *   {Strign} Name of method.
- * @param args
- *   {Array}
- */
 function Expression(object, method, args) {
-  
-  /**
-   * Returns the string representation of this message.
-   */
   this.toString = function () {
     return "(" + object + "," + method + "," + args.join(",") + ")";
   } 
@@ -305,14 +240,11 @@ function Expression(object, method, args) {
  * <li>Iterators are accessed through special get methods.</li>
  * </ul>
  *
- * <p>
+ * 
  * Methods can be called directly using the call method. Fields and iterators
  * can be queried directly using the set, get and iterate methods.
- * </p>
- *
- * <p>
+ * 
  * Each method may return a primitive value, an array or another proxy object.
- * </p>
  *
  * @param object
  *   {String} Reference to the underlying object.
@@ -330,8 +262,8 @@ function Proxy(object, type, socket) {
    * Reference to the underlying object.
    */
   this.object = object;
-
-  var that    = this;
+  
+  var constr = this;
 
   if (!socket) {
       socket = new Socket();
@@ -340,46 +272,42 @@ function Proxy(object, type, socket) {
   // Add proxy methods, including getters, setters and iterators
   /*
    * Adds proxy methods, including getters, setters and iterators to the Proxy
-   * object being constructed. <p> Each proxy method will call either call,
-   * set, get or iterate. </p>
+   * object being constructed.  Each proxy method will call either call,
+   * set, get or iterate. 
    */
-  (function () {
-    var typeDescr = types[type];
-    var method;
-    var field;
+  var typeDescr = types[type];
 
-    if (typeDescr) {
-      for (method in typeDescr.methods) {
-        (function () {
-          var sibName = toSibeliusName(method);
-          var type    = typeDescr.methods[method];
-          var method  = function () {
-            var args  = parseArgs(arguments);
-            var cont  = extractContinuation(args);
-            return that.call(sibName, type, args, cont);
-          }
-          that[method]  = method;
-          that[sibName] = method;
-        }());
-      }
+  if (typeDescr) {
+    typeDescr.methods.keys().forEach(function (name) {
+      var sibName = toSibeliusName(name);
+      var type    = typeDescr.methods[name];
+      print([name, sibName, type]);
+      var proxy = (function () {
+        var args  = parseArgs(arguments);
+        var cont  = extractContinuation(args);
+        return this.call(sibName, type, args, cont);
+      });
+      constr[name]  = proxy;
+      constr[sibName] = proxy;
+    });                    
+      
+      // for (field in typeDescr.fields) {
+      //   (function() {
+      //     var sibName  = toSibeliusName(field);
+      //     var setter   = "set" + sibName;
+      //     var getter   = "get" + sibName;
+      //     var type     = typeDescr.fields[field];
+      //     that[setter] = function (value, cont) {
+      //       return that.set(sibName, value, cont);
+      //     }
+      //     that[getter] = function (cont) {
+      //       return that.get(sibName, type, cont);
+      //     }
+      //   }());
 
-      for (field in typeDescr.fields) {
-        (function() {
-          var sibName  = toSibeliusName(field);
-          var setter   = "set" + sibName;
-          var getter   = "get" + sibName;
-          var type     = typeDescr.fields[field];
-          that[setter] = function (value, cont) {
-            return that.set(sibName, value, cont);
-          }
-          that[getter] = function (cont) {
-            return that.get(sibName, type, cont);
-          }
-        }()); 
-      }  
-      // FIXME support iterators
-    }       
-  }());
+  }   
+
+  // FIXME support iterators  
 
   // The call, get set and iterate methods can be used to access any
   // member on the underlying object. The proxy methods are convenient
@@ -391,10 +319,10 @@ function Proxy(object, type, socket) {
   /**
    * Calls the given method on this object.
    *
-   * <p>
+   * 
    * If a continuation function is passed, the result is passed as the first
    * argument to that function, otherwise it is returned.
-   * </p>
+   * 
    *
    * @param name
    *          Method name.
@@ -420,10 +348,10 @@ function Proxy(object, type, socket) {
   /**
    * Set the given field of this object to the given value. If the given field
    * is not modifiable, this method does nothing.
-   * <p>
+   * 
    * Setting fields may imply effects in Sibelius, see the original
    * documentation.
-   * </p>
+   * 
    *
    * @param name
    * @param value
@@ -619,32 +547,7 @@ function Proxy(object, type, socket) {
 }
 
 
-/*
- * Returns true if the given string is a Sibeius object reference.
- */
-function isReference(str) {
-  return typeof str === "string" &&
-    str.match("^" + referencePrefix) === referencePrefix;
-}
 
-/*
- * Converts a standard element name (likeThis) to a Sibelius style element name
- * (LikeThis).
- */
-function toSibeliusName(str) {
-  if (str === "trace")
-    return str;
-  else
-    return str.substr(0, 1).toUpperCase() + str.substr(1);
-}
-
-/*
- * Returns the given string with the special characters '(', ',', ')' and '\'
- * escaped by '\'.
- */
-function escape(str) {
-  return str.replace(/([(,)\\])/g, "\\$1");
-}
 
 
 
@@ -655,12 +558,12 @@ function escape(str) {
 
 /**
  * @class A socket communicating with Sibelius.
- *        <p>
+ *        
  *        Socket objects read and write messages in text format. The expression
  *        syntax defined by the Sibelius API plugin is supported for sent
  *        messages. Received messages may contain object references array
  *        expressions, and escaped strings.
- *        </p>
+ *        
  *
  * @param address
  *          {String} Socket address.
@@ -675,24 +578,20 @@ function escape(str) {
  *          Time out value in milliseconds. Only applies if this socket is in
  *          blocking mode.
  */
-
-
-
-
- Socket = function (address, receiver, blocking, timeOut) {
-    
+Socket = function (address, receiver, blocking, timeOut) {
+  
   var that                = this;
   var listening           = false;
             
   /**
    * Socket address.
    */
-  this.address    = address || (defaultAddressPart + "_" + defaultSocketPrefix + (defaultSocketsCount++));
+  this.address  = address || generateSocketAddress();
   
   /**
    * Called whenever a message is received in non-blocking mode.
    */
-  this.receiver = receiver || defaultReceiver;
+  this.receiver = receiver || function(){};
   
   /**
    * If true, the send and listen methods will block until the synchronize file
@@ -703,7 +602,7 @@ function escape(str) {
   /**
    * Timeout in milliseconds. Only applies if this socket is in blocking mode.
    */
-  this.timeOut    = timeOut    || 3200;
+  this.timeOut  = timeOut    || 3200;
   
   /**
    * Interval in milliseconds.
@@ -714,40 +613,40 @@ function escape(str) {
   /**
    * Sends the given messages.
    *
-   * <p>
+   * 
    * If this socket is in blocking mode, this method does not return until a
    * response has been received. If the timeout is exceeded, this method throws an
    * error.
-   * </p>
-   * <p>
+   * 
+   * 
    * If this socket is in non-blocking mode, this method returns directly. Any
    * response message will be passed to the receiver function.
-   * </p>
+   * 
    *
    * @param msg
-   *          A message string, or an array of message strings.
+   *   A message string, or an array of message strings.
    */   
   this.send = function (msg) {
-    internal.sibelius.sendTime = new Date();
-    ++internal.sibelius.sentMessagesCount;
+    sendTime = new Date();
+    ++sentMessagesCount;
 
     // Write message to socket, then create binding
     write(msg);
     bind();
-
+    
     return accept();
   }  
     
   /**
    * Listen for an incoming message.
-   * <p>
+   * 
    * If this socket is in blocking mode, it will return the first received
    * message. If the timeout is exceeded, it throws an error.
-   * </p>
-   * <p>
+   * 
+   * 
    * If this socket is in non-blocking mode, incoming messages will be passed to
    * the receiver function.
-   * </p>
+   * 
    */
   this.listen = function () {
     listening = true;
@@ -769,11 +668,11 @@ function escape(str) {
         time += that.interval;
         wait(that.interval);
       } 
-      ++internal.sibelius.receivedMessagesCount;
+      ++receivedMessagesCount;
       return read();
     } else {
-      internal.sibelius.fileListeners.push(function () {
-          ++internal.sibelius.receivedMessagesCount;
+      fileListeners.push(function () {
+          ++receivedMessagesCount;
           that.receiver.call(that, read());
       });
     } 
@@ -783,25 +682,19 @@ function escape(str) {
    * Binds this socket to be read by Sibelius.
    */
   function bind() {
-    // @depends Max uses Max file object
-    //TODO Should not reopen file for each invocation, just reset position
-    var f = internal.sibelius.getBindFile();
-
-    f.position = f.eof;
-    f.writeline(that.address);
-
-    internal.sibelius.notifyBindListeners();
-    f.close();
+    var fout = getBind();
+    fout.write(that.address + "\n");
+    fout.close();    
+    notifyBindListeners();
   }     
     
   /*
    * Reads a message from this socket.
    */
   function read() {
-    // @depends Max uses Max file object
-    var f = internal.sibelius.getSendFile(that.address);
-    var msg = f.readline();
-    f.close();
+    var fin = getSend(that.address);
+    var msg = fin.readLine();
+    fin.close();
     return msg;
   }   
      
@@ -809,31 +702,404 @@ function escape(str) {
    * Writes the given message, or array of messages, to this socket.
    */
   function write(msg) {
-    var f = internal.sibelius.getReceiveFile(that.address);
+    var fout = getReceive(that.address);
     var i;
-    // @depends Max uses Max file object
-    // XXX f.position = 0;
-    if (typeof msg === "object") {
-      for (i in msg) {
-        if (msg.hasOwnProperty(i)) {
-          f.writeline(msg[i]);
-        }  
+
+    if (Object.isObject(msg)) {
+      for each (m in msg) {
+        fout.write(m + "\n");
       }      
     } else {
-      f.writestring(msg);
+      fout.write(msg + "\n");
     }
-    f.eof = f.position;
-    f.close();   
-  }
-    
-  /*
-   * Blocks for the given duration (in milliseconds).
-   */
-  function wait(time) {
-    // TODO
-  }     
+    fout.close();   
+  } 
 }
 
+function getBind() {
+  try {
+    return vitry.core.getWriter(
+      vitry.writers.setup.sibelius.socketDir + "/" + files.bind);
+  } catch (e) {
+    throw new Error("Could not open bind file");
+  }
+}
+
+function getSynchronize() {
+  try {
+    return vitry.core.getReader(
+      vitry.writers.setup.sibelius.socketDir + "/" + files.synchronize);
+  } catch (e) {
+    throw new Error("Could not open synchronization file");
+  }
+}
+
+function getReceive(address) {
+  try {
+    return vitry.core.getWriter(
+      vitry.writers.setup.sibelius.socketDir + "/" + address + "_" + files.receive);
+  } catch (e) {
+    throw new Error("Could not open receive file on address " + address);
+  }
+}
+
+function getSend(address) {
+  try {
+    return vitry.core.getReader(
+      vitry.writers.setup.sibelius.socketDir + "/" + address + "_" + files.send);
+  } catch (e) {
+    throw new Error("Could not open send file on address " + address);
+  }
+}
+
+
+// Definately top-level:
+
+
+var defaultAddressPart  = "vitry";
+var defaultSocketPrefix = "socket";
+var defaultSocketsCount = 0;
+
+function generateSocketAddress() {
+  return defaultAddressPart + defaultSocketPrefix + (defaultSocketsCount++);
+}
+
+/*
+ * Blocks for the given duration (in milliseconds).
+ */
+function wait(time) {
+  Packages.java.lang.Thread.sleep(time || 0); 
+}
+
+/*
+ * Returns true if the given string is a Sibeius object reference.
+ */
+function isReference(str) {
+  return typeof str === "string" &&
+    str.match("^" + referencePrefix) === referencePrefix;
+}
+
+/*
+ * Converts a standard element name (likeThis) to a Sibelius style element name
+ * (LikeThis).
+ */
+function toSibeliusName(str) {
+  if (str == "trace") return str;
+  return str.substr(0, 1).toUpperCase() + str.substr(1);
+}
+
+/*
+ * Returns the given string with the special characters '(', ',', ')' and '\'
+ * escaped by '\'.
+ */
+function escape(str) {
+  return str.replace(/([(,)\\])/g, "\\$1");
+}  
+
+function parseArgs(a) {
+  var given = [];
+  Array.prototype.push.apply(given, a);
+  return given;
+}  
+
+
+
+
+var types = {
+        
+    // ManuScript
+        
+    "Sibelius" : {
+        "iterators" : {
+            "getScores" :                [ null, "Score" ]
+        },        
+        "methods" : {
+            "close" :                    null,
+            "createProgressDialog" :     null,
+            "destroyProgressDialog" :    null,
+            "goToEnd" :                  null,
+            "goToStart" :                null,
+            "isDynamicPartOpen" :        null,
+            "messageBox" :               null,
+            "moveActiveViewToBar" :      null,
+            "moveActiveViewToSelection": null,
+            "new" :                      "Score",
+            "nthScore" :                 "Score",
+            "open" :                     "Score",
+            "play" :                     null,
+            "playFromStart" :            null,
+            "print" :                    null,
+            "stop" :                     null,
+            "trace" :                    null,
+            "yesNoMessageBox" :          null
+        },
+        "fields" : {    
+            "activeScore" :              "Score",
+            "playing" :                  null,
+            "scoreCount" :               null,
+            "viewHighlights" :           null,
+            "viewNoteVelocities" :       null,
+            "viewNoteColors" :           null
+        }
+    },
+    
+    "Bar" : {
+        "iterators" : {
+            "getBarObjects" :            [ null,         "BarObject" ],
+            "getClefs" :                 [ "Clef",     "Clef" ],
+            "getLines" :                 [ "Line",     "Line" ],
+            "getNoteRests" :             [ "NoteRest", "NoteRest" ],
+            "getTexts" :                 [ "Text",     "Text" ]
+        },
+        "methods" : {
+            "addGraphic" :               null,
+            "addLine" :                  "Line",
+            "addLyric" :                 "LyricItem",
+            "addNote" :                  "Note",
+            "addRehearsalMark" :         null,
+            "addText" :                  "Text",
+            "addTimeSignature" :         null,
+            "addTimeSignatureReturnObject" : 
+                                         "TimeSignature",
+            "addTuplet":                 "Tuplet",
+            "clear" :                    null,
+            "clearNotesAndModifiers":    null,
+            "delete" :                   null,
+            "respace" :                  null
+        },
+        "fields" : {
+            "barNumber" :                null,
+            "breakType" :                null,
+            "externamBarNumberString" :
+                                         null,
+            "length" :                   null,
+            "parentStaff" :              "Staff",
+            "selected" :                 null,
+            "time" :                     null,
+            "type" :                     null
+        }
+    },
+    
+    "BarObject" : {
+        "iterators" : {
+        },
+        "methods" : {
+            "delete" :                   null,
+            "deselect" :                 null,
+            "nextItem" :                 "BarObject",
+            "previousItem" :             "BarObject",
+            "removeVoice" :              null,
+            "resetPosition" :            null,
+            "resetDesign" :              null,
+            "select" :                   null,
+            "setVoice" :                 null,
+            "getIsInVoice" :             null,
+            "setAllVoices" :             null
+        },
+        "fields" : {        
+            "dx" :                       null,
+            "dy" :                       null,
+            "hidden" :                   null,
+            "parentBar" :                "Bar",
+            "position" :                 null,
+            "selected" :                 null,
+            "time" :                     null,
+            "type" :                     null,
+            "voiceNumber" :              null,
+            "voices" :                   null
+        }
+    },
+    
+    "Comment" : {
+        "iterators" : {
+        },
+        "methods" : {
+            "AddComment" :               null,
+            "AddCommentWithName" :       null
+        },
+        "fields" : {
+        }
+    },
+    
+    "Line" : {
+        "iterators" : {
+        },
+        "methods" : {
+        },
+        "fields" : {
+            "duration" :                 null,
+            "endBarNumber" :             null,
+            "endPosition" :              null,
+            "rhDy" :                     null,
+            "styleId" :                  null,
+            "styleAsText" :              null
+        }
+    },
+    
+    "NoteRest" : {
+        "iterators" : {
+            "getNotes" :                 [ null, "Note" ]
+        },
+        "methods" : {
+            "addAcciaccaturaBefore" :    null,
+            "addAppoggiaturaBefore" :    null,
+            "addNote" :                  "Note",
+            "delete" :                   null,
+            "flipStem" :                 null,
+            "getArticulation" :          null,
+            "removeNote" :               null,
+            "setArticulation" :          null,
+            "transpose" :                null            
+        },
+        "fields" : {    
+            "arpeggioDx" :               null,
+            "arpeggioType" :             null,
+            "arpeggioTopDy" :            null,
+            "arpeggioBottomDy" :         null,
+            "arpeggioHidden" :           null,
+            "articulations" :            null,
+            "beam" :                     null,
+            "doubleTremolos" :           null,
+            "duration" :                 null,
+            "fallDx" :                   null,
+            "fallType" :                 null,
+            "featheredBeamType" :        null,
+            "hasStemlet" :               null,
+            "highest" :                  null,
+            "lowest" :                   null,
+            "noteCount" :                null,
+            "graceNote" :                null,
+            "isAcciaccatura" :           null,
+            "isAppoggiatura" :           null,
+            "parentTupletIfAny" :        "Tuplet",
+            "positionInTuplet" :         null,
+            "stemFlipped" :              null,
+            "stemletType" :              null,
+            "singleTremolos" :           null
+        }
+    },
+    
+    "Note" : {
+        "iterators" : {
+        },
+        "methods" : {
+            "delete" :                   null,
+            "transpose" :                null
+        },
+        "fields" : {
+            "accidental" :               null,
+            "accidentalStyle" :          null,
+            "bracketed" :                null,
+            "diatonicPitch" :            null,
+            "name" :                     null,
+            "noteStyle" :                null,
+            "ntoeStyleName" :            null,
+            "originalDeltaSr" :          null,
+            "originalDuration" :         null,
+            "originalVelocity" :         null,
+            "parentNoteRest" :           "NoteRest",
+            "pitch" :                    null,
+            "slide" :                    null,
+            "tied" :                     null,
+            "writtenAccidental" :        null,
+            "writtenDiatonicPitch" :     null,
+            "writtenName" :              null,
+            "writtenPitch" :             null
+        }
+    },
+    
+    "Score" : {
+        "iterators" : {
+            "getStaves" :                [ null, "Staff" ]
+        },
+        "methods" : {
+            "addBars" :                  null,
+            "createInstrument" :         null,
+            "createInstrumentAtBottomReturnStave" :
+                                         "Staff",
+            "createInstrumentAtTopReturnStave" :
+                                         "Staff",
+            "getLocationTime" :          null,
+            "insertBars" :               null,
+            "lineStyleId" :              null,
+            "noteStyleIndex" :           null,
+            "nthStaff" :                 "Staff",
+            "removeAllHighlights" :      null,
+            "save" :                     null,
+            "saveAs" :                   null,
+            "setPlaybackPos" :           null,
+            "staveTypeId" :              null,
+            "systemCount" :              null,
+            "symbolIndex" :              null,
+            "textStyleId" :              null
+        },
+        "fields" : {
+            "composer" :                 null,
+            "fileName" :                 null,
+            "focusOnStaves" :            null,
+            "partName" :                 null,
+            "scoreDuration" :            null,
+            "systemStaff" :              "Staff",
+            "title" :                    null,
+            "transposingScore" :         null
+        }
+    },
+    
+    "Staff" : {
+        "iterators" : {
+            "getBars" :                  [ null, "Bar" ]
+        },
+        "methods" : {
+        },
+        "fields" : {
+            "barCount" :                 null,
+            "channel" :                  null,
+            "distance" :                 null,
+            "fullInstrumentName" :       null,
+            "isSystemStaff" :            null,
+            "muteMode" :                 null,
+            "solo" :                     null,
+            "parentScore" :              "Score",
+            "staffNum" :                 null,
+            "volume" :                   null
+        }
+    },
+    
+    "Tuplet" : {
+        "iterators" : {
+        },
+        "methods" : {
+            "addNestedTuplet" :          "Tuplet",
+            "addNote" :                  null
+        },
+        "fields" : {
+            "bracket" :                  null,
+            "fullDuration" :             null,
+            "left" :                     null,
+            "parentTupletIfAny" :        null,
+            "playedDuration" :           null,
+            "positionInTuplet" :         null,
+            "right" :                    null,
+            "style" :                    null,
+            "text" :                     null,
+            "unit" :                     null
+        }
+    },
+    
+    // External tools
+    
+    "ScoreWriter" : {
+        "iterators" : {
+        },        
+        "methods" : {
+            "version" : null,
+            "write" : null,
+            "closeAll" : null
+        },
+        "fields" : {
+        }
+    }
+}
 
 
 
@@ -842,10 +1108,31 @@ function escape(str) {
 // TODO
 
 var LilyPondWriter  = function(){};
+
 var MusicXMLWriter  = function(){};
+
 var MIDIWriter      = function(){};
 
 
 // ======================================================================
 
-exports.add ( SibeliusWriter, LilyPondWriter, MusicXMLWriter, MIDIWriter);
+exports.add ( 
+  trace,
+  getSibelius,
+  getGlobal,
+  addBindListener,
+  removeBindListener,
+  fileChanged,
+  setFileMonitoring,
+  isSynchronized,
+  isSynchronizedSinceStartup,
+  getSynchronizationTime,
+  getPendingMessages,
+  notifyFileListeners,
+  notifyBindListeners,
+  Proxy,
+  Socket,  
+  types,
+  getBind, getSynchronize, getReceive, getSend,
+  
+  SibeliusWriter, LilyPondWriter, MusicXMLWriter, MIDIWriter, wait );

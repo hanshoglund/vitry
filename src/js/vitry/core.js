@@ -394,6 +394,34 @@ Array.prototype.sorted = function(){
 
 
 
+// Date
+Date.prototype.setISO8601 = function(string) {
+  var regexp = "([0-9]{4})(-([0-9]{2})(-([0-9]{2})" +
+      "(T([0-9]{2}):([0-9]{2})(:([0-9]{2})(\.([0-9]+))?)?" +
+      "(Z|(([-+])([0-9]{2}):([0-9]{2})))?)?)?)?";
+  var d = string.match(new RegExp(regexp));
+
+  var offset = 0;
+  var date = new Date(d[1], 0, 1);
+
+  if (d[3]) { date.setMonth(d[3] - 1); }
+  if (d[5]) { date.setDate(d[5]); }
+  if (d[7]) { date.setHours(d[7]); }
+  if (d[8]) { date.setMinutes(d[8]); }
+  if (d[10]) { date.setSeconds(d[10]); }
+  if (d[12]) { date.setMilliseconds(Number("0." + d[12]) * 1000); }
+  if (d[14]) {
+      offset = (Number(d[16]) * 60) + Number(d[17]);
+      offset *= ((d[15] == '-') ? 1 : -1);
+  }
+
+  offset -= date.getTimezoneOffset();
+  time = (Number(date) + (offset * 60 * 1000));
+  this.setTime(Number(time));
+}
+
+
+
 // Type checks
 
 Object.isObject = function(val) {
@@ -670,7 +698,7 @@ Ratio.prototype = Object.extend(new Integer(), {
 
 
 //======================================================================
-// Module system
+// Environment
 
 var vitry = Object.fromGetters(
   { 
@@ -710,8 +738,19 @@ var require = Packages.vitry.java.core.getSimpleRequire(
     vitry         : vitry,
     print         : print
   }
-);  
+); 
+   
+function getReader(name) {
+  return Packages.vitry.java.core.getReader(name);
+}
 
+function getWriter(name) {
+  return Packages.vitry.java.core.getWriter(name);
+}
+          
+function isNative(obj) {
+  return Packages.vitry.java.core.isNative(obj);
+}
 
 
 //======================================================================
@@ -735,11 +774,8 @@ var errStream = Packages.vitry.java.core.getErr();
 function print(val) {
   if (val === undefined && arguments.length === 0)
     return print("");
-
-  if (Function.isFunction(val))
-    return print(val.toString());
-
-  if (Object.isObject(val))
+    
+  if (Object.isObject(val) && !Function.isFunction(val) && !isNative(val))
     return print(JSON.stringify(val));
 
   outStream.println("" + val);
@@ -838,4 +874,4 @@ function main(args) {
 //======================================================================
 
 exports.add ( Natural, Integer, Ratio,
-              version, versionString, main );
+              version, versionString, getReader, getWriter, isNative, main );
