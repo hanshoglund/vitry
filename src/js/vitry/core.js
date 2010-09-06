@@ -11,13 +11,23 @@
 var about = {
   name    : "Vitry",
   url     : "http://github.com/hanshoglund/Vitry",
-  version : [0, 0, 4]
+  version : [0, 5, 0]
 }
 
 //======================================================================
 // Standard objects
 
 // Object
+
+// TODO 
+// - Standard handling of destructuve/non-destructive
+// - Efficient algorithms for frozen (immutable) objects
+// - Outline how writable and preventChanges relate to seal, freeze and preventExtensions
+// 
+// What about:
+//   - prototype methods (extend and clone); imperative and destructive by default
+//   - entries method (overlaps Rhino's Iterator class)
+
 
 /**
  * Copies all enumerable properties of a given object to another.
@@ -33,368 +43,451 @@ Object.extend = function(to, from) {
   return to;
 }
 
-/**
- * Returns a shallow copy of the given object.
- * (This function behaves exactly as in Prototype).
- *
- * @param obj
- *  Object to copy
- */
-Object.clone = function(obj) {
-  return Object.extend({}, obj);
-}
+Object.extend(Object, {
 
-/**
- * Return the values of all enumerable properties in this object.
- * (This function behaves exactly as in Prototype).
- *
- * @param obj
- *  Object to enumerate for properties
- */
-Object.values = function(obj) {
-  return [v for each (v in obj)];
-}
+  /**
+   * Returns a shallow copy of the given object.
+   * (This function behaves exactly as in Prototype).
+   *
+   * @param obj
+   *  Object to copy
+   */
+  clone : function(obj) {
+    return Object.extend({}, obj);
+  }, 
 
-/**
- * Returns an array of {key: , value: } pairs for all enumerable properties
- * in this object.
- *
- * @param obj
- *  Object to enumerate for properties
- */
-Object.entries = function(obj) {
-  return [{ key:k, value:obj[k] } for (k in obj)];
-}
-
-/**
- * Updates writable status for the specified properties.
- *
- * @obj
- *  Object to modify.
- * @prop
- *  String property name OR
- *  Array property names OR
- *  Function property selector
- * @status
- *  Status to set
- */
-Object.writable = function(obj, prop, status) {
-  Object.defineAllProperties(obj, prop, { writable : status });
-}
-
-/**
- * Updates enumerable status for the specified properties.
- *
- * @obj
- *  Object to modify.
- * @prop
- *  String property name OR
- *  Array property names OR
- *  Function property selector
- * @status
- *  Status to set
- */
-Object.enumerable = function(obj, prop, status) {
-  Object.defineAllProperties(obj, prop, { enumerable : status });
-}
-
-/**
- * Makes the specified properties unconfigurable.
- *
- * @obj
- *  Object to modify.
- * @prop
- *  String property name OR
- *  Array property names OR
- *  Function property selector
- */
-Object.preventChanges = function(obj, prop) {
-  Object.defineAllProperties(obj, prop, { configurable : false });
-}
-
-/**
- * Redefine properties for the given object using the specified descriptor
- *
- * @obj
- *  Object to modify.
- * @prop
- *  String property name OR
- *  Array property names OR
- *  Function property selector
- * @status
- *  Status to set
- */
-Object.defineAllProperties = function (obj, prop, descr) {
-  if (Function.isFunction(prop))
-    Object.defineAllProperties( obj, Object.keys(obj).filter(prop), descr);
-  else if (Array.isArray(prop))
-    prop.forEach(function(p) Object.defineAllProperties( obj, p, descr ));
-  else
-    Object.defineProperty( obj, prop, descr );
-}
-
-Object.fromEntries = function(entries, prototype) {
-  var obj = ( prototype ? Object.create(prototype) : {} );
-  for each ({key:k,value:v} in entries)
-    obj[k] = v;
-  return obj;
-}
+  /**
+   * 
+   */
+  fromEntries : function(entries, prototype) {
+    var obj = ( prototype ? Object.create(prototype) : {} );
+    for each ({key:k,value:v} in entries)
+      obj[k] = v;
+    return obj;
+  },
      
-/**
- * Converts an object containing functions to an object with 
- * accessor properties.
- * @param 
- *   accessors
- * @param
- *   construcor to create the new object (optional)
- */
-Object.fromGetters = function(accessors, prototype) {
-  var obj = ( prototype ? Object.create(prototype) : {} );
-  for (k in accessors) {
-    Object.defineProperty(obj, k, { get : accessors[k] });
-  }      
-  return obj;
-}                        
+  /**
+   * Converts an object containing functions to an object with 
+   * accessor properties.
+   * @param 
+   *   accessors
+   * @param
+   *   construcor to create the new object (optional)
+   */
+  fromGetters : function(accessors, prototype) {
+    var obj = ( prototype ? Object.create(prototype) : {} );
+    for (k in accessors) {
+      Object.defineProperty(obj, k, { get : accessors[k] });
+    }      
+    return obj;
+  },                        
    
-Object.map = function(obj, f, thisValue) {
-  return Object.fromEntries(obj.entries().map(f, thisValue));
-}
+  /**
+   *
+   */
+  map : function(obj, f, thisValue) {
+    return Object.fromEntries(obj.entries().map(f, thisValue));
+  },
 
-Object.reduce = function(obj, f, init) {
-  return Object.fromEntries(obj.entries().reduce(f, init));
-}
+  /**
+   *
+   */
+  reduce : function(obj, f, init) {
+    return Object.fromEntries(obj.entries().reduce(f, init));
+  },
 
-Object.reduceRight = function(obj, f, init) {
-  return Object.fromEntries(obj.entries().reduceRight(f, init));
-}
+  /**
+   *
+   */
+  reduceRight : function(obj, f, init) {
+    return Object.fromEntries(obj.entries().reduceRight(f, init));
+  },
 
-Object.mapKeys = function(obj, f, thisValue) {
-  return obj.map(
-    function ({key : k, value : v}) {
-      return { key : f.call(thisValue, k), value : v };
-    }
-  );
-}
+  /**
+   *
+   */
+  mapKeys : function(obj, f, thisValue) {
+    return obj.map(
+      function ({key : k, value : v}) {
+        return { key : f.call(thisValue, k), value : v };
+      }
+    );
+  },
               
-Object.mapValues = function(obj, f, thisValue) {
-  return obj.map(
-    function ({key : k, value : v}) {
-      return { key : k, value : f.call(thisValue, v) };
+  /**
+   *
+   */
+  mapValues : function(obj, f, thisValue) {
+    return obj.map(
+      function ({key : k, value : v}) {
+        return { key : k, value : f.call(thisValue, v) };
+      }
+    );
+  },
+
+
+
+  /**
+   * Return the values of all enumerable properties in this object.
+   * (This function behaves exactly as in Prototype).
+   *
+   * @param obj
+   *  Object to enumerate for properties
+   */
+  values : function(obj) {
+    return [v for each (v in obj)];
+  },
+
+  /**
+   * Returns an array of {key: , value: } pairs for all enumerable properties
+   * in this object.
+   *
+   * @param obj
+   *  Object to enumerate for properties
+   */
+  entries : function(obj) {
+    return [{ key:k, value:obj[k] } for (k in obj)];
+  },
+
+  /**
+   * Updates enumerable status for the specified properties.
+   *
+   * @obj
+   *  Object to modify.
+   * @prop
+   *  String property name OR
+   *  Array property names OR
+   *  Function property selector
+   * @status
+   *  Status to set
+   */
+  enumerable : function(obj, prop, status) {
+    Object.defineAllProperties(obj, prop, { enumerable : status });
+  },
+
+  /**
+   * Updates writable status for the specified properties.
+   *
+   * @obj
+   *  Object to modify.
+   * @prop
+   *  String property name OR
+   *  Array property names OR
+   *  Function property selector
+   * @status
+   *  Status to set
+   */        
+  writable : function(obj, prop, status) {
+    // TODO What about lookup properties? Coerced, ignored? 
+    Object.defineAllProperties(obj, prop, { writable : status });
+  },
+
+  /**
+   * Makes the specified properties unconfigurable.
+   *
+   * @obj
+   *  Object to modify.
+   * @prop
+   *  String property name OR
+   *  Array property names OR
+   *  Function property selector
+   */
+  preventChanges : function(obj, prop) {
+    Object.defineAllProperties(obj, prop, { configurable : false });
+  },
+
+  /**
+   * Redefine properties for the given object using the specified descriptor
+   *
+   * @obj
+   *  Object to modify.
+   * @prop
+   *  String property name OR
+   *  Array property names OR
+   *  Function property selector
+   * @status
+   *  Status to set
+   */
+  defineAllProperties : function (obj, prop, descr) {
+    if (
+      Function.isFunction(prop)) {
+      Object.defineAllProperties( 
+        obj, 
+        Object.keys(obj).filter(prop), 
+        descr);
+    } else if (
+      Array.isArray(prop)) {
+      prop.forEach(
+        function(p) Object.defineAllProperties( 
+          obj, 
+          p, 
+          descr ));
+    } else {
+      Object.defineProperty( obj, prop, descr );
     }
-  );
-}
+  }
+  
+});
 
 
 
 // Function
 
-Function.constant = function(val) {
-  return (function() val);
-}
-
-Function.identity = function() {
-  return (function(val) val);
-}
-
-Function.curry = function(f) {
-  // TODO
-}
-
-Function.uncurry = function(f) {
-  // TODO
-}
-
-Function.compose = function(f, g) {
-  // TODO any number of fns
-}
-
-Function.sequence = function(f, g) {
-  // TODO any number of fns
-}
-
-Function.power = function() {
-  // TODO
-}
-
-Function.flip = function() {
-  // TODO
-}
+// TODO
+// - Implement standard higher-order functions
+// - Object -> Function view and vice-versa
 
 
-Function.and = function() {
-  // TODO
-}
+Object.extend(Function, {
 
-Function.or = function() {
-  // TODO
-}
+  constant : function(v) {
+    return (function() v);
+  },
 
-Function.not = function() {
-  // TODO
-}
+  identity : function() {
+    return (function(v) v);
+  },
 
-Function.equalTo = function() {
-  // TODO
-}
+  curry : function() {
+    // TODO
+  },
 
-Function.strictlyEqualTo = function() {
-  // TODO
-}
+  uncurry : function() {
+    // TODO
+  },
 
-Function.greaterThan = function() {
-  // TODO
-}
+  compose : function() {
+    // TODO any number of fns
+  },
 
-Function.lessThan = function() {
-  // TODO
-}
+  sequence : function() {
+    // TODO any number of fns
+  },
 
+  power : function() {
+    // TODO
+  },
 
-Function.some = function() {
-  // TODO
-}
-
-Function.all = function() {
-  // TODO
-}
-
-Function.memberOf = function() {
-  // TODO
-}
-
-Function.empty = function() {
-  // TODO
-}
-
-Function.isNull = function() {
-  // TODO
-}
-
-Function.isUndefined = function() {
-  // TODO
-}
-
-Function.isNotNull = function() {
-  // TODO
-}
-
-Function.isDefined = function() {
-  // TODO
-}
+  flip : function() {
+    // TODO
+  },
 
 
-/**
- * Binds an function owned by a constructor to its prototype.
- * @param constructor
- * @param name
- */
-Function.bindPrototype = function(constructor, name) {
-  var constructorFunction = constructor[name];
-  var prototypeFunction;
+  and : function() {
+    // TODO
+  },
 
-  if (Function.check(constructor) && Function.check(constructorFunction)) {
-    prototypeFunction = (function() {
-      var newArgs = [this];
-      Array.prototype.push.apply(newArgs, arguments);
-      return constructorFunction.apply(null, newArgs);
-    });
-    // TODO use setter to read original length (in case it is changed)
-//    prototypeFunction.length = Math.max(0, constructorFunction.length - 1);
-    constructor.prototype[name] = prototypeFunction;
-  }
-}
+  or : function() {
+    // TODO
+  },
 
-/**
- * Binds an function owned by a prototype to its constructor.
- * @param constructor
- * @param name
- */
-Function.bindConstructor = function(constructor, name) {
-  if (Function.check(constructor)) {
+  not : function() {
+    // TODO
+  },
 
-    var prototypeFunction = constructor.prototype[name];
-    var constructorFunction;
+  equalTo : function() {
+    // TODO
+  },
 
-    if (Function.check(prototypeFunction)) {
-      constructorFunction = (function() {
-        var given = [];
-        Array.prototype.push.apply(given, arguments);
-        return prototypeFunction.apply(given.shift(), given);
+  strictlyEqualTo : function() {
+    // TODO
+  },
+
+  greaterThan : function() {
+    // TODO
+  },
+
+  lessThan : function() {
+    // TODO
+  },
+
+
+  some : function() {
+    // TODO
+  },
+
+  all : function() {
+    // TODO
+  },
+
+  memberOf : function() {
+    // TODO
+  },
+
+  empty : function() {
+    // TODO
+  },
+
+  isNull : function() {
+    // TODO
+  },
+
+  isUndefined : function() {
+    // TODO
+  },
+
+  isNotNull : function() {
+    // TODO
+  },
+
+  isDefined : function() {
+    // TODO
+  },
+
+
+  /**
+   * Binds an function owned by a constructor to its prototype.
+   * @param constructor
+   * @param name
+   */
+  bindPrototype : function(constructor, name) {
+    var constructorFunction = constructor[name];
+    var prototypeFunction;
+
+    if (Function.check(constructor) && Function.check(constructorFunction)) {
+      prototypeFunction = (function() {
+        var newArgs = [this];
+        Array.prototype.push.apply(newArgs, arguments);
+        return constructorFunction.apply(null, newArgs);
       });
       // TODO use setter to read original length (in case it is changed)
-//      constructorFunction.length = prototypeFunction.length + 1;
-      constructor[name] = constructorFunction;
+  //    prototypeFunction.length = Math.max(0, constructorFunction.length - 1);
+      constructor.prototype[name] = prototypeFunction;
     }
-  }
-}
+  },
+
+  /**
+   * Binds an function owned by a prototype to its constructor.
+   * @param constructor
+   * @param name
+   */
+  bindConstructor : function(constructor, name) {
+    if (Function.check(constructor)) {
+
+      var prototypeFunction = constructor.prototype[name];
+      var constructorFunction;
+
+      if (Function.check(prototypeFunction)) {
+        constructorFunction = (function() {
+          var given = [];
+          Array.prototype.push.apply(given, arguments);
+          return prototypeFunction.apply(given.shift(), given);
+        });
+        // TODO use setter to read original length (in case it is changed)
+  //      constructorFunction.length = prototypeFunction.length + 1;
+        constructor[name] = constructorFunction;
+      }
+    }
+  } 
+
+});
 
 
 
 // Array
 
-// TODO Naive implementations. Replace with more efficient variants as needed.
+// TODO 
+// - Replace naive implementations:
+//   - Use persistent copies for immutables
+//   - Integrate with Sequences
+// - Implement permutations and shuffle
+// - Implement all set views
 
-Array.prototype.clone = function() {
-  return [v for each (v in this)];
-}
+  
+Object.extend(Array, {
 
-/**
- * Returns the union of the given objects.
- *
- * This function will retain duplicates in the first objects but not the second.
- */
-Array.union = function(first, second) {
-  var union = first.clone();
-  for each (v in second) {
-    if (first.indexOf(v) < 0) {
-      union.push(v);
+  /**
+   * Returns the union of the given objects.
+   *
+   * This function will retain duplicates in the first objects but not the second.
+   */
+  union : function(first, second) {
+    var union = first.clone();
+    for each (v in second) {
+      if (first.indexOf(v) < 0) {
+        union.push(v);
+      }
     }
-  }
-  return union;
-}
+    return union;
+  },
 
-/**
- * Returns the intersection of the given objects.
- *
- * This function will retain duplicates in the first objects but not the second.
- */
-Array.intersection = function(first, second) {
-  var intersection = [];
-  for each (v in first) {
-    if (second.indexOf(v) >= 0) {
-      intersection.push(v);
+  /**
+   * Returns the intersection of the given objects.
+   *
+   * This function will retain duplicates in the first objects but not the second.
+   */
+  intersection : function(first, second) {
+    var intersection = [];
+    for each (v in first) {
+      if (second.indexOf(v) >= 0) {
+        intersection.push(v);
+      }
     }
+    return intersection;
   }
-  return intersection;
+
+});
+  
+
+Object.extend(Array.prototype, {
+
+  clone : function() {
+   return [v for each (v in this)];
+  },
+
+  removeLast : function(){
+    return Array.prototype.pop.apply(this.clone(), arguments);
+  },
+
+  add : function(){
+    return Array.prototype.push.apply(this.clone(), arguments);
+  },
+
+  removeFirst : function(){
+    return Array.prototype.shift.apply(this.clone(), arguments);
+  },
+
+  addBefore : function(){
+    return Array.prototype.unshift.apply(this.clone(), arguments);
+  },
+
+  reversed : function(){
+    return Array.prototype.reverse.apply(this.clone(), arguments);
+  },
+
+  sorted : function(){
+    return Array.prototype.sort.apply(this.clone(), arguments);
+  }  
+
+});      
+
+
+// Sequence
+
+function Sequence(value) { 
+  if (!(this instanceof Sequence)) 
+    return new Sequence(value);
+  
+  // TODO
 }
 
-Array.prototype.removeLast = function(){
-  return Array.prototype.pop.apply(this.clone(), arguments);
-}
-
-Array.prototype.add = function(){
-  return Array.prototype.push.apply(this.clone(), arguments);
-}
-
-Array.prototype.removeFirst = function(){
-  return Array.prototype.shift.apply(this.clone(), arguments);
-}
-
-Array.prototype.addBefore = function(){
-  return Array.prototype.unshift.apply(this.clone(), arguments);
-}
-
-Array.prototype.reversed = function(){
-  return Array.prototype.reverse.apply(this.clone(), arguments);
-}
-
-Array.prototype.sorted = function(){
-  return Array.prototype.sort.apply(this.clone(), arguments);
+Sequence.prototype = {
+  first : function() {
+    
+  },
+  rest : function() {
+    
+  }
 }
 
 
 
-// Date
+
+
+
+
+// Date                                       
+
 Date.prototype.setISO8601 = function(string) {
   var regexp = "([0-9]{4})(-([0-9]{2})(-([0-9]{2})" +
       "(T([0-9]{2}):([0-9]{2})(:([0-9]{2})(\.([0-9]+))?)?" +
@@ -404,12 +497,12 @@ Date.prototype.setISO8601 = function(string) {
   var offset = 0;
   var date = new Date(d[1], 0, 1);
 
-  if (d[3]) { date.setMonth(d[3] - 1); }
-  if (d[5]) { date.setDate(d[5]); }
-  if (d[7]) { date.setHours(d[7]); }
-  if (d[8]) { date.setMinutes(d[8]); }
-  if (d[10]) { date.setSeconds(d[10]); }
-  if (d[12]) { date.setMilliseconds(Number("0." + d[12]) * 1000); }
+  if (d[3])  date.setMonth(d[3] - 1);
+  if (d[5])  date.setDate(d[5]);
+  if (d[7])  date.setHours(d[7]);
+  if (d[8])  date.setMinutes(d[8]);
+  if (d[10]) date.setSeconds(d[10]);
+  if (d[12]) date.setMilliseconds(Number("0." + d[12]) * 1000);
   if (d[14]) {
       offset = (Number(d[16]) * 60) + Number(d[17]);
       offset *= ((d[15] == '-') ? 1 : -1);
@@ -418,11 +511,115 @@ Date.prototype.setISO8601 = function(string) {
   offset -= date.getTimezoneOffset();
   time = (Number(date) + (offset * 60 * 1000));
   this.setTime(Number(time));
+}       
+
+
+
+function Natural(value) { 
+  if (!(this instanceof Natural)) 
+    return new Natural(value);
+  
+  // TODO
 }
 
+Natural.prototype = {
+
+  add : function(n) {
+    return Natural(this.valueOf + n);
+  },
+
+  subtract : function() {
+    return Natural(this.valueOf - n);
+  },
+
+  multiply : function() {
+    return Natural(this.valueOf * n);
+  },
+
+  divide : function() {
+    return Natural(this.valueOf / n);
+  },
+
+  modulo : function() {
+    return Natural(this.valueOf % n);
+  },
+
+  succ : function() {
+    return this.valueOf + 1;
+  },
+
+  op : function(op, n) {
+    switch (op) {
+      case("+"): return this.add(n);
+      case("-"): return this.subtract(n);
+      case("*"): return this.multiply(n);
+      case("/"): return this.divide(n);
+      case("%"): return this.modulo(n);
+    }
+  }
+};
 
 
-// Type checks
+function Integer(value) {
+  if (!(this instanceof Integer)) 
+    return new Integer(value);
+
+  
+  // TODO
+}
+
+Integer.prototype = Object.extend(new Natural(), {
+  // TODO
+});
+
+
+function Ratio(nom, den) {
+  if (!(this instanceof Ratio)) 
+    return new Ratio(nom, den);
+
+  // TODO
+}
+
+Ratio.prototype = Object.extend(new Integer(), {
+  // TODO
+});
+
+
+     
+
+// Top-level functions
+               
+
+// function parseArgs(a) {
+//   // TODO Return lazy seq instead of copy
+//   
+//   var given = [];
+//   Array.prototype.push.apply(given, a);
+//   return given;
+// }    
+
+// function chain(expr) {          
+//   var value = expr;
+//   var i;
+//   for (i = 1; i < arguments.length; ++i) {
+//     Function.check(arguments[i]);
+//     value = arguments[i].call(null, value);    
+//   }
+//   return value;
+// }
+//   
+
+
+
+//======================================================================
+// Type system
+
+// TODO
+// - Common Lisp-like type expression schemes
+// - Runtime checks
+// - Auto-generation of compliant constructors/accessors (== primitive pattern matching)
+
+// Checks
 
 Object.isObject = function(val) {
   return (typeof val === "object") || (typeof val === "function");
@@ -483,9 +680,11 @@ String.check = function(val) {
 
 
 
+//======================================================================
+// Configure
+
 // Double-binding
 
-Function.bindPrototype( Object,   "extend"                   );
 Function.bindPrototype( Object,   "clone"                    );
 Function.bindPrototype( Object,   "keys"                     );
 Function.bindPrototype( Object,   "values"                   );
@@ -521,7 +720,6 @@ Function.bindPrototype( Function, "isNull"                   );
 Function.bindPrototype( Function, "isUndefined"              );
 Function.bindPrototype( Function, "isNotNull"                );
 Function.bindPrototype( Function, "isDefined"                );
-
 
 
 // Encapsulate extensions
@@ -636,112 +834,58 @@ Object.enumerable(Array, [
 
 
 //======================================================================
-// New types
-
-function Natural(value) {
-  // TODO
-}
-
-Natural.prototype = {
-
-  add : function(n) {
-    return Natural(this.valueOf + n);
-  },
-
-  subtract : function() {
-    return Natural(this.valueOf - n);
-  },
-
-  multiply : function() {
-    return Natural(this.valueOf * n);
-  },
-
-  divide : function() {
-    return Natural(this.valueOf / n);
-  },
-
-  modulo : function() {
-    return Natural(this.valueOf % n);
-  },
-
-  succ : function() {
-    return this.valueOf + 1;
-  },
-
-  op : function(op, n) {
-    switch (op) {
-      case("+"): return this.add(n);
-      case("-"): return this.subtract(n);
-      case("*"): return this.multiply(n);
-      case("/"): return this.divide(n);
-      case("%"): return this.modulo(n);
-    }
-  }
-};
-
-
-function Integer(value) {
-  // TODO
-}
-
-Integer.prototype = Object.extend(new Natural(), {
-  // TODO
-});
-
-
-function Ratio(nom, denom) {
-  // TODO
-}
-
-Ratio.prototype = Object.extend(new Integer(), {
-  // TODO
-});
-
-
-
-//======================================================================
 // Environment
 
-var vitry = Object.fromGetters(
-  { 
-    core    : "vitry/core",
-    music   : "vitry/music",
-    readers : "vitry/readers",
-    writers : "vitry/writers"
-  }.mapValues(function(v) (function() require(v)))
-);
+var vitryModules = {
+  core          : "vitry/core",
+  music         : "vitry/music",
+  readers       : "vitry/readers",
+  writers       : "vitry/writers"
+}
 
 /**
- * Global require function (set below).
+ * Shortcut to vitry modules (fetched lazily).
  */
-var require = Packages.vitry.java.core.getSimpleRequire(
-  {
-    java          : undefined,
-    environment   : undefined,
-    history       : undefined,
-    importPackage : undefined,
-    importClass   : undefined,
-    help          : undefined,
-    defineClass   : undefined,
-    deserialize   : undefined,
-    gc            : undefined,
-    load          : undefined,
-    loadClass     : undefined,
-    print         : undefined,
-    readFile      : undefined,
-    readUrl       : undefined,
-    runCommand    : undefined,
-    seal          : undefined,
-    serialize     : undefined,
-    spawn         : undefined,
-    sync          : undefined,
-    quit          : undefined,
-    version       : undefined,
-    vitry         : vitry,
-    print         : print
-  }
-); 
-   
+var vitry = Object.fromGetters(
+  vitryModules.mapValues(function(v) (function() require(v))));
+            
+var scope = {
+  Packages      : Packages,
+  java          : undefined,
+  environment   : undefined,
+  history       : undefined,
+  importPackage : undefined,
+  importClass   : undefined,
+  help          : undefined,
+  defineClass   : undefined,
+  deserialize   : undefined,
+  gc            : undefined,
+  load          : undefined,
+  loadClass     : undefined,
+  print         : undefined,
+  readFile      : undefined,
+  readUrl       : undefined,
+  runCommand    : undefined,
+  seal          : undefined,
+  serialize     : undefined,
+  spawn         : undefined,
+  sync          : undefined,
+  quit          : undefined,
+  version       : undefined,
+  vitry         : vitry,
+  print         : print
+}   
+
+/**
+ * Global require function
+ */
+var require = Packages.vitry.java.core.getSimpleRequire(scope); 
+
+                                
+
+//======================================================================
+// Utilities
+
 function getReader(name) {
   return Packages.vitry.java.core.getReader(name);
 }
@@ -753,6 +897,13 @@ function getWriter(name) {
 function isNative(obj) {
   return Packages.vitry.java.core.isNative(obj);
 }
+      
+var io = {
+  stdIn  : Packages.vitry.java.core.getIn(),
+  stdOut : Packages.vitry.java.core.getOut(),
+  stdErr : Packages.vitry.java.core.getErr()
+}
+
 
 
 //======================================================================
@@ -769,18 +920,17 @@ var visible = {
   quit:quit
 };
 
-var inStream = Packages.vitry.java.core.getIn();
-var outStream = Packages.vitry.java.core.getOut();
-var errStream = Packages.vitry.java.core.getErr();
-
 function print(val) {
   if (val === undefined && arguments.length === 0)
     return print("");
     
-  if (Object.isObject(val) && !Function.isFunction(val) && !isNative(val) && (val.toString() === Object.prototype.toString()))
-    return print(JSON.stringify(val));
+  if (Object.isObject(val) &&
+   !Function.isFunction(val) &&
+   !isNative(val) &&
+   (val.toString() === Object.prototype.toString()))
+     return print(JSON.stringify(val));
 
-  outStream.println("" + val);
+  io.stdOut.println(String(val));
 }
 
 function version() {
@@ -801,8 +951,12 @@ function showOwn(obj) {
     if ((obj || visible).hasOwnProperty(k)) 
       print("  " + k);
 }
-
-function help() {
+  
+/**
+ * Prints help information about the given object or about the current environment.
+ * TODO
+ */
+function help(obj) {
   print("  show([val])  Displays all enumerable properties of the given object.         ");
   print("               If none is given, displays all top-level objects.               ");
   print("  show([val])  Displays all non-inherited, enumerable properties of the given  ");
@@ -814,7 +968,10 @@ function help() {
   print("  quit()       Leaves Vitry.                                                   ");
   print();
 }
-
+      
+/**
+ * Prints a good-bye message and exits.
+ */
 function quit() {
   print("Leaving " + about.name + "...")
   Packages.java.lang.System.exit(0);
@@ -830,13 +987,19 @@ function load(fileName) {
       file = file.replace("~", environment["user.home"]);
       try {
         eval(readFile(file));
-      } catch (e if e instanceof JavaException) {
+      } 
+      catch (e if e instanceof JavaException) {
         return null;
-      }
+      }    
     }
   }
 }
-
+        
+/**
+ * Enters a read-eval-print loop.
+ * @param prompt
+ *   String to use as propmt.
+ */
 function repl(prompt) {
   var consoleReader = new Packages.jline.ConsoleReader();
   var line;
@@ -876,4 +1039,5 @@ function main(args) {
 //======================================================================
 
 exports.add ( Natural, Integer, Ratio,
-              version, versionString, getReader, getWriter, isNative, main );
+              version, versionString, 
+              getReader, getWriter, isNative, main );

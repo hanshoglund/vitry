@@ -736,7 +736,7 @@ function getSynchronize() {
 
 function getReceive(address) {
   try {
-    return vitry.core.getWriter(
+    return vitry.core.getWriter(                                                              
       vitry.writers.setup.sibelius.socketDir + "/" + address + "_" + files.receive);
   } catch (e) {
     throw new Error("Could not open receive file on address " + address);

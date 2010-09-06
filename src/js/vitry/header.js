@@ -175,9 +175,41 @@ Object.prototype.hash = function()
             this.hashCode ^= str.charCodeAt(i)
     }
     return this.hashCode
-}
-
-
+}    
+    
+// Object.prototype.hash = function() {
+//   if (this.hashCode === Object.prototype.hashCode) { 
+//     this.hashCode = 0;
+//     for (k in this) {
+//       this.hashCode += hashValue(k) + hashValue(this[k]);
+//     }
+//   }
+//   return this.hashCode;
+// }
+// 
+// Boolean.prototype.hash = function() {
+//   return hashValue(this.valueOf());
+// }
+// 
+// Number.prototype.hash = function() {
+//   return hashValue(this.valueOf());
+// }     
+// 
+// String.prototype.hash = function() {
+//   return hashValue(this.valueOf());
+// }
+// 
+// 
+// function hashValue(v) {
+//   if (typeof v === "object") return v.hash();
+//   if (typeof v === "string") {
+//     var hash = 0;
+//     for(i = 0; i < v.length; i++)
+//       hash ^= v.charCodeAt(i);
+//     return hash;
+//   }                             
+//   return Number(v);
+// }   
 
 
 
@@ -189,7 +221,7 @@ String.prototype.toRational = function ()
 }
 
 
-
+// FIXME does not properly coerce arguments
 /**
  * Represents a rational number.
  */
@@ -377,7 +409,10 @@ Rational.parse = function(value) {
   } else if (typeof value === "string") {
     var result;
 
-    // FIXME crashes on values without fractional notation, such as "2"
+    // TODO make regexp accept strings not containing /
+
+    // if (value.indexOf("/") < 0)
+    //   return new Rational(parseInt(value));   
     result = strParser.exec(value)
 
     //result.postln();
@@ -389,7 +424,7 @@ Rational.parse = function(value) {
   } else {
     return new Rational(value)
   }
-}
+}    
 
 function gcd(a, b) {
   var c;

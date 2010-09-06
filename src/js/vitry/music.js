@@ -1,6 +1,8 @@
 /*
  * Vitry, copyright (c) Hans Höglund 2010, see COPYING.txt for details
  */
+ 
+// TODO Rewrite from scratch based on persistant classes
 
 /**
  * Provides the music model.
@@ -11,7 +13,7 @@
 function Event(pitch, duration) {
    this.type     = null;
    this.duration = duration || new Rational(0)
-   this.pitch    = pitch || -1
+   this.pitch    = pitch    || -1
 }
 
 Event.prototype = {
@@ -29,16 +31,16 @@ Event.prototype = {
  * A collection of musical Events indexed by time.
  */
 function Score() {
-  this.attributes = {};
-  this.events     = new Map();
-  this.position   = new Rational(0);
+  this.attributes   = {};
+  this.events       = new Map();
+  this.lastPosition = new Rational(0);
 } 
 
 Score.prototype = {  
   
   clear : function() {
     this.events.clear();
-    this.position = new Rational(0);
+    this.lastPosition = new Rational(0);
   },
 
   note : function(pitch, duration) {
@@ -47,8 +49,8 @@ Score.prototype = {
     if (typeof duration === "number")
       duration = new Rational(duration);
 
-    this.events.put(this.position.clone(), [ new Event(pitch, duration) ]);
-    this.position = this.position.add(duration);
+    this.events.put(this.lastPosition.clone(), [ new Event(pitch, duration) ]);
+    this.lastPosition = this.lastPosition.add(duration);
   },
 
   rest : function(duration) {
@@ -57,7 +59,7 @@ Score.prototype = {
     if (typeof duration === "number")
       duration = new Rational(duration);
 
-    this.position = this.position.add(duration);
+    this.lastPosition = this.lastPosition.add(duration);
   },
 
   pitches : function(fn, steps, dur) {
@@ -75,8 +77,8 @@ Score.prototype = {
   //   for (i = 0; i < pitches.length; ++i) {
   //     chordEvents.push(new MJOS.score.Event(pitches[i], duration));
   //   }
-  //   this.events.put(this.position.clone(), chordEvents);
-  //   this.position = this.position.add(duration);
+  //   this.events.put(this.lastPosition.clone(), chordEvents);
+  //   this.lastPosition = this.lastPosition.add(duration);
   // },  
   
   toString : function() {
