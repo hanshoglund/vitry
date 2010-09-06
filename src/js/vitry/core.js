@@ -11,7 +11,7 @@
 var about = {
   name    : "Vitry",
   url     : "http://github.com/hanshoglund/Vitry",
-  version : [0, 5, 0]
+  version : [0, 6, 0]
 }
 
 //======================================================================
@@ -387,19 +387,47 @@ Object.extend(Function, {
 
 // Sequence
 
-function Sequence(first, rest) { 
-  if (!(this instanceof Sequence)) 
-    return new Sequence(fist, rest);
+
+/**
+ * An immutable sequential structure.
+ */
+function Sequence(first, rest) {
+  /* Constr guard : */ if (!(this instanceof Sequence)) return new Sequence(first, rest);
   
-  this.first = Function.constant(first);
-  this.rest = Function.constant(rest);  
+  this.first        = Function.constant(first);
+  this.rest         = Function.constant(rest);
+  this.__iterator__ = this.iterator;
+  
+  Object.freeze(this);  
 }
 
 Sequence.prototype = {
-  // first { closure }
-  // above { closure }
+  first    : { /* closure */ },
+  rest     : { /* closure */ },
+  
+  iterator : function(keysOnly) {
+    return new SequenceIterator(this, keysOnly);
+  }   
 }
 
+function SequenceIterator(seq, keys) {
+  this.seq = seq;                  
+  this.keys = keys;
+}                
+
+SequenceIterator.prototype = {
+  next : function() {
+    if (this.seq instanceof Sequence) {
+      var v = this.seq.first();
+      this.seq = this.seq.rest();
+      return this.keys ? undefined : v;
+    } else {
+      throw StopIteration;
+    }
+  }
+}
+
+Array.prototype.__proto__ = Sequence.prototype;
 
 
 
@@ -520,8 +548,7 @@ Object.extend(Array.prototype, {
     var res = this.clone();
     Array.prototype.sort.apply(res, arguments);
     return res;
-  }  
-
+  }
 });
 
 
@@ -906,8 +933,6 @@ var strParser = new RegExp("(\\d+(?:\\.\\d*)?(?:[eE]\\+?\\-?\\d+)?|\\.\\d+(?:[eE
 // - Auto-generation of compliant constructors/accessors (== primitive pattern matching)
              
 
-Array.prototype.__proto__ = Sequence.prototype;      
-
 
 // Checks
 
@@ -1107,7 +1132,8 @@ Object.enumerable(Sequence, [
 
 Object.enumerable(Sequence.prototype, [
   "first",
-  "rest"
+  "rest",
+  "iterator"
 ], false);
 
 Object.enumerable(Array, [
@@ -1120,6 +1146,7 @@ Object.enumerable(Array, [
 Object.enumerable(Array.prototype, [
   "first",
   "rest",
+  "iterator",
   "union",
   "intersection",
   "clone",
