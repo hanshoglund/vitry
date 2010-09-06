@@ -31,7 +31,6 @@ var about = {
 
 /**
  * Copies all enumerable properties of a given object to another.
- * (This function behaves exactly as in Prototype).
  *
  * @param to
  *  Object to receive properties
@@ -47,7 +46,6 @@ Object.extend(Object, {
 
   /**
    * Returns a shallow copy of the given object.
-   * (This function behaves exactly as in Prototype).
    *
    * @param obj
    *  Object to copy
@@ -384,6 +382,27 @@ Object.extend(Function, {
 
 
 
+
+
+
+// Sequence
+
+function Sequence(first, rest) { 
+  if (!(this instanceof Sequence)) 
+    return new Sequence(fist, rest);
+  
+  this.first = Function.constant(first);
+  this.rest = Function.constant(rest);  
+}
+
+Sequence.prototype = {
+  // first { closure }
+  // above { closure }
+}
+
+
+
+
 // Array
 
 // TODO 
@@ -392,7 +411,8 @@ Object.extend(Function, {
 //   - Integrate with Sequences
 // - Implement permutations and shuffle
 // - Implement all set views
-
+   
+// Array.prototype__proto__ = new Sequence();
   
 Object.extend(Array, {
 
@@ -424,61 +444,85 @@ Object.extend(Array, {
       }
     }
     return intersection;
+  },
+  
+  difference : function(first, second) {
+    // TODO
+  },
+    
+  powerSet : function(first, second) {
+    // TODO
+  },
+  
+  isSubsetOf : function(first, second) {
+    // TODO
+  },
+  
+  isProperSubsetOf : function(first, second) {
+    // TODO
+  },
+  
+  isSupersetOf : function(first, second) {
+    // TODO
+  },
+  
+  isProperSupersetOf : function(first, second) {
+    // TODO
   }
 
 });
-  
 
 Object.extend(Array.prototype, {
 
+  first : function() {
+    return this[0];
+  },
+  
+  rest : function() {
+    return this.slice(1);
+  },
+
   clone : function() {
-   return [v for each (v in this)];
+   return this.slice(0);
+  },
+  
+  add : function() {            
+    var res = this.clone();
+    Array.prototype.push.apply(res, arguments);
+    return res;
+  },   
+
+  addBefore : function() {
+    var res = this.clone();
+    Array.prototype.unshift.apply(res, arguments);
+    return res;
   },
 
-  removeLast : function(){
-    return Array.prototype.pop.apply(this.clone(), arguments);
+  removeFirst : function() {
+    var res = this.clone();
+    Array.prototype.shift.apply(res, arguments);
+    return res;
   },
 
-  add : function(){
-    return Array.prototype.push.apply(this.clone(), arguments);
+  removeLast : function() {
+    var res = this.clone();
+    Array.prototype.pop.apply(res, arguments);
+    return res;
   },
 
-  removeFirst : function(){
-    return Array.prototype.shift.apply(this.clone(), arguments);
+  reversed : function() {
+    var res = this.clone();
+    Array.prototype.reverse.apply(res, arguments);
+    return res;
   },
 
-  addBefore : function(){
-    return Array.prototype.unshift.apply(this.clone(), arguments);
-  },
-
-  reversed : function(){
-    return Array.prototype.reverse.apply(this.clone(), arguments);
-  },
-
-  sorted : function(){
-    return Array.prototype.sort.apply(this.clone(), arguments);
+  sorted : function() {
+    var res = this.clone();
+    Array.prototype.sort.apply(res, arguments);
+    return res;
   }  
 
-});      
-
-
-// Sequence
-
-function Sequence(value) { 
-  if (!(this instanceof Sequence)) 
-    return new Sequence(value);
-  
-  // TODO
-}
-
-Sequence.prototype = {
-  first : function() {
-    
-  },
-  rest : function() {
-    
-  }
-}
+});
 
 
 
@@ -585,6 +629,248 @@ Ratio.prototype = Object.extend(new Integer(), {
 });
 
 
+
+
+
+// TEMPORARY
+
+String.prototype.toRational = function ()
+{
+    return Rational.parse(this.toString());
+}
+
+
+// FIXME does not properly coerce arguments
+/**
+ * Represents a rational number.
+ */
+Rational = function(num, denom) {
+  var m, n;
+
+  switch (arguments.length) {
+    case 0:
+      m = 0
+      n = 1
+      break;
+    case 1:
+      m = num;
+      n = 1;
+      break;
+    default:
+      m = num
+      n = denom
+
+      if (n === 0)
+        throw new Error("Invalid rational number " + m + "/" + n);
+      if (m === 0)
+        n = 1;
+      else {
+        g = gcd(m, n)
+        m = m / g
+        n = n / g
+
+        if (n < 0) {
+          m = -m
+          n = -n
+        }
+      }
+  }
+
+  /**
+   * @methodOf Rational.prototype
+   */
+  this.num = function() {
+    return m
+  }
+
+  /**
+   * @methodOf Rational.prototype
+   */
+  this.denom = function() {
+    return n
+  }
+};
+
+/**
+ * Returns this + value.
+ */
+Rational.prototype.add = function(value) {
+  var that = Rational.parse(value), p = this.num(), q = this.denom(), r = that.num(), s = that
+    .denom();
+  return new Rational((p * s + q * r), q * s)
+}
+
+/**
+ * Returns this - value.
+ */
+Rational.prototype.subtract = function(value) {
+  var that = Rational.parse(value), p = this.num(), q = this.denom(), r = that.num(), s = that
+    .denom();
+  return new Rational((p * s - q * r), q * s);
+}
+
+/**
+ * Returns this * value.
+ */
+Rational.prototype.multiply = function(value) {
+  var that = Rational.parse(value), p = this.num(), q = this.denom(), r = that.num(), s = that
+    .denom();
+  return new Rational(p * r, q * s)
+}
+
+/**
+ * Returns this / value.
+ */
+Rational.prototype.divide = function(value) {
+  var that = Rational.parse(value), p = this.num(), q = this.denom(), r = that.num(), s = that
+    .denom();
+  return new Rational(p * s, q * r)
+}
+
+/**
+ *
+ */
+Rational.prototype.negate = function() {
+  return new Rational(-this.num(), this.denom())
+}
+
+/**
+ *
+ */
+Rational.prototype.reciprocal = function(value) {
+  // XXX R(1).divide(this) more effective ?
+  return new Rational(this.denom(), this.num())
+}
+
+
+/**
+ * Returns this === value.
+ */
+Rational.prototype.equals = function(value) {
+  var that = Rational.parse(value), p = this.num(), q = this.denom(), r = that.num(), s = that
+    .denom();
+  return p * s === q * r
+}
+
+
+/**
+ * Returns a floating-point approximation of this rational number.
+ */
+Rational.prototype.valueOf = function() {
+  var p = this.num(), q = this.denom();
+  return p / q
+}
+
+/**
+ * Returns M/N where M is the numerator and N the denominator of this
+ * rational number.
+ */
+Rational.prototype.toString = function() {
+  return String(this.num()) + "/" + String(this.denom())
+}
+
+/**
+ * Returns a serializable representation of this rational number.
+ */
+Rational.prototype.serialize = function() {
+  return {
+    m: this.num(),
+    n: this.denom()
+  }
+}
+
+Rational.prototype.clone = function() {
+  return new Rational(this.num(), this.denom());
+}
+
+
+/**
+ * Returns a floating-point approximation of the difference between the given
+ * rational numbers. This function can be used as a sorting function.
+ */
+Rational.compare = function(a, b) {
+  return Rational.parse(a).subtract(b).valueOf()
+}
+
+
+// Math
+
+Rational.pow = function(base, exponent) {
+  var a = Rational.parse(base), p = 1, i = 0;
+  for (; i < exponent; ++i)
+    p *= a;
+  return p;
+}
+
+
+/**
+ * Returns a rational number which is the result of parsing the given
+ * expression.
+ */
+Rational.parse = function(value) {
+  if (value instanceof Rational) {
+    return value;
+
+  } else if (typeof value === "string") {
+    var result;
+
+    // TODO make regexp accept strings not containing /
+
+    // if (value.indexOf("/") < 0)
+    //   return new Rational(parseInt(value));   
+    result = strParser.exec(value)
+
+    //result.postln();
+    if (result[2])
+      return new Rational(parseInt(result[1]), parseInt(result[2]));
+    else
+      return new Rational(parseInt(result[1]));
+
+  } else {
+    return new Rational(value)
+  }
+}
+
+Rational.coerce = function(value) {
+  if (typeof value === "string")
+    return Rational.parse(value);
+  if (typeof value === "number")
+    return new Rational(value);
+    // return new Rational(Math.floor(value));
+  else
+    return new Rational();
+}   
+
+function gcd(a, b) {
+  var c;
+  while (b !== 0) {
+    c = b
+    b = a % b
+    a = c
+  }
+  return a
+}
+
+function lcm(a, b) {
+  var a2 = Math.abs(a), b2 = Math.abs(b);
+  return a2 * (b2 / gcd(a2, b2))
+}
+
+
+/*
+ * Pattern    := (Simple)(?:/(Simple))?
+ * Simple     := \d+Exponent|\d+\.\d*Exponent|\.\d+Exponent
+ * Exponent := (?:[eE]\+?\-?\d+)?
+ */
+/*
+ * (Simple)(?:/(Simple))?
+ * \d+(?:\.\d*)?Exponent?|\.\d+Exponent?
+ * (?:[eE]\+?\-?\d+)
+ */
+var strParser = new RegExp("(\\d+(?:\\.\\d*)?(?:[eE]\\+?\\-?\\d+)?|\\.\\d+(?:[eE]\\+?\\-?\\d+)?)(?:\\/(\\d+(?:\\.\\d*)?(?:[eE]\\+?\\-?\\d+)?|\\.\\d+(?:[eE]\\+?\\-?\\d+)?))?");
+
+
+
      
 
 // Top-level functions
@@ -618,6 +904,10 @@ Ratio.prototype = Object.extend(new Integer(), {
 // - Common Lisp-like type expression schemes
 // - Runtime checks
 // - Auto-generation of compliant constructors/accessors (== primitive pattern matching)
+             
+
+Array.prototype.__proto__ = Sequence.prototype;      
+
 
 // Checks
 
@@ -761,27 +1051,6 @@ Object.enumerable(Object.prototype, [
   "mapValues"
 ], false);
 
-Object.enumerable(Function.prototype, [
-  "curry",
-  "uncurry",
-  "sequence",
-  "and",
-  "or",
-  "not",
-  "equalTo",
-  "strictlyEqualTo",
-  "greaterThan",
-  "lessThan",
-  "some",
-  "all",
-  "memberOf",
-  "empty",
-  "isNull",
-  "isUndefined",
-  "isNotNull",
-  "isDefined"
-], false);
-
 Object.enumerable(Function, [
   "constant",
   "identity",
@@ -812,7 +1081,45 @@ Object.enumerable(Function, [
   "check"
 ], false);
 
+Object.enumerable(Function.prototype, [
+  "curry",
+  "uncurry",
+  "sequence",
+  "and",
+  "or",
+  "not",
+  "equalTo",
+  "strictlyEqualTo",
+  "greaterThan",
+  "lessThan",
+  "some",
+  "all",
+  "memberOf",
+  "empty",
+  "isNull",
+  "isUndefined",
+  "isNotNull",
+  "isDefined"
+], false);
+
+Object.enumerable(Sequence, [
+], false);
+
+Object.enumerable(Sequence.prototype, [
+  "first",
+  "rest"
+], false);
+
+Object.enumerable(Array, [
+  "union",
+  "intersection",
+  "check",
+  "some"
+], false);
+
 Object.enumerable(Array.prototype, [
+  "first",
+  "rest",
   "union",
   "intersection",
   "clone",
@@ -822,13 +1129,6 @@ Object.enumerable(Array.prototype, [
   "addBefore",
   "reversed",
   "sorted"
-], false);
-
-Object.enumerable(Array, [
-  "union",
-  "intersection",
-  "check",
-  "some"
 ], false);
 
 
@@ -867,7 +1167,7 @@ var scope = {
   readUrl       : undefined,
   runCommand    : undefined,
   seal          : undefined,
-  serialize     : undefined,
+ serialize     : undefined,
   spawn         : undefined,
   sync          : undefined,
   quit          : undefined,
@@ -946,9 +1246,8 @@ function show(obj) {
     print("  " + k);
 }
 
-function showOwn(obj) {
-  for (k in (obj && obj != this ? obj : visible)) 
-    if ((obj || visible).hasOwnProperty(k)) 
+function shown(obj) {
+  for each (k in Object.getOwnPropertyNames(obj)) 
       print("  " + k);
 }
   

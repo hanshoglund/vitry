@@ -11,7 +11,8 @@
  * @date 2010
  */
 function Event(pitch, duration) {
-   this.type     = null;
+  if (!(this instanceof Event)) return new Event();
+  
    this.duration = duration || new Rational(0)
    this.pitch    = pitch    || -1
 }
@@ -19,7 +20,7 @@ function Event(pitch, duration) {
 Event.prototype = {
   serialize : function() {
     return {
-      type:     this.type,
+      // type:     this.type,
       duration: this.duration.serialize(),
       pitch:    this.pitch
     }
@@ -31,35 +32,28 @@ Event.prototype = {
  * A collection of musical Events indexed by time.
  */
 function Score() {
+  if (!(this instanceof Score)) return new Score();
+  
   this.attributes   = {};
-  this.events       = new Map();
+  this.events       = {};
   this.lastPosition = new Rational(0);
 } 
 
 Score.prototype = {  
   
   clear : function() {
-    this.events.clear();
+    this.events       = {};
     this.lastPosition = new Rational(0);
   },
 
-  note : function(pitch, duration) {
-    if (typeof duration === "string")
-      duration = Rational.parse(duration);
-    if (typeof duration === "number")
-      duration = new Rational(duration);
-
-    this.events.put(this.lastPosition.clone(), [ new Event(pitch, duration) ]);
-    this.lastPosition = this.lastPosition.add(duration);
+  note : function(pitch, duration) {  
+    var dur = Rational.coerce(duration);
+    this.events[this.lastPosition.toString()] = [new Event(pitch, dur)];
+    incr(this, dur);
   },
 
   rest : function(duration) {
-    if (typeof duration === "string")
-      duration = Rational.parse(duration);
-    if (typeof duration === "number")
-      duration = new Rational(duration);
-
-    this.lastPosition = this.lastPosition.add(duration);
+    incr(this, Rational.coerce(duration));
   },
 
   pitches : function(fn, steps, dur) {
@@ -67,44 +61,27 @@ Score.prototype = {
       this.note(fn.call(null, i), dur);
   }, 
   
-  // 
-  // chord : function(pitches, duration) {
-  //   if (typeof duration === "string")
-  //     duration = Rational.parse(duration);
-  // 
-  //   var i, chordEvents = [];
-  // 
-  //   for (i = 0; i < pitches.length; ++i) {
-  //     chordEvents.push(new MJOS.score.Event(pitches[i], duration));
-  //   }
-  //   this.events.put(this.lastPosition.clone(), chordEvents);
-  //   this.lastPosition = this.lastPosition.add(duration);
-  // },  
-  
-  toString : function() {
-    return "[Score score]";
-  },
-
   serialize : function() {
     var that = this;
     return {
       attributes: this.attributes,
-      events: this.events.keys().sort(Rational.compare).map(function(k) {
-        return [ k.serialize(), that.events.get(k) ]
-      })
+      events: 
+        this.events.keys() .
+        map(Rational.coerce) .
+        // sort(Rational.compare) . 
+        map(function(k) {
+          return [ k.serialize(), that.events[k.toString()] ]
+        })
     }
+  },
+  
+  toString : function() {
+    return "[Score score]";
   }
-}
+} 
 
-              
-
-
-function standardAttributes() {
-  return {
-    // style: "MJOS.score.WriterTreble",
-    // title: "Output[" + "]",
-    otherInformation: "Generated " + new Date().strftime("%Y-%m-%d %H:%M:%S")
-  };
+function incr(score, dur) {
+  score.lastPosition = score.lastPosition.add(dur);
 }
 
 

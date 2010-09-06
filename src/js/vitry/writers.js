@@ -459,8 +459,8 @@ function Proxy(object, type, socket) {
           msg += ")";
 
       } else if (typeof value === "object") {
-
           if ((value !== null) &&
+              (value.serialize) &&
               (typeof value.serialize === "function")) {
               msg += unparse(value.serialize());
 
