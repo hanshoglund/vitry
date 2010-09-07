@@ -15,19 +15,77 @@ var about = {
 }
 
 //======================================================================
+// Type system
+
+// TODO
+// - Common Lisp-like type expression schemes
+// - Runtime checks
+// - Auto-generation of compliant constructors/accessors (== primitive pattern matching)
+
+// Checks
+
+Object.isObject = function(val) {
+  return (typeof val === "object") || (typeof val === "function");
+}
+
+Function.isFunction = function(val) {
+  return (typeof val === "function");
+}
+
+Boolean.isBoolean = function(val) {
+  return (typeof val === "boolean");
+}
+
+Number.isNumber = function(val) {
+  return (typeof val === "number");
+}
+
+String.isString = function(val) {
+  return (typeof val === "string");
+}
+
+
+Object.check = function(val) {
+  if (!Object.isObject(val))
+    throw TypeError("Type of " + val + " is not object");
+  return true;
+}
+
+Array.check = function(val) {
+  if (!Array.isArray(val))
+    throw TypeError("Type of " + val + " is not array");
+  return true;
+}
+
+Function.check = function(val) {
+  if (!Function.isFunction(val))
+    throw TypeError("Type of " + val + " is not function");
+  return true;
+}
+
+Boolean.check = function(val) {
+  if (!Boolean.isBoolean(val))
+    throw TypeError("Type of " + val + " is not boolean");
+  return true;
+}
+
+Number.check = function(val) {
+  if (!Number.isNumber(val))
+    throw TypeError("Type of " + val + " is not number");
+  return true;
+}
+
+String.check = function(val) {
+  if (!String.isString(val))
+    throw TypeError("Type of " + val + " is not string");
+  return true;
+} 
+
+
+//======================================================================
 // Standard objects
-
-// Object
-
-// TODO 
-// - Standard handling of destructuve/non-destructive
-// - Efficient algorithms for frozen (immutable) objects
-// - Outline how writable and preventChanges relate to seal, freeze and preventExtensions
-// 
-// What about:
-//   - prototype methods (extend and clone); imperative and destructive by default
-//   - entries method (overlaps Rhino's Iterator class)
-
+ 
+// Bootstrap
 
 /**
  * Copies all enumerable properties of a given object to another.
@@ -41,6 +99,64 @@ Object.extend = function(to, from) {
   for (k in from) to[k] = from[k];
   return to;
 }
+
+/**
+ * Binds an function owned by a constructor to its prototype.
+ * @param constructor
+ * @param name
+ */
+Function.bindPrototype = function(constructor, name) {
+  var constructorFunction = constructor[name];
+  var prototypeFunction;
+
+  if (Function.check(constructor) && Function.check(constructorFunction)) {
+    prototypeFunction = (function() {
+      var newArgs = [this];
+      Array.prototype.push.apply(newArgs, arguments);
+      return constructorFunction.apply(null, newArgs);
+    });
+    // TODO use setter to read original length (in case it is changed)
+//    prototypeFunction.length = Math.max(0, constructorFunction.length - 1);
+    constructor.prototype[name] = prototypeFunction;
+  }
+}
+
+/**
+ * Binds an function owned by a prototype to its constructor.
+ * @param constructor
+ * @param name
+ */
+Function.bindConstructor = function(constructor, name) {
+  if (Function.check(constructor)) {
+
+    var prototypeFunction = constructor.prototype[name];
+    var constructorFunction;
+
+    if (Function.check(prototypeFunction)) {
+      constructorFunction = (function() {
+        var given = [];
+        Array.prototype.push.apply(given, arguments);
+        return prototypeFunction.apply(given.shift(), given);
+      });
+      // TODO use setter to read original length (in case it is changed)
+//      constructorFunction.length = prototypeFunction.length + 1;
+      constructor[name] = constructorFunction;
+    }
+  }
+}
+
+
+
+// Object
+
+// TODO 
+// - Standard handling of destructuve/non-destructive
+// - Efficient algorithms for frozen (immutable) objects
+// - Outline how writable and preventChanges relate to seal, freeze and preventExtensions
+// 
+// What about:
+//   - prototype methods (extend and clone); imperative and destructive by default
+//   - entries method (overlaps Rhino's Iterator class)
 
 Object.extend(Object, {
 
@@ -122,8 +238,6 @@ Object.extend(Object, {
       }
     );
   },
-
-
 
   /**
    * Return the values of all enumerable properties in this object.
@@ -208,7 +322,8 @@ Object.extend(Object, {
    */
   defineAllProperties : function (obj, prop, descr) {
     if (
-      Function.isFunction(prop)) {
+      // Function.isFunction(prop)) {
+      typeof prop === "function") {
       Object.defineAllProperties( 
         obj, 
         Object.keys(obj).filter(prop), 
@@ -224,8 +339,57 @@ Object.extend(Object, {
       Object.defineProperty( obj, prop, descr );
     }
   }
-  
 });
+
+Function.bindPrototype( Object,   "clone"                    );
+Function.bindPrototype( Object,   "keys"                     );
+Function.bindPrototype( Object,   "values"                   );
+Function.bindPrototype( Object,   "entries"                  );
+Function.bindPrototype( Object,   "defineProperty"           );
+Function.bindPrototype( Object,   "getOwnPropertyDescriptor" );
+Function.bindPrototype( Object,   "getOwnPropertyNames"      );
+
+Function.bindPrototype( Object,   "map"                      );
+Function.bindPrototype( Object,   "reduce"                   );
+Function.bindPrototype( Object,   "mapKeys"                  );
+Function.bindPrototype( Object,   "mapValues"                );
+
+Object.enumerable(Object, [
+  "extend",
+  "clone",
+  "values",
+  "entries",
+  "writable",
+  "enumerable",
+  "preventChanges",
+  "defineAllProperties",
+  "fromGetters",
+  "fromEntries",
+  "map",
+  "reduce",
+  "reduceRight",
+  "mapKeys",
+  "mapValues",
+  "isObject",
+  "check"
+], false);
+  
+Object.enumerable(Object.prototype, [
+  "hash",
+  "hashCode",
+  "extend",
+  "clone",
+  "keys",
+  "values",
+  "entries",
+  "defineProperty",
+  "getOwnPropertyDescriptor",
+  "getOwnPropertyNames",
+  "map",
+  "reduce",
+  "mapKeys",
+  "mapValues"
+], false);
 
 
 
@@ -330,63 +494,84 @@ Object.extend(Function, {
 
   isDefined : function() {
     // TODO
-  },
-
-
-  /**
-   * Binds an function owned by a constructor to its prototype.
-   * @param constructor
-   * @param name
-   */
-  bindPrototype : function(constructor, name) {
-    var constructorFunction = constructor[name];
-    var prototypeFunction;
-
-    if (Function.check(constructor) && Function.check(constructorFunction)) {
-      prototypeFunction = (function() {
-        var newArgs = [this];
-        Array.prototype.push.apply(newArgs, arguments);
-        return constructorFunction.apply(null, newArgs);
-      });
-      // TODO use setter to read original length (in case it is changed)
-  //    prototypeFunction.length = Math.max(0, constructorFunction.length - 1);
-      constructor.prototype[name] = prototypeFunction;
-    }
-  },
-
-  /**
-   * Binds an function owned by a prototype to its constructor.
-   * @param constructor
-   * @param name
-   */
-  bindConstructor : function(constructor, name) {
-    if (Function.check(constructor)) {
-
-      var prototypeFunction = constructor.prototype[name];
-      var constructorFunction;
-
-      if (Function.check(prototypeFunction)) {
-        constructorFunction = (function() {
-          var given = [];
-          Array.prototype.push.apply(given, arguments);
-          return prototypeFunction.apply(given.shift(), given);
-        });
-        // TODO use setter to read original length (in case it is changed)
-  //      constructorFunction.length = prototypeFunction.length + 1;
-        constructor[name] = constructorFunction;
-      }
-    }
-  } 
+  }
 
 });
 
+Function.bindPrototype( Function, "curry"                    );
+Function.bindPrototype( Function, "uncurry"                  );
+Function.bindPrototype( Function, "sequence"                 );
+Function.bindPrototype( Function, "and"                      );
+Function.bindPrototype( Function, "or"                       );
+Function.bindPrototype( Function, "not"                      );
+Function.bindPrototype( Function, "equalTo"                  );
+Function.bindPrototype( Function, "strictlyEqualTo"          );
+Function.bindPrototype( Function, "greaterThan"              );
+Function.bindPrototype( Function, "lessThan"                 );
+Function.bindPrototype( Function, "some"                     );
+Function.bindPrototype( Function, "all"                      );
+Function.bindPrototype( Function, "memberOf"                 );
+Function.bindPrototype( Function, "empty"                    );
+Function.bindPrototype( Function, "isNull"                   );
+Function.bindPrototype( Function, "isUndefined"              );
+Function.bindPrototype( Function, "isNotNull"                );
+Function.bindPrototype( Function, "isDefined"                );
 
 
+Object.enumerable(Function, [
+  "constant",
+  "identity",
+  "curry",
+  "uncurry",
+  "compose",
+  "sequence",
+  "power",
+  "flip",
+  "and",
+  "or",
+  "not",
+  "equalTo",
+  "strictlyEqualTo",
+  "greaterThan",
+  "lessThan",
+  "some",
+  "all",
+  "memberOf",
+  "empty",
+  "isNull",
+  "isUndefined",
+  "isNotNull",
+  "isDefined",
+  "bindPrototype",
+  "bindConstructor",
+  "isFunction",
+  "check"
+], false);
+
+Object.enumerable(Function.prototype, [
+  "curry",
+  "uncurry",
+  "sequence",
+  "and",
+  "or",
+  "not",
+  "equalTo",
+  "strictlyEqualTo",
+  "greaterThan",
+  "lessThan",
+  "some",
+  "all",
+  "memberOf",
+  "empty",
+  "isNull",
+  "isUndefined",
+  "isNotNull",
+  "isDefined"
+], false);
 
 
 
 // Sequence
-
 
 /**
  * An immutable sequential structure.
@@ -402,12 +587,49 @@ function Sequence(first, rest) {
 }
 
 Sequence.prototype = {
+  
   first    : { /* closure */ },
   rest     : { /* closure */ },
   
   iterator : function(keysOnly) {
     return new SequenceIterator(this, keysOnly);
-  }   
+  },
+  
+  add : function(n) {
+    return new Sequence(this.first() + n, this.rest().add(n));
+  },
+
+  subtract : function(n) {
+    return new Sequence(this.first - n, this.rest.subtract(n));
+  },
+
+  multiply : function(n) {
+    return new Sequence(this.first * n, this.rest.multiply(n));
+  },
+
+  divide : function(n) {
+    return new Sequence(this.first / n, this.rest.divide(n));
+  },
+
+  modulo : function(n) {
+    return new Sequence(this.first % n, this.rest.modulo(n));
+  },
+
+  succ : function(n) {
+    return new Sequence(this.first + 1, this.rest.succ());
+  },
+
+  op : function(op, n) {
+    switch (op) {
+      case("+"): return this.add(n);
+      case("-"): return this.subtract(n);
+      case("*"): return this.multiply(n);
+      case("/"): return this.divide(n);
+      case("%"): return this.modulo(n);
+    }
+  }
+  
+    
 }
 
 function SequenceIterator(seq, keys) {
@@ -427,7 +649,22 @@ SequenceIterator.prototype = {
   }
 }
 
-Array.prototype.__proto__ = Sequence.prototype;
+Object.enumerable(Sequence, [
+], false);
+
+Object.enumerable(Sequence.prototype, [
+  "first",
+  "rest",
+  "iterator",
+  
+  "add",
+  "subtract",
+  "multiply",
+  "divide",
+  "modulo",
+  "succ",
+  "op"
+], false);
 
 
 
@@ -514,11 +751,11 @@ Object.extend(Array.prototype, {
    return this.slice(0);
   },
   
-  add : function() {            
-    var res = this.clone();
-    Array.prototype.push.apply(res, arguments);
-    return res;
-  },   
+  // add : function() {            
+  //   var res = this.clone();
+  //   Array.prototype.push.apply(res, arguments);
+  //   return res;
+  // },    
 
   addBefore : function() {
     var res = this.clone();
@@ -548,8 +785,54 @@ Object.extend(Array.prototype, {
     var res = this.clone();
     Array.prototype.sort.apply(res, arguments);
     return res;
-  }
+  },
+  
+  add : Sequence.prototype.add,
+  subtract : Sequence.prototype.subtract,
+  multiply : Sequence.prototype.multiply,
+  divide : Sequence.prototype.divide,
+  modulo : Sequence.prototype.modulo,
+  succ : Sequence.prototype.succ,
+  op : Sequence.prototype.op
+  
 });
+   
+
+// Array.prototype.__proto__ = Sequence.prototype;
+
+
+Function.bindPrototype( Array,    "union"                    );
+Function.bindPrototype( Array,    "intersection"             );
+
+Object.enumerable(Array, [
+  "union",
+  "intersection",
+  "check",
+  "some"
+], false);
+
+Object.enumerable(Array.prototype, [
+  "first",
+  "rest",
+  "iterator",
+  "add",
+  "subtract",
+  "multiply",
+  "divide",
+  "modulo",
+  "succ",
+  "op",
+  
+  "union",
+  "intersection",
+  "clone",
+  "removeLast",
+  "add",
+  "removeFirst",
+  "addBefore",
+  "reversed",
+  "sorted"
+], false);
 
 
 
@@ -924,239 +1207,7 @@ var strParser = new RegExp("(\\d+(?:\\.\\d*)?(?:[eE]\\+?\\-?\\d+)?|\\.\\d+(?:[eE
 
 
 
-//======================================================================
-// Type system
 
-// TODO
-// - Common Lisp-like type expression schemes
-// - Runtime checks
-// - Auto-generation of compliant constructors/accessors (== primitive pattern matching)
-             
-
-
-// Checks
-
-Object.isObject = function(val) {
-  return (typeof val === "object") || (typeof val === "function");
-}
-
-Function.isFunction = function(val) {
-  return (typeof val === "function");
-}
-
-Boolean.isBoolean = function(val) {
-  return (typeof val === "boolean");
-}
-
-Number.isNumber = function(val) {
-  return (typeof val === "number");
-}
-
-String.isString = function(val) {
-  return (typeof val === "string");
-}
-
-
-Object.check = function(val) {
-  if (!Object.isObject(val))
-    throw TypeError("Type of " + val + " is not object");
-  return true;
-}
-
-Array.check = function(val) {
-  if (!Array.isArray(val))
-    throw TypeError("Type of " + val + " is not array");
-  return true;
-}
-
-Function.check = function(val) {
-  if (!Function.isFunction(val))
-    throw TypeError("Type of " + val + " is not function");
-  return true;
-}
-
-Boolean.check = function(val) {
-  if (!Boolean.isBoolean(val))
-    throw TypeError("Type of " + val + " is not boolean");
-  return true;
-}
-
-Number.check = function(val) {
-  if (!Number.isNumber(val))
-    throw TypeError("Type of " + val + " is not number");
-  return true;
-}
-
-String.check = function(val) {
-  if (!String.isString(val))
-    throw TypeError("Type of " + val + " is not string");
-  return true;
-} 
-
-
-
-//======================================================================
-// Configure
-
-// Double-binding
-
-Function.bindPrototype( Object,   "clone"                    );
-Function.bindPrototype( Object,   "keys"                     );
-Function.bindPrototype( Object,   "values"                   );
-Function.bindPrototype( Object,   "entries"                  );
-Function.bindPrototype( Object,   "defineProperty"           );
-Function.bindPrototype( Object,   "getOwnPropertyDescriptor" );
-Function.bindPrototype( Object,   "getOwnPropertyNames"      );
-
-Function.bindPrototype( Object,   "map"                      );
-Function.bindPrototype( Object,   "reduce"                   );
-Function.bindPrototype( Object,   "mapKeys"                  );
-Function.bindPrototype( Object,   "mapValues"                 );
-                                                             
-Function.bindPrototype( Array,    "union"                    );
-Function.bindPrototype( Array,    "intersection"             );
-                                                             
-                                                             
-Function.bindPrototype( Function, "curry"                    );
-Function.bindPrototype( Function, "uncurry"                  );
-Function.bindPrototype( Function, "sequence"                 );
-Function.bindPrototype( Function, "and"                      );
-Function.bindPrototype( Function, "or"                       );
-Function.bindPrototype( Function, "not"                      );
-Function.bindPrototype( Function, "equalTo"                  );
-Function.bindPrototype( Function, "strictlyEqualTo"          );
-Function.bindPrototype( Function, "greaterThan"              );
-Function.bindPrototype( Function, "lessThan"                 );
-Function.bindPrototype( Function, "some"                     );
-Function.bindPrototype( Function, "all"                      );
-Function.bindPrototype( Function, "memberOf"                 );
-Function.bindPrototype( Function, "empty"                    );
-Function.bindPrototype( Function, "isNull"                   );
-Function.bindPrototype( Function, "isUndefined"              );
-Function.bindPrototype( Function, "isNotNull"                );
-Function.bindPrototype( Function, "isDefined"                );
-
-
-// Encapsulate extensions
-                      
-Object.enumerable(Object, [
-  "extend",
-  "clone",
-  "values",
-  "entries",
-  "writable",
-  "enumerable",
-  "preventChanges",
-  "defineAllProperties",
-  "fromGetters",
-  "fromEntries",
-  "map",
-  "reduce",
-  "reduceRight",
-  "mapKeys",
-  "mapValues",
-  "isObject",
-  "check"
-], false);
-  
-Object.enumerable(Object.prototype, [
-  "hash",
-  "hashCode",
-  "extend",
-  "clone",
-  "keys",
-  "values",
-  "entries",
-  "defineProperty",
-  "getOwnPropertyDescriptor",
-  "getOwnPropertyNames",
-  "map",
-  "reduce",
-  "mapKeys",
-  "mapValues"
-], false);
-
-Object.enumerable(Function, [
-  "constant",
-  "identity",
-  "curry",
-  "uncurry",
-  "compose",
-  "sequence",
-  "power",
-  "flip",
-  "and",
-  "or",
-  "not",
-  "equalTo",
-  "strictlyEqualTo",
-  "greaterThan",
-  "lessThan",
-  "some",
-  "all",
-  "memberOf",
-  "empty",
-  "isNull",
-  "isUndefined",
-  "isNotNull",
-  "isDefined",
-  "bindPrototype",
-  "bindConstructor",
-  "isFunction",
-  "check"
-], false);
-
-Object.enumerable(Function.prototype, [
-  "curry",
-  "uncurry",
-  "sequence",
-  "and",
-  "or",
-  "not",
-  "equalTo",
-  "strictlyEqualTo",
-  "greaterThan",
-  "lessThan",
-  "some",
-  "all",
-  "memberOf",
-  "empty",
-  "isNull",
-  "isUndefined",
-  "isNotNull",
-  "isDefined"
-], false);
-
-Object.enumerable(Sequence, [
-], false);
-
-Object.enumerable(Sequence.prototype, [
-  "first",
-  "rest",
-  "iterator"
-], false);
-
-Object.enumerable(Array, [
-  "union",
-  "intersection",
-  "check",
-  "some"
-], false);
-
-Object.enumerable(Array.prototype, [
-  "first",
-  "rest",
-  "iterator",
-  "union",
-  "intersection",
-  "clone",
-  "removeLast",
-  "add",
-  "removeFirst",
-  "addBefore",
-  "reversed",
-  "sorted"
-], false);
 
 
 
@@ -1194,7 +1245,7 @@ var scope = {
   readUrl       : undefined,
   runCommand    : undefined,
   seal          : undefined,
- serialize     : undefined,
+  serialize     : undefined,
   spawn         : undefined,
   sync          : undefined,
   quit          : undefined,

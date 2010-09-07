@@ -3,5 +3,6 @@
 .externalToolBuilders
 .project
 .settings
+main.js
 vitry.jar
 bin/
