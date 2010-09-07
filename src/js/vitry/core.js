@@ -787,6 +787,10 @@ Object.extend(Array.prototype, {
     return res;
   },
   
+  pick : function () {
+    return this[Math.floor((Math.random() - 0.000000000001) * this.length)];    
+  },
+  
   add : Sequence.prototype.add,
   subtract : Sequence.prototype.subtract,
   multiply : Sequence.prototype.multiply,
@@ -831,7 +835,8 @@ Object.enumerable(Array.prototype, [
   "removeFirst",
   "addBefore",
   "reversed",
-  "sorted"
+  "sorted",
+  "pick"
 ], false);
 
 
