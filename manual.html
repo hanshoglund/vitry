@@ -22,36 +22,30 @@
 	  >First steps</a
 	  ><ul
 	  ><li
-	    ><a href="#download-and-install"
-	      >Download and install</a
-	      ><ul
-	      ><li
-		><a href="#prerequirements"
-		  >Prerequirements</a
-		  ></li
-		><li
-		><a href="#download"
-		  >Download</a
-		  ></li
-		></ul
+	    ><a href="#install"
+	      >Install</a
 	      ></li
 	    ><li
-	    ><a href="#using-the-interpreter"
-	      >Using the interpreter</a
+	    ><a href="#the-interpreter"
+	      >The interpreter</a
+	      ></li
+	    ><li
+	    ><a href="#setting-up-the-environment"
+	      >Setting up the environment</a
+	      ></li
+	    ><li
+	    ><a href="#sibelius-installation"
+	      >Sibelius installation</a
 	      ></li
 	    ></ul
 	  ></li
 	><li
-	><a href="#the-language"
-	  >The language</a
+	><a href="#language"
+	  >Language</a
 	  ><ul
 	  ><li
-	    ><a href="#basic-concepts"
-	      >Basic concepts</a
-	      ></li
-	    ><li
-	    ><a href="#core-types"
-	      >Core types</a
+	    ><a href="#basic-types"
+	      >Basic types</a
 	      ><ul
 	      ><li
 		><a href="#booleans"
@@ -66,6 +60,10 @@
 		  >Strings</a
 		  ></li
 		></ul
+	      ></li
+	    ><li
+	    ><a href="#compound-types"
+	      >Compound types</a
 	      ></li
 	    ><li
 	    ><a href="#functions"
@@ -94,14 +92,22 @@
 	      >The music type</a
 	      ></li
 	    ><li
-	    ><a href="#an-introduction-to-notations"
-	      >An introduction to notations</a
+	    ><a href="#using-notations"
+	      >Using notations</a
+	      ></li
+	    ><li
+	    ><a href="#part-trees"
+	      >Part trees</a
+	      ></li
+	    ><li
+	    ><a href="#instrumentation-functions"
+	      >Instrumentation functions</a
 	      ></li
 	    ></ul
 	  ></li
 	><li
-	><a href="#import-and-export"
-	  >Import and export</a
+	><a href="#input-and-output"
+	  >Input and output</a
 	  ><ul
 	  ><li
 	    ><a href="#the-sibelius-writer"
@@ -207,22 +213,14 @@ toc(true);
 ><a href="#TOC"
   >First steps</a
   ></h2
-><h3 id="download-and-install"
+><h3 id="install"
 ><a href="#TOC"
-  >Download and install</a
+  >Install</a
   ></h3
-><h4 id="prerequirements"
-><a href="#TOC"
-  >Prerequirements</a
-  ></h4
 ><p
 >Vitry targets the <a href="http://en.wikipedia.org/wiki/Java_Virtual_Machine"
   >Java Virtual Machine</a
   >, and thus runs on most operating system. On OS X, Java is preinstalled by default.</p
-><h4 id="download"
-><a href="#TOC"
-  >Download</a
-  ></h4
 ><p
 >You may download a pre-compiled version of Vitry from <a href="http://vitry.github.com/downloads"
   >http://vitry.github.com/downloads</a
@@ -232,9 +230,9 @@ $ git clone git@github.com:hanshoglund/vitry.git
 $ cd vitry
 $ ant
 </pre>
-<h3 id="using-the-interpreter"
+<h3 id="the-interpreter"
 ><a href="#TOC"
-  >Using the interpreter</a
+  >The interpreter</a
   ></h3
 ><p
 >The simplest way to interact with Vitry is through the <em
@@ -242,18 +240,22 @@ $ ant
   >.</p
 ><p
 >TODO starting a session, using repl</p
+><h3 id="setting-up-the-environment"
+><a href="#TOC"
+  >Setting up the environment</a
+  ></h3
+><h3 id="sibelius-installation"
+><a href="#TOC"
+  >Sibelius installation</a
+  ></h3
 ><p
 ><br
    /><br
    /></p
-><h2 id="the-language"
+><h2 id="language"
 ><a href="#TOC"
-  >The language</a
+  >Language</a
   ></h2
-><h3 id="basic-concepts"
-><a href="#TOC"
-  >Basic concepts</a
-  ></h3
 ><p
 ><em
   >Values</em
@@ -264,9 +266,9 @@ $ ant
   >. The evaluation will produce a value, provided it succeeds. <em
   >Types</em
   > are special values that help us create and reason about other values. Types are created from type expressions.</p
-><h3 id="core-types"
+><h3 id="basic-types"
 ><a href="#TOC"
-  >Core types</a
+  >Basic types</a
   ></h3
 ><h4 id="booleans"
 ><a href="#TOC"
@@ -362,6 +364,10 @@ $ ant
   >&quot;What larks&quot;</code
   ><br
    /></p
+><h3 id="compound-types"
+><a href="#TOC"
+  >Compound types</a
+  ></h3
 ><h3 id="functions"
 ><a href="#TOC"
   >Functions</a
@@ -388,15 +394,23 @@ $ ant
 ><a href="#TOC"
   >The music type</a
   ></h3
-><h3 id="an-introduction-to-notations"
+><h3 id="using-notations"
 ><a href="#TOC"
-  >An introduction to notations</a
+  >Using notations</a
+  ></h3
+><h3 id="part-trees"
+><a href="#TOC"
+  >Part trees</a
+  ></h3
+><h3 id="instrumentation-functions"
+><a href="#TOC"
+  >Instrumentation functions</a
   ></h3
 ><p
 ></p
-><h2 id="import-and-export"
+><h2 id="input-and-output"
 ><a href="#TOC"
-  >Import and export</a
+  >Input and output</a
   ></h2
 ><h3 id="the-sibelius-writer"
 ><a href="#TOC"
@@ -436,7 +450,9 @@ $ ant
   ></h3
 ><p
 ><em
-  >© Hans Höglund 2010</em
+  >© Hans Höglund 2010. Available under the <a href="http://www.gnu.org/copyleft/fdl.html"
+    >GNU FDL</a
+    ></em
   ></p
 ></div>
 </body>

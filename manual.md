@@ -41,12 +41,10 @@ Vitry includes a powerful model of standard musical notation. It performs no gra
 
 ## First steps
 
-### Download and install
+### Install
 
-#### Prerequirements
 Vitry targets the [Java Virtual Machine](http://en.wikipedia.org/wiki/Java_Virtual_Machine), and thus runs on most operating system. On OS X, Java is preinstalled by default.
 
-#### Download
 You may download a pre-compiled version of Vitry from [http://vitry.github.com/downloads](http://vitry.github.com/downloads).
 
 To compile the latest version yourself, Git and ANT is required. In this case, use the following commands to fetch the source code and build: 
@@ -56,23 +54,25 @@ $ cd vitry
 $ ant
 </pre>
               
-### Using the interpreter
+### The interpreter
 The simplest way to interact with Vitry is through the *interpreter*.
 
 TODO starting a session, using repl
+
+### Setting up the environment
+
+### Sibelius installation
 
 
 \
 \
 \pagebreak
 
-## The language
-
-### Basic concepts
+## Language
 
 *Values* are pieces of data that we can retrieve and manipulate.  *Expressions*  are a series of values or other expressions that may be *evaluated*. The evaluation will produce a value, provided it succeeds. *Types* are special values that help us create and reason about other values. Types are created from type expressions.
 
-### Core types
+### Basic types
 
 #### Booleans
 The boolean type is written as `bool`. 
@@ -114,8 +114,7 @@ String values are written inside double-quotes:
   `"What larks"    `\
   
 
-
-
+### Compound types
 ### Functions
 ### Sequences
 
@@ -127,13 +126,14 @@ String values are written inside double-quotes:
 ### Time
 ### Pitch
 ### The music type
-### An introduction to notations
-
+### Using notations
+### Part trees
+### Instrumentation functions
 
 
 \pagebreak
 
-## Import and export
+## Input and output
 
 ### The Sibelius writer
 ### The LilyPond writer
@@ -149,7 +149,7 @@ String values are written inside double-quotes:
 ### Adding writers
   
 
-*© Hans Höglund 2010*
+*© Hans Höglund 2010. Available under the [GNU FDL](http://www.gnu.org/copyleft/fdl.html)*
 
 
 </div>
