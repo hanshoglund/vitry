@@ -6,17 +6,12 @@ Vitry manual
 \pagebreak
 
 ## Introduction
-Vitry is a programming language and environment for music composition and analysis, primarily in a non-realtime context.  It is designed to simplify representation of compund musical structures. The main purpose is generation of music notation, but it can also be used for general procesing of musical structures, or act as as a bridge between notation and other media environments. It performs no graphical rendering of music on its own, but it built for seamless integration with standard score-editing tools, such as [Sibelius](http://www.sibelius.com/) and [LilyPond](http://lilypond.org/). 
+Vitry is a functional programming language with an inline syntax and a simple, expressive type system. It is designed to simplify representation of compund musical structures. 
 
-Vitry includes a powerful model of standard musical notation, which may be interactively read and written to the standard score writing applications Sibelius and Lilypond. It also reads and generates standard file formats used for musical representation, such as MusicXML and standard MIDI files.
+The raison d'etre of Vitry is generation of music notation, but it can also be used for general procesing of musical structures, or act as as a bridge between notation and other media environments. 
 
-Vitry shares many traits with the [PWGL](http://www2.siba.fi/PWGL/) and [OpenMusic](http://recherche.ircam.fr/equipes/repmus/OpenMusic/) environments. However, there are also some differences:
+Vitry includes a powerful model of standard musical notation. It performs no graphical rendering of music on its own, but it built for seamless integration with standard score-editing tools, such as [Sibelius](http://www.sibelius.com/) and [LilyPond](http://lilypond.org/). It also reads and generates standard file formats used for musical representation, such as MusicXML and standard MIDI files. 
 
-- It is not graphical
-- It is not based on CommonLisp/CLOS.
-- It emphasizes interaction with scorewriter software
-
-The Vitry language is a simple functional language with an inline syntax. 
 
 
 
@@ -50,26 +45,60 @@ TODO starting a session, using repl
 
 ## The language
 
-### Values and expressions
-Like most functional languages, Vitry consists almost solely of expressions.
+The Vitry language have a very small core. Like in most functional languages, there are no statements, instead there are *expressions*. An expression is a series of values that may be evaluated to produce a single value.
+
+
+*values* and *types*.
+
+A value is a piece of data.
 
 
 
-### Basic types
 
-#### Booleans
-The boolean values are `true` or `false`.
+Types are a powerful concept that help us create and reason about or values. Every value and expression have an associated type. 
+       
+### Booleans
+The boolean type is written as `bool`.
 
-#### Numbers
+The boolean values are written as `true` or `false`.
+
+### Numbers
 Vitry supports bignum natural, integer and rational numbers, as well as floating-point real and complex numbers.
 
-TODO
+The types of these are writen as `nat`, `int`, `rat`, `float` and `complex` respectively.
 
-#### Strings
-Strings are sequences of 16-bit Unicode characters.
+Natural, integers and rational numbers are written as sequences of digits. Vitry will automatically convert integers to rationals and vice versa.
 
-#### Functions
-#### Sequences
+  `152 `\
+  `42  `\
+  `-8  `\
+  `3/2 `
+
+Floating point numbers may be writen in several ways:
+
+  `0.1     `\
+  `0.12e10 `\
+  `2e-5    `\
+  `0.5/2   `
+  
+We create a complex number by adding the imaginary unit `i` to the imaginary part:
+
+  `2i          `\
+  `1 + 0i      `\
+  `22.4 + 32e4i`
+
+
+### Strings
+Strings are sequences of Unicode characters. The string type is written as `string`.
+
+String values are written inside double-quotes:
+
+  `"Beethoven day" `\
+  `"What larks"    `\
+  
+
+### Functions
+### Sequences
 
 
 
