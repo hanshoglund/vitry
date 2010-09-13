@@ -28,9 +28,7 @@ Vitry manual
 \pagebreak
 
 ## Introduction
-Vitry is a functional programming language with an inline syntax and a simple, expressive type system. It is designed to simplify representation of compund musical structures. 
-
-Vitry may be used for algorithmic composition or analysis. Its raison d'etre is generation of music notation, but it can also be used for general procesing of musical structures, or act as as a bridge between score writers and other media environments. 
+Vitry is a functional programming language with an inline syntax and a simple, expressive type system. It is designed to simplify representation of compund musical structures. Vitry may be used for algorithmic composition or analysis. 
 
 Vitry includes a powerful model of standard musical notation. It performs no graphical rendering of music on its own, but it built for seamless integration with standard score-editing tools, such as [Sibelius](http://www.sibelius.com/) and [LilyPond](http://lilypond.org/). It also reads and generates standard file formats used for musical representation, such as MusicXML and standard MIDI files. 
 
@@ -57,9 +55,14 @@ $ ant
 ### The interpreter
 The simplest way to interact with Vitry is through the *interpreter*.
 
-TODO starting a session, using repl
+TODO starting a session
+TODO the REPL mode
+TODO interpreter command
 
 ### Setting up the environment
+
+TODO the .profile.vitry file
+TODO variables
 
 ### Sibelius installation
 
@@ -69,6 +72,10 @@ TODO starting a session, using repl
 \pagebreak
 
 ## Language
+
+TODO intro text
+
+TODO more definitions
 
 *Values* are pieces of data that we can retrieve and manipulate.  *Expressions*  are a series of values or other expressions that may be *evaluated*. The evaluation will produce a value, provided it succeeds. *Types* are special values that help us create and reason about other values. Types are created from type expressions.
 
