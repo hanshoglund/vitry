@@ -19,7 +19,7 @@ The simplest way to interact with Vitry is through the *interpreter*. To open it
 <pre>
     Vitry, version 0.6.0
     See http://github.com/hanshoglund/Vitry
-    Starting JavaScript interpreter...
+    Starting Vitry interpreter...
 
     Vitry>
 </pre>
