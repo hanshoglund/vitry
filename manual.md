@@ -11,7 +11,7 @@ function toggle() {
     toc(!tocVisible);
 }
    
-// toc(false);      
+toc(true);      
 
 </script>
 <div id="toggle">
