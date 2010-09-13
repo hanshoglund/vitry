@@ -1,6 +1,6 @@
 ## Vitry
 
-A music composition environment. [Read more...](http://wiki.github.com/hanshoglund/Vitry/)
+A music composition environment. [Read more...](http://hanshoglund.github.com/vitry/manual.html)
 
 #### Build
 `ant`         
