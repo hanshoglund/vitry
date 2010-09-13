@@ -51,11 +51,7 @@ TODO starting a session, using repl
 ## The language
 
 ### Values and expressions
-Like most functional languages, Vitry consists almost solely of expressions. An expression is an abstract thing that we use to 
-
-
-
-
+Like most functional languages, Vitry consists almost solely of expressions.
 
 
 
