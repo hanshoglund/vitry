@@ -10,10 +10,15 @@ Vitry includes a powerful model of standard musical notation, which may be inter
 The Vitry language is a simple functional language with an inline syntax. 
 
 ## Getting started
-TODO 
+TODO download
+TODO (compile), install
               
 ### Using the interpreter
+The simplest way to interact with Vitry is through the *interpreter*. To open it, type `vitry`. This will startup a vitry environment session and print the following:
 
+<pre>
+    
+</pre>
 
 
 ## Values and types
@@ -37,5 +42,3 @@ TODO
 ### Type expressions  
 
 
-
-## Modules
