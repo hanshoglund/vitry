@@ -1,7 +1,29 @@
+<script type="text/javascript">
+var tocVisible = false;
+
+function toc(status) {
+    document.getElementById("TOC").style.display = ( status ? "block" : "none" );
+    document.getElementById("main").style.marginLeft = ( status ? "220px" : "0px" );
+    tocVisible = status;    
+}
+
+function toggle() {
+    toc(!tocVisible);
+}
+   
+// toc(false);      
+
+</script>
+<div id="toggle">
+---                                                     ---
+[Vitry on Github](http://github.com/hanshoglund/Vitry)  [Toggle contents](javascript:toggle())  
+---                                                     ---
+</div>
+<div id="main">
+
 
 Vitry manual
 ======================================================================
-*By Hans Höglund*
 
 \pagebreak
 
@@ -40,29 +62,24 @@ The simplest way to interact with Vitry is through the *interpreter*.
 TODO starting a session, using repl
 
 
-
+\
+\
 \pagebreak
 
 ## The language
 
-The Vitry language have a very small core. Like in most functional languages, there are no statements, instead there are *expressions*. An expression is a series of values that may be evaluated to produce a single value.
+### Basic concepts
 
+*Values* are pieces of data that we can retrieve and manipulate.  *Expressions*  are a series of values or other expressions that may be *evaluated*. The evaluation will produce a value, provided it succeeds. *Types* are special values that help us create and reason about other values. Types are created from type expressions.
 
-*values* and *types*.
+### Core types
 
-A value is a piece of data.
+#### Booleans
+The boolean type is written as `bool`. 
 
+Boolean values are written as `true` or `false`.
 
-
-
-Types are a powerful concept that help us create and reason about or values. Every value and expression have an associated type. 
-       
-### Booleans
-The boolean type is written as `bool`.
-
-The boolean values are written as `true` or `false`.
-
-### Numbers
+#### Numbers
 Vitry supports bignum natural, integer and rational numbers, as well as floating-point real and complex numbers.
 
 The types of these are writen as `nat`, `int`, `rat`, `float` and `complex` respectively.
@@ -88,7 +105,7 @@ We create a complex number by adding the imaginary unit `i` to the imaginary par
   `22.4 + 32e4i`
 
 
-### Strings
+#### Strings
 Strings are sequences of Unicode characters. The string type is written as `string`.
 
 String values are written inside double-quotes:
@@ -96,6 +113,8 @@ String values are written inside double-quotes:
   `"Beethoven day" `\
   `"What larks"    `\
   
+
+
 
 ### Functions
 ### Sequences
@@ -128,3 +147,9 @@ String values are written inside double-quotes:
 ### The evaluation model
 ### Adding notations
 ### Adding writers
+  
+
+*© Hans Höglund 2010*
+
+
+</div>

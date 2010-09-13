@@ -46,16 +46,26 @@
 	  >The language</a
 	  ><ul
 	  ><li
-	    ><a href="#booleans"
-	      >Booleans</a
+	    ><a href="#basic-concepts"
+	      >Basic concepts</a
 	      ></li
 	    ><li
-	    ><a href="#numbers"
-	      >Numbers</a
-	      ></li
-	    ><li
-	    ><a href="#strings"
-	      >Strings</a
+	    ><a href="#core-types"
+	      >Core types</a
+	      ><ul
+	      ><li
+		><a href="#booleans"
+		  >Booleans</a
+		  ></li
+		><li
+		><a href="#numbers"
+		  >Numbers</a
+		  ></li
+		><li
+		><a href="#strings"
+		  >Strings</a
+		  ></li
+		></ul
 	      ></li
 	    ><li
 	    ><a href="#functions"
@@ -138,14 +148,43 @@
     ></ul
   ></div
 >
+<script type="text/javascript">
+var tocVisible = false;
+
+function toc(status) {
+    document.getElementById("TOC").style.display = ( status ? "block" : "none" );
+    document.getElementById("main").style.marginLeft = ( status ? "220px" : "0px" );
+    tocVisible = status;    
+}
+
+function toggle() {
+    toc(!tocVisible);
+}
+
+toc(false);      
+
+</script>
+<div id="toggle"><table
+><tbody
+  ><tr class="odd"
+    ><td align="left"
+      ><a href="http://github.com/hanshoglund/Vitry"
+	>Vitry on Github</a
+	></td
+      ><td align="left"
+      ><a href="javascript:toggle()"
+	>Toggle contents</a
+	></td
+      ></tr
+    ></tbody
+  ></table
+></div>
+<div id="main">
+
 <h1 id="vitry-manual"
 ><a href="#TOC"
   >Vitry manual</a
   ></h1
-><p
-><em
-  >By Hans Höglund</em
-  ></p
 ><p
 ></p
 ><h2 id="introduction"
@@ -204,43 +243,49 @@ $ ant
 ><p
 >TODO starting a session, using repl</p
 ><p
-></p
+><br
+   /><br
+   /></p
 ><h2 id="the-language"
 ><a href="#TOC"
   >The language</a
   ></h2
-><p
->The Vitry language have a very small core. Like in most functional languages, there are no statements, instead there are <em
-  >expressions</em
-  >. An expression is a series of values that may be evaluated to produce a single value.</p
+><h3 id="basic-concepts"
+><a href="#TOC"
+  >Basic concepts</a
+  ></h3
 ><p
 ><em
-  >values</em
-  > and <em
-  >types</em
-  >.</p
-><p
->A value is a piece of data.</p
-><p
->Types are a powerful concept that help us create and reason about or values. Every value and expression have an associated type.</p
-><h3 id="booleans"
+  >Values</em
+  > are pieces of data that we can retrieve and manipulate. <em
+  >Expressions</em
+  > are a series of values or other expressions that may be <em
+  >evaluated</em
+  >. The evaluation will produce a value, provided it succeeds. <em
+  >Types</em
+  > are special values that help us create and reason about other values. Types are created from type expressions.</p
+><h3 id="core-types"
+><a href="#TOC"
+  >Core types</a
+  ></h3
+><h4 id="booleans"
 ><a href="#TOC"
   >Booleans</a
-  ></h3
+  ></h4
 ><p
 >The boolean type is written as <code
   >bool</code
   >.</p
 ><p
->The boolean values are written as <code
+>Boolean values are written as <code
   >true</code
   > or <code
   >false</code
   >.</p
-><h3 id="numbers"
+><h4 id="numbers"
 ><a href="#TOC"
   >Numbers</a
-  ></h3
+  ></h4
 ><p
 >Vitry supports bignum natural, integer and rational numbers, as well as floating-point real and complex numbers.</p
 ><p
@@ -299,10 +344,10 @@ $ ant
    /> <code
   >22.4 + 32e4i</code
   ></p
-><h3 id="strings"
+><h4 id="strings"
 ><a href="#TOC"
   >Strings</a
-  ></h3
+  ></h4
 ><p
 >Strings are sequences of Unicode characters. The string type is written as <code
   >string</code
@@ -389,6 +434,10 @@ $ ant
 ><a href="#TOC"
   >Adding writers</a
   ></h3
->
+><p
+><em
+  >© Hans Höglund 2010</em
+  ></p
+></div>
 </body>
 </html>

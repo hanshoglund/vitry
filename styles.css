@@ -1,29 +1,85 @@
-a {
-   color: #57A;
-   text-decoration: none;
-}
 body {          
-    background-color: #FAFAFA;
+    background-color: #fff;
     font-family: Geneva, sans-serif;
-    font-size: 12.6px;
-    line-height: 162%;
-    color: #111;
-    padding-left:1.8em;
-    width: 720px;
+    font-size: 12px;
+    line-height: 190%;
+
+    color: black ;
 }
+#toggle a {
+  color: black ;
+}
+#TOC a {
+  color: #000;
+}
+#main a {
+  color: CornflowerBlue;
+}
+
+div#toggle {
+  background-color: #ddd;
+  padding:5px;
+  padding-left: 1em;
+  margin-left:0px;
+  position: fixed;
+  width: 1000px;
+  border: 1px solid grey;
+
+	opacity: 0.8  ;
+}
+
+#toggle table td {
+  padding-right: 30px;
+}
+
+div#TOC {
+  position: fixed;
+  margin-top: 65px;
+  margin-left:0px;
+  padding-left:2em;
+  width: 220px;
+  
+  font-family: Arial, sans-serif;
+  font-size: 10.8px;
+  line-height: 160%;
+}
+
+div#main {
+  padding-top: 45px;;
+  margin-left: 0px;  
+  padding-left:1em;
+  width: 780px;
+}
+
 h1, h2, h3, h4 {   
-    font-family: Geneva, sans-serif;
-    padding-top: 3px;
+    padding-top: 0.2em;
 }   
 h1 {
-  padding-top: 25px;
+  font-size: 140%;
 }
-h1 {font-size: 140%;}
-h2 {font-size: 115%;}
-h3 {font-size: 105%;}
-h4 {font-size: 80%;}
+
+h2 {
+  font-size: 115%;
+}
+h3 {
+  font-size: 105%;
+}
+h4 {
+  font-size: 80%;
+} 
+a {
+   text-decoration: none;
+}
+ul {
+  list-style-type:disc;
+  margin-left: 0.2em;
+  padding-left: 1em;
+} 
+li {
+  marker-offset: 0px;
+}
 pre, code {           
-    font-family: Menlo, monospace;
+    font-family: Monaco, monospace;
     font-size: 11.8px;
 }
 pre {   
