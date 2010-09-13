@@ -30,7 +30,7 @@ Vitry manual
 ## Introduction
 Vitry is a functional programming language with an inline syntax and a simple, expressive type system. It is designed to simplify representation of compund musical structures. 
 
-The raison d'etre of Vitry is generation of music notation, but it can also be used for general procesing of musical structures, or act as as a bridge between notation and other media environments. 
+Vitry may be used for algorithmic composition or analysis. Its raison d'etre is generation of music notation, but it can also be used for general procesing of musical structures, or act as as a bridge between score writers and other media environments. 
 
 Vitry includes a powerful model of standard musical notation. It performs no graphical rendering of music on its own, but it built for seamless integration with standard score-editing tools, such as [Sibelius](http://www.sibelius.com/) and [LilyPond](http://lilypond.org/). It also reads and generates standard file formats used for musical representation, such as MusicXML and standard MIDI files. 
 
