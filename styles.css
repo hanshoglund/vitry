@@ -13,9 +13,10 @@ body {
 }
 h1, h2, h3, h4 {   
     font-family: Geneva, sans-serif;
-    padding-top: 12.em;
-}
-h3 {
+    padding-top: 3px;
+}   
+h1 {
+  padding-top: 25px;
 }
 h1 {font-size: 140%;}
 h2 {font-size: 115%;}

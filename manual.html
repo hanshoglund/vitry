@@ -10,28 +10,46 @@
 <div id="TOC"
 ><ul
   ><li
-    ><a href="#vitry"
-      >Vitry</a
+    ><a href="#vitry-manual"
+      >Vitry manual</a
       ><ul
       ><li
 	><a href="#introduction"
 	  >Introduction</a
 	  ></li
 	><li
-	><a href="#getting-started"
-	  >Getting started</a
+	><a href="#first-steps"
+	  >First steps</a
 	  ><ul
 	  ><li
+	    ><a href="#download-and-install"
+	      >Download and install</a
+	      ><ul
+	      ><li
+		><a href="#prerequirements"
+		  >Prerequirements</a
+		  ></li
+		><li
+		><a href="#download"
+		  >Download</a
+		  ></li
+		></ul
+	      ></li
+	    ><li
 	    ><a href="#using-the-interpreter"
 	      >Using the interpreter</a
 	      ></li
 	    ></ul
 	  ></li
 	><li
-	><a href="#values-and-types"
-	  >Values and types</a
+	><a href="#the-language"
+	  >The language</a
 	  ><ul
 	  ><li
+	    ><a href="#values-and-expressions"
+	      >Values and expressions</a
+	      ></li
+	    ><li
 	    ><a href="#basic-types"
 	      >Basic types</a
 	      ><ul
@@ -57,53 +75,170 @@
 		  ></li
 		></ul
 	      ></li
+	    ></ul
+	  ></li
+	><li
+	><a href="#musical-structures"
+	  >Musical structures</a
+	  ><ul
+	  ><li
+	    ><a href="#time"
+	      >Time</a
+	      ></li
 	    ><li
-	    ><a href="#type-expressions"
-	      >Type expressions</a
+	    ><a href="#pitch"
+	      >Pitch</a
+	      ></li
+	    ><li
+	    ><a href="#the-music-type"
+	      >The music type</a
+	      ></li
+	    ><li
+	    ><a href="#an-introduction-to-notations"
+	      >An introduction to notations</a
 	      ></li
 	    ></ul
 	  ></li
 	><li
-	><a href="#modules"
-	  >Modules</a
+	><a href="#import-and-export"
+	  >Import and export</a
+	  ><ul
+	  ><li
+	    ><a href="#the-sibelius-writer"
+	      >The Sibelius writer</a
+	      ></li
+	    ><li
+	    ><a href="#the-lilypond-writer"
+	      >The LilyPond writer</a
+	      ></li
+	    ><li
+	    ><a href="#the-musicxml-writer"
+	      >The MusicXML writer</a
+	      ></li
+	    ><li
+	    ><a href="#the-midi-writer"
+	      >The MIDI writer</a
+	      ></li
+	    ></ul
+	  ></li
+	><li
+	><a href="#advanced-features"
+	  >Advanced features</a
+	  ><ul
+	  ><li
+	    ><a href="#other-languages"
+	      >Other languages</a
+	      ></li
+	    ><li
+	    ><a href="#the-evaluation-model"
+	      >The evaluation model</a
+	      ></li
+	    ><li
+	    ><a href="#adding-notations"
+	      >Adding notations</a
+	      ></li
+	    ><li
+	    ><a href="#adding-writers"
+	      >Adding writers</a
+	      ></li
+	    ></ul
 	  ></li
 	></ul
       ></li
     ></ul
   ></div
 >
-<h1 id="vitry"
+<h1 id="vitry-manual"
 ><a href="#TOC"
-  >Vitry</a
+  >Vitry manual</a
   ></h1
+><p
+><em
+  >By Hans Höglund</em
+  ></p
+><p
+></p
 ><h2 id="introduction"
 ><a href="#TOC"
   >Introduction</a
   ></h2
 ><p
->Vitry is a programming language and environment for music composition and analysis, primarily in a non-realtime context. Its main purpose is generation of music notation, but it can also be used for general musical modeling and as a bridge between notation and other media environments. It performs no graphical rendering of music on its own, but it built for seamless integration with standard score-editing tools, such as <a href="http://www.sibelius.com/"
+>Vitry is a programming language and environment for music composition and analysis, primarily in a non-realtime context. It is designed to simplify representation of compund musical structures. The main purpose is generation of music notation, but it can also be used for general procesing of musical structures, or act as as a bridge between notation and other media environments. It performs no graphical rendering of music on its own, but it built for seamless integration with standard score-editing tools, such as <a href="http://www.sibelius.com/"
   >Sibelius</a
   > and <a href="http://lilypond.org/"
   >LilyPond</a
-  >. It is designed to simplify representation of compund musical structures.</p
+  >.</p
 ><p
 >Vitry includes a powerful model of standard musical notation, which may be interactively read and written to the standard score writing applications Sibelius and Lilypond. It also reads and generates standard file formats used for musical representation, such as MusicXML and standard MIDI files.</p
 ><p
->The Vitry language is a simple functional language with an inline syntax.</p
-><h2 id="getting-started"
-><a href="#TOC"
-  >Getting started</a
-  ></h2
+>Vitry shares many traits with the <a href="http://www2.siba.fi/PWGL/"
+  >PWGL</a
+  > and <a href="http://recherche.ircam.fr/equipes/repmus/OpenMusic/"
+  >OpenMusic</a
+  > environments. However, there are also some differences:</p
+><ul
+><li
+  >It is not graphical</li
+  ><li
+  >It is not based on CommonLisp/CLOS.</li
+  ><li
+  >It emphasizes interaction with scorewriter software</li
+  ></ul
 ><p
->TODO</p
-><h3 id="using-the-interpreter"
+>The Vitry language is a simple functional language with an inline syntax.</p
+><p
+></p
+><h2 id="first-steps"
+><a href="#TOC"
+  >First steps</a
+  ></h2
+><h3 id="download-and-install"
+><a href="#TOC"
+  >Download and install</a
+  ></h3
+><h4 id="prerequirements"
+><a href="#TOC"
+  >Prerequirements</a
+  ></h4
+><p
+>Vitry targets the <a href="http://en.wikipedia.org/wiki/Java_Virtual_Machine"
+  >Java Virtual Machine</a
+  >, and thus runs on most operating system. On OS X, Java is preinstalled by default.</p
+><h4 id="download"
+><a href="#TOC"
+  >Download</a
+  ></h4
+><p
+>You may download a pre-compiled version of Vitry from <a href="http://vitry.github.com/downloads"
+  >http://vitry.github.com/downloads</a
+  >.</p
+>To compile the latest version yourself, Git and ANT is required. In this case, use the following commands to fetch the source code and build:<pre>
+$ git clone git@github.com:hanshoglund/vitry.git
+$ cd vitry
+$ ant
+</pre>
+<h3 id="using-the-interpreter"
 ><a href="#TOC"
   >Using the interpreter</a
   ></h3
-><h2 id="values-and-types"
+><p
+>The simplest way to interact with Vitry is through the <em
+  >interpreter</em
+  >.</p
+><p
+>TODO starting a session, using repl</p
+><p
+></p
+><h2 id="the-language"
 ><a href="#TOC"
-  >Values and types</a
+  >The language</a
   ></h2
+><h3 id="values-and-expressions"
+><a href="#TOC"
+  >Values and expressions</a
+  ></h3
+><p
+>Like most functional languages, Vitry consists almost solely of expressions. An expression is an abstract thing that we use to</p
 ><h3 id="basic-types"
 ><a href="#TOC"
   >Basic types</a
@@ -132,8 +267,6 @@
   ></h4
 ><p
 >Strings are sequences of 16-bit Unicode characters.</p
-><p
->TODO</p
 ><h4 id="functions"
 ><a href="#TOC"
   >Functions</a
@@ -142,14 +275,70 @@
 ><a href="#TOC"
   >Sequences</a
   ></h4
-><h3 id="type-expressions"
+><p
+></p
+><h2 id="musical-structures"
 ><a href="#TOC"
-  >Type expressions</a
-  ></h3
-><h2 id="modules"
-><a href="#TOC"
-  >Modules</a
+  >Musical structures</a
   ></h2
+><h3 id="time"
+><a href="#TOC"
+  >Time</a
+  ></h3
+><h3 id="pitch"
+><a href="#TOC"
+  >Pitch</a
+  ></h3
+><h3 id="the-music-type"
+><a href="#TOC"
+  >The music type</a
+  ></h3
+><h3 id="an-introduction-to-notations"
+><a href="#TOC"
+  >An introduction to notations</a
+  ></h3
+><p
+></p
+><h2 id="import-and-export"
+><a href="#TOC"
+  >Import and export</a
+  ></h2
+><h3 id="the-sibelius-writer"
+><a href="#TOC"
+  >The Sibelius writer</a
+  ></h3
+><h3 id="the-lilypond-writer"
+><a href="#TOC"
+  >The LilyPond writer</a
+  ></h3
+><h3 id="the-musicxml-writer"
+><a href="#TOC"
+  >The MusicXML writer</a
+  ></h3
+><h3 id="the-midi-writer"
+><a href="#TOC"
+  >The MIDI writer</a
+  ></h3
+><h2 id="advanced-features"
+><a href="#TOC"
+  >Advanced features</a
+  ></h2
+><h3 id="other-languages"
+><a href="#TOC"
+  >Other languages</a
+  ></h3
+><h3 id="the-evaluation-model"
+><a href="#TOC"
+  >The evaluation model</a
+  ></h3
+><h3 id="adding-notations"
+><a href="#TOC"
+  >Adding notations</a
+  ></h3
+><h3 id="adding-writers"
+><a href="#TOC"
+  >Adding writers</a
+  ></h3
 >
 </body>
 </html>
