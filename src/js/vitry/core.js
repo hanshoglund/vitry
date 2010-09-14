@@ -1428,6 +1428,7 @@ function help(obj) {
   print("               If none is given, displays this text.                           ");
   print("  load()       Loads and interprets a file (as if it had been entered          ");
   print("               in the console).                                                ");
+  print("  reload()                                                                     ");
   print("  quit()       Leaves Vitry.                                                   ");
   print();
 }
@@ -1438,6 +1439,14 @@ function help(obj) {
 function quit() {
   print("Leaving " + about.name + "...")
   Packages.java.lang.System.exit(0);
+} 
+
+var lastLoaded = "";
+var lastResult;
+
+function reload() {
+  load(lastLoaded);
+  print("Reloaded " + lastLoaded);
 }
 
 function load(fileName) {
@@ -1453,7 +1462,8 @@ function load(fileName) {
       } 
       catch (e if e instanceof JavaException) {
         return null;
-      }    
+      }
+      lastLoaded = fileName;    
     }
   }
 }
@@ -1477,6 +1487,7 @@ function repl(prompt) {
     try {
       res = eval(line);
       res === undefined || print(res);
+      lastResult = res;
     } catch (e) {
       print(e.constructor.name + ": " + e.message);
     }
