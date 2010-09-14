@@ -88,20 +88,32 @@
 	      >Pitch</a
 	      ></li
 	    ><li
-	    ><a href="#the-music-type"
-	      >The music type</a
+	    ><a href="#other-events"
+	      >Other events</a
 	      ></li
 	    ><li
-	    ><a href="#using-notations"
-	      >Using notations</a
+	    ><a href="#representing-music"
+	      >Representing music</a
+	      ></li
+	    ><li
+	    ><a href="#notations"
+	      >Notations</a
 	      ></li
 	    ><li
 	    ><a href="#part-trees"
 	      >Part trees</a
 	      ></li
 	    ><li
-	    ><a href="#instrumentation-functions"
-	      >Instrumentation functions</a
+	    ><a href="#instrumentations"
+	      >Instrumentations</a
+	      ></li
+	    ><li
+	    ><a href="#continuous-events"
+	      >Continuous events</a
+	      ></li
+	    ><li
+	    ><a href="#repetition-and-nonlinearity"
+	      >Repetition and nonlinearity</a
 	      ></li
 	    ></ul
 	  ></li
@@ -128,16 +140,26 @@
 	    ></ul
 	  ></li
 	><li
-	><a href="#advanced-features"
-	  >Advanced features</a
+	><a href="#advanced-language-features"
+	  >Advanced language features</a
 	  ><ul
 	  ><li
-	    ><a href="#other-languages"
-	      >Other languages</a
+	    ><a href="#laziness"
+	      >Laziness</a
 	      ></li
 	    ><li
 	    ><a href="#the-evaluation-model"
 	      >The evaluation model</a
+	      ></li
+	    ></ul
+	  ></li
+	><li
+	><a href="#other"
+	  >Other</a
+	  ><ul
+	  ><li
+	    ><a href="#other-languages"
+	      >Other languages</a
 	      ></li
 	    ><li
 	    ><a href="#adding-notations"
@@ -220,10 +242,14 @@ toc(true);
   >Java Virtual Machine</a
   >, and thus runs on most operating system. On OS X, Java is preinstalled by default.</p
 ><p
->You may download a pre-compiled version of Vitry from <a href="http://vitry.github.com/downloads"
-  >http://vitry.github.com/downloads</a
+>You may download a pre-compiled version of Vitry from <a href="http://github.com/hanshoglund/vitry/downloads"
+  >http://github.com/hanshoglund/vitry/downloads</a
   >.</p
->To compile the latest version yourself, Git and ANT is required. In this case, use the following commands to fetch the source code and build:<pre>
+>To compile the latest version yourself, <a href="http://git-scm.com/"
+>Git</a
+> and <a href="http://ant.apache.org/"
+>Apache ANT</a
+> is required. In this case, use the following commands to fetch the source code and build:<pre>
 $ git clone git@github.com:hanshoglund/vitry.git
 $ cd vitry
 $ ant
@@ -281,11 +307,9 @@ $ ant
 ><p
 >The boolean type is written as <code
   >bool</code
-  >.</p
-><p
->Boolean values are written as <code
+  >. Its values are written as <code
   >true</code
-  > or <code
+  > and <code
   >false</code
   >.</p
 ><h4 id="numbers"
@@ -293,9 +317,7 @@ $ ant
   >Numbers</a
   ></h4
 ><p
->Vitry supports bignum natural, integer and rational numbers, as well as floating-point real and complex numbers.</p
-><p
->The types of these are writen as <code
+>Vitry supports bignum natural, integer and rational numbers, as well as floating-point real and complex numbers. The types of these are writen as <code
   >nat</code
   >, <code
   >int</code
@@ -307,7 +329,7 @@ $ ant
   >complex</code
   > respectively.</p
 ><p
->Natural, integers and rational numbers are written as sequences of digits. Vitry will automatically convert integers to rationals and vice versa.</p
+>Natural, integers and rational numbers are written as sequences of digits. Vitry will automatically convert integers to rationals and vice versa:</p
 ><p
 ><code
   >152</code
@@ -357,9 +379,7 @@ $ ant
 ><p
 >Strings are sequences of Unicode characters. The string type is written as <code
   >string</code
-  >.</p
-><p
->String values are written inside double-quotes:</p
+  >. String values are written inside double-quotes:</p
 ><p
 ><code
   >&quot;Beethoven day&quot;</code
@@ -394,21 +414,33 @@ $ ant
 ><a href="#TOC"
   >Pitch</a
   ></h3
-><h3 id="the-music-type"
+><h3 id="other-events"
 ><a href="#TOC"
-  >The music type</a
+  >Other events</a
   ></h3
-><h3 id="using-notations"
+><h3 id="representing-music"
 ><a href="#TOC"
-  >Using notations</a
+  >Representing music</a
+  ></h3
+><h3 id="notations"
+><a href="#TOC"
+  >Notations</a
   ></h3
 ><h3 id="part-trees"
 ><a href="#TOC"
   >Part trees</a
   ></h3
-><h3 id="instrumentation-functions"
+><h3 id="instrumentations"
 ><a href="#TOC"
-  >Instrumentation functions</a
+  >Instrumentations</a
+  ></h3
+><h3 id="continuous-events"
+><a href="#TOC"
+  >Continuous events</a
+  ></h3
+><h3 id="repetition-and-nonlinearity"
+><a href="#TOC"
+  >Repetition and nonlinearity</a
   ></h3
 ><p
 ></p
@@ -432,17 +464,25 @@ $ ant
 ><a href="#TOC"
   >The MIDI writer</a
   ></h3
-><h2 id="advanced-features"
+><h2 id="advanced-language-features"
 ><a href="#TOC"
-  >Advanced features</a
+  >Advanced language features</a
   ></h2
-><h3 id="other-languages"
+><h3 id="laziness"
 ><a href="#TOC"
-  >Other languages</a
+  >Laziness</a
   ></h3
 ><h3 id="the-evaluation-model"
 ><a href="#TOC"
   >The evaluation model</a
+  ></h3
+><h2 id="other"
+><a href="#TOC"
+  >Other</a
+  ></h2
+><h3 id="other-languages"
+><a href="#TOC"
+  >Other languages</a
   ></h3
 ><h3 id="adding-notations"
 ><a href="#TOC"

@@ -43,9 +43,9 @@ Vitry includes a powerful model of standard musical notation. It performs no gra
 
 Vitry targets the [Java Virtual Machine](http://en.wikipedia.org/wiki/Java_Virtual_Machine), and thus runs on most operating system. On OS X, Java is preinstalled by default.
 
-You may download a pre-compiled version of Vitry from [http://vitry.github.com/downloads](http://vitry.github.com/downloads).
+You may download a pre-compiled version of Vitry from [http://github.com/hanshoglund/vitry/downloads](http://github.com/hanshoglund/vitry/downloads).
 
-To compile the latest version yourself, Git and ANT is required. In this case, use the following commands to fetch the source code and build: 
+To compile the latest version yourself, [Git](http://git-scm.com/) and [Apache ANT](http://ant.apache.org/) is required. In this case, use the following commands to fetch the source code and build: 
 <pre>
 $ git clone git@github.com:hanshoglund/vitry.git
 $ cd vitry
@@ -82,16 +82,12 @@ TODO more definitions
 ### Basic types
 
 #### Booleans
-The boolean type is written as `bool`. 
-
-Boolean values are written as `true` or `false`.
+The boolean type is written as `bool`. Its values are written as `true` and `false`.
 
 #### Numbers
-Vitry supports bignum natural, integer and rational numbers, as well as floating-point real and complex numbers.
+Vitry supports bignum natural, integer and rational numbers, as well as floating-point real and complex numbers. The types of these are writen as `nat`, `int`, `rat`, `float` and `complex` respectively.
 
-The types of these are writen as `nat`, `int`, `rat`, `float` and `complex` respectively.
-
-Natural, integers and rational numbers are written as sequences of digits. Vitry will automatically convert integers to rationals and vice versa.
+Natural, integers and rational numbers are written as sequences of digits. Vitry will automatically convert integers to rationals and vice versa:
 
   `152 `\
   `42  `\
@@ -113,9 +109,7 @@ We create a complex number by adding the imaginary unit `i` to the imaginary par
 
 
 #### Strings
-Strings are sequences of Unicode characters. The string type is written as `string`.
-
-String values are written inside double-quotes:
+Strings are sequences of Unicode characters. The string type is written as `string`. String values are written inside double-quotes:
 
   `"Beethoven day" `\
   `"What larks"    `\
@@ -132,10 +126,13 @@ String values are written inside double-quotes:
 ## Musical structures
 ### Time
 ### Pitch
-### The music type
-### Using notations
+### Other events
+### Representing music
+### Notations
 ### Part trees
-### Instrumentation functions
+### Instrumentations
+### Continuous events
+### Repetition and nonlinearity
 
 
 \pagebreak
@@ -146,12 +143,13 @@ String values are written inside double-quotes:
 ### The LilyPond writer
 ### The MusicXML writer
 ### The MIDI writer
-
-
-## Advanced features
-
-### Other languages
+    
+## Advanced language features
+### Laziness
 ### The evaluation model
+
+## Other
+### Other languages
 ### Adding notations
 ### Adding writers
   
