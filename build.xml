@@ -44,14 +44,15 @@ ABSOLUTELY NO WARRANTY IMPLIED.
             <arg value="vitry"/>
 
             <arg value="${src.js}/vitry/core.js"/>
+            <arg value="${src.js}/vitry/header.js"/>
             <arg value="${src.js}/vitry/main.js"/>
             <arg value="${src.js}/vitry/music.js"/>
             <arg value="${src.js}/vitry/readers.js"/>
             <arg value="${src.js}/vitry/writers.js"/>
-            <arg value="${src.js}/vitry/header.js"/>
+            <arg value="${src.js}/vitry/util.js"/>
 		</java>
 
-
+        <!--
         <java fork="true"
             classpath="lib/js.jar:lib/jline.jar:bin"
             classname="org.mozilla.javascript.tools.jsc.Main"
@@ -69,6 +70,7 @@ ABSOLUTELY NO WARRANTY IMPLIED.
 
             <arg value="${src.js}/vitry/util/javascript.js"/>
         </java>
+        -->
 	</target>
 
     <!-- =============================================================== -->

@@ -678,8 +678,40 @@ Object.enumerable(Sequence.prototype, [
 // - Implement all set views
    
 // Array.prototype__proto__ = new Sequence();
+      
   
-Object.extend(Array, {
+  
+Object.extend(Array, { 
+  
+  /**
+   * Returns an array containing an enumeration of numbers over the given range.
+   * 
+   * @param from
+   *   First value (inclusive)
+   * @param to
+   *   Last value (exclusive).
+   * @param step
+   *   Step size (default 1).
+   */
+  range : function (from, to, step) {
+     if (!step)
+       return Array.range(from, to, 1);
+
+     if (to == from)  return [];
+     if (to < from && step > 0) return []; // XXX Really infinite
+     if (to > from && step < 0) return []; // XXX Really infinite
+     
+     let a = [];
+     let v = from;
+     if (to > from) while (v < to) {
+       a.push(v);
+       v += step;
+     } else while (v > to) {
+       a.push(v);
+       v += step;
+     }  
+     return a;
+   },
 
   /**
    * Returns the union of the given objects.
@@ -733,9 +765,58 @@ Object.extend(Array, {
   
   isProperSupersetOf : function(first, second) {
     // TODO
+  },
+  
+  /**
+   * Returns an array of arrays whose value at index n is the value of argument n at the 
+   * corresponding index. The length of the returned array will be the length of the
+   * shortest argument.
+   * 
+   * @param
+   *   Any number of iterable arguments.
+   */
+  zip : function() {
+    let args = [v for each (v in arguments)];
+    let len = args.reduce(
+      function(prev, arg) 
+        prev < 0 ? arg.length : Math.min(prev, arg.length), 
+        -1);
+
+    return doZip(args, len);
+  },
+
+  /**
+   * Returns an array of arrays whose value at index n is the value of argument n at the 
+   * corresponding index. The length of the returned array will be the length of the
+   * longest argument. Missing elements are set to undefined.
+   * 
+   * @param
+   *   Any number of iterable arguments.
+   */
+  zipAll : function() {
+    let args = [v for each (v in arguments)];
+    let len = args.reduce(
+      function(prev, arg) 
+        Math.max(prev, arg.length), 
+        0);
+
+    return doZip(args, len);
   }
 
 });
+
+function doZip(args, len) {
+  let res = Array(len);
+  for(let i = 0; i < len; i++) {
+    res[i] = Array(args.length);
+    for (let j = 0; j < args.length; j++) {
+      res[i][j] = args[j][i];
+    }
+  } 
+  return res;
+}
+
+
 
 Object.extend(Array.prototype, {
 
@@ -789,7 +870,7 @@ Object.extend(Array.prototype, {
   
   pick : function () {
     return this[Math.floor((Math.random() - 0.000000000001) * this.length)];    
-  },
+  },   
   
   add : Sequence.prototype.add,
   subtract : Sequence.prototype.subtract,
@@ -801,8 +882,7 @@ Object.extend(Array.prototype, {
   
 });
    
-
-// Array.prototype.__proto__ = Sequence.prototype;
+   // Array.prototype.__proto__ = Sequence.prototype;
 
 
 Function.bindPrototype( Array,    "union"                    );
@@ -1223,6 +1303,7 @@ var vitryModules = {
   core          : "vitry/core",
   music         : "vitry/music",
   readers       : "vitry/readers",
+  util          : "vitry/util",
   writers       : "vitry/writers"
 }
 
