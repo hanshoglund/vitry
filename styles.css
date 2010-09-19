@@ -2,18 +2,9 @@ body {
     background-color: #fff;
     font-family: Geneva, sans-serif;
     font-size: 12px;
-    line-height: 190%;
+    line-height: 170%;
 
     color: black ;
-}
-#toggle a {
-  color: black ;
-}
-#TOC a {
-  color: #000;
-}
-#main a {
-  color: CornflowerBlue;
 }
 
 div#toggle {
@@ -30,6 +21,16 @@ div#toggle {
 
 #toggle table td {
   padding-right: 30px;
+}
+
+#toggle a {
+  color: black ;
+}
+#TOC a {
+  color: #000;
+}
+#main a {
+  color: CornflowerBlue;
 }
 
 div#TOC {
