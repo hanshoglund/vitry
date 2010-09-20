@@ -1449,6 +1449,11 @@ function reload() {
   print("Reloaded " + lastLoaded);
 }
 
+function getAbsoluteFileName(str) {
+  return str . 
+    replace("~", environment["user.home"]);
+}
+
 function load(fileName) {
   if (arguments.length > 1) {
     for each (v in arguments) load(v);
@@ -1456,9 +1461,8 @@ function load(fileName) {
   } else {
     if (fileName) {
       var file = fileName;
-      file = file.replace("~", environment["user.home"]);
       try {
-        eval(readFile(file));
+        eval(readFile(getAbsoluteFileName(fileName)));
       } 
       catch (e if e instanceof JavaException) {
         return null;
