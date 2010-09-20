@@ -872,6 +872,14 @@ Object.extend(Array.prototype, {
     return this[Math.floor((Math.random() - 0.000000000001) * this.length)];    
   },   
   
+  apply : function (fn, thisValue) {
+    return fn.apply(thisValue, this);
+  },
+
+  call : function (fn, thisValue) {
+    return fn.call(thisValue, this);
+  },
+  
   add : Sequence.prototype.add,
   subtract : Sequence.prototype.subtract,
   multiply : Sequence.prototype.multiply,
@@ -911,6 +919,8 @@ Object.enumerable(Array.prototype, [
   "intersection",
   "clone",
   "removeLast",
+  "apply",
+  "call",
   "add",
   "removeFirst",
   "addBefore",
@@ -1271,13 +1281,13 @@ var strParser = new RegExp("(\\d+(?:\\.\\d*)?(?:[eE]\\+?\\-?\\d+)?|\\.\\d+(?:[eE
 // Top-level functions
                
 
-// function parseArgs(a) {
-//   // TODO Return lazy seq instead of copy
-//   
-//   var given = [];
-//   Array.prototype.push.apply(given, a);
-//   return given;
-// }    
+function parseArgs(a) {
+  // TODO Return lazy seq instead of copy
+  
+  var given = [];
+  Array.prototype.push.apply(given, a);
+  return given;
+}     
 
 // function chain(expr) {          
 //   var value = expr;
@@ -1392,7 +1402,7 @@ function print(val) {
    !Function.isFunction(val) &&
    !isNative(val) &&
    (val.toString() === Object.prototype.toString()))
-     return print(JSON.stringify(val));
+     return print(vitry.util.prettyPrint(JSON.stringify(val)));
 
   io.stdOut.println(String(val));
 }

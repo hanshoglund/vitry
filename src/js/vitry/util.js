@@ -9,7 +9,7 @@
  *   Example [0, 0, 10, 1] y goes from 0 to 10 where x goes from 0 to 1.
  */
 function BPF(list) {
-  this.list = list;
+  this.list = list || [];
   this.y = [list[k] for (k in list) if (k % 2 === 0)];
   this.x = [list[k] for (k in list) if (k % 2 !== 0)];
 }
@@ -49,6 +49,14 @@ BPF.prototype = {
         return y[i] + (y[i+1] - y[i]) * (search - p) / x[i+1];
       }
     }      
+  },
+  
+  toString : function () {  
+    var listStr = this.list.join(" ");
+    return "[object BPF " + 
+      listStr.substr(0, 90) + 
+      (listStr.length > 90 ? "..." : "") + 
+      " ]";
   }
 }
 
