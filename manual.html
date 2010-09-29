@@ -4,9 +4,36 @@
   <title></title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="generator" content="pandoc" />
+  <meta name="author" content="" />
+  <meta name="date" content="" />
+
+
   <link rel="stylesheet" href="styles.css" type="text/css" />
+
+<script type="text/javascript">
+var tocVisible = false;
+
+function toc(status) {
+    document.getElementById("TOC").style.display = ( status ? "block" : "none" );
+    document.getElementById("main").style.marginLeft = ( status ? "220px" : "0px" );
+    tocVisible = status;    
+}
+
+function toggle() {
+    toc(!tocVisible);
+}
+   
+toc(true);      
+
+</script>
+
 </head>
+
+
 <body>
+
+
+
 <div id="TOC"
 ><ul
   ><li
@@ -62,8 +89,12 @@
 		></ul
 	      ></li
 	    ><li
-	    ><a href="#compound-types"
-	      >Compound types</a
+	    ><a href="#atoms"
+	      >Atoms</a
+	      ></li
+	    ><li
+	    ><a href="#creating-types"
+	      >Creating types</a
 	      ></li
 	    ><li
 	    ><a href="#functions"
@@ -176,37 +207,26 @@
     ></ul
   ></div
 >
-<script type="text/javascript">
-var tocVisible = false;
 
-function toc(status) {
-    document.getElementById("TOC").style.display = ( status ? "block" : "none" );
-    document.getElementById("main").style.marginLeft = ( status ? "220px" : "0px" );
-    tocVisible = status;    
-}
+<div id="toggle">
+    <table
+    ><tbody
+      ><tr class="odd"
+        ><td align="left"
+          ><a href="http://github.com/hanshoglund/Vitry"
+    	>Vitry on Github</a
+    	></td
+          ><td align="left"
+          ><a href="javascript:toggle()"
+    	>Toggle contents</a
+    	></td
+          ></tr
+        ></tbody
+      ></table
+    ></div>
+</div>
 
-function toggle() {
-    toc(!tocVisible);
-}
 
-toc(true);      
-
-</script>
-<div id="toggle"><table
-><tbody
-  ><tr class="odd"
-    ><td align="left"
-      ><a href="http://github.com/hanshoglund/Vitry"
-	>Vitry on Github</a
-	></td
-      ><td align="left"
-      ><a href="javascript:toggle()"
-	>Toggle contents</a
-	></td
-      ></tr
-    ></tbody
-  ></table
-></div>
 <div id="main">
 
 <h1 id="vitry-manual"
@@ -214,28 +234,22 @@ toc(true);
   >Vitry manual</a
   ></h1
 ><p
-><small><em
-  >© Hans Höglund 2010</em
-  ></small></p
-><p
+>Copyright © Hans Höglund 2010</p
 ><br
-   /></p
-><h2 id="introduction"
+ /><h2 id="introduction"
 ><a href="#TOC"
   >Introduction</a
   ></h2
 ><p
->Vitry is a programming language with an inline syntax and simple, expressive type system. It is designed to allow easy representation of all kinds of musical structures. Vitry may be used for algorithmic composition or analysis.</p
+>Vitry is a programming language with an inline syntax and simple, expressive type system. It is designed to allow easy representation of musical structures of all kinds. Vitry may be used for algorithmic composition or analysis.</p
 ><p
->Vitry includes a powerful model of standard musical notation. It performs no graphical rendering of music on its own, but it built for seamless integration with standard score-editing tools, such as <a href="http://www.sibelius.com/"
+>Vitry includes a powerful model of standard music notation. It performs no graphical rendering of music on its own, but it built for integration with score-editing software such as <a href="http://www.sibelius.com/"
   >Sibelius</a
   > and <a href="http://lilypond.org/"
   >LilyPond</a
-  >.</p
-><p
+  >. It may also be used to generate data for audio-synthesis software.</p
 ><br
-   /></p
-><h2 id="first-steps"
+ /><h2 id="first-steps"
 ><a href="#TOC"
   >First steps</a
   ></h2
@@ -290,10 +304,8 @@ $ ./vitry
 ><a href="#TOC"
   >Sibelius installation</a
   ></h3
-><p
 ><br
-   /></p
-><h2 id="language"
+ /><h2 id="language"
 ><a href="#TOC"
   >Language</a
   ></h2
@@ -374,7 +386,7 @@ $ ./vitry
   >0.5/2</code
   ></p
 ><p
->We create a complex number by adding the imaginary unit <code
+>We create a complex number by adding the suffix <code
   >i</code
   > to the imaginary part:</p
 ><p
@@ -382,7 +394,7 @@ $ ./vitry
   >2i</code
   ><br
    /> <code
-  >1 + 0i</code
+  >10 + i</code
   ><br
    /> <code
   >22.4 + 32e4i</code
@@ -403,39 +415,64 @@ $ ./vitry
   >&quot;What larks&quot;</code
   ><br
    /></p
-><h3 id="compound-types"
+><h3 id="atoms"
 ><a href="#TOC"
-  >Compound types</a
+  >Atoms</a
+  ></h3
+><h3 id="creating-types"
+><a href="#TOC"
+  >Creating types</a
   ></h3
 ><h3 id="functions"
 ><a href="#TOC"
   >Functions</a
   ></h3
+><p
+>Functions contains expressions which are not be evaluated immediatly, but converted to a special kind of value called a function value. This value may be passed around and used as an argument to other functions. The expression it defines is evaluated when the function is applied.</p
+><p
+>Functions expressions may contain parameters which are placeholders for values to be supplied when the function is evaluated. A function may also refer to values defined in the environment where it was created, using <a href="http://en.wikipedia.org/wiki/Scope_%28programming%29#Lexical_scoping"
+  >lexical scope resolution</a
+  >.</p
 ><h3 id="sequences"
 ><a href="#TOC"
   >Sequences</a
   ></h3
 ><p
+>A sequence capture the general notion of values following values.</p
+><p
+>TODO</p
+><p
+>As should be clear by now, functions, sequences and type expressions are the basic units of abstraction in the Vitry language.</p
 ><br
-   /></p
-><h2 id="musical-structures"
+ /><h2 id="musical-structures"
 ><a href="#TOC"
   >Musical structures</a
   ></h2
 ><p
->Vitry provide a representation of the structures typically found in musical scores. All musical structures are defined in terms of type expressions, which are also exposed to structures representing any kind of musical transcription.</p
+>Vitry provide a representation of the structures typically found in musical scores. All musical structures are compound types, defined as standard type expressions. This gives the user of the power to define custom structures that operate on the same level of abstraction as the standard structures.</p
 ><p
->As will be clear at the end of this chapter, Vitry makes a clear distinction between the representations of <em
-  >music</em
-  > and its <em
-  >notation</em
-  >. Loosely, we may think of music as structured data, and of notations as presentations of this data according to the given structure. This allows Vitry to associate identical musical structures with different notations.</p
+>A distinction is made between musical information (such as pitch or duration) from notational (such as key or time signatures). This allow us to decouple decisions made on the musical level from the practical considerations of notation.</p
 ><p
->The separation of music and notation allow the representation of simple musical values (such as pitch and time) to be precise and inherently relative. Vitry accomplish this by usign rational numbers for such values.</p
+>TODO</p
 ><h3 id="time"
 ><a href="#TOC"
   >Time</a
   ></h3
+><p
+>The type time is a synonym for the rational number. This allow us to encode conventional note lengths such as whole half notes, quarter notes, etc.</p
+><p
+><code
+  >1, 1/2, 1/4</code
+  > </p
+><p
+>Using sequence operators, we can make sequences run i different relative tempos, i.e:</p
+><p
+><code
+  >[1 1/2 1/2]</code
+  ><br
+   /> <code
+  >[1 1/2 1/2] * 2</code
+  ></p
 ><h3 id="pitch"
 ><a href="#TOC"
   >Pitch</a
@@ -468,8 +505,6 @@ $ ./vitry
 ><a href="#TOC"
   >Repetition and nonlinearity</a
   ></h3
-><p
-></p
 ><h2 id="input-and-output"
 ><a href="#TOC"
   >Input and output</a
@@ -518,6 +553,9 @@ $ ./vitry
 ><a href="#TOC"
   >Adding writers</a
   ></h3
-></div>
+>
+
+</div>
+
 </body>
 </html>

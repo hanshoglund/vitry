@@ -1,3 +1,5 @@
+@media screen {
+
 body {          
     background-color: #fff;
     font-family: Geneva, sans-serif;
@@ -97,4 +99,12 @@ hr {
     color: #fff;
     background-color: #bbb;
     height: 1px;
+}
+
+}
+
+
+@media print {
+  
+}
 }

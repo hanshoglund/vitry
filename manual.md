@@ -1,43 +1,21 @@
-<script type="text/javascript">
-var tocVisible = false;
-
-function toc(status) {
-    document.getElementById("TOC").style.display = ( status ? "block" : "none" );
-    document.getElementById("main").style.marginLeft = ( status ? "220px" : "0px" );
-    tocVisible = status;    
-}
-
-function toggle() {
-    toc(!tocVisible);
-}
-   
-toc(true);      
-
-</script>
-<div id="toggle">
----                                                     ---
-[Vitry on Github](http://github.com/hanshoglund/Vitry)  [Toggle contents](javascript:toggle())  
----                                                     ---
-</div>
-<div id="main">
 
 
 Vitry manual
 ======================================================================
-<small>*© Hans Höglund 2010*</small>
+Copyright © Hans Höglund 2010
 
 \
-\pagebreak
+
 
 ## Introduction
-Vitry is a programming language with an inline syntax and simple, expressive type system. It is designed to allow easy representation of all kinds of musical structures. Vitry may be used for algorithmic composition or analysis. 
+Vitry is a programming language with an inline syntax and simple, expressive type system. It is designed to allow easy representation of musical structures of all kinds. Vitry may be used for algorithmic composition or analysis. 
 
-Vitry includes a powerful model of standard musical notation. It performs no graphical rendering of music on its own, but it built for seamless integration with standard score-editing tools, such as [Sibelius](http://www.sibelius.com/) and [LilyPond](http://lilypond.org/).
+Vitry includes a powerful model of standard music notation. It performs no graphical rendering of music on its own, but it built for integration with score-editing software such as [Sibelius](http://www.sibelius.com/) and [LilyPond](http://lilypond.org/). It may also be used to generate data for audio-synthesis software.
 
 
 
 \
-\pagebreak
+
 
 ## First steps
 
@@ -81,7 +59,7 @@ TODO variables
 
 
 \
-\pagebreak
+
 
 ## Language
 
@@ -113,10 +91,10 @@ Floating point numbers may be writen in several ways:
   `2e-5    `\
   `0.5/2   `
   
-We create a complex number by adding the imaginary unit `i` to the imaginary part:
+We create a complex number by adding the suffix `i` to the imaginary part:
 
   `2i          `\
-  `1 + 0i      `\
+  `10 + i      `\
   `22.4 + 32e4i`
 
 
@@ -127,26 +105,54 @@ Strings are sequences of Unicode characters. The string type is written as `stri
   `"What larks"    `\
   
 
-### Compound types
+### Atoms
+
+### Creating types
+
+
+
 ### Functions
+
+Functions contains expressions which are not be evaluated immediatly, but converted to a special kind of value called a function value. This value may be passed around and used as an argument to other functions. The expression it defines is evaluated when the function is applied.
+
+Functions expressions may contain parameters which are placeholders for values to be supplied when
+the function is evaluated.  A function may also refer to values defined in the environment where it was created, using [lexical scope resolution](http://en.wikipedia.org/wiki/Scope_%28programming%29#Lexical_scoping).
+
+
 ### Sequences
 
+A sequence capture the general notion of values following values.
+                                                                 
+TODO
+
+
+
+                                                                                 
+
+As should be clear by now, functions, sequences and type expressions are the basic units of abstraction in the Vitry language.
 
 
 \
-\pagebreak
+
 
 ## Musical structures
 
-Vitry provide a representation of the structures typically found in musical scores. All musical structures are defined in terms of type expressions, which are also exposed to structures representing any kind of musical transcription.
+Vitry provide a representation of the structures typically found in musical scores. All musical structures are compound types, defined as standard type expressions. This gives the user of the power to define custom structures that operate on the same level of abstraction as the standard structures.
 
-As will be clear at the end of this chapter, Vitry makes a clear distinction between the representations of *music* and its *notation*. Loosely, we may think of music as structured data, and of notations as presentations of this data according to the given structure. This allows Vitry to associate identical musical structures with different notations.
+A distinction is made between musical information (such as pitch or duration) from notational (such as key or time signatures). This allow us to decouple decisions made on the musical level from the practical considerations of notation.
 
-The separation of music and notation allow the representation of simple musical values (such as pitch and time) to be precise and inherently relative. Vitry accomplish this by usign rational numbers for such values.
-
-
+TODO 
 
 ### Time                     
+The type time is a synonym for the rational number. This allow us to encode conventional note lengths such as whole half notes, quarter notes, etc.
+
+  `1, 1/2, 1/4 `\                            
+  
+Using sequence operators, we can make sequences run i different relative tempos, i.e:
+
+  `[1 1/2 1/2]`\
+  `[1 1/2 1/2] * 2`
+
 
 
 ### Pitch
@@ -159,7 +165,7 @@ The separation of music and notation allow the representation of simple musical 
 ### Repetition and nonlinearity
 
 
-\pagebreak
+
 
 ## Input and output
 
@@ -178,5 +184,3 @@ The separation of music and notation allow the representation of simple musical 
 ### Adding writers
   
 
-
-</div>
