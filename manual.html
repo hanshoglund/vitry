@@ -214,21 +214,27 @@ toc(true);
   >Vitry manual</a
   ></h1
 ><p
-></p
+><small><em
+  >© Hans Höglund 2010</em
+  ></small></p
+><p
+><br
+   /></p
 ><h2 id="introduction"
 ><a href="#TOC"
   >Introduction</a
   ></h2
 ><p
->Vitry is a functional programming language with an inline syntax and a simple, expressive type system. It is designed to simplify representation of compund musical structures. Vitry may be used for algorithmic composition or analysis.</p
+>Vitry is a programming language with an inline syntax and simple, expressive type system. It is designed to allow easy representation of all kinds of musical structures. Vitry may be used for algorithmic composition or analysis.</p
 ><p
 >Vitry includes a powerful model of standard musical notation. It performs no graphical rendering of music on its own, but it built for seamless integration with standard score-editing tools, such as <a href="http://www.sibelius.com/"
   >Sibelius</a
   > and <a href="http://lilypond.org/"
   >LilyPond</a
-  >. It also reads and generates standard file formats used for musical representation, such as MusicXML and standard MIDI files.</p
+  >.</p
 ><p
-></p
+><br
+   /></p
 ><h2 id="first-steps"
 ><a href="#TOC"
   >First steps</a
@@ -240,7 +246,9 @@ toc(true);
 ><p
 >Vitry targets the <a href="http://en.wikipedia.org/wiki/Java_Virtual_Machine"
   >Java Virtual Machine</a
-  >, and thus runs on most operating system. On OS X, Java is preinstalled by default.</p
+  >, and may be used with many different operating systems. On Mac OS X systems, Java is preinstalled by default. For other systems, refer to <a href="www.java.com"
+  >this page</a
+  > or the documentation specific to your systems for installation options.</p
 ><p
 >You may download a pre-compiled version of Vitry from <a href="http://github.com/hanshoglund/vitry/downloads"
   >http://github.com/hanshoglund/vitry/downloads</a
@@ -259,24 +267,31 @@ $ ant
   >The interpreter</a
   ></h3
 ><p
->The simplest way to interact with Vitry is through the <em
-  >interpreter</em
-  >.</p
-><p
+>The interpreter is typically the simplest way to interact with Vitry. To run it, move into the Vitry directory and launch vitry through the <code
+  >vitry</code
+  > script.</p
+><pre>
+$ cd vitry
+$ ./vitry
+</pre>
+
+
+<p
 >TODO starting a session TODO the REPL mode TODO interpreter command</p
 ><h3 id="setting-up-the-environment"
 ><a href="#TOC"
   >Setting up the environment</a
   ></h3
 ><p
->TODO the .profile.vitry file TODO variables</p
+>TODO the <code
+  >~/.vitry</code
+  > file TODO variables</p
 ><h3 id="sibelius-installation"
 ><a href="#TOC"
   >Sibelius installation</a
   ></h3
 ><p
 ><br
-   /><br
    /></p
 ><h2 id="language"
 ><a href="#TOC"
@@ -401,11 +416,22 @@ $ ant
   >Sequences</a
   ></h3
 ><p
-></p
+><br
+   /></p
 ><h2 id="musical-structures"
 ><a href="#TOC"
   >Musical structures</a
   ></h2
+><p
+>Vitry provide a representation of the structures typically found in musical scores. All musical structures are defined in terms of type expressions, which are also exposed to structures representing any kind of musical transcription.</p
+><p
+>As will be clear at the end of this chapter, Vitry makes a clear distinction between the representations of <em
+  >music</em
+  > and its <em
+  >notation</em
+  >. Loosely, we may think of music as structured data, and of notations as presentations of this data according to the given structure. This allows Vitry to associate identical musical structures with different notations.</p
+><p
+>The separation of music and notation allow the representation of simple musical values (such as pitch and time) to be precise and inherently relative. Vitry accomplish this by usign rational numbers for such values.</p
 ><h3 id="time"
 ><a href="#TOC"
   >Time</a
@@ -492,12 +518,6 @@ $ ant
 ><a href="#TOC"
   >Adding writers</a
   ></h3
-><p
-><em
-  >© Hans Höglund 2010. Available under the <a href="http://www.gnu.org/copyleft/fdl.html"
-    >GNU FDL</a
-    ></em
-  ></p
 ></div>
 </body>
 </html>
