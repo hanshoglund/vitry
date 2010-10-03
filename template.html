@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>$if(title-prefix)$$title-prefix$ - $endif$$if(pagetitle)$$pagetitle$$endif$</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="$author$" />
+  <meta name="date" content="$date$" />
+
+$if(highlighting-css)$
+  <style type="text/css">
+$highlighting-css$
+  </style>
+$endif$
+
+$for(css)$
+  <link rel="stylesheet" href="$css$" type="text/css" />
+$endfor$
+
+<script type="text/javascript">
+var tocVisible = false;
+
+function toc(status) {
+    document.getElementById("TOC").style.display = ( status ? "block" : "none" );
+    document.getElementById("main").style.marginLeft = ( status ? "220px" : "0px" );
+    tocVisible = status;    
+}
+
+function toggle() {
+    toc(!tocVisible);
+}
+   
+toc(true);      
+
+</script>
+
+</head>
+
+
+<body>
+
+$for(include-before)$
+$include-before$
+$endfor$
+
+$if(title)$
+<h1 class="title">$title$</h1>
+$endif$
+
+$if(toc)$
+$toc$
+$endif$
+
+<div id="toggle">
+    <table
+    ><tbody
+      ><tr class="odd"
+        ><td align="left"
+          ><a href="http://github.com/hanshoglund/Vitry"
+    	>Vitry on Github</a
+    	></td
+          ><td align="left"
+          ><a href="javascript:toggle()"
+    	>Toggle contents</a
+    	></td
+          ></tr
+        ></tbody
+      ></table
+    ></div>
+</div>
+
+
+<div id="main">
+
+$body$
+
+</div>
+
+$for(include-after)$
+$include-after$
+$endfor$
+</body>
+</html>
