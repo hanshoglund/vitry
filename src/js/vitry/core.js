@@ -418,12 +418,14 @@ Object.extend(Function, {
     // TODO
   },
 
-  compose : function() {
+  compose : function(f, g) {
     // TODO any number of fns
+    return (function() f(g.apply(null, arguments)));
   },
 
-  sequence : function() {
+  sequence : function(f, g) {
     // TODO any number of fns
+    return Function.compose(g, f);
   },
 
   power : function() {
@@ -866,6 +868,11 @@ Object.extend(Array.prototype, {
     var res = this.clone();
     Array.prototype.sort.apply(res, arguments);
     return res;
+  },        
+  
+  lookup : function () {
+    var ar = this;
+    return (function(i) ar[i]);
   },
   
   pick : function () {
@@ -926,7 +933,8 @@ Object.enumerable(Array.prototype, [
   "addBefore",
   "reversed",
   "sorted",
-  "pick"
+  "pick",
+  "lookup"
 ], false);
 
 
@@ -1453,6 +1461,7 @@ function quit() {
 
 var lastLoaded = "";
 var lastResult;
+var lastError;
 
 function reload() {
   load(lastLoaded);
@@ -1503,7 +1512,10 @@ function repl(prompt) {
       res === undefined || print(res);
       lastResult = res;
     } catch (e) {
+      lastError = e;
       print(e.constructor.name + ": " + e.message);
+      if (e instanceof SyntaxError)
+        print(e.fileName + " line " + e.lineNumber);
     }
   }
 }
