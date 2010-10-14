@@ -937,6 +937,19 @@ Object.enumerable(Array.prototype, [
   "lookup"
 ], false);
 
+// String
+Object.extend(String.prototype, {
+  
+  quote : function() {
+    return "\"" + this.toString() + "\"";
+  }
+  
+});
+   
+
+Object.enumerable(String.prototype, [
+  "quote"
+], false);
 
 
 
@@ -1050,7 +1063,7 @@ Ratio.prototype = Object.extend(new Integer(), {
 String.prototype.toRational = function ()
 {
     return Rational.parse(this.toString());
-}
+}   
 
 
 // FIXME does not properly coerce arguments

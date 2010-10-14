@@ -223,7 +223,8 @@ function Dictionary(obj) {
 
 
 function Expression(object, method, args) {
-  this.toString = function () {
+  this.toString = function () {                                     
+    
     return "(" + object + "," + method + "," + args.join(",") + ")";
   } 
 }
@@ -335,13 +336,22 @@ function Proxy(object, type, socket) {
    *          call.
    */
   this.call = function(name, type, args, cont) {
-    msg = "(" + this.object + "," + name;
-    for (var i in args) {
-      if (args.hasOwnProperty(i)) {
-        msg += "," + processArgument(args[i]);
-      }
-    }
-    msg += ")";
+    // var msg = "(" + this.object + "," + name;
+    // for (var i in args) {
+    //   if (args.hasOwnProperty(i)) {
+    //     msg += "," + processArgument(args[i]);
+    //   }
+    // }
+    // msg += ")";
+    var msg = "createMessageNode(" + 
+      this.object.toString().quote() + 
+      "," + 
+      name.quote() + 
+      "," + 
+      "CreateSparseArray(" +    
+      [ processArgument(a) for each (a in args) ].join(",") +
+      "))";
+    
     return send(msg, type, cont);
   }
 
@@ -449,7 +459,7 @@ function Proxy(object, type, socket) {
           i;
 
       if (value instanceof Array) {
-          msg += "(,array,";
+          msg += "CreateSparseArray(";
           last = value.length - 1;
           for (i = 0; i < last; i++) {
               msg += unparse(value[i]);
@@ -465,7 +475,7 @@ function Proxy(object, type, socket) {
               msg += unparse(value.serialize());
 
           } else {
-              msg += "(,dictionary,";
+              msg += "CreateDictionary(";
               first = true;
               for (i in value) {
                   if (value.hasOwnProperty(i) && typeof value[i] !== "function") {
@@ -486,7 +496,8 @@ function Proxy(object, type, socket) {
           msg = "";
 
       } else {
-          msg = escape(String(value));
+        // msg = escape(String(value));
+        msg = String(value).quote();
       }
       return msg;
   }
