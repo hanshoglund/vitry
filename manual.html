@@ -7,8 +7,8 @@
     
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="generator" content="pandoc" />
-    <meta name="author" content="Hans Höglund" />
-    <meta name="date" content="2010" />
+    <meta name="author" content="" />
+    <meta name="date" content="© Hans Höglund 2010" />
 
 
     <link rel="stylesheet" href="styles.css" type="text/css" />
@@ -41,26 +41,20 @@
           >Preface</a
           ></li
         ><li
-        ><a href="#first-steps"
-          >1. First steps</a
+        ><a href="#getting-started"
+          >1. Getting started</a
           ></li
         ><li
         ><a href="#the-language"
           >2. The language</a
           ><ul
           ><li
-    	><a href="#introduction"
-    	  >Introduction</a
-    	  ><ul
-    	  ><li
-    	    ><a href="#overview"
-    	      >Overview</a
-    	      ></li
-    	    ></ul
+    	><a href="#basics"
+    	  >Basics</a
     	  ></li
     	><li
-    	><a href="#basic-types"
-    	  >Basic types</a
+    	><a href="#types"
+    	  >Types</a
     	  ><ul
     	  ><li
     	    ><a href="#booleans"
@@ -74,39 +68,7 @@
     	    ><a href="#strings"
     	      >Strings</a
     	      ></li
-    	    ></ul
-    	  ></li
-    	><li
-    	><a href="#functions"
-    	  >Functions</a
-    	  ><ul
-    	  ><li
-    	    ><a href="#creating-functions"
-    	      >Creating functions</a
-    	      ></li
     	    ><li
-    	    ><a href="#applying-functions"
-    	      >Applying functions</a
-    	      ></li
-    	    ><li
-    	    ><a href="#infix-expressions"
-    	      >Infix expressions</a
-    	      ></li
-    	    ><li
-    	    ><a href="#higher-order-functions"
-    	      >Higher-order functions</a
-    	      ></li
-    	    ><li
-    	    ><a href="#values-and-variables"
-    	      >Values and variables</a
-    	      ></li
-    	    ></ul
-    	  ></li
-    	><li
-    	><a href="#creating-types"
-    	  >Creating types</a
-    	  ><ul
-    	  ><li
     	    ><a href="#atoms"
     	      >Atoms</a
     	      ></li
@@ -121,26 +83,32 @@
     	    ></ul
     	  ></li
     	><li
-    	><a href="#implicitness"
-    	  >Implicitness</a
+    	><a href="#bindings-and-let"
+    	  >Bindings and let</a
+    	  ></li
+    	><li
+    	><a href="#functions"
+    	  >Functions</a
+    	  ></li
+    	><li
+    	><a href="#loop-and-recur"
+    	  >Loop and recur</a
     	  ></li
     	><li
     	><a href="#sequences"
     	  >Sequences</a
     	  ></li
     	><li
-    	><a href="#modules"
-    	  >Modules</a
-    	  ><ul
-    	  ><li
-    	    ><a href="#using-import"
-    	      >Using import</a
-    	      ></li
-    	    ></ul
+    	><a href="#effects-and-do"
+    	  >Effects and do</a
     	  ></li
     	><li
-    	><a href="#language-grammar"
-    	  >Language grammar</a
+    	><a href="#modules"
+    	  >Modules</a
+    	  ></li
+    	><li
+    	><a href="#implicitness"
+    	  >Implicitness</a
     	  ></li
     	></ul
           ></li
@@ -149,48 +117,44 @@
           >3. Representing music</a
           ><ul
           ><li
-    	><a href="#a-word-of-caution"
-    	  >A word of caution</a
-    	  ></li
-    	><li
-    	><a href="#basic-example"
-    	  >Basic example</a
+    	><a href="#music-and-notations"
+    	  >Music and notations</a
     	  ></li
     	><li
     	><a href="#time"
     	  >Time</a
     	  ></li
     	><li
+    	><a href="#event"
+    	  >Event</a
+    	  ></li
+    	><li
     	><a href="#pitch"
     	  >Pitch</a
     	  ></li
     	><li
-    	><a href="#other-events"
-    	  >Other events</a
+    	><a href="#instrumentation"
+    	  >Instrumentation</a
     	  ></li
     	><li
-    	><a href="#representing-music-1"
-    	  >Representing music</a
+    	><a href="#sudden-change"
+    	  >Sudden change</a
     	  ></li
     	><li
-    	><a href="#notations"
-    	  >Notations</a
+    	><a href="#continous-change"
+    	  >Continous change</a
     	  ></li
     	><li
-    	><a href="#part-trees"
-    	  >Part trees</a
+    	><a href="#spacialization"
+    	  >Spacialization</a
     	  ></li
     	><li
-    	><a href="#instrumentations"
-    	  >Instrumentations</a
+    	><a href="#nonlinear-structures"
+    	  >Nonlinear structures</a
     	  ></li
     	><li
-    	><a href="#continuous-events"
-    	  >Continuous events</a
-    	  ></li
-    	><li
-    	><a href="#repetition-and-nonlinearity"
-    	  >Repetition and nonlinearity</a
+    	><a href="#indeterminate-structures"
+    	  >Indeterminate structures</a
     	  ></li
     	></ul
           ></li
@@ -254,6 +218,16 @@
     	  ></li
     	></ul
           ></li
+        ><li
+        ><a href="#reference"
+          >6. Reference</a
+          ><ul
+          ><li
+    	><a href="#dictionary"
+    	  >Dictionary</a
+    	  ></li
+    	></ul
+          ></li
         ></ul
       ></div
     >
@@ -263,7 +237,6 @@
     <div id="content">  
       <h1 class="title">Vitry manual</h1>
 
-      <p>Copyright © Hans Höglund 2010</p>
 
 <!-- Indent 0 for <pre> -->
 <h2 id="preface"
@@ -271,131 +244,108 @@
   >Preface</a
   ></h2
 ><p
->Vitry is a functional programming language with an infix syntax and simple, expressive type system. Its is primarily built for representation and manipulation of musical structures of all kinds. Vitry may be used for composition, arranging, transcription or analysis.</p
+>Vitry is a functional programming language and an environment for representation and manipulation of music. The language has infix syntax and simple, expressive type system. The representation of music is abstract in the sense that it is not concerned with actual sound, but the formal structure of music. These representations can be transcribed to standard musical notation or used as control data for sound synthesis.</p
 ><p
->Vitry includes a standard set of types and functions making up the so-called musical model. This includes information such as pitch, onset, duration, dynamics, tone color or location. However, the user may modify, extend or even replace the musical model to contain any kind of information. Data in the musical domain may be transcribed to standard notation using various backends. It may also be used to generate control data for sound synthesis.</p
-><h2 id="first-steps"
+>Vitry may be used for composition, arranging, transcription or analysis. It is built for easy integration with other environments, particularly the following:</p
+><ul
+><li
+  >Lilypond</li
+  ><li
+  >Sibelius</li
+  ><li
+  >SuperCollider</li
+  ></ul
+><h2 id="getting-started"
 ><a href="#TOC"
-  >1. First steps</a
+  >1. Getting started</a
   ></h2
 ><p
 >Vitry targets the <a href="http://en.wikipedia.org/wiki/Java_Virtual_Machine"
   >Java Virtual Machine</a
-  >, and may be used with almost any operating system. A Java runtime environment is required. Vitry is a standalone programming language, so a shell and a text editor is required to use it. All other dependencies are included in the source distributions.</p
+  >, and may be used with almost any operating system. The only dependency is the Java runtime environment. To check if this is installed, open a shell and type:</p
+><pre
+><code
+  >$ java -version
+</code
+  ></pre
+><p
+>If not, download a suitable implemementation. There are <a href="http://en.wikipedia.org/wiki/List_of_Java_virtual_machines"
+  >many alternatives</a
+  >.</p
 ><p
 >Precompiled distributions of Vitry may be downloaded from <a href="http://github.com/hanshoglund/vitry/downloads"
   >here</a
   >. If an installer is not available for your operating system, you have to download and compile a source distribution.</p
+><p
 >The build requirements are <a href="http://git-scm.com/"
->Git</a
-> and <a href="http://ant.apache.org/"
->Apache Ant</a
->. You may check if these are installed as follows:<pre>
-$ git
+  >Git</a
+  > and <a href="http://ant.apache.org/"
+  >Apache Ant</a
+  >. You may check if these are installed as follows:</p
+><pre
+><code
+  >$ git
 $ ant
-</pre>                         <p
+</code
+  ></pre
+><p
 >If not, download and install from the sites above or through your package management system.</p
 ><p
 >As soon as the build requirements are in place, do:</p
-><pre>
-$ git clone git@github.com:hanshoglund/vitry.git
+><pre
+><code
+  >$ git clone git@github.com:hanshoglund/vitry.git
 $ cd vitry
 $ ant
 $ ant install /usr/bin
-</pre><p
+</code
+  ></pre
+><p
 >You may of course substitute any directory you want for <code
   >/usr/bin</code
   >.</p
->The interpreter is typically the simplest way to interact with Vitry. To run it, simply type:<pre>
-$ vitry
-</pre>
-<p
+><p
+>The interpreter is typically the simplest way to interact with Vitry. To run it, simply type:</p
+><pre
+><code
+  >$ vitry
+</code
+  ></pre
+><p
 >Vitry will print some setup information and enter a read-eval-print mode. In this mode, you may enter an expression followed by enter, and it will be evaluated and printed to you.</p
 ><h2 id="the-language"
 ><a href="#TOC"
   >2. The language</a
   ></h2
-><h3 id="introduction"
-><a href="#TOC"
-  >Introduction</a
-  ></h3
 ><p
->Being a functional language, Vitry is based on the notion of <em
-  >functions, values and types</em
-  >. Understanding these basic concepts is the key to understanding how to use the language<sup
+>Vitry is similiar to other functional programming languages. This chapter will give a brief overview of the concepts used in Vitry<sup
   ><a href="#fn1" class="footnoteRef" id="fnref1"
     >1</a
     ></sup
   >.</p
->A functional program consists of <em
->expressions</em
->, each of which may produce a value. Consider for example the expression <code
->2 + 3</code
-> which evaluates to <code
->5</code
->. Expressions may be nested using parentheses. Thus any program could be thought of as a single expression, usually containing several levels of nested subexpressions.<pre>
-1            => 1
-2 + 3        => 5
-(2 + 3) * 2  => 10
-not true     => false
-not (not true) => true
-</pre>
-<p
->Values are the pieces of data that represent something. From the point of a computer, values are numbers. However, programming languages let us reprent other kinds of data by encoding it as numbers behind the scenes. Thus they allow us to think of the computer as operating on characters, pitches, text strings or melodies, or even complex structures such as musical scores.</p
-><p
->This power of representation also faces us with a problem: How do we keep track of what the values manipulated inside the computer acutally represents? Different kinds of data need different treatment, and mixups can cause great confusion on both the human and the computers part. The answer to this problem is <em
-  >types</em
-  >, a special kind of value representing classes<sup
-  ><a href="#fn2" class="footnoteRef" id="fnref2"
-    >2</a
-    ></sup
-  > of other values. Examples of types are <code
-  >int</code
-  >, representing integers and <code
-  >string</code
-  >, representing text.</p
-><p
->Technically, any program could be represented as a number of nested expressions. However, to build more complex program we need a way to represents procedures that could operate on different input values. Such a procedure is called a function. Functions expression contain variables, which are placeholders to which input data may be bound. Thus the value of a function always depends on its input. Examples of functions are <code
-  >+</code
-  > which performs addition, <code
-  >sqrt</code
-  >, which returns the square root of its input.</p
-><p
->TODO types, type &lt;-&gt; function dictonomy * : a -&gt; bool</p
-><h4 id="overview"
+><h3 id="basics"
 ><a href="#TOC"
-  >Overview</a
-  ></h4
-><dl
-><dt
-  >Value</dt
-  ><dd
-  >an unmodifiable piece of data.</dd
-  ><dt
-  >Type</dt
-  ><dd
-  >a special value used to create and reason about other values.</dd
-  ><dt
-  >Function</dt
-  ><dd
-  >a value defining a procedure that binds its input to parameters.</dd
-  ><dt
-  >Sequence</dt
-  ><dd
-  >a special value representing sequences or lists of values.</dd
-  ><dt
-  >Atom type</dt
-  ><dd
-  >a unique single type.</dd
-  ><dt
-  >Compound type</dt
-  ><dd
-  >a type constructed from one or more other types.</dd
-  ></dl
-><h3 id="basic-types"
-><a href="#TOC"
-  >Basic types</a
+  >Basics</a
   ></h3
+><p
+>Any functional language is first and foremost concerened with manipulating values. Values are pieces of data that represent something. In Vitry, all values are unique and non-changing.</p
+><p
+>Expressions are series of tokens each of which may produce a value. Expressions may be nested using parentheses. Thus any program could be thought of as a single expression. There are various ways of writing expressions, of which the most common can be seen in this example:</p
+><pre
+><code
+  >1            =&gt; 1
+2 + 3        =&gt; 5
+(2 + 3) * 2  =&gt; 10
+not true     =&gt; false
+sin (pi/2)   =&gt; 1
+</code
+  ></pre
+><h3 id="types"
+><a href="#TOC"
+  >Types</a
+  ></h3
+><p
+>Types are used to group and reason about values in a logical way. This help us think about the values we are manipulating and prevent us from doing mistakes. A type may be thought of as a common property of some values. Any value may be tested to see if it conforms to this property, if it does it is said to have the given type.</p
 ><h4 id="booleans"
 ><a href="#TOC"
   >Booleans</a
@@ -486,44 +436,12 @@ not (not true) => true
   >, <code
   >&quot;But I love to sing&quot;</code
   ></p
-><h3 id="functions"
-><a href="#TOC"
-  >Functions</a
-  ></h3
-><h4 id="creating-functions"
-><a href="#TOC"
-  >Creating functions</a
-  ></h4
-><h4 id="applying-functions"
-><a href="#TOC"
-  >Applying functions</a
-  ></h4
-><h4 id="infix-expressions"
-><a href="#TOC"
-  >Infix expressions</a
-  ></h4
-><h4 id="higher-order-functions"
-><a href="#TOC"
-  >Higher-order functions</a
-  ></h4
-><h4 id="values-and-variables"
-><a href="#TOC"
-  >Values and variables</a
-  ></h4
-><p
->Values always represent something unique and non-changing, such as the number 2 or Beethoven's Fifth Symphony. However, the current outdoor temperature in Stockholm is not a value but a variable.</p
-><p
->Functions contain expressions which are not be evaluated immediately, but converted to a function value for later evaluation. The expression it defines is evaluated when the function is applied. Functions may take parameters which are placeholders for values to be supplied when the function is evaluated. A function may also refer to values defined in the environment where it was created, using <a href="http://en.wikipedia.org/wiki/Scope_%28programming%29#Lexical_scoping"
-  >lexical scope resolution</a
-  >.</p
-><h3 id="creating-types"
-><a href="#TOC"
-  >Creating types</a
-  ></h3
 ><h4 id="atoms"
 ><a href="#TOC"
   >Atoms</a
   ></h4
+><p
+>TODO</p
 ><h4 id="or-types"
 ><a href="#TOC"
   >Or types</a
@@ -544,16 +462,34 @@ not (not true) => true
 >Intersection types capture the notion of <em
   >composition</em
   > in object-oriented languages.</p
-><h3 id="implicitness"
+><h3 id="bindings-and-let"
 ><a href="#TOC"
-  >Implicitness</a
+  >Bindings and let</a
   ></h3
+><p
+>TODO</p
+><h3 id="functions"
+><a href="#TOC"
+  >Functions</a
+  ></h3
+><p
+>TODO</p
+><h3 id="loop-and-recur"
+><a href="#TOC"
+  >Loop and recur</a
+  ></h3
+><p
+>TODO</p
 ><h3 id="sequences"
 ><a href="#TOC"
   >Sequences</a
   ></h3
 ><p
->Sequence values are special values containing other values in a given order.</p
+>TODO</p
+><h3 id="effects-and-do"
+><a href="#TOC"
+  >Effects and do</a
+  ></h3
 ><p
 >TODO</p
 ><h3 id="modules"
@@ -561,27 +497,21 @@ not (not true) => true
   >Modules</a
   ></h3
 ><p
->Types and functions form the basic units of abstraction in the Vitry language. Using Vitry for any task but the simplest will involve defining new types and/or functions.</p
-><h4 id="using-import"
+>TODO</p
+><h3 id="implicitness"
 ><a href="#TOC"
-  >Using import</a
-  ></h4
-><h3 id="language-grammar"
-><a href="#TOC"
-  >Language grammar</a
+  >Implicitness</a
   ></h3
+><p
+>TODO</p
 ><h2 id="representing-music"
 ><a href="#TOC"
   >3. Representing music</a
   ></h2
 ><p
->Vitry defines a musical model through a set of types and functions. All musical structures are compound types, defined in the language itself. This gives the user of the power to define custom data structures that operate on the same level of abstraction as those provided with the language. The core musical model is agnostic to musical style or writing system, instead it simply represent music as a set of events<sup
-  ><a href="#fn3" class="footnoteRef" id="fnref3"
-    >3</a
-    ></sup
-  >.</p
+>Vitry defines a musical model through a set of types and functions. All musical structures are defined in the language itself. This gives the user of the power to define custom data structures that operate on the same level of abstraction as those provided with the language. The core musical model is agnostic to musical style or writing system, instead it simply represent music as a set of events.</p
 ><p
->In any general musical representation system, a balance has to be achieved between using reasonably familiar terminology and not limiting the model by making it biased toward the theory one particular style. One solution to this problem is to make a clear distinction between the concepts of <em
+>clear distinction between the concepts of <em
   >music</em
   > and <em
   >notation</em
@@ -592,85 +522,45 @@ not (not true) => true
   >, while the reverse operation is called <em
   >interpretation</em
   >. These operations will be explained more fully in the next chapter.</p
-><h3 id="a-word-of-caution"
+><h3 id="music-and-notations"
 ><a href="#TOC"
-  >A word of caution</a
+  >Music and notations</a
   ></h3
-><p
->The various levels of representation used in any kind musical programming may be confusing. It is important to understand that <code
-  >music</code
-  > type by no means correspond to real-world sound or digital audio. Thus, in the context of this programming language &quot;transcribing music&quot; means creating a representation of music notation from an abstract representation of sounding music, not from the sound of the music itself. Likewise, &quot;performing&quot; means creating a representation of music from a representation of some notation.</p
-><p
->Also note that some other environments, use <em
-  >music</em
-  > where Vitry uses <em
-  >notation</em
-  >. The reason we do not use this naming is that the point of Vitry is to define a musical representation that is more general than common notation.<sup
-  ><a href="#fn4" class="footnoteRef" id="fnref4"
-    >4</a
-    ></sup
-  ><sup
-  ><a href="#fn5" class="footnoteRef" id="fnref5"
-    >5</a
-    ></sup
-  ></p
-><p
->TODO</p
-><h3 id="basic-example"
-><a href="#TOC"
-  >Basic example</a
-  ></h3
-><p
->TODO</p
 ><h3 id="time"
 ><a href="#TOC"
   >Time</a
   ></h3
-><p
->The type time is a synonym for the rational number. This allow us to encode conventional note lengths such as whole half notes, quarter notes, etc.</p
-><p
-><code
-  >1, 1/2, 1/4</code
-  > </p
-><p
->Using sequence operators, we can make sequences run i different relative tempos, i.e:</p
-><p
-><code
-  >[1 1/2 1/2]</code
-  > <code
-  >[1 1/2 1/2] * 2</code
-  ></p
+><h3 id="event"
+><a href="#TOC"
+  >Event</a
+  ></h3
 ><h3 id="pitch"
 ><a href="#TOC"
   >Pitch</a
   ></h3
-><h3 id="other-events"
+><h3 id="instrumentation"
 ><a href="#TOC"
-  >Other events</a
+  >Instrumentation</a
   ></h3
-><h3 id="representing-music-1"
+><h3 id="sudden-change"
 ><a href="#TOC"
-  >Representing music</a
+  >Sudden change</a
   ></h3
-><h3 id="notations"
+><h3 id="continous-change"
 ><a href="#TOC"
-  >Notations</a
+  >Continous change</a
   ></h3
-><h3 id="part-trees"
+><h3 id="spacialization"
 ><a href="#TOC"
-  >Part trees</a
+  >Spacialization</a
   ></h3
-><h3 id="instrumentations"
+><h3 id="nonlinear-structures"
 ><a href="#TOC"
-  >Instrumentations</a
+  >Nonlinear structures</a
   ></h3
-><h3 id="continuous-events"
+><h3 id="indeterminate-structures"
 ><a href="#TOC"
-  >Continuous events</a
-  ></h3
-><h3 id="repetition-and-nonlinearity"
-><a href="#TOC"
-  >Repetition and nonlinearity</a
+  >Indeterminate structures</a
   ></h3
 ><h2 id="transcribing-and-performing"
 ><a href="#TOC"
@@ -728,44 +618,56 @@ not (not true) => true
 ><a href="#TOC"
   >Networking</a
   ></h3
+><h2 id="reference"
+><a href="#TOC"
+  >6. Reference</a
+  ></h2
+><h3 id="dictionary"
+><a href="#TOC"
+  >Dictionary</a
+  ></h3
+><dl
+><dt
+  >Value</dt
+  ><dd
+  >a</dd
+  ><dt
+  >Token</dt
+  ><dd
+  >a</dd
+  ><dt
+  >Expression</dt
+  ><dd
+  >a</dd
+  ><dt
+  >Evaluation</dt
+  ><dd
+  >a</dd
+  ><dt
+  >Type</dt
+  ><dd
+  >a</dd
+  ><dt
+  >Function</dt
+  ><dd
+  >a</dd
+  ><dt
+  >Predicate</dt
+  ><dd
+  >a</dd
+  ><dt
+  >Sequence</dt
+  ><dd
+  >a</dd
+  ></dl
 ><div class="footnotes"
 ><hr
    /><ol
   ><li id="fn1"
     ><p
-      >For a thorough description of functional programming concepts, study a textbook such as <a href="http://mitpress.mit.edu/sicp/"
+      >For a complete description of functional programming concepts, see <a href="http://mitpress.mit.edu/sicp/"
 	>Structure and Interpretation of Computer Programs</a
-	> by Abelson and Sussman or <a href="http://www.paulgraham.com/onlisptext.html"
-	>On Lisp</a
-	> by Paul Graham. <a href="#fnref1" class="footnoteBackLink" title="Jump back to footnote 1">↩</a></p
-      ></li
-    ><li id="fn2"
-    ><p
-      >In the general sense. Beware of overloaded OOP terminology. <a href="#fnref2" class="footnoteBackLink" title="Jump back to footnote 2">↩</a></p
-      ></li
-    ><li id="fn3"
-    ><p
-      >This is akin to Edgar Varèse's broad definition of music as &quot;organized sound&quot;. <a href="#fnref3" class="footnoteBackLink" title="Jump back to footnote 3">↩</a></p
-      ></li
-    ><li id="fn4"
-    ><p
-      ><a href="http://www.haskell.org/haskore/"
-	>Haskore</a
-	> defines a <em
-	>music</em
-	> type that captures the essence of common practice notation. This type can be converted to a <em
-	>performance</em
-	>, which is similar to Vitry's <em
-	>music</em
-	> type. Haskore uses a notation of &quot;literal performance equivalence&quot; which in Vitry parlour would be described as different notations of the same music. <a href="#fnref4" class="footnoteBackLink" title="Jump back to footnote 4">↩</a></p
-      ></li
-    ><li id="fn5"
-    ><p
-      >Compare the &quot;meta-level&quot; described by Rick Taube in his <em
-	>Notes from the meta-level</em
-	> and the &quot;algrebra of music&quot; described by Paul Hudak in <em
-	>The Haskore Computer Music System</em
-	>. <a href="#fnref5" class="footnoteBackLink" title="Jump back to footnote 5">↩</a></p
+	> by Abelson and Sussman. <a href="#fnref1" class="footnoteBackLink" title="Jump back to footnote 1">↩</a></p
       ></li
     ></ol
   ></div

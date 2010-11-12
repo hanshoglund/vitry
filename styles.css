@@ -112,6 +112,10 @@
       background: #F8FAFC;
       border: 1px solid #ddd;
   }
+  pre code {
+    background: none;
+    border: none;    
+  }
   pre {   
       line-height: 120%;
       padding: 1.5em;
