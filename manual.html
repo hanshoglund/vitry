@@ -7,8 +7,8 @@
     
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="generator" content="pandoc" />
-    <meta name="author" content="" />
-    <meta name="date" content="© Hans Höglund 2010" />
+    <meta name="author" content="© Hans Höglund 2010" />
+    <meta name="date" content="" />
 
 
     <link rel="stylesheet" href="styles.css" type="text/css" />
@@ -43,14 +43,42 @@
         ><li
         ><a href="#getting-started"
           >1. Getting started</a
+          ><ul
+          ><li
+    	><a href="#compiled-distributions"
+    	  >Compiled distributions</a
+    	  ></li
+    	><li
+    	><a href="#source-distributions"
+    	  >Source distributions</a
+    	  ></li
+    	><li
+    	><a href="#using-the-interpreter"
+    	  >Using the interpreter</a
+    	  ></li
+    	></ul
           ></li
         ><li
         ><a href="#the-language"
           >2. The language</a
           ><ul
           ><li
-    	><a href="#basics"
-    	  >Basics</a
+    	><a href="#comments-and-whitespace"
+    	  >Comments and whitespace</a
+    	  ></li
+    	><li
+    	><a href="#values-and-expressions"
+    	  >Values and expressions</a
+    	  ><ul
+    	  ><li
+    	    ><a href="#literals"
+    	      >Literals</a
+    	      ></li
+    	    ><li
+    	    ><a href="#infix-expressions"
+    	      >Infix expressions</a
+    	      ></li
+    	    ></ul
     	  ></li
     	><li
     	><a href="#types"
@@ -237,6 +265,8 @@
     <div id="content">  
       <h1 class="title">Vitry manual</h1>
 
+      <p>© Hans Höglund 2010</p>
+  
 
 <!-- Indent 0 for <pre> -->
 <h2 id="preface"
@@ -272,10 +302,18 @@
 >If not, download a suitable implemementation. There are <a href="http://en.wikipedia.org/wiki/List_of_Java_virtual_machines"
   >many alternatives</a
   >.</p
+><h3 id="compiled-distributions"
+><a href="#TOC"
+  >Compiled distributions</a
+  ></h3
 ><p
->Precompiled distributions of Vitry may be downloaded from <a href="http://github.com/hanshoglund/vitry/downloads"
-  >here</a
-  >. If an installer is not available for your operating system, you have to download and compile a source distribution.</p
+>Compiled distributions may be downloaded from the GitHub site: <a href="http://github.com/hanshoglund/vitry/downloads"
+  >http://github.com/hanshoglund/vitry/downloads</a
+  >. If a version for your operating system is not available, download and compile a source distribution.</p
+><h3 id="source-distributions"
+><a href="#TOC"
+  >Source distributions</a
+  ></h3
 ><p
 >The build requirements are <a href="http://git-scm.com/"
   >Git</a
@@ -297,13 +335,19 @@ $ ant
   >$ git clone git@github.com:hanshoglund/vitry.git
 $ cd vitry
 $ ant
-$ ant install /usr/bin
+$ sudo ant install [dir]
 </code
   ></pre
 ><p
->You may of course substitute any directory you want for <code
+>Substitute any directory you want for <code
+  >[dir]</code
+  >. The default is <code
   >/usr/bin</code
   >.</p
+><h3 id="using-the-interpreter"
+><a href="#TOC"
+  >Using the interpreter</a
+  ></h3
 ><p
 >The interpreter is typically the simplest way to interact with Vitry. To run it, simply type:</p
 ><pre
@@ -323,14 +367,37 @@ $ ant install /usr/bin
     >1</a
     ></sup
   >.</p
-><h3 id="basics"
+><h3 id="comments-and-whitespace"
 ><a href="#TOC"
-  >Basics</a
+  >Comments and whitespace</a
   ></h3
 ><p
->Any functional language is first and foremost concerened with manipulating values. Values are pieces of data that represent something. In Vitry, all values are unique and non-changing.</p
+>As in most languages, Vitry programs consists of tokens, which are sequences of characters separated by whitespace. The characters recognized by Vitry as whitespace are <code
+  >&#246;</code
+  >, <code
+  >\n</code
+  > och <code
+  >\r</code
+  >. For example, the following snippet of code contain ten tokens:</p
+><pre
+><code
+  >print music 
+ ++ &quot; &quot; ++ of 
+ ++ &quot; &quot; ++ spaces
+</code
+  ></pre
+><h3 id="values-and-expressions"
+><a href="#TOC"
+  >Values and expressions</a
+  ></h3
 ><p
->Expressions are series of tokens each of which may produce a value. Expressions may be nested using parentheses. Thus any program could be thought of as a single expression. There are various ways of writing expressions, of which the most common can be seen in this example:</p
+>A functional language is first and foremost concerened with manipulating values. Values are pieces of data that represent something. In Vitry, all values are unique and non-changing. This means that equal values always refer to the same underlying representations in memory. This is also true for compound structures, such as lists.</p
+><p
+>Expressions are series of tokens each of which may produce a value. They may be nested using parentheses. Thus any program could be thought of as a single expression. Below are some examples of expressions along with their result<sup
+  ><a href="#fn2" class="footnoteRef" id="fnref2"
+    >2</a
+    ></sup
+  >.</p
 ><pre
 ><code
   >1            =&gt; 1
@@ -340,6 +407,28 @@ not true     =&gt; false
 sin (pi/2)   =&gt; 1
 </code
   ></pre
+><p
+>The most common forms of expressions are outlined below. Other so-called special forms are used to produce values such as functions and loop structures: these will be described later.</p
+><h4 id="literals"
+><a href="#TOC"
+  >Literals</a
+  ></h4
+><p
+>The simplest form of expression, used to create simple values like numbers and strings. They various types of literals will be convered in the next section.</p
+><p
+>Examples are: <code
+  >1</code
+  >, <code
+  >-8</code
+  >, <code
+  >&quot;Hello&quot;</code
+  ></p
+><h4 id="infix-expressions"
+><a href="#TOC"
+  >Infix expressions</a
+  ></h4
+><p
+>Consists of literals, along with operators. Operators are</p
 ><h3 id="types"
 ><a href="#TOC"
   >Types</a
@@ -665,9 +754,15 @@ sin (pi/2)   =&gt; 1
    /><ol
   ><li id="fn1"
     ><p
-      >For a complete description of functional programming concepts, see <a href="http://mitpress.mit.edu/sicp/"
-	>Structure and Interpretation of Computer Programs</a
-	> by Abelson and Sussman. <a href="#fnref1" class="footnoteBackLink" title="Jump back to footnote 1">↩</a></p
+      >For good introduction to functional programming concepts, see <em
+	><a href="http://mitpress.mit.edu/sicp/"
+	  >Structure and Interpretation of Computer Programs</a
+	  ></em
+	> by Abelson and Sussman <a href="#fnref1" class="footnoteBackLink" title="Jump back to footnote 1">↩</a></p
+      ></li
+    ><li id="fn2"
+    ><p
+      >The is arrow-like sign not part of the language, but just a conventional way of wrinting what an expression evaluates to <a href="#fnref2" class="footnoteBackLink" title="Jump back to footnote 2">↩</a></p
       ></li
     ></ol
   ></div

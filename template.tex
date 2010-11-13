@@ -48,7 +48,8 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt plus 2pt minus 1pt}
                    
-
+\setlength{\skip\footins}{1cm}
+\renewcommand*\footnoterule{}
 
 $if(numbersections)$
 $else$
@@ -61,18 +62,22 @@ $endif$
 
 
 $if(title)$
-\title{$title$}
+\title{\textbf{$title$}}
 $endif$
 
 $if(author)$
-\author{$for(author)$$author$$sep$\\$endfor$}
+\author{\small{$for(author)$$author$$sep$\\$endfor$}}
 $endif$
 
 $if(date)$
 \date{$date$}
+$else$
+\date{}
 $endif$ 
            
 \begin{document}
+  
+  
   
 $if(title)$
 \maketitle

@@ -1,5 +1,4 @@
 % Vitry manual
-%
 % © Hans Höglund 2010
 
 
@@ -23,9 +22,12 @@ $ java -version
 ~~~~~~~~~~~~~~~~~~~~
 
 If not, download a suitable implemementation. There are [many alternatives](http://en.wikipedia.org/wiki/List_of_Java_virtual_machines).
+
+### Compiled distributions
                                                                 
-Precompiled distributions of Vitry may be downloaded from [here](http://github.com/hanshoglund/vitry/downloads). If an installer is not available for your operating system, you have to download and compile a source distribution.
-                                                                                               
+Compiled distributions may be downloaded from the GitHub site:  [http://github.com/hanshoglund/vitry/downloads](http://github.com/hanshoglund/vitry/downloads). If a version for your operating system is not available, download and compile a source distribution.
+
+### Source distributions                                                                                  
                                               
 The build requirements are [Git](http://git-scm.com/) and [Apache Ant](http://ant.apache.org/). You may check if these are installed as follows:
 
@@ -42,10 +44,12 @@ As soon as the build requirements are in place, do:
 $ git clone git@github.com:hanshoglund/vitry.git
 $ cd vitry
 $ ant
-$ ant install /usr/bin
+$ sudo ant install [dir]
 ~~~~~~~~~~~~~~~~~~~~
 
-You may of course substitute any directory you want for `/usr/bin`.
+Substitute any directory you want for `[dir]`. The default is `/usr/bin`.
+         
+### Using the interpreter
 
 The interpreter is typically the simplest way to interact with Vitry. To run it, simply type:
 
@@ -59,13 +63,26 @@ Vitry will print some setup information and enter a read-eval-print mode. In thi
 
 ## 2. The language                                                                        
 
-Vitry is similiar to other functional programming languages. This chapter will give a brief overview of the concepts used in Vitry[^1].
+Vitry is similiar to other functional programming languages. This chapter will give a brief overview of the concepts used in Vitry^[For good introduction to functional programming concepts, see *[Structure and Interpretation of Computer Programs](http://mitpress.mit.edu/sicp/)* by Abelson and Sussman].
 
-### Basics
 
-Any functional language is first and foremost concerened with manipulating values. Values are pieces of data that represent something. In Vitry, all values are unique and non-changing. 
+### Comments and whitespace
 
-Expressions are series of tokens each of which may produce a value. Expressions may be nested using parentheses. Thus any program could be thought of as a single expression. There are various ways of writing expressions, of which the most common can be seen in this example:
+As in most languages, Vitry programs consists of tokens, which are sequences of characters separated by whitespace. The characters recognized by Vitry as whitespace are ` `, `\n` och `\r`. For example, the following snippet of code contain ten tokens:
+
+~~~~~~~~~~~~~~~~~~~~
+print music 
+ ++ " " ++ of 
+ ++ " " ++ spaces
+~~~~~~~~~~~~~~~~~~~~
+
+
+
+### Values and expressions
+
+A functional language is first and foremost concerened with manipulating values. Values are pieces of data that represent something. In Vitry, all values are unique and non-changing. This means that equal values always refer to the same underlying representations in memory. This is also true for compound structures, such as lists. 
+
+Expressions are series of tokens each of which may produce a value. They may be nested using parentheses. Thus any program could be thought of as a single expression. Below are some examples of expressions along with their result^[The is arrow-like sign not part of the language, but just a conventional way of wrinting what an expression evaluates to].
 
 ~~~~~~~~~~~~~~~~~~~~
 1            => 1
@@ -74,6 +91,19 @@ Expressions are series of tokens each of which may produce a value. Expressions 
 not true     => false
 sin (pi/2)   => 1
 ~~~~~~~~~~~~~~~~~~~~
+
+The most common forms of expressions are outlined below. Other so-called special forms are used to produce values such as functions and loop structures: these will be described later.
+
+#### Literals
+
+The simplest form of expression, used to create simple values like numbers and strings. They various types of literals will be convered in the next section. 
+
+Examples are:
+  `1`, `-8`, `"Hello"`
+  
+#### Infix expressions
+
+Consists of literals, along with operators. Operators are 
 
 
 ### Types
@@ -231,10 +261,3 @@ Sequence
 :   a
 
 
-
-
-[^1]: For a complete description of functional programming concepts, see [Structure and Interpretation of Computer Programs](http://mitpress.mit.edu/sicp/) by Abelson and Sussman.
-
-[^2]: The `=>` is not part of the language, but just a conventional way of wrinting what an expression evaluates to.
-
-[^5]: Compare the "meta-level" described by Rick Taube in his *Notes from the meta-level* and the "algrebra of music" described by Paul Hudak in *The Haskore Computer Music System*.
