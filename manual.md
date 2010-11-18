@@ -44,10 +44,10 @@ As soon as the build requirements are in place, do:
 $ git clone git@github.com:hanshoglund/vitry.git
 $ cd vitry
 $ ant
-$ sudo ant install [dir]
+$ sudo ant install
 ~~~~~~~~~~~~~~~~~~~~
 
-Substitute any directory you want for `[dir]`. The default is `/usr/bin`.
+Append any you want to the install command. The default is `/usr/bin`.
          
 ### Using the interpreter
 
@@ -65,19 +65,6 @@ Vitry will print some setup information and enter a read-eval-print mode. In thi
 
 Vitry is similiar to other functional programming languages. This chapter will give a brief overview of the concepts used in Vitry^[For good introduction to functional programming concepts, see *[Structure and Interpretation of Computer Programs](http://mitpress.mit.edu/sicp/)* by Abelson and Sussman].
 
-
-### Comments and whitespace
-
-As in most languages, Vitry programs consists of tokens, which are sequences of characters separated by whitespace. The characters recognized by Vitry as whitespace are ` `, `\n` och `\r`. For example, the following snippet of code contain ten tokens:
-
-~~~~~~~~~~~~~~~~~~~~
-print music 
- ++ " " ++ of 
- ++ " " ++ spaces
-~~~~~~~~~~~~~~~~~~~~
-
-
-
 ### Values and expressions
 
 A functional language is first and foremost concerened with manipulating values. Values are pieces of data that represent something. In Vitry, all values are unique and non-changing. This means that equal values always refer to the same underlying representations in memory. This is also true for compound structures, such as lists. 
@@ -92,18 +79,76 @@ not true     => false
 sin (pi/2)   => 1
 ~~~~~~~~~~~~~~~~~~~~
 
-The most common forms of expressions are outlined below. Other so-called special forms are used to produce values such as functions and loop structures: these will be described later.
+The most common forms of expressions are outlined below. Detailed yntax and behaviour will be described in detail later on in this manual.
 
 #### Literals
 
-The simplest form of expression, used to create simple values like numbers and strings. They various types of literals will be convered in the next section. 
+The simplest form of expression, used to create simple values like numbers and strings. Examples are:
 
-Examples are:
-  `1`, `-8`, `"Hello"`
+~~~~~~~~~~~~~~~~~~~~
+1
+22.5
+foo
+"Philippe"
+~~~~~~~~~~~~~~~~~~~~
+ 
   
 #### Infix expressions
 
-Consists of literals, along with operators. Operators are 
+Consists of other expressions, along with operators. A familiar form is the arithmetic expressions. Examples are:
+
+~~~~~~~~~~~~~~~~~~~~
+1 + 2
+22 / 11
+23 % 11
+1, 2, 3, 4
+true | false
+~~~~~~~~~~~~~~~~~~~~
+
+
+
+
+#### Function calls
+
+Consists of a callable expression followed by other expressions.
+
+~~~~~~~~~~~~~~~~~~~~
+print "hello world"
+not true
+sum 1 2 3 4 5
+~~~~~~~~~~~~~~~~~~~~
+
+The following form is also possible:
+
+~~~~~~~~~~~~~~~~~~~~
+print ("hello world")
+not (true)
+sum (1, 2, 3, 4, 5)
+~~~~~~~~~~~~~~~~~~~~
+                                              
+#### Do expressions
+
+Used to carry out side-effects like input and output.
+
+~~~~~~~~~~~~~~~~~~~~
+do with buffer = []
+  readLine 
+  shuffle
+  print
+~~~~~~~~~~~~~~~~~~~~
+
+#### Other forms
+
+~~~~~~~~~~~~~~~~~~~~
+if true 1 else 2
+
+fn x = x + 2
+
+let a = fn x + 2, b = fn x - 2
+  compare (curry a b) id nat
+  
+~~~~~~~~~~~~~~~~~~~~
+
 
 
 ### Types
@@ -156,7 +201,7 @@ Intersection types capture the notion of *composition* in object-oriented langua
     
     
 
-### Bindings and let
+### Bindings and scopes
 
 TODO
 
@@ -166,7 +211,8 @@ TODO
 TODO
 
 
-### Loop and recur
+
+### Loops and recursion
 
 TODO
 
@@ -175,9 +221,13 @@ TODO
 
 TODO
 
-                  
 
-### Effects and do
+### Predicates and matching
+
+TODO
+
+
+### Side effects
 
 
 TODO
@@ -216,7 +266,7 @@ The process of converting a musical value to a notation is called *transcription
 ### Sudden change
 ### Continous change
 ### Spacialization
-### Nonlinear structures
+### Nonlinear time
 ### Indeterminate structures
 
 
@@ -232,7 +282,6 @@ The process of converting a musical value to a notation is called *transcription
     
 ## 5. Advanced usage
 
-### Laziness
 ### Calling foreign languages
 ### Setting up the environment
 ### Replacing the syntax
@@ -240,6 +289,15 @@ The process of converting a musical value to a notation is called *transcription
 ### Networking
 
 ## 6. Reference
+
+### Syntax
+
+
+Operators are tokens constructed from the following characters:         
+
+~~~~~~~~~~~~~~~~~~~~
+! # $ % & \ * + , - . / ; < = > ? @ \ ^ _ ` | ~ '
+~~~~~~~~~~~~~~~~~~~~
 
 ### Dictionary
 

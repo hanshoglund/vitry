@@ -63,10 +63,6 @@
           >2. The language</a
           ><ul
           ><li
-    	><a href="#comments-and-whitespace"
-    	  >Comments and whitespace</a
-    	  ></li
-    	><li
     	><a href="#values-and-expressions"
     	  >Values and expressions</a
     	  ><ul
@@ -77,6 +73,18 @@
     	    ><li
     	    ><a href="#infix-expressions"
     	      >Infix expressions</a
+    	      ></li
+    	    ><li
+    	    ><a href="#function-calls"
+    	      >Function calls</a
+    	      ></li
+    	    ><li
+    	    ><a href="#do-expressions"
+    	      >Do expressions</a
+    	      ></li
+    	    ><li
+    	    ><a href="#other-forms"
+    	      >Other forms</a
     	      ></li
     	    ></ul
     	  ></li
@@ -111,24 +119,28 @@
     	    ></ul
     	  ></li
     	><li
-    	><a href="#bindings-and-let"
-    	  >Bindings and let</a
+    	><a href="#bindings-and-scopes"
+    	  >Bindings and scopes</a
     	  ></li
     	><li
     	><a href="#functions"
     	  >Functions</a
     	  ></li
     	><li
-    	><a href="#loop-and-recur"
-    	  >Loop and recur</a
+    	><a href="#loops-and-recursion"
+    	  >Loops and recursion</a
     	  ></li
     	><li
     	><a href="#sequences"
     	  >Sequences</a
     	  ></li
     	><li
-    	><a href="#effects-and-do"
-    	  >Effects and do</a
+    	><a href="#predicates-and-matching"
+    	  >Predicates and matching</a
+    	  ></li
+    	><li
+    	><a href="#side-effects"
+    	  >Side effects</a
     	  ></li
     	><li
     	><a href="#modules"
@@ -177,8 +189,8 @@
     	  >Spacialization</a
     	  ></li
     	><li
-    	><a href="#nonlinear-structures"
-    	  >Nonlinear structures</a
+    	><a href="#nonlinear-time"
+    	  >Nonlinear time</a
     	  ></li
     	><li
     	><a href="#indeterminate-structures"
@@ -221,10 +233,6 @@
           >5. Advanced usage</a
           ><ul
           ><li
-    	><a href="#laziness"
-    	  >Laziness</a
-    	  ></li
-    	><li
     	><a href="#calling-foreign-languages"
     	  >Calling foreign languages</a
     	  ></li
@@ -251,6 +259,10 @@
           >6. Reference</a
           ><ul
           ><li
+    	><a href="#syntax"
+    	  >Syntax</a
+    	  ></li
+    	><li
     	><a href="#dictionary"
     	  >Dictionary</a
     	  ></li
@@ -335,13 +347,11 @@ $ ant
   >$ git clone git@github.com:hanshoglund/vitry.git
 $ cd vitry
 $ ant
-$ sudo ant install [dir]
+$ sudo ant install
 </code
   ></pre
 ><p
->Substitute any directory you want for <code
-  >[dir]</code
-  >. The default is <code
+>Append any you want to the install command. The default is <code
   >/usr/bin</code
   >.</p
 ><h3 id="using-the-interpreter"
@@ -367,25 +377,6 @@ $ sudo ant install [dir]
     >1</a
     ></sup
   >.</p
-><h3 id="comments-and-whitespace"
-><a href="#TOC"
-  >Comments and whitespace</a
-  ></h3
-><p
->As in most languages, Vitry programs consists of tokens, which are sequences of characters separated by whitespace. The characters recognized by Vitry as whitespace are <code
-  >&#246;</code
-  >, <code
-  >\n</code
-  > och <code
-  >\r</code
-  >. For example, the following snippet of code contain ten tokens:</p
-><pre
-><code
-  >print music 
- ++ &quot; &quot; ++ of 
- ++ &quot; &quot; ++ spaces
-</code
-  ></pre
 ><h3 id="values-and-expressions"
 ><a href="#TOC"
   >Values and expressions</a
@@ -408,27 +399,86 @@ sin (pi/2)   =&gt; 1
 </code
   ></pre
 ><p
->The most common forms of expressions are outlined below. Other so-called special forms are used to produce values such as functions and loop structures: these will be described later.</p
+>The most common forms of expressions are outlined below. Detailed yntax and behaviour will be described in detail later on in this manual.</p
 ><h4 id="literals"
 ><a href="#TOC"
   >Literals</a
   ></h4
 ><p
->The simplest form of expression, used to create simple values like numbers and strings. They various types of literals will be convered in the next section.</p
-><p
->Examples are: <code
-  >1</code
-  >, <code
-  >-8</code
-  >, <code
-  >&quot;Hello&quot;</code
-  ></p
+>The simplest form of expression, used to create simple values like numbers and strings. Examples are:</p
+><pre
+><code
+  >1
+22.5
+foo
+&quot;Philippe&quot;
+</code
+  ></pre
 ><h4 id="infix-expressions"
 ><a href="#TOC"
   >Infix expressions</a
   ></h4
 ><p
->Consists of literals, along with operators. Operators are</p
+>Consists of other expressions, along with operators. A familiar form is the arithmetic expressions. Examples are:</p
+><pre
+><code
+  >1 + 2
+22 / 11
+23 % 11
+1, 2, 3, 4
+true | false
+</code
+  ></pre
+><h4 id="function-calls"
+><a href="#TOC"
+  >Function calls</a
+  ></h4
+><p
+>Consists of a callable expression followed by other expressions.</p
+><pre
+><code
+  >print &quot;hello world&quot;
+not true
+sum 1 2 3 4 5
+</code
+  ></pre
+><p
+>The following form is also possible:</p
+><pre
+><code
+  >print (&quot;hello world&quot;)
+not (true)
+sum (1, 2, 3, 4, 5)
+</code
+  ></pre
+><h4 id="do-expressions"
+><a href="#TOC"
+  >Do expressions</a
+  ></h4
+><p
+>Used to carry out side-effects like input and output.</p
+><pre
+><code
+  >do with buffer = []
+  readLine 
+  shuffle
+  print
+</code
+  ></pre
+><h4 id="other-forms"
+><a href="#TOC"
+  >Other forms</a
+  ></h4
+><pre
+><code
+  >if true 1 else 2
+
+fn x = x + 2
+
+let a = fn x + 2, b = fn x - 2
+  compare (curry a b) id nat
+</code
+  ></pre
 ><h3 id="types"
 ><a href="#TOC"
   >Types</a
@@ -551,9 +601,9 @@ sin (pi/2)   =&gt; 1
 >Intersection types capture the notion of <em
   >composition</em
   > in object-oriented languages.</p
-><h3 id="bindings-and-let"
+><h3 id="bindings-and-scopes"
 ><a href="#TOC"
-  >Bindings and let</a
+  >Bindings and scopes</a
   ></h3
 ><p
 >TODO</p
@@ -563,9 +613,9 @@ sin (pi/2)   =&gt; 1
   ></h3
 ><p
 >TODO</p
-><h3 id="loop-and-recur"
+><h3 id="loops-and-recursion"
 ><a href="#TOC"
-  >Loop and recur</a
+  >Loops and recursion</a
   ></h3
 ><p
 >TODO</p
@@ -575,9 +625,15 @@ sin (pi/2)   =&gt; 1
   ></h3
 ><p
 >TODO</p
-><h3 id="effects-and-do"
+><h3 id="predicates-and-matching"
 ><a href="#TOC"
-  >Effects and do</a
+  >Predicates and matching</a
+  ></h3
+><p
+>TODO</p
+><h3 id="side-effects"
+><a href="#TOC"
+  >Side effects</a
   ></h3
 ><p
 >TODO</p
@@ -643,9 +699,9 @@ sin (pi/2)   =&gt; 1
 ><a href="#TOC"
   >Spacialization</a
   ></h3
-><h3 id="nonlinear-structures"
+><h3 id="nonlinear-time"
 ><a href="#TOC"
-  >Nonlinear structures</a
+  >Nonlinear time</a
   ></h3
 ><h3 id="indeterminate-structures"
 ><a href="#TOC"
@@ -683,10 +739,6 @@ sin (pi/2)   =&gt; 1
 ><a href="#TOC"
   >5. Advanced usage</a
   ></h2
-><h3 id="laziness"
-><a href="#TOC"
-  >Laziness</a
-  ></h3
 ><h3 id="calling-foreign-languages"
 ><a href="#TOC"
   >Calling foreign languages</a
@@ -711,6 +763,17 @@ sin (pi/2)   =&gt; 1
 ><a href="#TOC"
   >6. Reference</a
   ></h2
+><h3 id="syntax"
+><a href="#TOC"
+  >Syntax</a
+  ></h3
+><p
+>Operators are tokens constructed from the following characters:</p
+><pre
+><code
+  >! # $ % &amp; \ * + , - . / ; &lt; = &gt; ? @ \ ^ _ ` | ~ '
+</code
+  ></pre
 ><h3 id="dictionary"
 ><a href="#TOC"
   >Dictionary</a
