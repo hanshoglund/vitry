@@ -2,7 +2,7 @@
 % © Hans Höglund 2010
 
 
-## Preface
+# Introduction
 Vitry is a functional programming language and an environment for representation and manipulation of music. The language has infix syntax and simple, expressive type system. The representation of music is abstract in the sense that it is not concerned with actual sound, but the formal structure of music. These representations can be transcribed to standard musical notation or used as control data for sound synthesis.
 
 Vitry may be used for composition, arranging, transcription or analysis. It is built for easy integration with other environments, particularly the following:
@@ -13,7 +13,7 @@ Vitry may be used for composition, arranging, transcription or analysis. It is b
 
 
 
-## 1. Getting started
+# Getting started
 
 Vitry targets the [Java Virtual Machine](http://en.wikipedia.org/wiki/Java_Virtual_Machine), and may be used with almost any operating system. The only dependency is the Java runtime environment. To check if this is installed, open a shell and type:
 
@@ -23,11 +23,11 @@ $ java -version
 
 If not, download a suitable implemementation. There are [many alternatives](http://en.wikipedia.org/wiki/List_of_Java_virtual_machines).
 
-### Compiled distributions
+## Compiled distributions
                                                                 
 Compiled distributions may be downloaded from the GitHub site:  [http://github.com/hanshoglund/vitry/downloads](http://github.com/hanshoglund/vitry/downloads). If a version for your operating system is not available, download and compile a source distribution.
 
-### Source distributions                                                                                  
+## Source distributions                                                                                  
                                               
 The build requirements are [Git](http://git-scm.com/) and [Apache Ant](http://ant.apache.org/). You may check if these are installed as follows:
 
@@ -49,7 +49,7 @@ $ sudo ant install
 
 Append any you want to the install command. The default is `/usr/bin`.
          
-### Using the interpreter
+## Using the interpreter
 
 The interpreter is typically the simplest way to interact with Vitry. To run it, simply type:
 
@@ -61,15 +61,15 @@ Vitry will print some setup information and enter a read-eval-print mode. In thi
 
 
 
-## 2. The language                                                                        
+# The language                                                                        
 
 Vitry is similiar to other functional programming languages. This chapter will give a brief overview of the concepts used in Vitry^[For good introduction to functional programming concepts, see *[Structure and Interpretation of Computer Programs](http://mitpress.mit.edu/sicp/)* by Abelson and Sussman].
 
-### Values and expressions
+## Values and expressions
 
-A functional language is first and foremost concerened with manipulating values. Values are pieces of data that represent something. In Vitry, all values are unique and non-changing. This means that equal values always refer to the same underlying representations in memory. This is also true for compound structures, such as lists. 
+A functional language is mainly concerened with manipulating values. Values are pieces of data that represent something. In Vitry, all values are unique and non-changing. This means that equal values always refer to the same underlying representations in memory. This is also true for compound structures, such as lists. 
 
-Expressions are series of tokens each of which may produce a value. They may be nested using parentheses. Thus any program could be thought of as a single expression. Below are some examples of expressions along with their result^[The is arrow-like sign not part of the language, but just a conventional way of wrinting what an expression evaluates to].
+Expressions are series of tokens each of which may produce a value. They may be nested using parentheses. Thus any program could be thought of as a single expression. Below are some examples of expressions along with their result^[The arrow-like sign not part of the language, but just a conventional way of wrinting what an expression evaluates to].
 
 ~~~~~~~~~~~~~~~~~~~~
 1            => 1
@@ -81,7 +81,7 @@ sin (pi/2)   => 1
 
 The most common forms of expressions are outlined below. Detailed yntax and behaviour will be described in detail later on in this manual.
 
-#### Literals
+### Literals
 
 The simplest form of expression, used to create simple values like numbers and strings. Examples are:
 
@@ -93,7 +93,7 @@ foo
 ~~~~~~~~~~~~~~~~~~~~
  
   
-#### Infix expressions
+### Infix expressions
 
 Consists of other expressions, along with operators. A familiar form is the arithmetic expressions. Examples are:
 
@@ -108,7 +108,7 @@ true | false
 
 
 
-#### Function calls
+### Function calls
 
 Consists of a callable expression followed by other expressions.
 
@@ -126,7 +126,7 @@ not (true)
 sum (1, 2, 3, 4, 5)
 ~~~~~~~~~~~~~~~~~~~~
                                               
-#### Do expressions
+### Do expressions
 
 Used to carry out side-effects like input and output.
 
@@ -137,7 +137,7 @@ do with buffer = []
   print
 ~~~~~~~~~~~~~~~~~~~~
 
-#### Other forms
+### Other forms
 
 ~~~~~~~~~~~~~~~~~~~~
 if true 1 else 2
@@ -151,13 +151,13 @@ let a = fn x + 2, b = fn x - 2
 
 
 
-### Types
+## Types
 Types are used to group and reason about values in a logical way. This help us think about the values we are manipulating and prevent us from doing mistakes. A type may be thought of as a common property of some values. Any value may be tested to see if it conforms to this property, if it does it is said to have the given type.
 
-#### Booleans
+### Booleans
 The boolean type is written as `bool`. Its values are written as `true` and `false`.
 
-#### Numbers
+### Numbers
 Vitry supports bignum natural, integer and rational numbers, as well as floating-point real and complex numbers. The types of these are written as `nat`, `int`, `rat`, `float` and `complex` respectively.
 
 Natural, integers and rational numbers are written as sequences of digits. Vitry will automatically convert integers to rationals and vice versa:
@@ -177,23 +177,23 @@ Note that to get one imaginary unit you have to write `1i`, as `i` is not a numb
   `22 * cis 4`                                                        
 
 
-#### Strings
+### Strings
 Strings are sequences of Unicode characters. The string type is written as `string`. String values are written inside double-quotes:
 
   `"I hate music"`, `"But I love to sing"`
    
 
-#### Atoms    
+### Atoms    
 
 TODO
 
-#### Or types
+### Or types
 
 TODO
 
 Intersection types capture the notion of *inheritance* in object-oriented languages.
 
-#### And types
+### And types
 
 TODO
 
@@ -201,56 +201,56 @@ Intersection types capture the notion of *composition* in object-oriented langua
     
     
 
-### Bindings and scopes
+## Bindings and scopes
 
 TODO
 
 
-### Functions       
-
-TODO
-
-
-
-### Loops and recursion
-
-TODO
-
-
-### Sequences
-
-TODO
-
-
-### Predicates and matching
-
-TODO
-
-
-### Side effects
-
-
-TODO
-
-
-### Modules
-
-
-TODO
-
-
-### Implicitness
-
+## Functions       
 
 TODO
 
 
 
+## Loops and recursion
+
+TODO
+
+
+## Sequences
+
+TODO
+
+
+## Predicates and matching
+
+TODO
+
+
+## Side effects
+
+
+TODO
+
+
+## Modules
+
+
+TODO
+
+
+## Implicitness
+
+
+TODO
 
 
 
 
-## 3. Representing music
+
+
+
+# Representing music
 
 Vitry defines a musical model through a set of types and functions. All musical structures are defined in the language itself. This gives the user of the power to define custom data structures that operate on the same level of abstraction as those provided with the language. The core musical model is agnostic to musical style or writing system, instead it simply represent music as a set of events. 
 
@@ -258,39 +258,39 @@ clear distinction between the concepts of *music* and *notation*, much like the 
 
 The process of converting a musical value to a notation is called *transcription*, while the reverse operation is called *interpretation*. These operations will be explained more fully in the next chapter.
 
-### Music and notations
-### Time
-### Event
-### Pitch
-### Instrumentation
-### Sudden change
-### Continous change
-### Spacialization
-### Nonlinear time
-### Indeterminate structures
+## Music and notations
+## Time
+## Event
+## Pitch
+## Instrumentation
+## Sudden change
+## Continous change
+## Spacialization
+## Nonlinear time
+## Indeterminate structures
 
 
 
-## 4. Transcribing and performing
+# Transcribing and performing
 
-### The Sibelius transcriber
-### The LilyPond transcriber
-### The MusicXML transcriber
-### The MIDI transcriber
-### Creating transcribers
-### Creating performers
+## The Sibelius transcriber
+## The LilyPond transcriber
+## The MusicXML transcriber
+## The MIDI transcriber
+## Creating transcribers
+## Creating performers
     
-## 5. Advanced usage
+# Miscellaneous topics
 
-### Calling foreign languages
-### Setting up the environment
-### Replacing the syntax
-### Real-time
-### Networking
+## Calling foreign languages
+## Setting up the environment
+## Replacing the syntax
+## Real-time
+## Networking
 
-## 6. Reference
+# Reference
 
-### Syntax
+## Syntax
 
 
 Operators are tokens constructed from the following characters:         
@@ -299,7 +299,7 @@ Operators are tokens constructed from the following characters:
 ! # $ % & \ * + , - . / ; < = > ? @ \ ^ _ ` | ~ '
 ~~~~~~~~~~~~~~~~~~~~
 
-### Dictionary
+## Dictionary
 
 Value
 :   a

@@ -42,7 +42,7 @@
           ></li
         ><li
         ><a href="#getting-started"
-          >1. Getting started</a
+          >Getting started</a
           ><ul
           ><li
     	><a href="#compiled-distributions"
@@ -60,7 +60,7 @@
           ></li
         ><li
         ><a href="#the-language"
-          >2. The language</a
+          >The language</a
           ><ul
           ><li
     	><a href="#values-and-expressions"
@@ -154,7 +154,7 @@
           ></li
         ><li
         ><a href="#representing-music"
-          >3. Representing music</a
+          >Representing music</a
           ><ul
           ><li
     	><a href="#music-and-notations"
@@ -200,7 +200,7 @@
           ></li
         ><li
         ><a href="#transcribing-and-performing"
-          >4. Transcribing and performing</a
+          >Transcribing and performing</a
           ><ul
           ><li
     	><a href="#the-sibelius-transcriber"
@@ -229,8 +229,8 @@
     	></ul
           ></li
         ><li
-        ><a href="#advanced-usage"
-          >5. Advanced usage</a
+        ><a href="#miscellaneous-topics"
+          >Miscellaneous topics</a
           ><ul
           ><li
     	><a href="#calling-foreign-languages"
@@ -256,7 +256,7 @@
           ></li
         ><li
         ><a href="#reference"
-          >6. Reference</a
+          >Reference</a
           ><ul
           ><li
     	><a href="#syntax"
@@ -281,10 +281,10 @@
   
 
 <!-- Indent 0 for <pre> -->
-<h2 id="preface"
+<h1 id="preface"
 ><a href="#TOC"
   >Preface</a
-  ></h2
+  ></h1
 ><p
 >Vitry is a functional programming language and an environment for representation and manipulation of music. The language has infix syntax and simple, expressive type system. The representation of music is abstract in the sense that it is not concerned with actual sound, but the formal structure of music. These representations can be transcribed to standard musical notation or used as control data for sound synthesis.</p
 ><p
@@ -297,10 +297,10 @@
   ><li
   >SuperCollider</li
   ></ul
-><h2 id="getting-started"
+><h1 id="getting-started"
 ><a href="#TOC"
-  >1. Getting started</a
-  ></h2
+  >Getting started</a
+  ></h1
 ><p
 >Vitry targets the <a href="http://en.wikipedia.org/wiki/Java_Virtual_Machine"
   >Java Virtual Machine</a
@@ -314,18 +314,18 @@
 >If not, download a suitable implemementation. There are <a href="http://en.wikipedia.org/wiki/List_of_Java_virtual_machines"
   >many alternatives</a
   >.</p
-><h3 id="compiled-distributions"
+><h2 id="compiled-distributions"
 ><a href="#TOC"
   >Compiled distributions</a
-  ></h3
+  ></h2
 ><p
 >Compiled distributions may be downloaded from the GitHub site: <a href="http://github.com/hanshoglund/vitry/downloads"
   >http://github.com/hanshoglund/vitry/downloads</a
   >. If a version for your operating system is not available, download and compile a source distribution.</p
-><h3 id="source-distributions"
+><h2 id="source-distributions"
 ><a href="#TOC"
   >Source distributions</a
-  ></h3
+  ></h2
 ><p
 >The build requirements are <a href="http://git-scm.com/"
   >Git</a
@@ -354,10 +354,10 @@ $ sudo ant install
 >Append any you want to the install command. The default is <code
   >/usr/bin</code
   >.</p
-><h3 id="using-the-interpreter"
+><h2 id="using-the-interpreter"
 ><a href="#TOC"
   >Using the interpreter</a
-  ></h3
+  ></h2
 ><p
 >The interpreter is typically the simplest way to interact with Vitry. To run it, simply type:</p
 ><pre
@@ -367,20 +367,20 @@ $ sudo ant install
   ></pre
 ><p
 >Vitry will print some setup information and enter a read-eval-print mode. In this mode, you may enter an expression followed by enter, and it will be evaluated and printed to you.</p
-><h2 id="the-language"
+><h1 id="the-language"
 ><a href="#TOC"
-  >2. The language</a
-  ></h2
+  >The language</a
+  ></h1
 ><p
 >Vitry is similiar to other functional programming languages. This chapter will give a brief overview of the concepts used in Vitry<sup
   ><a href="#fn1" class="footnoteRef" id="fnref1"
     >1</a
     ></sup
   >.</p
-><h3 id="values-and-expressions"
+><h2 id="values-and-expressions"
 ><a href="#TOC"
   >Values and expressions</a
-  ></h3
+  ></h2
 ><p
 >A functional language is first and foremost concerened with manipulating values. Values are pieces of data that represent something. In Vitry, all values are unique and non-changing. This means that equal values always refer to the same underlying representations in memory. This is also true for compound structures, such as lists.</p
 ><p
@@ -400,10 +400,10 @@ sin (pi/2)   =&gt; 1
   ></pre
 ><p
 >The most common forms of expressions are outlined below. Detailed yntax and behaviour will be described in detail later on in this manual.</p
-><h4 id="literals"
+><h3 id="literals"
 ><a href="#TOC"
   >Literals</a
-  ></h4
+  ></h3
 ><p
 >The simplest form of expression, used to create simple values like numbers and strings. Examples are:</p
 ><pre
@@ -414,10 +414,10 @@ foo
 &quot;Philippe&quot;
 </code
   ></pre
-><h4 id="infix-expressions"
+><h3 id="infix-expressions"
 ><a href="#TOC"
   >Infix expressions</a
-  ></h4
+  ></h3
 ><p
 >Consists of other expressions, along with operators. A familiar form is the arithmetic expressions. Examples are:</p
 ><pre
@@ -429,10 +429,10 @@ foo
 true | false
 </code
   ></pre
-><h4 id="function-calls"
+><h3 id="function-calls"
 ><a href="#TOC"
   >Function calls</a
-  ></h4
+  ></h3
 ><p
 >Consists of a callable expression followed by other expressions.</p
 ><pre
@@ -451,10 +451,10 @@ not (true)
 sum (1, 2, 3, 4, 5)
 </code
   ></pre
-><h4 id="do-expressions"
+><h3 id="do-expressions"
 ><a href="#TOC"
   >Do expressions</a
-  ></h4
+  ></h3
 ><p
 >Used to carry out side-effects like input and output.</p
 ><pre
@@ -465,10 +465,10 @@ sum (1, 2, 3, 4, 5)
   print
 </code
   ></pre
-><h4 id="other-forms"
+><h3 id="other-forms"
 ><a href="#TOC"
   >Other forms</a
-  ></h4
+  ></h3
 ><pre
 ><code
   >if true 1 else 2
@@ -479,16 +479,16 @@ let a = fn x + 2, b = fn x - 2
   compare (curry a b) id nat
 </code
   ></pre
-><h3 id="types"
+><h2 id="types"
 ><a href="#TOC"
   >Types</a
-  ></h3
+  ></h2
 ><p
 >Types are used to group and reason about values in a logical way. This help us think about the values we are manipulating and prevent us from doing mistakes. A type may be thought of as a common property of some values. Any value may be tested to see if it conforms to this property, if it does it is said to have the given type.</p
-><h4 id="booleans"
+><h3 id="booleans"
 ><a href="#TOC"
   >Booleans</a
-  ></h4
+  ></h3
 ><p
 >The boolean type is written as <code
   >bool</code
@@ -497,10 +497,10 @@ let a = fn x + 2, b = fn x - 2
   > and <code
   >false</code
   >.</p
-><h4 id="numbers"
+><h3 id="numbers"
 ><a href="#TOC"
   >Numbers</a
-  ></h4
+  ></h3
 ><p
 >Vitry supports bignum natural, integer and rational numbers, as well as floating-point real and complex numbers. The types of these are written as <code
   >nat</code
@@ -561,10 +561,10 @@ let a = fn x + 2, b = fn x - 2
 ><code
   >22 * cis 4</code
   ></p
-><h4 id="strings"
+><h3 id="strings"
 ><a href="#TOC"
   >Strings</a
-  ></h4
+  ></h3
 ><p
 >Strings are sequences of Unicode characters. The string type is written as <code
   >string</code
@@ -575,84 +575,84 @@ let a = fn x + 2, b = fn x - 2
   >, <code
   >&quot;But I love to sing&quot;</code
   ></p
-><h4 id="atoms"
+><h3 id="atoms"
 ><a href="#TOC"
   >Atoms</a
-  ></h4
+  ></h3
 ><p
 >TODO</p
-><h4 id="or-types"
+><h3 id="or-types"
 ><a href="#TOC"
   >Or types</a
-  ></h4
+  ></h3
 ><p
 >TODO</p
 ><p
 >Intersection types capture the notion of <em
   >inheritance</em
   > in object-oriented languages.</p
-><h4 id="and-types"
+><h3 id="and-types"
 ><a href="#TOC"
   >And types</a
-  ></h4
+  ></h3
 ><p
 >TODO</p
 ><p
 >Intersection types capture the notion of <em
   >composition</em
   > in object-oriented languages.</p
-><h3 id="bindings-and-scopes"
+><h2 id="bindings-and-scopes"
 ><a href="#TOC"
   >Bindings and scopes</a
-  ></h3
+  ></h2
 ><p
 >TODO</p
-><h3 id="functions"
+><h2 id="functions"
 ><a href="#TOC"
   >Functions</a
-  ></h3
+  ></h2
 ><p
 >TODO</p
-><h3 id="loops-and-recursion"
+><h2 id="loops-and-recursion"
 ><a href="#TOC"
   >Loops and recursion</a
-  ></h3
+  ></h2
 ><p
 >TODO</p
-><h3 id="sequences"
+><h2 id="sequences"
 ><a href="#TOC"
   >Sequences</a
-  ></h3
+  ></h2
 ><p
 >TODO</p
-><h3 id="predicates-and-matching"
+><h2 id="predicates-and-matching"
 ><a href="#TOC"
   >Predicates and matching</a
-  ></h3
+  ></h2
 ><p
 >TODO</p
-><h3 id="side-effects"
+><h2 id="side-effects"
 ><a href="#TOC"
   >Side effects</a
-  ></h3
+  ></h2
 ><p
 >TODO</p
-><h3 id="modules"
+><h2 id="modules"
 ><a href="#TOC"
   >Modules</a
-  ></h3
+  ></h2
 ><p
 >TODO</p
-><h3 id="implicitness"
+><h2 id="implicitness"
 ><a href="#TOC"
   >Implicitness</a
-  ></h3
+  ></h2
 ><p
 >TODO</p
-><h2 id="representing-music"
+><h1 id="representing-music"
 ><a href="#TOC"
-  >3. Representing music</a
-  ></h2
+  >Representing music</a
+  ></h1
 ><p
 >Vitry defines a musical model through a set of types and functions. All musical structures are defined in the language itself. This gives the user of the power to define custom data structures that operate on the same level of abstraction as those provided with the language. The core musical model is agnostic to musical style or writing system, instead it simply represent music as a set of events.</p
 ><p
@@ -667,106 +667,106 @@ let a = fn x + 2, b = fn x - 2
   >, while the reverse operation is called <em
   >interpretation</em
   >. These operations will be explained more fully in the next chapter.</p
-><h3 id="music-and-notations"
+><h2 id="music-and-notations"
 ><a href="#TOC"
   >Music and notations</a
-  ></h3
-><h3 id="time"
+  ></h2
+><h2 id="time"
 ><a href="#TOC"
   >Time</a
-  ></h3
-><h3 id="event"
+  ></h2
+><h2 id="event"
 ><a href="#TOC"
   >Event</a
-  ></h3
-><h3 id="pitch"
+  ></h2
+><h2 id="pitch"
 ><a href="#TOC"
   >Pitch</a
-  ></h3
-><h3 id="instrumentation"
+  ></h2
+><h2 id="instrumentation"
 ><a href="#TOC"
   >Instrumentation</a
-  ></h3
-><h3 id="sudden-change"
+  ></h2
+><h2 id="sudden-change"
 ><a href="#TOC"
   >Sudden change</a
-  ></h3
-><h3 id="continous-change"
+  ></h2
+><h2 id="continous-change"
 ><a href="#TOC"
   >Continous change</a
-  ></h3
-><h3 id="spacialization"
+  ></h2
+><h2 id="spacialization"
 ><a href="#TOC"
   >Spacialization</a
-  ></h3
-><h3 id="nonlinear-time"
+  ></h2
+><h2 id="nonlinear-time"
 ><a href="#TOC"
   >Nonlinear time</a
-  ></h3
-><h3 id="indeterminate-structures"
+  ></h2
+><h2 id="indeterminate-structures"
 ><a href="#TOC"
   >Indeterminate structures</a
-  ></h3
-><h2 id="transcribing-and-performing"
-><a href="#TOC"
-  >4. Transcribing and performing</a
   ></h2
-><h3 id="the-sibelius-transcriber"
+><h1 id="transcribing-and-performing"
+><a href="#TOC"
+  >Transcribing and performing</a
+  ></h1
+><h2 id="the-sibelius-transcriber"
 ><a href="#TOC"
   >The Sibelius transcriber</a
-  ></h3
-><h3 id="the-lilypond-transcriber"
+  ></h2
+><h2 id="the-lilypond-transcriber"
 ><a href="#TOC"
   >The LilyPond transcriber</a
-  ></h3
-><h3 id="the-musicxml-transcriber"
+  ></h2
+><h2 id="the-musicxml-transcriber"
 ><a href="#TOC"
   >The MusicXML transcriber</a
-  ></h3
-><h3 id="the-midi-transcriber"
+  ></h2
+><h2 id="the-midi-transcriber"
 ><a href="#TOC"
   >The MIDI transcriber</a
-  ></h3
-><h3 id="creating-transcribers"
+  ></h2
+><h2 id="creating-transcribers"
 ><a href="#TOC"
   >Creating transcribers</a
-  ></h3
-><h3 id="creating-performers"
+  ></h2
+><h2 id="creating-performers"
 ><a href="#TOC"
   >Creating performers</a
-  ></h3
-><h2 id="advanced-usage"
-><a href="#TOC"
-  >5. Advanced usage</a
   ></h2
-><h3 id="calling-foreign-languages"
+><h1 id="miscellaneous-topics"
+><a href="#TOC"
+  >Miscellaneous topics</a
+  ></h1
+><h2 id="calling-foreign-languages"
 ><a href="#TOC"
   >Calling foreign languages</a
-  ></h3
-><h3 id="setting-up-the-environment"
+  ></h2
+><h2 id="setting-up-the-environment"
 ><a href="#TOC"
   >Setting up the environment</a
-  ></h3
-><h3 id="replacing-the-syntax"
+  ></h2
+><h2 id="replacing-the-syntax"
 ><a href="#TOC"
   >Replacing the syntax</a
-  ></h3
-><h3 id="real-time"
+  ></h2
+><h2 id="real-time"
 ><a href="#TOC"
   >Real-time</a
-  ></h3
-><h3 id="networking"
+  ></h2
+><h2 id="networking"
 ><a href="#TOC"
   >Networking</a
-  ></h3
-><h2 id="reference"
-><a href="#TOC"
-  >6. Reference</a
   ></h2
-><h3 id="syntax"
+><h1 id="reference"
+><a href="#TOC"
+  >Reference</a
+  ></h1
+><h2 id="syntax"
 ><a href="#TOC"
   >Syntax</a
-  ></h3
+  ></h2
 ><p
 >Operators are tokens constructed from the following characters:</p
 ><pre
@@ -774,10 +774,10 @@ let a = fn x + 2, b = fn x - 2
   >! # $ % &amp; \ * + , - . / ; &lt; = &gt; ? @ \ ^ _ ` | ~ '
 </code
   ></pre
-><h3 id="dictionary"
+><h2 id="dictionary"
 ><a href="#TOC"
   >Dictionary</a
-  ></h3
+  ></h2
 ><dl
 ><dt
   >Value</dt
@@ -825,7 +825,7 @@ let a = fn x + 2, b = fn x - 2
       ></li
     ><li id="fn2"
     ><p
-      >The is arrow-like sign not part of the language, but just a conventional way of wrinting what an expression evaluates to <a href="#fnref2" class="footnoteBackLink" title="Jump back to footnote 2">↩</a></p
+      >The arrow-like sign not part of the language, but just a conventional way of wrinting what an expression evaluates to <a href="#fnref2" class="footnoteBackLink" title="Jump back to footnote 2">↩</a></p
       ></li
     ></ol
   ></div

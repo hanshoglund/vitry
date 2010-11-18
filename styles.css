@@ -73,7 +73,7 @@
     max-width: 1030px;
   }
   
-  #content a, h1 {
+  #content a, .title {
     color: CornflowerBlue;
   }
   
@@ -83,20 +83,20 @@
   h1, h2, h3, h4 {   
     margin:  0em;
   }   
-  h1 {
+  h1.title {
     padding-top: 0em;
     font-size: 140%;
   }
 
-  h2 {
+  h1 {
     padding-top: 2em;
     font-size: 115%;
   }
-  h3 {
+  h2 {
     padding-top: 0.4em;
     font-size: 105%;
   }
-  h4 {
+  h3 {
     padding-top: 0.1em;
     font-size: 80%;
   } 
