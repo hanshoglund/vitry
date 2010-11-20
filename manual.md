@@ -2,14 +2,32 @@
 % © Hans Höglund 2010
 
 
+
+
+
+
+
+
+
+
 # Introduction
-Vitry is a functional programming language and an environment for representation and manipulation of music. The language has infix syntax and simple, expressive type system. The representation of music is abstract in the sense that it is not concerned with actual sound, but the formal structure of music. These representations can be transcribed to standard musical notation or used as control data for sound synthesis.
+Vitry is a functional programming language and an environment for representation and manipulation of music. The language has infix syntax and simple, expressive type system. The represented music can be output in a variety of formats, transcribed to musical notation or used as control data for sound synthesis.
+
+The representation of music is abstract in the sense that it is not concerned with actual sound, but the formal structure of music.  The basic idea is to give the user the tools needed to impliment any kind of *musical model*, while also providing implementations of standard cases.
 
 Vitry may be used for composition, arranging, transcription or analysis. It is built for easy integration with other environments, particularly the following:
 
 - Lilypond
 - Sibelius
 - SuperCollider
+
+
+
+
+
+
+
+
 
 
 
@@ -47,7 +65,8 @@ $ ant
 $ sudo ant install
 ~~~~~~~~~~~~~~~~~~~~
 
-Append any you want to the install command. The default is `/usr/bin`.
+You may append a directory to the install command. The default is `/usr/bin`.
+
          
 ## Using the interpreter
 
@@ -57,19 +76,40 @@ The interpreter is typically the simplest way to interact with Vitry. To run it,
 $ vitry
 ~~~~~~~~~~~~~~~~~~~~
 
-Vitry will print some setup information and enter a read-eval-print mode. In this mode, you may enter an expression followed by enter, and it will be evaluated and printed to you.
+Vitry will print some setup information and enter a read-eval-print mode. In this mode, you may enter an expression followed by enter, and it will be evaluated and printed to you. Any expression may be entered. However, module declarations are not accepted.
+
+TODO
+
+The interpreter also accepts special commands commenced by a colon. These are not part of the Vitry language, but exist for ease of use in the interpreter. To see a list of available commands, use `:h` or `:help`.
+
+~~~~~~~~~~~~~~~~~~~~
+  : help h        Prints help information.
+  : quit q        Leaves Vitry.
+
+~~~~~~~~~~~~~~~~~~~~
+
+TODO expand
+
+
+
+
+
+
+
 
 
 
 # The language                                                                        
 
-Vitry is similiar to other functional programming languages. This chapter will give a brief overview of the concepts used in Vitry^[For good introduction to functional programming concepts, see *[Structure and Interpretation of Computer Programs](http://mitpress.mit.edu/sicp/)* by Abelson and Sussman].
+Vitry is similiar to other functional programming languages including Lisp and Haskell. This chapter will give a brief overview of functional programming but focuses on the concepts unique to Vitry.^[For good thorough introduction to functional programming, study a textbook such as *[Structure and Interpretation of Computer Programs](http://mitpress.mit.edu/sicp/)* by Abelson and Sussman]
 
-## Values and expressions
+## Values
 
-A functional language is mainly concerened with manipulating values. Values are pieces of data that represent something. In Vitry, all values are unique and non-changing. This means that equal values always refer to the same underlying representations in memory. This is also true for compound structures, such as lists. 
+A functional language is mainly concerened with manipulating values. Broadly speaking, values are pieces of data that represent something. In Vitry, values are unique and non-changing. This is also true for compound structures, such as lists.
+       
+## Expressions
 
-Expressions are series of tokens each of which may produce a value. They may be nested using parentheses. Thus any program could be thought of as a single expression. Below are some examples of expressions along with their result^[The arrow-like sign not part of the language, but just a conventional way of wrinting what an expression evaluates to].
+Expressions are series of tokens each of which may produce a value. Expressions may be nested. Below are some examples of expressions along with their result.^[The arrow-like sign not part of the language, but just a conventional way of wrinting what an expression evaluates to]
 
 ~~~~~~~~~~~~~~~~~~~~
 1            => 1
@@ -79,7 +119,7 @@ not true     => false
 sin (pi/2)   => 1
 ~~~~~~~~~~~~~~~~~~~~
 
-The most common forms of expressions are outlined below. Detailed yntax and behaviour will be described in detail later on in this manual.
+The most common forms of expressions are outlined below. Detailed syntax and behaviour will be described in detail later on in this manual.
 
 ### Literals
 
@@ -106,8 +146,6 @@ true | false
 ~~~~~~~~~~~~~~~~~~~~
 
 
-
-
 ### Function calls
 
 Consists of a callable expression followed by other expressions.
@@ -115,44 +153,36 @@ Consists of a callable expression followed by other expressions.
 ~~~~~~~~~~~~~~~~~~~~
 print "hello world"
 not true
-sum 1 2 3 4 5
-~~~~~~~~~~~~~~~~~~~~
-
-The following form is also possible:
-
-~~~~~~~~~~~~~~~~~~~~
-print ("hello world")
-not (true)
-sum (1, 2, 3, 4, 5)
+sum 1 2 3 4
 ~~~~~~~~~~~~~~~~~~~~
                                               
-### Do expressions
+### Special forms
 
-Used to carry out side-effects like input and output.
+The so-called special forms are identified by the following keywords:
+
+- `let` and `where` expressions used for binding variables.
+- `fn` expressions, to define functions.
+- `if`, and `match` expressions used for conditional evaluations.
+- `do` expressions, used to carry out side-effects like input and output. 
+- `module` and `implicit` declarations.                              
+
+
+## Delimiters
+
+Expressions may be nested using the following characters as delimiters:
 
 ~~~~~~~~~~~~~~~~~~~~
-do with buffer = []
-  readLine 
-  shuffle
-  print
+() [] {}
 ~~~~~~~~~~~~~~~~~~~~
 
-### Other forms
-
-~~~~~~~~~~~~~~~~~~~~
-if true 1 else 2
-
-fn x = x + 2
-
-let a = fn x + 2, b = fn x - 2
-  compare (curry a b) id nat
-  
-~~~~~~~~~~~~~~~~~~~~
+TODO
 
 
 
 ## Types
-Types are used to group and reason about values in a logical way. This help us think about the values we are manipulating and prevent us from doing mistakes. A type may be thought of as a common property of some values. Any value may be tested to see if it conforms to this property, if it does it is said to have the given type.
+Types are used to group and reason about values. A type may be thought of as a common property of some values. Any value may be tested to see if it conforms to this property, if it does it is said to have the given type.
+
+The type system of Vitry is dynamic in the sense that types are evaluated at runtime, and strong in the sense that arguments to functions are checked by default.
 
 ### Booleans
 The boolean type is written as `bool`. Its values are written as `true` and `false`.
@@ -162,26 +192,49 @@ Vitry supports bignum natural, integer and rational numbers, as well as floating
 
 Natural, integers and rational numbers are written as sequences of digits. Vitry will automatically convert integers to rationals and vice versa:
 
-  `152 `, `42  `, `-8  `, `3/2 `
+~~~~~~~~~~~~~~~~~~~~
+152
+42
+-8
+3/2
+~~~~~~~~~~~~~~~~~~~~
 
 Floating point numbers may be written in several ways:
 
-  `0.1`, `0.12e10`, `2e-5`, `0.5/2`
-  
+~~~~~~~~~~~~~~~~~~~~
+0.1
+0.12e10
+2e-5
+0.5/2
+~~~~~~~~~~~~~~~~~~~~
+
 We create a complex number by adding the suffix `i` to the imaginary part:
 
-  `2i`, `10 + 1i`, `22.4 + 32e4i`
+~~~~~~~~~~~~~~~~~~~~
+2i
+10 + 1i
+22.4 + 32e4i
+~~~~~~~~~~~~~~~~~~~~
   
 Note that to get one imaginary unit you have to write `1i`, as `i` is not a number literal. Complex numbers in polar form may be entered using the `cis` function:
 
-  `22 * cis 4`                                                        
+~~~~~~~~~~~~~~~~~~~~
+22 * cis 4
+~~~~~~~~~~~~~~~~~~~~
+                                                        
 
 
 ### Strings
 Strings are sequences of Unicode characters. The string type is written as `string`. String values are written inside double-quotes:
 
-  `"I hate music"`, `"But I love to sing"`
-   
+~~~~~~~~~~~~~~~~~~~~
+""
+"test"
+"\""
+"\\"
+"I hate music"
+~~~~~~~~~~~~~~~~~~~~
+
 
 ### Atoms    
 
@@ -250,56 +303,225 @@ TODO
 
 
 
-# Representing music
+# Representating music
 
-Vitry defines a musical model through a set of types and functions. All musical structures are defined in the language itself. This gives the user of the power to define custom data structures that operate on the same level of abstraction as those provided with the language. The core musical model is agnostic to musical style or writing system, instead it simply represent music as a set of events. 
+Vitry provides a large set of types and functions that simplifies the manipulation of musical data. These are  defined in the language itself, giving the user of the power to define structures that operate on exactly the same level of abstraction as those provided with the language. Most of this chapter is devoted to descriptions of the standard model, but it shoul be clear that these conventional structures are by no means mandatory. On the contrary, the user is highly encouraged to provide alternate representations and the language is designed to faciliate that.
 
-clear distinction between the concepts of *music* and *notation*, much like the separation of content and presentation commonly used in text processing. By using such a separation, music can be defined and manipulated as a kind of algebraic structure, apart from notational conventions. Another benefit of this strategy is that the same music could easily be translated to any kind representation.
+TODO music vs notation
 
-The process of converting a musical value to a notation is called *transcription*, while the reverse operation is called *interpretation*. These operations will be explained more fully in the next chapter.
 
-## Music and notations
+
 ## Time
-## Event
+
+Perhaps the most general musical property, time turns out difficult to model in a simple yet coherent way. Thus we will provide several different, though related, time models and a simple taxonomy to keep track of them, and their various properties.^[Here time is taken to mean a measurable unit of time (as in the sentence "one second's time"), not the amount of beats in a musical pulsation.]
+
+We use a type `time` as the root of our hierarchy of time models. For simplicity, we will limit this type to linear and synchronous models, and use completely separate types when this is not the case. By *linear* we mean that `time` progresses consistently without repetition or jumps, and by *synchronous* that relations between `time` values can be taken to hold in all cases.^[As long as the conductor (or the transport system of the studio) behaves properly.] This will be sufficient to represent most conventional music. Nonlinear and nonsynchronous time will be covered in later sections.
+
+TODO absolute and relative (time)
+
+Time values are commonly used to represent *positions* in a bar-beat grid, as well as *durations*, meaning the difference between the onset and offset position of a certain event. There is no real need to make this distinction on the type level, but we will introduce two handy synonyms for `time` that can be used to prevent mix-ups when working larger time structures.
+
+TODO make distinction between abs/rel *time scale* as above and abs/rel *notation* as in MIDI 
+
+~~~~~~~~~~~~~~~~~~~~
+type 
+  time         = absoluteTime | relativeTime
+  absoluteTime = sec
+  relativeTime = rat
+  pos          = time
+  dur          = time
+  sec          = float
+~~~~~~~~~~~~~~~~~~~~
+                     
+TODO tuples
+
+TODO scaling tempo
+
+TODO continous tempo scaling
+
+TODO quantization
+
+
+Relative time is simply represented as rational numbers, using the conventional note names as reference point. Thus the values `1, 1/2, 1/4, 1/4` may be read as whole note, half note, quarter note, quarter note.     
+
+For absolute time we use standardized units:
+
+~~~~~~~~~~~~~~~~~~~~
+implicit type
+  min  = 60 * sec
+  hour = 60 * min
+  day  = 24 * hour
+  Hz   = 1 / sec
+  kHz  = hz * 10e3
+  MHz  = hz * 10e6
+~~~~~~~~~~~~~~~~~~~~
+
+
+
+TODO
+
 ## Pitch
+
+Pitch is readily represented as an absolute frequency value or as a postion in a scale.
+
+TODO tuning systems
+TODO reference frequency
+
+TODO
+
+
+## Events
+
+Events is the abstract type representing discrete musical actions.
+
+TODO
+
+
+## Processes
+
+A musical process (not to be confused with a computational) is the abstract type representing continuous musical actions. 
+
+TODO
+
+
 ## Instrumentation
-## Sudden change
-## Continous change
+
+The concept of instrumentation (or *orchestration*) may be generalized to represent the distribution of a set of events across a set of *performers* or *ensembles*. This concept is useful not only for orchestral music, but also for distribution of events across synthesizers, or even virtual performers such as sub-processes of a generative piece.
+
+The atomic unit of instrumentation is the performer, defined as a receiver of musical events. There is no theoretical distinction between a vocal, instrumental or virtual performer, but we provide these synonyms for convenience.
+
+~~~~~~~~~~~~~~~~~~~~
+type 
+  performer
+  singer      = performer
+  instrument  = performer
+~~~~~~~~~~~~~~~~~~~~
+
+TODO choir, ensemble             
+
+TODO model conventional settings?
+
+TODO arrangements, reductions
+
+TODO 
+
+
 ## Spacialization
-## Nonlinear time
+
+As instrumentation is concerned with distribution of events amongst discrete groups or individuals, we may also consider the distribution of events or processes in a spacial continuum. 
+
+Spacialization is generally mostly of interest in acousmatic music, as fine control of the spacial parameter is not available in the instrumental or vocal genres. However, if spacialization is treated a continous distribution in an abstract sense, there are possibilities of using "virtual spaces" to control other musical parameters.^[This would not have to be called spaces, but I find that name intuitive as the time dimension is already occupied] It may also be used in conjunction with instrumentation to model the real-life spacial setup of an ensemble.
+
+
+TODO
+
+
+## Nonlinearity
+
+called `nonlinear` and `nonsync`
+TODO
+
+
 ## Indeterminate structures
 
+TODO
 
 
-# Transcribing and performing
 
-## The Sibelius transcriber
-## The LilyPond transcriber
-## The MusicXML transcriber
-## The MIDI transcriber
-## Creating transcribers
-## Creating performers
+
+
     
 # Miscellaneous topics
 
 ## Calling foreign languages
+
+TODO
+
+
 ## Setting up the environment
+
+TODO
+
+
 ## Replacing the syntax
+
+TODO
+
+
 ## Real-time
+
+TODO
+
+
 ## Networking
+
+TODO
+
+
 
 # Reference
 
-## Syntax
-
-
-Operators are tokens constructed from the following characters:         
+## Syntax           
 
 ~~~~~~~~~~~~~~~~~~~~
-! # $ % & \ * + , - . / ; < = > ? @ \ ^ _ ` | ~ '
+expr 
+  : '(' inline ')'
+  | '[' inline ']'
+  | '{' inline '}'
+   
+  | 'fn' parameter* expr
+  | 'let' binding* expr
+  | 'do' '(' expr+ ')'
+  | 'if' expr expr 'else'? expr
+      
+  | atom
+  | natural
+  | float
+  | complex
+  | string
+    
+parameter 
+  : atom ':' expr
+binding   
+  : atom '=' expr
+
+inline
+	: apply (operator+ apply)+
+	| apply
+	| empty
+
+apply
+	: expr+
+	| expr
+	
+empty
+	:
+
+operator
+  Any of the following characters in any order
+  ! # $ % & \ * + , - . / ; < = > ? @ \ ^ _ ` | ~ '
+
+atom
+  a-z or A-Z followed by any number of a-z, A-Z or 0-9
+
+natural
+  any number of 0-9
+
+float
+  TODO
+
+complex
+  TODO
+
+string
+  TODO
 ~~~~~~~~~~~~~~~~~~~~
+
+
 
 ## Dictionary
+
+TODO
 
 Value
 :   a

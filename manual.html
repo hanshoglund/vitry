@@ -37,8 +37,8 @@
     <div id="TOC"
     ><ul
       ><li
-        ><a href="#preface"
-          >Preface</a
+        ><a href="#introduction"
+          >Introduction</a
           ></li
         ><li
         ><a href="#getting-started"
@@ -63,8 +63,12 @@
           >The language</a
           ><ul
           ><li
-    	><a href="#values-and-expressions"
-    	  >Values and expressions</a
+    	><a href="#values"
+    	  >Values</a
+    	  ></li
+    	><li
+    	><a href="#expressions"
+    	  >Expressions</a
     	  ><ul
     	  ><li
     	    ><a href="#literals"
@@ -79,14 +83,14 @@
     	      >Function calls</a
     	      ></li
     	    ><li
-    	    ><a href="#do-expressions"
-    	      >Do expressions</a
-    	      ></li
-    	    ><li
-    	    ><a href="#other-forms"
-    	      >Other forms</a
+    	    ><a href="#special-forms"
+    	      >Special forms</a
     	      ></li
     	    ></ul
+    	  ></li
+    	><li
+    	><a href="#delimiters"
+    	  >Delimiters</a
     	  ></li
     	><li
     	><a href="#types"
@@ -153,78 +157,40 @@
     	></ul
           ></li
         ><li
-        ><a href="#representing-music"
-          >Representing music</a
+        ><a href="#representating-music"
+          >Representating music</a
           ><ul
           ><li
-    	><a href="#music-and-notations"
-    	  >Music and notations</a
-    	  ></li
-    	><li
     	><a href="#time"
     	  >Time</a
-    	  ></li
-    	><li
-    	><a href="#event"
-    	  >Event</a
     	  ></li
     	><li
     	><a href="#pitch"
     	  >Pitch</a
     	  ></li
     	><li
+    	><a href="#events"
+    	  >Events</a
+    	  ></li
+    	><li
+    	><a href="#processes"
+    	  >Processes</a
+    	  ></li
+    	><li
     	><a href="#instrumentation"
     	  >Instrumentation</a
-    	  ></li
-    	><li
-    	><a href="#sudden-change"
-    	  >Sudden change</a
-    	  ></li
-    	><li
-    	><a href="#continous-change"
-    	  >Continous change</a
     	  ></li
     	><li
     	><a href="#spacialization"
     	  >Spacialization</a
     	  ></li
     	><li
-    	><a href="#nonlinear-time"
-    	  >Nonlinear time</a
+    	><a href="#nonlinearity"
+    	  >Nonlinearity</a
     	  ></li
     	><li
     	><a href="#indeterminate-structures"
     	  >Indeterminate structures</a
-    	  ></li
-    	></ul
-          ></li
-        ><li
-        ><a href="#transcribing-and-performing"
-          >Transcribing and performing</a
-          ><ul
-          ><li
-    	><a href="#the-sibelius-transcriber"
-    	  >The Sibelius transcriber</a
-    	  ></li
-    	><li
-    	><a href="#the-lilypond-transcriber"
-    	  >The LilyPond transcriber</a
-    	  ></li
-    	><li
-    	><a href="#the-musicxml-transcriber"
-    	  >The MusicXML transcriber</a
-    	  ></li
-    	><li
-    	><a href="#the-midi-transcriber"
-    	  >The MIDI transcriber</a
-    	  ></li
-    	><li
-    	><a href="#creating-transcribers"
-    	  >Creating transcribers</a
-    	  ></li
-    	><li
-    	><a href="#creating-performers"
-    	  >Creating performers</a
     	  ></li
     	></ul
           ></li
@@ -281,12 +247,16 @@
   
 
 <!-- Indent 0 for <pre> -->
-<h1 id="preface"
+<h1 id="introduction"
 ><a href="#TOC"
-  >Preface</a
+  >Introduction</a
   ></h1
 ><p
->Vitry is a functional programming language and an environment for representation and manipulation of music. The language has infix syntax and simple, expressive type system. The representation of music is abstract in the sense that it is not concerned with actual sound, but the formal structure of music. These representations can be transcribed to standard musical notation or used as control data for sound synthesis.</p
+>Vitry is a functional programming language and an environment for representation and manipulation of music. The language has infix syntax and simple, expressive type system. The represented music can be output in a variety of formats, transcribed to musical notation or used as control data for sound synthesis.</p
+><p
+>The representation of music is abstract in the sense that it is not concerned with actual sound, but the formal structure of music. The basic idea is to give the user the tools needed to impliment any kind of <em
+  >musical model</em
+  >, while also providing implementations of standard cases.</p
 ><p
 >Vitry may be used for composition, arranging, transcription or analysis. It is built for easy integration with other environments, particularly the following:</p
 ><ul
@@ -351,7 +321,7 @@ $ sudo ant install
 </code
   ></pre
 ><p
->Append any you want to the install command. The default is <code
+>You may append a directory to the install command. The default is <code
   >/usr/bin</code
   >.</p
 ><h2 id="using-the-interpreter"
@@ -366,29 +336,49 @@ $ sudo ant install
 </code
   ></pre
 ><p
->Vitry will print some setup information and enter a read-eval-print mode. In this mode, you may enter an expression followed by enter, and it will be evaluated and printed to you.</p
+>Vitry will print some setup information and enter a read-eval-print mode. In this mode, you may enter an expression followed by enter, and it will be evaluated and printed to you. Any expression may be entered. However, module declarations are not accepted.</p
+><p
+>TODO</p
+><p
+>The interpreter also accepts special commands commenced by a colon. These are not part of the Vitry language, but exist for ease of use in the interpreter. To see a list of available commands, use <code
+  >:h</code
+  > or <code
+  >:help</code
+  >.</p
+><pre
+><code
+  >  : help h        Prints help information.
+  : quit q        Leaves Vitry.
+</code
+  ></pre
+><p
+>TODO expand</p
 ><h1 id="the-language"
 ><a href="#TOC"
   >The language</a
   ></h1
 ><p
->Vitry is similiar to other functional programming languages. This chapter will give a brief overview of the concepts used in Vitry<sup
+>Vitry is similiar to other functional programming languages including Lisp and Haskell. This chapter will give a brief overview of functional programming but focuses on the concepts unique to Vitry.<sup
   ><a href="#fn1" class="footnoteRef" id="fnref1"
     >1</a
     ></sup
-  >.</p
-><h2 id="values-and-expressions"
+  ></p
+><h2 id="values"
 ><a href="#TOC"
-  >Values and expressions</a
+  >Values</a
   ></h2
 ><p
->A functional language is first and foremost concerened with manipulating values. Values are pieces of data that represent something. In Vitry, all values are unique and non-changing. This means that equal values always refer to the same underlying representations in memory. This is also true for compound structures, such as lists.</p
+>A functional language is mainly concerened with manipulating values. Broadly speaking, values are pieces of data that represent something. In Vitry, values are unique and non-changing. This is also true for compound structures, such as lists.</p
+><h2 id="expressions"
+><a href="#TOC"
+  >Expressions</a
+  ></h2
 ><p
->Expressions are series of tokens each of which may produce a value. They may be nested using parentheses. Thus any program could be thought of as a single expression. Below are some examples of expressions along with their result<sup
+>Expressions are series of tokens each of which may produce a value. Expressions may be nested. Below are some examples of expressions along with their result.<sup
   ><a href="#fn2" class="footnoteRef" id="fnref2"
     >2</a
     ></sup
-  >.</p
+  ></p
 ><pre
 ><code
   >1            =&gt; 1
@@ -399,7 +389,7 @@ sin (pi/2)   =&gt; 1
 </code
   ></pre
 ><p
->The most common forms of expressions are outlined below. Detailed yntax and behaviour will be described in detail later on in this manual.</p
+>The most common forms of expressions are outlined below. Detailed syntax and behaviour will be described in detail later on in this manual.</p
 ><h3 id="literals"
 ><a href="#TOC"
   >Literals</a
@@ -439,52 +429,64 @@ true | false
 ><code
   >print &quot;hello world&quot;
 not true
-sum 1 2 3 4 5
+sum 1 2 3 4
+</code
+  ></pre
+><h3 id="special-forms"
+><a href="#TOC"
+  >Special forms</a
+  ></h3
+><p
+>The so-called special forms are identified by the following keywords:</p
+><ul
+><li
+  ><code
+    >let</code
+    > and <code
+    >where</code
+    > expressions used for binding variables.</li
+  ><li
+  ><code
+    >fn</code
+    > expressions, to define functions.</li
+  ><li
+  ><code
+    >if</code
+    >, and <code
+    >match</code
+    > expressions used for conditional evaluations.</li
+  ><li
+  ><code
+    >do</code
+    > expressions, used to carry out side-effects like input and output.</li
+  ><li
+  ><code
+    >module</code
+    > and <code
+    >implicit</code
+    > declarations.</li
+  ></ul
+><h2 id="delimiters"
+><a href="#TOC"
+  >Delimiters</a
+  ></h2
+><p
+>Expressions may be nested using the following characters as delimiters:</p
+><pre
+><code
+  >() [] {}
 </code
   ></pre
 ><p
->The following form is also possible:</p
-><pre
-><code
-  >print (&quot;hello world&quot;)
-not (true)
-sum (1, 2, 3, 4, 5)
-</code
-  ></pre
-><h3 id="do-expressions"
-><a href="#TOC"
-  >Do expressions</a
-  ></h3
-><p
->Used to carry out side-effects like input and output.</p
-><pre
-><code
-  >do with buffer = []
-  readLine 
-  shuffle
-  print
-</code
-  ></pre
-><h3 id="other-forms"
-><a href="#TOC"
-  >Other forms</a
-  ></h3
-><pre
-><code
-  >if true 1 else 2
-
-fn x = x + 2
-
-let a = fn x + 2, b = fn x - 2
-  compare (curry a b) id nat
-</code
-  ></pre
+>TODO</p
 ><h2 id="types"
 ><a href="#TOC"
   >Types</a
   ></h2
 ><p
->Types are used to group and reason about values in a logical way. This help us think about the values we are manipulating and prevent us from doing mistakes. A type may be thought of as a common property of some values. Any value may be tested to see if it conforms to this property, if it does it is said to have the given type.</p
+>Types are used to group and reason about values. A type may be thought of as a common property of some values. Any value may be tested to see if it conforms to this property, if it does it is said to have the given type.</p
+><p
+>The type system of Vitry is dynamic in the sense that types are evaluated at runtime, and strong in the sense that arguments to functions are checked by default.</p
 ><h3 id="booleans"
 ><a href="#TOC"
   >Booleans</a
@@ -515,40 +517,35 @@ let a = fn x + 2, b = fn x - 2
   > respectively.</p
 ><p
 >Natural, integers and rational numbers are written as sequences of digits. Vitry will automatically convert integers to rationals and vice versa:</p
-><p
+><pre
 ><code
-  >152</code
-  >, <code
-  >42</code
-  >, <code
-  >-8</code
-  >, <code
-  >3/2</code
-  ></p
+  >152
+42
+-8
+3/2
+</code
+  ></pre
 ><p
 >Floating point numbers may be written in several ways:</p
-><p
+><pre
 ><code
-  >0.1</code
-  >, <code
-  >0.12e10</code
-  >, <code
-  >2e-5</code
-  >, <code
-  >0.5/2</code
-  ></p
+  >0.1
+0.12e10
+2e-5
+0.5/2
+</code
+  ></pre
 ><p
 >We create a complex number by adding the suffix <code
   >i</code
   > to the imaginary part:</p
-><p
+><pre
 ><code
-  >2i</code
-  >, <code
-  >10 + 1i</code
-  >, <code
-  >22.4 + 32e4i</code
-  ></p
+  >2i
+10 + 1i
+22.4 + 32e4i
+</code
+  ></pre
 ><p
 >Note that to get one imaginary unit you have to write <code
   >1i</code
@@ -557,10 +554,11 @@ let a = fn x + 2, b = fn x - 2
   > is not a number literal. Complex numbers in polar form may be entered using the <code
   >cis</code
   > function:</p
-><p
+><pre
 ><code
-  >22 * cis 4</code
-  ></p
+  >22 * cis 4
+</code
+  ></pre
 ><h3 id="strings"
 ><a href="#TOC"
   >Strings</a
@@ -569,12 +567,15 @@ let a = fn x + 2, b = fn x - 2
 >Strings are sequences of Unicode characters. The string type is written as <code
   >string</code
   >. String values are written inside double-quotes:</p
-><p
+><pre
 ><code
-  >&quot;I hate music&quot;</code
-  >, <code
-  >&quot;But I love to sing&quot;</code
-  ></p
+  >&quot;&quot;
+&quot;test&quot;
+&quot;\&quot;&quot;
+&quot;\\&quot;
+&quot;I hate music&quot;
+</code
+  ></pre
 ><h3 id="atoms"
 ><a href="#TOC"
   >Atoms</a
@@ -649,92 +650,180 @@ let a = fn x + 2, b = fn x - 2
   ></h2
 ><p
 >TODO</p
-><h1 id="representing-music"
+><h1 id="representating-music"
 ><a href="#TOC"
-  >Representing music</a
+  >Representating music</a
   ></h1
 ><p
->Vitry defines a musical model through a set of types and functions. All musical structures are defined in the language itself. This gives the user of the power to define custom data structures that operate on the same level of abstraction as those provided with the language. The core musical model is agnostic to musical style or writing system, instead it simply represent music as a set of events.</p
+>Vitry provides a large set of types and functions that simplifies the manipulation of musical data. These are defined in the language itself, giving the user of the power to define structures that operate on exactly the same level of abstraction as those provided with the language. Most of this chapter is devoted to descriptions of the standard model, but it shoul be clear that these conventional structures are by no means mandatory. On the contrary, the user is highly encouraged to provide alternate representations and the language is designed to faciliate that.</p
 ><p
->clear distinction between the concepts of <em
-  >music</em
-  > and <em
-  >notation</em
-  >, much like the separation of content and presentation commonly used in text processing. By using such a separation, music can be defined and manipulated as a kind of algebraic structure, apart from notational conventions. Another benefit of this strategy is that the same music could easily be translated to any kind representation.</p
-><p
->The process of converting a musical value to a notation is called <em
-  >transcription</em
-  >, while the reverse operation is called <em
-  >interpretation</em
-  >. These operations will be explained more fully in the next chapter.</p
-><h2 id="music-and-notations"
-><a href="#TOC"
-  >Music and notations</a
-  ></h2
+>TODO music vs notation</p
 ><h2 id="time"
 ><a href="#TOC"
   >Time</a
   ></h2
-><h2 id="event"
-><a href="#TOC"
-  >Event</a
-  ></h2
+><p
+>Perhaps the most general musical property, time turns out difficult to model in a simple yet coherent way. Thus we will provide several different, though related, time models and a simple taxonomy to keep track of them, and their various properties.<sup
+  ><a href="#fn3" class="footnoteRef" id="fnref3"
+    >3</a
+    ></sup
+  ></p
+><p
+>We use a type <code
+  >time</code
+  > as the root of our hierarchy of time models. For simplicity, we will limit this type to linear and synchronous models, and use completely separate types when this is not the case. By <em
+  >linear</em
+  > we mean that <code
+  >time</code
+  > progresses consistently without repetition or jumps, and by <em
+  >synchronous</em
+  > that relations between <code
+  >time</code
+  > values can be taken to hold in all cases.<sup
+  ><a href="#fn4" class="footnoteRef" id="fnref4"
+    >4</a
+    ></sup
+  > This will be sufficient to represent most conventional music. Nonlinear and nonsynchronous time will be covered in later sections.</p
+><p
+>TODO absolute and relative (time)</p
+><p
+>Time values are commonly used to represent <em
+  >positions</em
+  > in a bar-beat grid, as well as <em
+  >durations</em
+  >, meaning the difference between the onset and offset position of a certain event. There is no real need to make this distinction on the type level, but we will introduce two handy synonyms for <code
+  >time</code
+  > that can be used to prevent mix-ups when working larger time structures.</p
+><p
+>TODO make distinction between abs/rel <em
+  >time scale</em
+  > as above and abs/rel <em
+  >notation</em
+  > as in MIDI</p
+><pre
+><code
+  >type 
+  time         = absoluteTime | relativeTime
+  absoluteTime = sec
+  relativeTime = rat
+  pos          = time
+  dur          = time
+  sec          = float
+</code
+  ></pre
+><p
+>TODO tuples</p
+><p
+>TODO scaling tempo</p
+><p
+>TODO continous tempo scaling</p
+><p
+>TODO quantization</p
+><p
+>Relative time is simply represented as rational numbers, using the conventional note names as reference point. Thus the values <code
+  >1, 1/2, 1/4, 1/4</code
+  > may be read as whole note, half note, quarter note, quarter note.</p
+><p
+>For absolute time we use standardized units:</p
+><pre
+><code
+  >implicit type
+  min  = 60 * sec
+  hour = 60 * min
+  day  = 24 * hour
+  Hz   = 1 / sec
+  kHz  = hz * 10e3
+  MHz  = hz * 10e6
+</code
+  ></pre
+><p
+>TODO</p
 ><h2 id="pitch"
 ><a href="#TOC"
   >Pitch</a
   ></h2
+><p
+>Pitch is readily represented as an absolute frequency value or as a postion in a scale.</p
+><p
+>TODO tuning systems TODO reference frequency</p
+><p
+>TODO</p
+><h2 id="events"
+><a href="#TOC"
+  >Events</a
+  ></h2
+><p
+>Events is the abstract type representing discrete musical actions.</p
+><p
+>TODO</p
+><h2 id="processes"
+><a href="#TOC"
+  >Processes</a
+  ></h2
+><p
+>A musical process (not to be confused with a computational) is the abstract type representing continuous musical actions.</p
+><p
+>TODO</p
 ><h2 id="instrumentation"
 ><a href="#TOC"
   >Instrumentation</a
   ></h2
-><h2 id="sudden-change"
-><a href="#TOC"
-  >Sudden change</a
-  ></h2
-><h2 id="continous-change"
-><a href="#TOC"
-  >Continous change</a
-  ></h2
+><p
+>The concept of instrumentation (or <em
+  >orchestration</em
+  >) may be generalized to represent the distribution of a set of events across a set of <em
+  >performers</em
+  > or <em
+  >ensembles</em
+  >. This concept is useful not only for orchestral music, but also for distribution of events across synthesizers, or even virtual performers such as sub-processes of a generative piece.</p
+><p
+>The atomic unit of instrumentation is the performer, defined as a receiver of musical events. There is no theoretical distinction between a vocal, instrumental or virtual performer, but we provide these synonyms for convenience.</p
+><pre
+><code
+  >type 
+  performer
+  singer      = performer
+  instrument  = performer
+</code
+  ></pre
+><p
+>TODO choir, ensemble</p
+><p
+>TODO model conventional settings?</p
+><p
+>TODO arrangements, reductions</p
+><p
+>TODO</p
 ><h2 id="spacialization"
 ><a href="#TOC"
   >Spacialization</a
   ></h2
-><h2 id="nonlinear-time"
+><p
+>As instrumentation is concerned with distribution of events amongst discrete groups or individuals, we may also consider the distribution of events or processes in a spacial continuum.</p
+><p
+>Spacialization is generally mostly of interest in acousmatic music, as fine control of the spacial parameter is not available in the instrumental or vocal genres. However, if spacialization is treated a continous distribution in an abstract sense, there are possibilities of using &quot;virtual spaces&quot; to control other musical parameters.<sup
+  ><a href="#fn5" class="footnoteRef" id="fnref5"
+    >5</a
+    ></sup
+  > It may also be used in conjunction with instrumentation to model the real-life spacial setup of an ensemble.</p
+><p
+>TODO</p
+><h2 id="nonlinearity"
 ><a href="#TOC"
-  >Nonlinear time</a
+  >Nonlinearity</a
   ></h2
+><p
+>called <code
+  >nonlinear</code
+  > and <code
+  >nonsync</code
+  > TODO</p
 ><h2 id="indeterminate-structures"
 ><a href="#TOC"
   >Indeterminate structures</a
   ></h2
-><h1 id="transcribing-and-performing"
-><a href="#TOC"
-  >Transcribing and performing</a
-  ></h1
-><h2 id="the-sibelius-transcriber"
-><a href="#TOC"
-  >The Sibelius transcriber</a
-  ></h2
-><h2 id="the-lilypond-transcriber"
-><a href="#TOC"
-  >The LilyPond transcriber</a
-  ></h2
-><h2 id="the-musicxml-transcriber"
-><a href="#TOC"
-  >The MusicXML transcriber</a
-  ></h2
-><h2 id="the-midi-transcriber"
-><a href="#TOC"
-  >The MIDI transcriber</a
-  ></h2
-><h2 id="creating-transcribers"
-><a href="#TOC"
-  >Creating transcribers</a
-  ></h2
-><h2 id="creating-performers"
-><a href="#TOC"
-  >Creating performers</a
-  ></h2
+><p
+>TODO</p
 ><h1 id="miscellaneous-topics"
 ><a href="#TOC"
   >Miscellaneous topics</a
@@ -743,22 +832,32 @@ let a = fn x + 2, b = fn x - 2
 ><a href="#TOC"
   >Calling foreign languages</a
   ></h2
+><p
+>TODO</p
 ><h2 id="setting-up-the-environment"
 ><a href="#TOC"
   >Setting up the environment</a
   ></h2
+><p
+>TODO</p
 ><h2 id="replacing-the-syntax"
 ><a href="#TOC"
   >Replacing the syntax</a
   ></h2
+><p
+>TODO</p
 ><h2 id="real-time"
 ><a href="#TOC"
   >Real-time</a
   ></h2
+><p
+>TODO</p
 ><h2 id="networking"
 ><a href="#TOC"
   >Networking</a
   ></h2
+><p
+>TODO</p
 ><h1 id="reference"
 ><a href="#TOC"
   >Reference</a
@@ -767,17 +866,67 @@ let a = fn x + 2, b = fn x - 2
 ><a href="#TOC"
   >Syntax</a
   ></h2
-><p
->Operators are tokens constructed from the following characters:</p
 ><pre
 ><code
-  >! # $ % &amp; \ * + , - . / ; &lt; = &gt; ? @ \ ^ _ ` | ~ '
+  >expr 
+  : '(' inline ')'
+  | '[' inline ']'
+  | '{' inline '}'
+
+  | 'fn' parameter* expr
+  | 'let' binding* expr
+  | 'do' '(' expr+ ')'
+  | 'if' expr expr 'else'? expr
+
+  | atom
+  | natural
+  | float
+  | complex
+  | string
+
+parameter 
+  : atom ':' expr
+binding   
+  : atom '=' expr
+
+inline
+    : apply (operator+ apply)+
+    | apply
+    | empty
+
+apply
+    : expr+
+    | expr
+
+empty
+    :
+
+operator
+  Any of the following characters in any order
+  ! # $ % &amp; \ * + , - . / ; &lt; = &gt; ? @ \ ^ _ ` | ~ '
+
+atom
+  a-z or A-Z followed by any number of a-z, A-Z or 0-9
+
+natural
+  any number of 0-9
+
+float
+  TODO
+
+complex
+  TODO
+
+string
+  TODO
 </code
   ></pre
 ><h2 id="dictionary"
 ><a href="#TOC"
   >Dictionary</a
   ></h2
+><p
+>TODO</p
 ><dl
 ><dt
   >Value</dt
@@ -817,7 +966,7 @@ let a = fn x + 2, b = fn x - 2
    /><ol
   ><li id="fn1"
     ><p
-      >For good introduction to functional programming concepts, see <em
+      >For good thorough introduction to functional programming, study a textbook such as <em
 	><a href="http://mitpress.mit.edu/sicp/"
 	  >Structure and Interpretation of Computer Programs</a
 	  ></em
@@ -826,6 +975,18 @@ let a = fn x + 2, b = fn x - 2
     ><li id="fn2"
     ><p
       >The arrow-like sign not part of the language, but just a conventional way of wrinting what an expression evaluates to <a href="#fnref2" class="footnoteBackLink" title="Jump back to footnote 2">↩</a></p
+      ></li
+    ><li id="fn3"
+    ><p
+      >Here time is taken to mean a measurable unit of time (as in the sentence &quot;one second's time&quot;), not the amount of beats in a musical pulsation. <a href="#fnref3" class="footnoteBackLink" title="Jump back to footnote 3">↩</a></p
+      ></li
+    ><li id="fn4"
+    ><p
+      >As long as the conductor (or the transport system of the studio) behaves properly. <a href="#fnref4" class="footnoteBackLink" title="Jump back to footnote 4">↩</a></p
+      ></li
+    ><li id="fn5"
+    ><p
+      >This would not have to be called spaces, but I find that name intuitive as the time dimension is already occupied <a href="#fnref5" class="footnoteBackLink" title="Jump back to footnote 5">↩</a></p
       ></li
     ></ol
   ></div
