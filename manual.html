@@ -45,12 +45,8 @@
           >Getting started</a
           ><ul
           ><li
-    	><a href="#compiled-distributions"
-    	  >Compiled distributions</a
-    	  ></li
-    	><li
-    	><a href="#source-distributions"
-    	  >Source distributions</a
+    	><a href="#build-and-install"
+    	  >Build and install</a
     	  ></li
     	><li
     	><a href="#using-the-interpreter"
@@ -79,8 +75,8 @@
     	      >Infix expressions</a
     	      ></li
     	    ><li
-    	    ><a href="#function-calls"
-    	      >Function calls</a
+    	    ><a href="#function-application"
+    	      >Function application</a
     	      ></li
     	    ><li
     	    ><a href="#special-forms"
@@ -157,24 +153,76 @@
     	></ul
           ></li
         ><li
-        ><a href="#representating-music"
-          >Representating music</a
+        ><a href="#representing-music"
+          >Representing music</a
           ><ul
           ><li
     	><a href="#time"
     	  >Time</a
+    	  ><ul
+    	  ><li
+    	    ><a href="#time-scale"
+    	      >Time scale</a
+    	      ></li
+    	    ><li
+    	    ><a href="#positions-and-durations"
+    	      >Positions and durations</a
+    	      ></li
+    	    ></ul
     	  ></li
     	><li
     	><a href="#pitch"
     	  >Pitch</a
+    	  ><ul
+    	  ><li
+    	    ><a href="#scales"
+    	      >Scales</a
+    	      ></li
+    	    ><li
+    	    ><a href="#tuning"
+    	      >Tuning</a
+    	      ></li
+    	    ></ul
     	  ></li
     	><li
     	><a href="#events"
     	  >Events</a
+    	  ><ul
+    	  ><li
+    	    ><a href="#notes"
+    	      >Notes</a
+    	      ></li
+    	    ><li
+    	    ><a href="#rests"
+    	      >Rests</a
+    	      ></li
+    	    ><li
+    	    ><a href="#phrasing"
+    	      >Phrasing</a
+    	      ></li
+    	    ><li
+    	    ><a href="#tags"
+    	      >Tags</a
+    	      ></li
+    	    ></ul
     	  ></li
     	><li
     	><a href="#processes"
     	  >Processes</a
+    	  ><ul
+    	  ><li
+    	    ><a href="#dynamics"
+    	      >Dynamics</a
+    	      ></li
+    	    ><li
+    	    ><a href="#glissandi"
+    	      >Glissandi</a
+    	      ></li
+    	    ><li
+    	    ><a href="#tremolo-and-iterations"
+    	      >Tremolo and iterations</a
+    	      ></li
+    	    ></ul
     	  ></li
     	><li
     	><a href="#instrumentation"
@@ -193,6 +241,10 @@
     	  >Indeterminate structures</a
     	  ></li
     	></ul
+          ></li
+        ><li
+        ><a href="#transcription-and-performance"
+          >Transcription and performance</a
           ></li
         ><li
         ><a href="#miscellaneous-topics"
@@ -227,10 +279,6 @@
           ><li
     	><a href="#syntax"
     	  >Syntax</a
-    	  ></li
-    	><li
-    	><a href="#dictionary"
-    	  >Dictionary</a
     	  ></li
     	></ul
           ></li
@@ -271,6 +319,10 @@
 ><a href="#TOC"
   >Getting started</a
   ></h1
+><h2 id="build-and-install"
+><a href="#TOC"
+  >Build and install</a
+  ></h2
 ><p
 >Vitry targets the <a href="http://en.wikipedia.org/wiki/Java_Virtual_Machine"
   >Java Virtual Machine</a
@@ -284,18 +336,6 @@
 >If not, download a suitable implemementation. There are <a href="http://en.wikipedia.org/wiki/List_of_Java_virtual_machines"
   >many alternatives</a
   >.</p
-><h2 id="compiled-distributions"
-><a href="#TOC"
-  >Compiled distributions</a
-  ></h2
-><p
->Compiled distributions may be downloaded from the GitHub site: <a href="http://github.com/hanshoglund/vitry/downloads"
-  >http://github.com/hanshoglund/vitry/downloads</a
-  >. If a version for your operating system is not available, download and compile a source distribution.</p
-><h2 id="source-distributions"
-><a href="#TOC"
-  >Source distributions</a
-  ></h2
 ><p
 >The build requirements are <a href="http://git-scm.com/"
   >Git</a
@@ -368,7 +408,7 @@ $ sudo ant install
   >Values</a
   ></h2
 ><p
->A functional language is mainly concerened with manipulating values. Broadly speaking, values are pieces of data that represent something. In Vitry, values are unique and non-changing. This is also true for compound structures, such as lists.</p
+>A functional language is mainly concerened with manipulating definition of values. Broadly speaking, values are pieces of data that represent something. Vitry uses a strict definition</p
 ><h2 id="expressions"
 ><a href="#TOC"
   >Expressions</a
@@ -389,19 +429,19 @@ sin (pi/2)   =&gt; 1
 </code
   ></pre
 ><p
->The most common forms of expressions are outlined below. Detailed syntax and behaviour will be described in detail later on in this manual.</p
+>The most common forms of expressions are outlined below.</p
 ><h3 id="literals"
 ><a href="#TOC"
   >Literals</a
   ></h3
 ><p
->The simplest form of expression, used to create simple values like numbers and strings. Examples are:</p
+>The simplest form of expression, literals are written representation of simple values such as numbers, strings or atoms. Examples are:</p
 ><pre
 ><code
   >1
 22.5
-foo
-&quot;Philippe&quot;
+phillipe
+&quot;thomas&quot;
 </code
   ></pre
 ><h3 id="infix-expressions"
@@ -419,12 +459,16 @@ foo
 true | false
 </code
   ></pre
-><h3 id="function-calls"
+><h3 id="function-application"
 ><a href="#TOC"
-  >Function calls</a
+  >Function application</a
   ></h3
 ><p
->Consists of a callable expression followed by other expressions.</p
+>Consists of a callable expression followed by another expression.<sup
+  ><a href="#fn3" class="footnoteRef" id="fnref3"
+    >3</a
+    ></sup
+  ></p
 ><pre
 ><code
   >print &quot;hello world&quot;
@@ -650,9 +694,9 @@ sum 1 2 3 4
   ></h2
 ><p
 >TODO</p
-><h1 id="representating-music"
+><h1 id="representing-music"
 ><a href="#TOC"
-  >Representating music</a
+  >Representing music</a
   ></h1
 ><p
 >Vitry provides a large set of types and functions that simplifies the manipulation of musical data. These are defined in the language itself, giving the user of the power to define structures that operate on exactly the same level of abstraction as those provided with the language. Most of this chapter is devoted to descriptions of the standard model, but it shoul be clear that these conventional structures are by no means mandatory. On the contrary, the user is highly encouraged to provide alternate representations and the language is designed to faciliate that.</p
@@ -664,8 +708,8 @@ sum 1 2 3 4
   ></h2
 ><p
 >Perhaps the most general musical property, time turns out difficult to model in a simple yet coherent way. Thus we will provide several different, though related, time models and a simple taxonomy to keep track of them, and their various properties.<sup
-  ><a href="#fn3" class="footnoteRef" id="fnref3"
-    >3</a
+  ><a href="#fn4" class="footnoteRef" id="fnref4"
+    >4</a
     ></sup
   ></p
 ><p
@@ -680,12 +724,20 @@ sum 1 2 3 4
   > that relations between <code
   >time</code
   > values can be taken to hold in all cases.<sup
-  ><a href="#fn4" class="footnoteRef" id="fnref4"
-    >4</a
+  ><a href="#fn5" class="footnoteRef" id="fnref5"
+    >5</a
     ></sup
   > This will be sufficient to represent most conventional music. Nonlinear and nonsynchronous time will be covered in later sections.</p
+><h3 id="time-scale"
+><a href="#TOC"
+  >Time scale</a
+  ></h3
 ><p
 >TODO absolute and relative (time)</p
+><h3 id="positions-and-durations"
+><a href="#TOC"
+  >Positions and durations</a
+  ></h3
 ><p
 >Time values are commonly used to represent <em
   >positions</em
@@ -698,7 +750,7 @@ sum 1 2 3 4
 >TODO make distinction between abs/rel <em
   >time scale</em
   > as above and abs/rel <em
-  >notation</em
+  >durations</em
   > as in MIDI</p
 ><pre
 ><code
@@ -744,8 +796,18 @@ sum 1 2 3 4
   ></h2
 ><p
 >Pitch is readily represented as an absolute frequency value or as a postion in a scale.</p
+><h3 id="scales"
+><a href="#TOC"
+  >Scales</a
+  ></h3
 ><p
->TODO tuning systems TODO reference frequency</p
+>TODO tuning systems</p
+><h3 id="tuning"
+><a href="#TOC"
+  >Tuning</a
+  ></h3
+><p
+>TODO reference frequency</p
 ><p
 >TODO</p
 ><h2 id="events"
@@ -753,7 +815,29 @@ sum 1 2 3 4
   >Events</a
   ></h2
 ><p
->Events is the abstract type representing discrete musical actions.</p
+>Events is the abstract type representing discrete musical actions. TODO</p
+><h3 id="notes"
+><a href="#TOC"
+  >Notes</a
+  ></h3
+><p
+>TODO</p
+><h3 id="rests"
+><a href="#TOC"
+  >Rests</a
+  ></h3
+><p
+>TODO</p
+><h3 id="phrasing"
+><a href="#TOC"
+  >Phrasing</a
+  ></h3
+><p
+>TODO</p
+><h3 id="tags"
+><a href="#TOC"
+  >Tags</a
+  ></h3
 ><p
 >TODO</p
 ><h2 id="processes"
@@ -762,6 +846,24 @@ sum 1 2 3 4
   ></h2
 ><p
 >A musical process (not to be confused with a computational) is the abstract type representing continuous musical actions.</p
+><p
+>TODO</p
+><h3 id="dynamics"
+><a href="#TOC"
+  >Dynamics</a
+  ></h3
+><p
+>TODO</p
+><h3 id="glissandi"
+><a href="#TOC"
+  >Glissandi</a
+  ></h3
+><p
+>TODO</p
+><h3 id="tremolo-and-iterations"
+><a href="#TOC"
+  >Tremolo and iterations</a
+  ></h3
 ><p
 >TODO</p
 ><h2 id="instrumentation"
@@ -802,8 +904,8 @@ sum 1 2 3 4
 >As instrumentation is concerned with distribution of events amongst discrete groups or individuals, we may also consider the distribution of events or processes in a spacial continuum.</p
 ><p
 >Spacialization is generally mostly of interest in acousmatic music, as fine control of the spacial parameter is not available in the instrumental or vocal genres. However, if spacialization is treated a continous distribution in an abstract sense, there are possibilities of using &quot;virtual spaces&quot; to control other musical parameters.<sup
-  ><a href="#fn5" class="footnoteRef" id="fnref5"
-    >5</a
+  ><a href="#fn6" class="footnoteRef" id="fnref6"
+    >6</a
     ></sup
   > It may also be used in conjunction with instrumentation to model the real-life spacial setup of an ensemble.</p
 ><p
@@ -824,6 +926,10 @@ sum 1 2 3 4
   ></h2
 ><p
 >TODO</p
+><h1 id="transcription-and-performance"
+><a href="#TOC"
+  >Transcription and performance</a
+  ></h1
 ><h1 id="miscellaneous-topics"
 ><a href="#TOC"
   >Miscellaneous topics</a
@@ -921,46 +1027,6 @@ string
   TODO
 </code
   ></pre
-><h2 id="dictionary"
-><a href="#TOC"
-  >Dictionary</a
-  ></h2
-><p
->TODO</p
-><dl
-><dt
-  >Value</dt
-  ><dd
-  >a</dd
-  ><dt
-  >Token</dt
-  ><dd
-  >a</dd
-  ><dt
-  >Expression</dt
-  ><dd
-  >a</dd
-  ><dt
-  >Evaluation</dt
-  ><dd
-  >a</dd
-  ><dt
-  >Type</dt
-  ><dd
-  >a</dd
-  ><dt
-  >Function</dt
-  ><dd
-  >a</dd
-  ><dt
-  >Predicate</dt
-  ><dd
-  >a</dd
-  ><dt
-  >Sequence</dt
-  ><dd
-  >a</dd
-  ></dl
 ><div class="footnotes"
 ><hr
    /><ol
@@ -978,15 +1044,19 @@ string
       ></li
     ><li id="fn3"
     ><p
-      >Here time is taken to mean a measurable unit of time (as in the sentence &quot;one second's time&quot;), not the amount of beats in a musical pulsation. <a href="#fnref3" class="footnoteBackLink" title="Jump back to footnote 3">↩</a></p
+      >Haskell users may like to know that application works exactly like in Haskell, i.e. the leftmost function is applied to the next, which creates a curried function that may be applied to further arguments. <a href="#fnref3" class="footnoteBackLink" title="Jump back to footnote 3">↩</a></p
       ></li
     ><li id="fn4"
     ><p
-      >As long as the conductor (or the transport system of the studio) behaves properly. <a href="#fnref4" class="footnoteBackLink" title="Jump back to footnote 4">↩</a></p
+      >Here time is taken to mean a measurable unit of time (as in the sentence &quot;one second's time&quot;), not the amount of beats in a musical pulsation. <a href="#fnref4" class="footnoteBackLink" title="Jump back to footnote 4">↩</a></p
       ></li
     ><li id="fn5"
     ><p
-      >This would not have to be called spaces, but I find that name intuitive as the time dimension is already occupied <a href="#fnref5" class="footnoteBackLink" title="Jump back to footnote 5">↩</a></p
+      >As long as the conductor (or the transport system of the studio) behaves properly. <a href="#fnref5" class="footnoteBackLink" title="Jump back to footnote 5">↩</a></p
+      ></li
+    ><li id="fn6"
+    ><p
+      >This would not have to be called spaces, but I find that name intuitive as the time dimension is already occupied <a href="#fnref6" class="footnoteBackLink" title="Jump back to footnote 6">↩</a></p
       ></li
     ></ol
   ></div

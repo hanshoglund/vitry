@@ -33,6 +33,8 @@ Vitry may be used for composition, arranging, transcription or analysis. It is b
 
 # Getting started
 
+## Build and install
+
 Vitry targets the [Java Virtual Machine](http://en.wikipedia.org/wiki/Java_Virtual_Machine), and may be used with almost any operating system. The only dependency is the Java runtime environment. To check if this is installed, open a shell and type:
 
 ~~~~~~~~~~~~~~~~~~~~
@@ -41,12 +43,6 @@ $ java -version
 
 If not, download a suitable implemementation. There are [many alternatives](http://en.wikipedia.org/wiki/List_of_Java_virtual_machines).
 
-## Compiled distributions
-                                                                
-Compiled distributions may be downloaded from the GitHub site:  [http://github.com/hanshoglund/vitry/downloads](http://github.com/hanshoglund/vitry/downloads). If a version for your operating system is not available, download and compile a source distribution.
-
-## Source distributions                                                                                  
-                                              
 The build requirements are [Git](http://git-scm.com/) and [Apache Ant](http://ant.apache.org/). You may check if these are installed as follows:
 
 ~~~~~~~~~~~~~~~~~~~~
@@ -105,7 +101,7 @@ Vitry is similiar to other functional programming languages including Lisp and H
 
 ## Values
 
-A functional language is mainly concerened with manipulating values. Broadly speaking, values are pieces of data that represent something. In Vitry, values are unique and non-changing. This is also true for compound structures, such as lists.
+A functional language is mainly concerened with manipulating definition of values. Broadly speaking, values are pieces of data that represent something. Vitry uses a strict definition
        
 ## Expressions
 
@@ -119,17 +115,17 @@ not true     => false
 sin (pi/2)   => 1
 ~~~~~~~~~~~~~~~~~~~~
 
-The most common forms of expressions are outlined below. Detailed syntax and behaviour will be described in detail later on in this manual.
+The most common forms of expressions are outlined below.
 
 ### Literals
 
-The simplest form of expression, used to create simple values like numbers and strings. Examples are:
+The simplest form of expression, literals are written representation of simple values such as numbers, strings or atoms. Examples are:
 
 ~~~~~~~~~~~~~~~~~~~~
 1
 22.5
-foo
-"Philippe"
+phillipe
+"thomas"
 ~~~~~~~~~~~~~~~~~~~~
  
   
@@ -146,17 +142,19 @@ true | false
 ~~~~~~~~~~~~~~~~~~~~
 
 
-### Function calls
+### Function application
 
-Consists of a callable expression followed by other expressions.
+Consists of a callable expression followed by another expression.^[Haskell users may like to know that application works exactly like in Haskell, i.e. the leftmost function is applied to the next, which creates a curried function that may be applied to further arguments.]
 
 ~~~~~~~~~~~~~~~~~~~~
 print "hello world"
 not true
 sum 1 2 3 4
 ~~~~~~~~~~~~~~~~~~~~
-                                              
+                                            
 ### Special forms
+              
+
 
 The so-called special forms are identified by the following keywords:
 
@@ -303,7 +301,7 @@ TODO
 
 
 
-# Representating music
+# Representing music
 
 Vitry provides a large set of types and functions that simplifies the manipulation of musical data. These are  defined in the language itself, giving the user of the power to define structures that operate on exactly the same level of abstraction as those provided with the language. Most of this chapter is devoted to descriptions of the standard model, but it shoul be clear that these conventional structures are by no means mandatory. On the contrary, the user is highly encouraged to provide alternate representations and the language is designed to faciliate that.
 
@@ -315,13 +313,17 @@ TODO music vs notation
 
 Perhaps the most general musical property, time turns out difficult to model in a simple yet coherent way. Thus we will provide several different, though related, time models and a simple taxonomy to keep track of them, and their various properties.^[Here time is taken to mean a measurable unit of time (as in the sentence "one second's time"), not the amount of beats in a musical pulsation.]
 
-We use a type `time` as the root of our hierarchy of time models. For simplicity, we will limit this type to linear and synchronous models, and use completely separate types when this is not the case. By *linear* we mean that `time` progresses consistently without repetition or jumps, and by *synchronous* that relations between `time` values can be taken to hold in all cases.^[As long as the conductor (or the transport system of the studio) behaves properly.] This will be sufficient to represent most conventional music. Nonlinear and nonsynchronous time will be covered in later sections.
+We use a type `time` as the root of our hierarchy of time models. For simplicity, we will limit this type to linear and synchronous models, and use completely separate types when this is not the case. By *linear* we mean that `time` progresses consistently without repetition or jumps, and by *synchronous* that relations between `time` values can be taken to hold in all cases.^[As long as the conductor (or the transport system of the studio) behaves properly.] This will be sufficient to represent most conventional music. Nonlinear and nonsynchronous time will be covered in later sections. 
+
+### Time scale
 
 TODO absolute and relative (time)
 
+### Positions and durations
+
 Time values are commonly used to represent *positions* in a bar-beat grid, as well as *durations*, meaning the difference between the onset and offset position of a certain event. There is no real need to make this distinction on the type level, but we will introduce two handy synonyms for `time` that can be used to prevent mix-ups when working larger time structures.
 
-TODO make distinction between abs/rel *time scale* as above and abs/rel *notation* as in MIDI 
+TODO make distinction between abs/rel *time scale* as above and abs/rel *durations* as in MIDI 
 
 ~~~~~~~~~~~~~~~~~~~~
 type 
@@ -364,7 +366,11 @@ TODO
 
 Pitch is readily represented as an absolute frequency value or as a postion in a scale.
 
+### Scales
+
 TODO tuning systems
+
+### Tuning
 TODO reference frequency
 
 TODO
@@ -373,7 +379,18 @@ TODO
 ## Events
 
 Events is the abstract type representing discrete musical actions.
+TODO
 
+### Notes
+TODO     
+
+### Rests
+TODO
+
+### Phrasing
+TODO
+
+### Tags
 TODO
 
 
@@ -382,6 +399,17 @@ TODO
 A musical process (not to be confused with a computational) is the abstract type representing continuous musical actions. 
 
 TODO
+
+### Dynamics
+TODO        
+
+### Glissandi
+TODO
+
+### Tremolo and iterations
+TODO
+
+
 
 
 ## Instrumentation
@@ -425,6 +453,10 @@ TODO
 ## Indeterminate structures
 
 TODO
+
+
+# Transcription and performance
+
 
 
 
@@ -516,28 +548,5 @@ complex
 string
   TODO
 ~~~~~~~~~~~~~~~~~~~~
-
-
-
-## Dictionary
-
-TODO
-
-Value
-:   a
-Token
-:   a
-Expression
-:   a
-Evaluation
-:   a
-Type
-:   a
-Function
-:   a
-Predicate
-:   a
-Sequence
-:   a
 
 
