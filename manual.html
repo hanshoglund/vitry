@@ -39,18 +39,28 @@
       ><li
         ><a href="#introduction"
           >Introduction</a
-          ></li
-        ><li
-        ><a href="#getting-started"
-          >Getting started</a
           ><ul
           ><li
-    	><a href="#build-and-install"
-    	  >Build and install</a
+    	><a href="#about-this-manual"
+    	  >About this manual</a
+    	  ></li
+    	></ul
+          ></li
+        ><li
+        ><a href="#first-steps"
+          >First steps</a
+          ><ul
+          ><li
+    	><a href="#building-and-installing"
+    	  >Building and installing</a
     	  ></li
     	><li
-    	><a href="#using-the-interpreter"
-    	  >Using the interpreter</a
+    	><a href="#the-interpreter"
+    	  >The interpreter</a
+    	  ></li
+    	><li
+    	><a href="#scripts-and-compilation"
+    	  >Scripts and compilation</a
     	  ></li
     	></ul
           ></li
@@ -59,10 +69,6 @@
           >The language</a
           ><ul
           ><li
-    	><a href="#values"
-    	  >Values</a
-    	  ></li
-    	><li
     	><a href="#expressions"
     	  >Expressions</a
     	  ><ul
@@ -71,22 +77,18 @@
     	      >Literals</a
     	      ></li
     	    ><li
-    	    ><a href="#infix-expressions"
-    	      >Infix expressions</a
-    	      ></li
-    	    ><li
     	    ><a href="#function-application"
     	      >Function application</a
+    	      ></li
+    	    ><li
+    	    ><a href="#infix-expressions"
+    	      >Infix expressions</a
     	      ></li
     	    ><li
     	    ><a href="#special-forms"
     	      >Special forms</a
     	      ></li
     	    ></ul
-    	  ></li
-    	><li
-    	><a href="#delimiters"
-    	  >Delimiters</a
     	  ></li
     	><li
     	><a href="#types"
@@ -105,8 +107,8 @@
     	      >Strings</a
     	      ></li
     	    ><li
-    	    ><a href="#atoms"
-    	      >Atoms</a
+    	    ><a href="#symbols"
+    	      >Symbols</a
     	      ></li
     	    ><li
     	    ><a href="#or-types"
@@ -119,8 +121,18 @@
     	    ></ul
     	  ></li
     	><li
-    	><a href="#bindings-and-scopes"
-    	  >Bindings and scopes</a
+    	><a href="#delimiters"
+    	  >Delimiters</a
+    	  ><ul
+    	  ><li
+    	    ><a href="#indentation"
+    	      >Indentation</a
+    	      ></li
+    	    ></ul
+    	  ></li
+    	><li
+    	><a href="#bindings-and-scope"
+    	  >Bindings and scope</a
     	  ></li
     	><li
     	><a href="#functions"
@@ -153,8 +165,8 @@
     	></ul
           ></li
         ><li
-        ><a href="#representing-music"
-          >Representing music</a
+        ><a href="#musical-representation"
+          >Musical representation</a
           ><ul
           ><li
     	><a href="#time"
@@ -300,7 +312,7 @@
   >Introduction</a
   ></h1
 ><p
->Vitry is a functional programming language and an environment for representation and manipulation of music. The language has infix syntax and simple, expressive type system. The represented music can be output in a variety of formats, transcribed to musical notation or used as control data for sound synthesis.</p
+>Vitry is a functional programming language and an environment for representation and manipulation of music. The language has infix syntax and an expressive type system based on predicate matching. The represented music can be output in a variety of formats, transcribed to musical notation or used as control data for sound synthesis.</p
 ><p
 >The representation of music is abstract in the sense that it is not concerned with actual sound, but the formal structure of music. The basic idea is to give the user the tools needed to impliment any kind of <em
   >musical model</em
@@ -315,36 +327,32 @@
   ><li
   >SuperCollider</li
   ></ul
-><h1 id="getting-started"
+><h2 id="about-this-manual"
 ><a href="#TOC"
-  >Getting started</a
+  >About this manual</a
+  ></h2
+><p
+>This manual is unfortunately very brief, and requires some knowledge of programming and music theory to be fully comprehended. Some more accesible tutorials should be added in the future.</p
+><h1 id="first-steps"
+><a href="#TOC"
+  >First steps</a
   ></h1
-><h2 id="build-and-install"
+><h2 id="building-and-installing"
 ><a href="#TOC"
-  >Build and install</a
+  >Building and installing</a
   ></h2
 ><p
 >Vitry targets the <a href="http://en.wikipedia.org/wiki/Java_Virtual_Machine"
   >Java Virtual Machine</a
-  >, and may be used with almost any operating system. The only dependency is the Java runtime environment. To check if this is installed, open a shell and type:</p
-><pre
-><code
-  >$ java -version
-</code
-  ></pre
-><p
->If not, download a suitable implemementation. There are <a href="http://en.wikipedia.org/wiki/List_of_Java_virtual_machines"
-  >many alternatives</a
-  >.</p
-><p
->The build requirements are <a href="http://git-scm.com/"
+  >, and may be used with almost any operating system. The only dependency is the Java runtime environment. The build requirements are <a href="http://git-scm.com/"
   >Git</a
   > and <a href="http://ant.apache.org/"
   >Apache Ant</a
   >. You may check if these are installed as follows:</p
 ><pre
 ><code
-  >$ git
+  >$ java
+$ git
 $ ant
 </code
   ></pre
@@ -361,62 +369,72 @@ $ sudo ant install
 </code
   ></pre
 ><p
->You may append a directory to the install command. The default is <code
-  >/usr/bin</code
-  >.</p
-><h2 id="using-the-interpreter"
-><a href="#TOC"
-  >Using the interpreter</a
-  ></h2
-><p
->The interpreter is typically the simplest way to interact with Vitry. To run it, simply type:</p
+>Or if you are on Windows:</p
 ><pre
 ><code
-  >$ vitry
+  >$ git clone git@github.com:hanshoglund/vitry.git
+$ cd vitry
+$ ant
+$ ant install
 </code
   ></pre
 ><p
->Vitry will print some setup information and enter a read-eval-print mode. In this mode, you may enter an expression followed by enter, and it will be evaluated and printed to you. Any expression may be entered. However, module declarations are not accepted.</p
+>You may append a directory to the install command.</p
+><h2 id="the-interpreter"
+><a href="#TOC"
+  >The interpreter</a
+  ></h2
+><p
+>The interpreter is typically the simplest way to interact with Vitry. To run it, simply type <code
+  >vitry</code
+  >.</p
 ><p
 >TODO</p
 ><p
->The interpreter also accepts special commands commenced by a colon. These are not part of the Vitry language, but exist for ease of use in the interpreter. To see a list of available commands, use <code
-  >:h</code
-  > or <code
-  >:help</code
-  >.</p
+>The interpreter also accepts special commands commenced by a colon. These are not part of the Vitry language, but exist for ease of use in the interpreter.</p
+><h2 id="scripts-and-compilation"
+><a href="#TOC"
+  >Scripts and compilation</a
+  ></h2
+><p
+>While the interpreter provides a simple way to experiment and test out code, larger projects will require writing code in files. Vitry accepts text files or precompiled class files for execution. The only difference between the two is that class files may execute somewhat faster.</p
+><p
+>Vitry code is written in standard text files. Only the UTF-8 encoding is accepted. File names typically have the <code
+  >.vitry</code
+  > suffix, allthough this is not required. There is no difference between the kind of expressions allowed in the interpreter and in file source code except that the interpreter commands are not allowed in files. Vitry files may have a shebang line, allowing them to be executed in standard Unix shells.</p
+><p
+>In a large Vitry project, most source code files will be used to define modules and implicits. To make an executable program a module containin a main function is required.</p
 ><pre
 ><code
-  >  : help h        Prints help information.
-  : quit q        Leaves Vitry.
+  >in myApp
+  main = do
+    prompt &quot;Please enter your name:&quot;
+    post + (&quot;Hello &quot; ++ _)
 </code
   ></pre
 ><p
->TODO expand</p
+>To excute a script, simply use:</p
+><pre
+><code
+  >$ vitry hello.vitry
+</code
+  ></pre
 ><h1 id="the-language"
 ><a href="#TOC"
   >The language</a
   ></h1
 ><p
->Vitry is similiar to other functional programming languages including Lisp and Haskell. This chapter will give a brief overview of functional programming but focuses on the concepts unique to Vitry.<sup
-  ><a href="#fn1" class="footnoteRef" id="fnref1"
-    >1</a
-    ></sup
-  ></p
-><h2 id="values"
-><a href="#TOC"
-  >Values</a
-  ></h2
+>Vitry is a functional programming language. Well known languages of this type include Lisp, ML and Haskell. Like these languages, Vitry is centered around functions, values and expressions. Imperative operations are possible but not required except for basic input and output tasks.</p
 ><p
->A functional language is mainly concerened with manipulating definition of values. Broadly speaking, values are pieces of data that represent something. Vitry uses a strict definition</p
+>The lexical conventions are very simple. There kinds of tokens are spaces, line breaks, keywords, operators and delimiters as well as literals for symbols, strings and numbers. Indentation levels are rewritten as delimiters before interpretation, allowing nested expressions to be written without a large amount of parentheses. Thus indentation may be ommited altogether in generated code. For details on the lexical sytax, see the final chapter of this manual.</p
 ><h2 id="expressions"
 ><a href="#TOC"
   >Expressions</a
   ></h2
 ><p
->Expressions are series of tokens each of which may produce a value. Expressions may be nested. Below are some examples of expressions along with their result.<sup
-  ><a href="#fn2" class="footnoteRef" id="fnref2"
-    >2</a
+>Functional languages are mainly concerened with the expression of values. Broadly speaking, values are pieces of data that represent something. Expressions are series of lexical tokens, each of which produces a value. Below are some simple expressions along with their result.<sup
+  ><a href="#fn1" class="footnoteRef" id="fnref1"
+    >1</a
     ></sup
   ></p
 ><pre
@@ -429,7 +447,7 @@ sin (pi/2)   =&gt; 1
 </code
   ></pre
 ><p
->The most common forms of expressions are outlined below.</p
+>There are three basic forms of expressions, outlined below. Along with the special forms and delimiters, these make up the syntax of the Vitry language. The full syntax is given in the final chapter as well.</p
 ><h3 id="literals"
 ><a href="#TOC"
   >Literals</a
@@ -444,29 +462,14 @@ phillipe
 &quot;thomas&quot;
 </code
   ></pre
-><h3 id="infix-expressions"
-><a href="#TOC"
-  >Infix expressions</a
-  ></h3
-><p
->Consists of other expressions, along with operators. A familiar form is the arithmetic expressions. Examples are:</p
-><pre
-><code
-  >1 + 2
-22 / 11
-23 % 11
-1, 2, 3, 4
-true | false
-</code
-  ></pre
 ><h3 id="function-application"
 ><a href="#TOC"
   >Function application</a
   ></h3
 ><p
->Consists of a callable expression followed by another expression.<sup
-  ><a href="#fn3" class="footnoteRef" id="fnref3"
-    >3</a
+>Consists of an expression followed by one or more other expressions. The first expression is assumed to be a function, while the others are assumed to be its arguments.<sup
+  ><a href="#fn2" class="footnoteRef" id="fnref2"
+    >2</a
     ></sup
   ></p
 ><pre
@@ -476,53 +479,66 @@ not true
 sum 1 2 3 4
 </code
   ></pre
+><h3 id="infix-expressions"
+><a href="#TOC"
+  >Infix expressions</a
+  ></h3
+><p
+>Consists of other expressions, separated by operators. A familiar form is the arithmetic expressions. Examples are:</p
+><pre
+><code
+  >1 + 2
+22 / 11
+23 % 11
+1, 2, 3, 4
+true | false
+</code
+  ></pre
 ><h3 id="special-forms"
 ><a href="#TOC"
   >Special forms</a
   ></h3
 ><p
->The so-called special forms are identified by the following keywords:</p
+>Special forms are identified special keywords, which are reserved for a particular use in the language:</p
 ><ul
 ><li
   ><code
     >let</code
     > and <code
     >where</code
-    > expressions used for binding variables.</li
+    > for binding variables.</li
   ><li
   ><code
     >fn</code
-    > expressions, to define functions.</li
+    > for function definitions.</li
   ><li
   ><code
     >if</code
-    >, and <code
+    > and <code
     >match</code
-    > expressions used for conditional evaluations.</li
+    > for conditional evaluation.</li
   ><li
   ><code
     >do</code
-    > expressions, used to carry out side-effects like input and output.</li
+    > for carrying out side-effects like input and output.</li
   ><li
   ><code
-    >module</code
+    >in</code
     > and <code
-    >implicit</code
-    > declarations.</li
+    >imply</code
+    > for module declarations</li
+  ><li
+  ><code
+    >type</code
+    > for type expressions.</li
   ></ul
-><h2 id="delimiters"
-><a href="#TOC"
-  >Delimiters</a
-  ></h2
 ><p
->Expressions may be nested using the following characters as delimiters:</p
+>The following operators are reserved for definitions, type restrictions and quotation respectively:</p
 ><pre
 ><code
-  >() [] {}
+  >= : `
 </code
   ></pre
-><p
->TODO</p
 ><h2 id="types"
 ><a href="#TOC"
   >Types</a
@@ -530,7 +546,11 @@ sum 1 2 3 4
 ><p
 >Types are used to group and reason about values. A type may be thought of as a common property of some values. Any value may be tested to see if it conforms to this property, if it does it is said to have the given type.</p
 ><p
->The type system of Vitry is dynamic in the sense that types are evaluated at runtime, and strong in the sense that arguments to functions are checked by default.</p
+>The type system of Vitry is dynamic in the sense that types are evaluated at runtime, and strong in the sense that arguments to functions are required to have types. In contrast to most languages, Vitry treats types as values as well. The type of types is a special value called <code
+  >type</code
+  >. Its type is called <code
+  >type_</code
+  > etc.</p
 ><h3 id="booleans"
 ><a href="#TOC"
   >Booleans</a
@@ -620,12 +640,26 @@ sum 1 2 3 4
 &quot;I hate music&quot;
 </code
   ></pre
-><h3 id="atoms"
+><h3 id="symbols"
 ><a href="#TOC"
-  >Atoms</a
+  >Symbols</a
   ></h3
 ><p
->TODO</p
+>Symbols are representations of unique values, such as <code
+  >true</code
+  > or <code
+  >false</code
+  >.</p
+><p
+>TODO binding usage</p
+><p
+>All the types described in this manual are in fact type values bound to symbols such as <code
+  >bool</code
+  >, <code
+  >int</code
+  >, <code
+  >nat</code
+  > etc.</p
 ><h3 id="or-types"
 ><a href="#TOC"
   >Or types</a
@@ -646,18 +680,163 @@ sum 1 2 3 4
 >Intersection types capture the notion of <em
   >composition</em
   > in object-oriented languages.</p
-><h2 id="bindings-and-scopes"
+><h2 id="delimiters"
 ><a href="#TOC"
-  >Bindings and scopes</a
+  >Delimiters</a
   ></h2
 ><p
+>Delimiters consist of the characters <code
+  >( ) [ ] { }</code
+  >, and may be used to group expressions. Delimiters and must be written to balance. Thus the following expressions are all valid.</p
+><pre
+><code
+  >(1)
+(1, 2)
+[(1 + 2)]
+{(1 + 2) * 3}
+</code
+  ></pre
+><p
+>However, the following expression is not:</p
+><pre
+><code
+  >([1)]
+</code
+  ></pre
+><p
+>Delimiters are commonly used to indicate precedence:</p
+><pre
+><code
+  >2 * 3 + 4   =&gt; 10
+2 * (3 + 4) =&gt; 14
+</code
+  ></pre
+><p
+>Delimiters may also be bound to functions. By default, standard parentheses <code
+  >( )</code
+  > do nothing, while brackets <code
+  >[ ]</code
+  > and braces <code
+  >{ }</code
+  > are bound to the functions <code
+  >list</code
+  > and <code
+  >set</code
+  > respectively. Thus, these delimiters may be thought of as literals for lists and sets, a fact which is acknowledged by their written representations.</p
+><pre
+><code
+  >[1, 2, 3] : list
+  =&gt; true
+
+{1, 2, 3} : set
+  =&gt; true
+
+[0 + 1, 1 + 1, 1 + 2]
+  =&gt; [1, 2, 3]
+</code
+  ></pre
+><p
+>TODO We need non-evaluating arguments to get expressions such as [(1, 2, 3)] to differ from [1, 2, 3].</p
+><h3 id="indentation"
+><a href="#TOC"
+  >Indentation</a
+  ></h3
+><p
+>Vitry use indentation as a way of expressing nested expressions without actually having to write out all the delimiters. This is achieved by a process called indentation rewriting, which is performed on all code before interpretation.</p
+><p
 >TODO</p
+><pre
+><code
+  >john paul
+george ringo
+  =&gt;
+(john paul)
+(george ringo)
+</code
+  ></pre
+><pre
+><code
+  >john paul
+  george ringo
+  =&gt;
+(john paul
+  (george ringo))
+</code
+  ></pre
+><pre
+><code
+  >john 
+  paul
+    george ringo
+  =&gt;
+(john 
+  (paul
+    (george ringo)))
+</code
+  ></pre
+><pre
+><code
+  >john 
+  paul
+  george
+    ringo
+  =&gt;
+(john 
+  (paul)
+  (george
+    (ringo)))
+</code
+  ></pre
+><h2 id="bindings-and-scope"
+><a href="#TOC"
+  >Bindings and scope</a
+  ></h2
+><p
+>Local bindings may be used with the <code
+  >let</code
+  > or <code
+  >where</code
+  > forms. They are identical except that the let form expects the definition before the scoped expression and where the reverse. Bound expression evaluates to the value of the scoped expression with the given values bound in.</p
+><pre
+><code
+  >let atom = expr atom = expr ... expr
+
+expr where atom = expr atom = expr ...
+</code
+  ></pre
+><p
+>Example :</p
+><pre
+><code
+  >let foo = 1
+    bar = 2   
+  foo + bar
+=&gt; 3
+
+foo + bar where
+  foo = 1
+  bar = 2   
+=&gt; 3
+</code
+  ></pre
+><p
+>Bindings are resolved by lexical scoping, thus inner bindings always override outer:</p
+><pre
+><code
+  >let foo = 1
+  let foo = 2
+    foo
+=&gt; 2
+</code
+  ></pre
 ><h2 id="functions"
 ><a href="#TOC"
   >Functions</a
   ></h2
 ><p
 >TODO</p
+><p
+>At the semantic level, Vitry makes no distinction between functions, delimiters and operators.</p
 ><h2 id="loops-and-recursion"
 ><a href="#TOC"
   >Loops and recursion</a
@@ -674,6 +853,12 @@ sum 1 2 3 4
 ><a href="#TOC"
   >Predicates and matching</a
   ></h2
+><p
+>A <em
+  >predicate</em
+  > is a function on the form <code
+  >? -&gt; bool</code
+  >.</p
 ><p
 >TODO</p
 ><h2 id="side-effects"
@@ -694,9 +879,9 @@ sum 1 2 3 4
   ></h2
 ><p
 >TODO</p
-><h1 id="representing-music"
+><h1 id="musical-representation"
 ><a href="#TOC"
-  >Representing music</a
+  >Musical representation</a
   ></h1
 ><p
 >Vitry provides a large set of types and functions that simplifies the manipulation of musical data. These are defined in the language itself, giving the user of the power to define structures that operate on exactly the same level of abstraction as those provided with the language. Most of this chapter is devoted to descriptions of the standard model, but it shoul be clear that these conventional structures are by no means mandatory. On the contrary, the user is highly encouraged to provide alternate representations and the language is designed to faciliate that.</p
@@ -708,8 +893,8 @@ sum 1 2 3 4
   ></h2
 ><p
 >Perhaps the most general musical property, time turns out difficult to model in a simple yet coherent way. Thus we will provide several different, though related, time models and a simple taxonomy to keep track of them, and their various properties.<sup
-  ><a href="#fn4" class="footnoteRef" id="fnref4"
-    >4</a
+  ><a href="#fn3" class="footnoteRef" id="fnref3"
+    >3</a
     ></sup
   ></p
 ><p
@@ -724,8 +909,8 @@ sum 1 2 3 4
   > that relations between <code
   >time</code
   > values can be taken to hold in all cases.<sup
-  ><a href="#fn5" class="footnoteRef" id="fnref5"
-    >5</a
+  ><a href="#fn4" class="footnoteRef" id="fnref4"
+    >4</a
     ></sup
   > This will be sufficient to represent most conventional music. Nonlinear and nonsynchronous time will be covered in later sections.</p
 ><h3 id="time-scale"
@@ -904,8 +1089,8 @@ sum 1 2 3 4
 >As instrumentation is concerned with distribution of events amongst discrete groups or individuals, we may also consider the distribution of events or processes in a spacial continuum.</p
 ><p
 >Spacialization is generally mostly of interest in acousmatic music, as fine control of the spacial parameter is not available in the instrumental or vocal genres. However, if spacialization is treated a continous distribution in an abstract sense, there are possibilities of using &quot;virtual spaces&quot; to control other musical parameters.<sup
-  ><a href="#fn6" class="footnoteRef" id="fnref6"
-    >6</a
+  ><a href="#fn5" class="footnoteRef" id="fnref5"
+    >5</a
     ></sup
   > It may also be used in conjunction with instrumentation to model the real-life spacial setup of an ensemble.</p
 ><p
@@ -1032,31 +1217,23 @@ string
    /><ol
   ><li id="fn1"
     ><p
-      >For good thorough introduction to functional programming, study a textbook such as <em
-	><a href="http://mitpress.mit.edu/sicp/"
-	  >Structure and Interpretation of Computer Programs</a
-	  ></em
-	> by Abelson and Sussman <a href="#fnref1" class="footnoteBackLink" title="Jump back to footnote 1">↩</a></p
+      >The arrow-like sign not part of the language, but just a conventional way of wrinting what an expression evaluates to <a href="#fnref1" class="footnoteBackLink" title="Jump back to footnote 1">↩</a></p
       ></li
     ><li id="fn2"
     ><p
-      >The arrow-like sign not part of the language, but just a conventional way of wrinting what an expression evaluates to <a href="#fnref2" class="footnoteBackLink" title="Jump back to footnote 2">↩</a></p
+      >As in Haskell, functions may always partially applied. Thus function application may be seen as a left-associative binary operation. <a href="#fnref2" class="footnoteBackLink" title="Jump back to footnote 2">↩</a></p
       ></li
     ><li id="fn3"
     ><p
-      >Haskell users may like to know that application works exactly like in Haskell, i.e. the leftmost function is applied to the next, which creates a curried function that may be applied to further arguments. <a href="#fnref3" class="footnoteBackLink" title="Jump back to footnote 3">↩</a></p
+      >Here time is taken to mean a measurable unit of time (as in the sentence &quot;one second's time&quot;), not the amount of beats in a musical pulsation. <a href="#fnref3" class="footnoteBackLink" title="Jump back to footnote 3">↩</a></p
       ></li
     ><li id="fn4"
     ><p
-      >Here time is taken to mean a measurable unit of time (as in the sentence &quot;one second's time&quot;), not the amount of beats in a musical pulsation. <a href="#fnref4" class="footnoteBackLink" title="Jump back to footnote 4">↩</a></p
+      >As long as the conductor (or the transport system of the studio) behaves properly. <a href="#fnref4" class="footnoteBackLink" title="Jump back to footnote 4">↩</a></p
       ></li
     ><li id="fn5"
     ><p
-      >As long as the conductor (or the transport system of the studio) behaves properly. <a href="#fnref5" class="footnoteBackLink" title="Jump back to footnote 5">↩</a></p
-      ></li
-    ><li id="fn6"
-    ><p
-      >This would not have to be called spaces, but I find that name intuitive as the time dimension is already occupied <a href="#fnref6" class="footnoteBackLink" title="Jump back to footnote 6">↩</a></p
+      >This would not have to be called spaces, but I find that name intuitive as the time dimension is already occupied <a href="#fnref5" class="footnoteBackLink" title="Jump back to footnote 5">↩</a></p
       ></li
     ></ol
   ></div

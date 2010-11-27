@@ -9,9 +9,8 @@
 
 
 
-
 # Introduction
-Vitry is a functional programming language and an environment for representation and manipulation of music. The language has infix syntax and simple, expressive type system. The represented music can be output in a variety of formats, transcribed to musical notation or used as control data for sound synthesis.
+Vitry is a functional programming language and an environment for representation and manipulation of music. The language has infix syntax and an expressive type system based on predicate matching. The represented music can be output in a variety of formats, transcribed to musical notation or used as control data for sound synthesis.
 
 The representation of music is abstract in the sense that it is not concerned with actual sound, but the formal structure of music.  The basic idea is to give the user the tools needed to impliment any kind of *musical model*, while also providing implementations of standard cases.
 
@@ -20,167 +19,145 @@ Vitry may be used for composition, arranging, transcription or analysis. It is b
 - Lilypond
 - Sibelius
 - SuperCollider
+                   
+## About this manual
+
+This manual is unfortunately very brief, and requires some knowledge of programming and music theory to be fully comprehended. Some more accesible tutorials should be added in the future.
 
 
 
 
 
+# First steps
+
+## Building and installing
 
 
-
-
-
-
-# Getting started
-
-## Build and install
-
-Vitry targets the [Java Virtual Machine](http://en.wikipedia.org/wiki/Java_Virtual_Machine), and may be used with almost any operating system. The only dependency is the Java runtime environment. To check if this is installed, open a shell and type:
-
-~~~~~~~~~~~~~~~~~~~~
-$ java -version
-~~~~~~~~~~~~~~~~~~~~
-
-If not, download a suitable implemementation. There are [many alternatives](http://en.wikipedia.org/wiki/List_of_Java_virtual_machines).
-
-The build requirements are [Git](http://git-scm.com/) and [Apache Ant](http://ant.apache.org/). You may check if these are installed as follows:
-
-~~~~~~~~~~~~~~~~~~~~
-$ git
-$ ant
-~~~~~~~~~~~~~~~~~~~~
+Vitry targets the [Java Virtual Machine](http://en.wikipedia.org/wiki/Java_Virtual_Machine), and may be used with almost any operating system. The only dependency is the Java runtime environment. The build requirements are [Git](http://git-scm.com/) and [Apache Ant](http://ant.apache.org/). You may check if these are installed as follows:
+                                 
+    $ java
+    $ git
+    $ ant
 
 If not, download and install from the sites above or through your package management system.
 
 As soon as the build requirements are in place, do:
 
-~~~~~~~~~~~~~~~~~~~~
-$ git clone git@github.com:hanshoglund/vitry.git
-$ cd vitry
-$ ant
-$ sudo ant install
-~~~~~~~~~~~~~~~~~~~~
+    $ git clone git@github.com:hanshoglund/vitry.git
+    $ cd vitry
+    $ ant
+    $ sudo ant install
+                      
+Or if you are on Windows:
 
-You may append a directory to the install command. The default is `/usr/bin`.
+    $ git clone git@github.com:hanshoglund/vitry.git
+    $ cd vitry
+    $ ant
+    $ ant install
+
+You may append a directory to the install command.
 
          
-## Using the interpreter
+## The interpreter
 
-The interpreter is typically the simplest way to interact with Vitry. To run it, simply type:
-
-~~~~~~~~~~~~~~~~~~~~
-$ vitry
-~~~~~~~~~~~~~~~~~~~~
-
-Vitry will print some setup information and enter a read-eval-print mode. In this mode, you may enter an expression followed by enter, and it will be evaluated and printed to you. Any expression may be entered. However, module declarations are not accepted.
+The interpreter is typically the simplest way to interact with Vitry. To run it, simply type `vitry`.
 
 TODO
 
-The interpreter also accepts special commands commenced by a colon. These are not part of the Vitry language, but exist for ease of use in the interpreter. To see a list of available commands, use `:h` or `:help`.
-
-~~~~~~~~~~~~~~~~~~~~
-  : help h        Prints help information.
-  : quit q        Leaves Vitry.
-
-~~~~~~~~~~~~~~~~~~~~
-
-TODO expand
+The interpreter also accepts special commands commenced by a colon. These are not part of the Vitry language, but exist for ease of use in the interpreter.
 
 
+## Scripts and compilation
+            
+While the interpreter provides a simple way to experiment and test out code, larger projects will require writing code in files. Vitry accepts text files or precompiled class files for execution. The only difference between the two is that class files may execute somewhat faster.
 
+Vitry code is written in standard text files. Only the UTF-8 encoding is accepted. File names typically have the `.vitry` suffix, allthough this is not required. There is no difference between the kind of expressions allowed in the interpreter and in file source code except that the interpreter commands are not allowed in files. Vitry files may have a shebang line, allowing them to be executed in standard Unix shells.
 
+In a large Vitry project, most source code files will be used to define modules and implicits. To make an executable program a module containin a main function is required.
 
+    in myApp
+      main = do
+        prompt "Please enter your name:"
+        post + ("Hello " ++ _)
 
+To excute a script, simply use:
 
+    $ vitry hello.vitry
 
 
 
 # The language                                                                        
 
-Vitry is similiar to other functional programming languages including Lisp and Haskell. This chapter will give a brief overview of functional programming but focuses on the concepts unique to Vitry.^[For good thorough introduction to functional programming, study a textbook such as *[Structure and Interpretation of Computer Programs](http://mitpress.mit.edu/sicp/)* by Abelson and Sussman]
+Vitry is a functional programming language. Well known languages of this type include Lisp, ML and Haskell. Like these languages, Vitry is centered around functions, values and expressions. Imperative operations are possible but not required except for basic input and output tasks.
 
-## Values
+The lexical conventions are very simple. There kinds of tokens are spaces, line breaks, keywords, operators and delimiters as well as literals for symbols, strings and numbers. Indentation levels are rewritten as delimiters before interpretation, allowing nested expressions to be written without a large amount of parentheses. Thus indentation may be ommited altogether in generated code. For details on the lexical sytax, see the final chapter of this manual.
 
-A functional language is mainly concerened with manipulating definition of values. Broadly speaking, values are pieces of data that represent something. Vitry uses a strict definition
-       
+                      
 ## Expressions
 
-Expressions are series of tokens each of which may produce a value. Expressions may be nested. Below are some examples of expressions along with their result.^[The arrow-like sign not part of the language, but just a conventional way of wrinting what an expression evaluates to]
+Functional languages are mainly concerened with the expression of values. Broadly speaking, values are pieces of data that represent something. Expressions are series of lexical tokens, each of which produces a value. Below are some simple expressions along with their result.^[The arrow-like sign not part of the language, but just a conventional way of wrinting what an expression evaluates to]
 
-~~~~~~~~~~~~~~~~~~~~
-1            => 1
-2 + 3        => 5
-(2 + 3) * 2  => 10
-not true     => false
-sin (pi/2)   => 1
-~~~~~~~~~~~~~~~~~~~~
+    1            => 1
+    2 + 3        => 5
+    (2 + 3) * 2  => 10
+    not true     => false
+    sin (pi/2)   => 1
 
-The most common forms of expressions are outlined below.
+There are three basic forms of expressions, outlined below. Along with the special forms and delimiters, these make up the syntax of the Vitry language. The full syntax is given in the final chapter as well.
+
 
 ### Literals
 
 The simplest form of expression, literals are written representation of simple values such as numbers, strings or atoms. Examples are:
 
-~~~~~~~~~~~~~~~~~~~~
-1
-22.5
-phillipe
-"thomas"
-~~~~~~~~~~~~~~~~~~~~
- 
-  
-### Infix expressions
-
-Consists of other expressions, along with operators. A familiar form is the arithmetic expressions. Examples are:
-
-~~~~~~~~~~~~~~~~~~~~
-1 + 2
-22 / 11
-23 % 11
-1, 2, 3, 4
-true | false
-~~~~~~~~~~~~~~~~~~~~
+    1
+    22.5
+    phillipe
+    "thomas"
 
 
 ### Function application
 
-Consists of a callable expression followed by another expression.^[Haskell users may like to know that application works exactly like in Haskell, i.e. the leftmost function is applied to the next, which creates a curried function that may be applied to further arguments.]
+Consists of an expression followed by one or more other expressions. The first expression is assumed to be a function, while the others are assumed to be its arguments.^[As in Haskell, functions may always partially applied. Thus function application may be seen as a left-associative binary operation.]
 
-~~~~~~~~~~~~~~~~~~~~
-print "hello world"
-not true
-sum 1 2 3 4
-~~~~~~~~~~~~~~~~~~~~
+    print "hello world"
+    not true
+    sum 1 2 3 4
+  
+
+### Infix expressions
+
+Consists of other expressions, separated by operators. A familiar form is the arithmetic expressions. Examples are:
+
+    1 + 2
+    22 / 11
+    23 % 11
+    1, 2, 3, 4
+    true | false
+
                                             
 ### Special forms
-              
+
+Special forms are identified special keywords, which are reserved for a particular use in the language:
+
+- `let` and `where` for binding variables.
+- `fn` for function definitions.
+- `if` and `match` for conditional evaluation.
+- `do` for carrying out side-effects like input and output. 
+- `in` and `imply` for module declarations
+- `type` for type expressions.
 
 
-The so-called special forms are identified by the following keywords:
+The following operators are reserved for definitions, type restrictions and quotation respectively:
 
-- `let` and `where` expressions used for binding variables.
-- `fn` expressions, to define functions.
-- `if`, and `match` expressions used for conditional evaluations.
-- `do` expressions, used to carry out side-effects like input and output. 
-- `module` and `implicit` declarations.                              
-
-
-## Delimiters
-
-Expressions may be nested using the following characters as delimiters:
-
-~~~~~~~~~~~~~~~~~~~~
-() [] {}
-~~~~~~~~~~~~~~~~~~~~
-
-TODO
+    = : `
 
 
 
 ## Types
 Types are used to group and reason about values. A type may be thought of as a common property of some values. Any value may be tested to see if it conforms to this property, if it does it is said to have the given type.
 
-The type system of Vitry is dynamic in the sense that types are evaluated at runtime, and strong in the sense that arguments to functions are checked by default.
+The type system of Vitry is dynamic in the sense that types are evaluated at runtime, and strong in the sense that arguments to functions are required to have types. In contrast to most languages, Vitry treats types as values as well. The type of types is a special value called `type`. Its type is called `type_` etc.
 
 ### Booleans
 The boolean type is written as `bool`. Its values are written as `true` and `false`.
@@ -190,53 +167,47 @@ Vitry supports bignum natural, integer and rational numbers, as well as floating
 
 Natural, integers and rational numbers are written as sequences of digits. Vitry will automatically convert integers to rationals and vice versa:
 
-~~~~~~~~~~~~~~~~~~~~
-152
-42
--8
-3/2
-~~~~~~~~~~~~~~~~~~~~
+    152
+    42
+    -8
+    3/2
 
 Floating point numbers may be written in several ways:
 
-~~~~~~~~~~~~~~~~~~~~
-0.1
-0.12e10
-2e-5
-0.5/2
-~~~~~~~~~~~~~~~~~~~~
+    0.1
+    0.12e10
+    2e-5
+    0.5/2
 
 We create a complex number by adding the suffix `i` to the imaginary part:
 
-~~~~~~~~~~~~~~~~~~~~
-2i
-10 + 1i
-22.4 + 32e4i
-~~~~~~~~~~~~~~~~~~~~
+    2i
+    10 + 1i
+    22.4 + 32e4i
   
 Note that to get one imaginary unit you have to write `1i`, as `i` is not a number literal. Complex numbers in polar form may be entered using the `cis` function:
 
-~~~~~~~~~~~~~~~~~~~~
-22 * cis 4
-~~~~~~~~~~~~~~~~~~~~
+    22 * cis 4
                                                         
 
 
 ### Strings
 Strings are sequences of Unicode characters. The string type is written as `string`. String values are written inside double-quotes:
 
-~~~~~~~~~~~~~~~~~~~~
-""
-"test"
-"\""
-"\\"
-"I hate music"
-~~~~~~~~~~~~~~~~~~~~
+    ""
+    "test"
+    "\""
+    "\\"
+    "I hate music"
 
 
-### Atoms    
+### Symbols    
 
-TODO
+Symbols are representations of unique values, such as `true` or `false`.
+
+TODO binding usage
+
+All the types described in this manual are in fact type values bound to symbols such as `bool`, `int`, `nat` etc.
 
 ### Or types
 
@@ -250,16 +221,120 @@ TODO
 
 Intersection types capture the notion of *composition* in object-oriented languages.
     
-    
 
-## Bindings and scopes
+
+## Delimiters
+
+Delimiters consist of the characters `( ) [ ] { }`, and may be used to group expressions. Delimiters and must be written to balance. Thus the following expressions are all valid.
+
+    (1)
+    (1, 2)
+    [(1 + 2)]
+    {(1 + 2) * 3}
+
+However, the following expression is not:
+
+    ([1)]
+
+Delimiters are commonly used to indicate precedence:
+
+    2 * 3 + 4   => 10
+    2 * (3 + 4) => 14
+
+Delimiters may also be bound to functions. By default, standard parentheses `( )` do nothing, while brackets `[ ]` and braces `{ }` are bound to the functions `list` and `set` respectively. Thus, these delimiters may be thought of as literals for lists and sets, a fact which is acknowledged by their written representations.
+
+    [1, 2, 3] : list
+      => true
+
+    {1, 2, 3} : set
+      => true
+
+    [0 + 1, 1 + 1, 1 + 2]
+      => [1, 2, 3]
+      
+TODO We need non-evaluating arguments to get expressions such as [(1, 2, 3)] to differ from [1, 2, 3].
+
+
+### Indentation
+
+Vitry use indentation as a way of expressing nested expressions without actually having to write out all the delimiters. This is achieved by a process called indentation rewriting, which is performed on all code before interpretation.
 
 TODO
+
+~~~~~~~~~~
+john paul
+george ringo
+  =>
+(john paul)
+(george ringo)
+~~~~~~~~~~
+
+~~~~~~~~~~
+john paul
+  george ringo
+  =>
+(john paul
+  (george ringo))
+~~~~~~~~~~
+
+~~~~~~~~~~
+john 
+  paul
+    george ringo
+  =>
+(john 
+  (paul
+    (george ringo)))
+~~~~~~~~~~
+
+~~~~~~~~~~
+john 
+  paul
+  george
+    ringo
+  =>
+(john 
+  (paul)
+  (george
+    (ringo)))
+~~~~~~~~~~
+
+    
+
+## Bindings and scope
+
+Local bindings may be used with the `let` or `where` forms. They are identical except that the let form expects the definition before the scoped expression and where the reverse. Bound expression evaluates to the value of the scoped expression with the given values bound in.
+
+    let atom = expr atom = expr ... expr
+    
+    expr where atom = expr atom = expr ...
+
+Example : 
+
+    let foo = 1
+        bar = 2   
+      foo + bar
+    => 3
+    
+    foo + bar where
+      foo = 1
+      bar = 2   
+    => 3
+                                                                                                                   
+Bindings are resolved by lexical scoping, thus inner bindings always override outer:
+
+    let foo = 1
+      let foo = 2
+        foo
+    => 2
+
 
 
 ## Functions       
 
-TODO
+TODO  
+
+At the semantic level, Vitry makes no distinction between functions, delimiters and operators.
 
 
 
@@ -274,6 +349,8 @@ TODO
 
 
 ## Predicates and matching
+
+A *predicate* is a function on the form `? -> bool`.
 
 TODO
 
@@ -301,7 +378,7 @@ TODO
 
 
 
-# Representing music
+# Musical representation
 
 Vitry provides a large set of types and functions that simplifies the manipulation of musical data. These are  defined in the language itself, giving the user of the power to define structures that operate on exactly the same level of abstraction as those provided with the language. Most of this chapter is devoted to descriptions of the standard model, but it shoul be clear that these conventional structures are by no means mandatory. On the contrary, the user is highly encouraged to provide alternate representations and the language is designed to faciliate that.
 
@@ -325,15 +402,13 @@ Time values are commonly used to represent *positions* in a bar-beat grid, as we
 
 TODO make distinction between abs/rel *time scale* as above and abs/rel *durations* as in MIDI 
 
-~~~~~~~~~~~~~~~~~~~~
-type 
-  time         = absoluteTime | relativeTime
-  absoluteTime = sec
-  relativeTime = rat
-  pos          = time
-  dur          = time
-  sec          = float
-~~~~~~~~~~~~~~~~~~~~
+    type 
+      time         = absoluteTime | relativeTime
+      absoluteTime = sec
+      relativeTime = rat
+      pos          = time
+      dur          = time
+      sec          = float
                      
 TODO tuples
 
@@ -348,15 +423,13 @@ Relative time is simply represented as rational numbers, using the conventional 
 
 For absolute time we use standardized units:
 
-~~~~~~~~~~~~~~~~~~~~
-implicit type
-  min  = 60 * sec
-  hour = 60 * min
-  day  = 24 * hour
-  Hz   = 1 / sec
-  kHz  = hz * 10e3
-  MHz  = hz * 10e6
-~~~~~~~~~~~~~~~~~~~~
+    implicit type
+      min  = 60 * sec
+      hour = 60 * min
+      day  = 24 * hour
+      Hz   = 1 / sec
+      kHz  = hz * 10e3
+      MHz  = hz * 10e6
 
 
 
@@ -418,12 +491,10 @@ The concept of instrumentation (or *orchestration*) may be generalized to repres
 
 The atomic unit of instrumentation is the performer, defined as a receiver of musical events. There is no theoretical distinction between a vocal, instrumental or virtual performer, but we provide these synonyms for convenience.
 
-~~~~~~~~~~~~~~~~~~~~
-type 
-  performer
-  singer      = performer
-  instrument  = performer
-~~~~~~~~~~~~~~~~~~~~
+    type 
+      performer
+      singer      = performer
+      instrument  = performer
 
 TODO choir, ensemble             
 
@@ -495,58 +566,56 @@ TODO
 
 ## Syntax           
 
-~~~~~~~~~~~~~~~~~~~~
-expr 
-  : '(' inline ')'
-  | '[' inline ']'
-  | '{' inline '}'
+    expr 
+      : '(' inline ')'
+      | '[' inline ']'
+      | '{' inline '}'
    
-  | 'fn' parameter* expr
-  | 'let' binding* expr
-  | 'do' '(' expr+ ')'
-  | 'if' expr expr 'else'? expr
+      | 'fn' parameter* expr
+      | 'let' binding* expr
+      | 'do' '(' expr+ ')'
+      | 'if' expr expr 'else'? expr
       
-  | atom
-  | natural
-  | float
-  | complex
-  | string
+      | atom
+      | natural
+      | float
+      | complex
+      | string
     
-parameter 
-  : atom ':' expr
-binding   
-  : atom '=' expr
+    parameter 
+      : atom ':' expr
+    binding   
+      : atom '=' expr
 
-inline
-	: apply (operator+ apply)+
-	| apply
-	| empty
+    inline
+    	: apply (operator+ apply)+
+    	| apply
+    	| empty
 
-apply
-	: expr+
-	| expr
+    apply
+    	: expr+
+    	| expr
 	
-empty
-	:
+    empty
+    	:
 
-operator
-  Any of the following characters in any order
-  ! # $ % & \ * + , - . / ; < = > ? @ \ ^ _ ` | ~ '
+    operator
+      Any of the following characters in any order
+      ! # $ % & \ * + , - . / ; < = > ? @ \ ^ _ ` | ~ '
 
-atom
-  a-z or A-Z followed by any number of a-z, A-Z or 0-9
+    atom
+      a-z or A-Z followed by any number of a-z, A-Z or 0-9
 
-natural
-  any number of 0-9
+    natural
+      any number of 0-9
 
-float
-  TODO
+    float
+      TODO
 
-complex
-  TODO
+    complex
+      TODO
 
-string
-  TODO
-~~~~~~~~~~~~~~~~~~~~
+    string
+      TODO
 
 
