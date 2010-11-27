@@ -1,4 +1,4 @@
-% Vitry manual
+% Vitry Manual
 % © Hans Höglund 2010
 
 
@@ -12,7 +12,7 @@
 # Introduction
 Vitry is a programming language and an environment for representation and manipulation of music. The language has infix syntax and an expressive type system. The represented music can be output in a variety of formats, transcribed to musical notation or used as control data for sound synthesis.
 
-The representation of music is abstract in the sense that it is not concerned with actual sound, but the formal structure of music.  The basic idea is to give the user the tools needed to impliment any kind of *musical model*, while also providing implementations of standard cases.
+The representation of music is abstract in the sense that it is not concerned with actual sound, but the formal structure of music.  The basic idea is to give the user the tools needed to impliment any kind of musical model, while also providing implementations of standard notions of time, pitch, phrasing etc.
 
 Vitry may be used for composition, arranging, transcription or analysis. It is built for easy integration with other environments, particularly the following:
 
@@ -20,9 +20,6 @@ Vitry may be used for composition, arranging, transcription or analysis. It is b
 - Sibelius
 - SuperCollider
                    
-## About this manual
-
-This manual is the most comprehensive description of Vitry at the moment. It may require some knowledge of programming and music theory. Some more accesible tutorials should be added in the future.
 
 
 
@@ -30,7 +27,7 @@ This manual is the most comprehensive description of Vitry at the moment. It may
 
 # The language                                                                        
 
-Vitry is a functional programming language. Well known languages of this type include Lisp, ML and Haskell. Like these languages, Vitry is centered around the notions of functions, values and expressions. Imperative  operations are possible but not required except for basic input and output tasks.
+Vitry is a functional programming language, similar to Lisp, ML and Haskell. It has first-class functions and types. Imperative operations are possible but not essential.
 
 The lexical conventions are very simple. There kinds of tokens are spaces, line breaks, keywords, operators and delimiters as well as literals for symbols, strings and numbers. Indentation levels are rewritten as delimiters before interpretation, allowing nested expressions to be written without a large amount of parentheses. Thus indentation may be ommited altogether in generated code. For details on the lexical sytax, see the final chapter of this manual.
 
@@ -41,7 +38,7 @@ The lexical conventions are very simple. There kinds of tokens are spaces, line 
                       
 ## Expressions
 
-Functional languages are mainly concerened with the expression of values. Broadly speaking, values are pieces of data that represent something. Expressions are series of lexical tokens, each of which produces a value. Below are some simple expressions along with their result.^[The arrow-like sign not part of the language, but just a conventional way of wrinting what an expression evaluates to]
+Functional languages are mainly concerened with the expression of values. Broadly speaking, values are pieces of data that represent something. Expressions are series of lexical tokens, each of which produces a value. Below are some simple expressions along with their result.
 
     1            => 1
     2 + 3        => 5
@@ -357,7 +354,7 @@ TODO music vs notation
 
 Perhaps the most general musical property, time turns out difficult to model in a simple yet coherent way. Thus we will provide several different, though related, time models and a simple taxonomy to keep track of them, and their various properties.^[Here time is taken to mean a measurable unit of time (as in the sentence "one second's time"), not the amount of beats in a musical pulsation.]
 
-We use a type `time` as the root of our hierarchy of time models. For simplicity, we will limit this type to linear and synchronous models, and use completely separate types when this is not the case. By *linear* we mean that `time` progresses consistently without repetition or jumps, and by *synchronous* that relations between `time` values can be taken to hold in all cases.^[As long as the conductor (or the transport system of the studio) behaves properly.] This will be sufficient to represent most conventional music. Nonlinear and nonsynchronous time will be covered in later sections. 
+We use a type `time` as the root of our hierarchy of time models. For simplicity, we will limit this type to linear and synchronous models, and use completely separate types when this is not the case. By *linear* we mean that `time` progresses consistently without repetition or jumps, and by *synchronous* that relations between `time` values can be taken to hold in all cases. This will be sufficient to represent most conventional music. Nonlinear and nonsynchronous time will be covered in later sections. 
 
 ### Time scale
 
@@ -454,7 +451,7 @@ TODO
 
 ## Instrumentation
 
-The concept of instrumentation (or *orchestration*) may be generalized to represent the distribution of a set of events across a set of *performers* or *ensembles*. This concept is useful not only for orchestral music, but also for distribution of events across synthesizers, or even virtual performers such as sub-processes of a generative piece.
+The concept of instrumentation may be generalized to represent the distribution of a set of events across a set of *performers* or *ensembles*. This concept is useful not only for orchestral music, but also for distribution of events across synthesizers, or even virtual performers such as sub-processes of a generative piece.
 
 The atomic unit of instrumentation is the performer, defined as a receiver of musical events. There is no theoretical distinction between a vocal, instrumental or virtual performer, but we provide these synonyms for convenience.
 
@@ -463,11 +460,17 @@ The atomic unit of instrumentation is the performer, defined as a receiver of mu
       singer      = performer
       instrument  = performer
 
-TODO choir, ensemble             
+### Performers
 
-TODO model conventional settings?
+### Choirs
 
-TODO arrangements, reductions
+### Ensembles
+
+### Standard setups
+
+### Arrangements
+
+### Reductions
 
 TODO 
 
@@ -476,7 +479,7 @@ TODO
 
 As instrumentation is concerned with distribution of events amongst discrete groups or individuals, we may also consider the distribution of events or processes in a spacial continuum. 
 
-Spacialization is generally mostly of interest in acousmatic music, as fine control of the spacial parameter is not available in the instrumental or vocal genres. However, if spacialization is treated a continous distribution in an abstract sense, there are possibilities of using "virtual spaces" to control other musical parameters.^[This would not have to be called spaces, but I find that name intuitive as the time dimension is already occupied] It may also be used in conjunction with instrumentation to model the real-life spacial setup of an ensemble.
+Spacialization is generally mostly of interest in acousmatic music, as fine control of the spacial parameter is not available in the instrumental or vocal genres. However, if spacialization is treated a continous distribution in an abstract sense, there are possibilities of using "virtual spaces" to control other musical parameters. It may also be used in conjunction with instrumentation to model the real-life spacial setup of an ensemble.
 
 
 TODO
@@ -495,7 +498,7 @@ TODO
 
 
     
-# Practical usage
+# Practical topics
 
 ## Building and installing
 

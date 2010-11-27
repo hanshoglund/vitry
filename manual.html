@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
   <head>
-    <title>Vitry manual</title>
+    <title>Vitry Manual</title>
     
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="generator" content="pandoc" />
@@ -26,7 +26,7 @@
               <a href="http://github.com/hanshoglund/Vitry">Vitry on Github</a>
         	  </td>
             <td align="left">
-              <a id="toc-toggle" href="javascript:toggle()">Hide table of contents</a>
+              <a id="toc-toggle" href="javascript:toggle()">Table of contents</a>
             </td>
           </tr>
         </tbody>
@@ -39,12 +39,6 @@
       ><li
         ><a href="#introduction"
           >Introduction</a
-          ><ul
-          ><li
-    	><a href="#about-this-manual"
-    	  >About this manual</a
-    	  ></li
-    	></ul
           ></li
         ><li
         ><a href="#the-language"
@@ -237,6 +231,32 @@
     	><li
     	><a href="#instrumentation"
     	  >Instrumentation</a
+    	  ><ul
+    	  ><li
+    	    ><a href="#performers"
+    	      >Performers</a
+    	      ></li
+    	    ><li
+    	    ><a href="#choirs"
+    	      >Choirs</a
+    	      ></li
+    	    ><li
+    	    ><a href="#ensembles"
+    	      >Ensembles</a
+    	      ></li
+    	    ><li
+    	    ><a href="#standard-setups"
+    	      >Standard setups</a
+    	      ></li
+    	    ><li
+    	    ><a href="#arrangements"
+    	      >Arrangements</a
+    	      ></li
+    	    ><li
+    	    ><a href="#reductions"
+    	      >Reductions</a
+    	      ></li
+    	    ></ul
     	  ></li
     	><li
     	><a href="#spacialization"
@@ -253,8 +273,8 @@
     	></ul
           ></li
         ><li
-        ><a href="#practical-usage"
-          >Practical usage</a
+        ><a href="#practical-topics"
+          >Practical topics</a
           ><ul
           ><li
     	><a href="#building-and-installing"
@@ -307,7 +327,7 @@
 
 
     <div id="content">  
-      <h1 class="title">Vitry manual</h1>
+      <h1 class="title">Vitry Manual</h1>
 
       <p>© Hans Höglund 2010</p>
   
@@ -320,9 +340,7 @@
 ><p
 >Vitry is a programming language and an environment for representation and manipulation of music. The language has infix syntax and an expressive type system. The represented music can be output in a variety of formats, transcribed to musical notation or used as control data for sound synthesis.</p
 ><p
->The representation of music is abstract in the sense that it is not concerned with actual sound, but the formal structure of music. The basic idea is to give the user the tools needed to impliment any kind of <em
-  >musical model</em
-  >, while also providing implementations of standard cases.</p
+>The representation of music is abstract in the sense that it is not concerned with actual sound, but the formal structure of music. The basic idea is to give the user the tools needed to impliment any kind of musical model, while also providing implementations of standard notions of time, pitch, phrasing etc.</p
 ><p
 >Vitry may be used for composition, arranging, transcription or analysis. It is built for easy integration with other environments, particularly the following:</p
 ><ul
@@ -333,18 +351,12 @@
   ><li
   >SuperCollider</li
   ></ul
-><h2 id="about-this-manual"
-><a href="#TOC"
-  >About this manual</a
-  ></h2
-><p
->This manual is the most comprehensive description of Vitry at the moment. It may require some knowledge of programming and music theory. Some more accesible tutorials should be added in the future.</p
 ><h1 id="the-language"
 ><a href="#TOC"
   >The language</a
   ></h1
 ><p
->Vitry is a functional programming language. Well known languages of this type include Lisp, ML and Haskell. Like these languages, Vitry is centered around the notions of functions, values and expressions. Imperative operations are possible but not required except for basic input and output tasks.</p
+>Vitry is a functional programming language, similar to Lisp, ML and Haskell. It has first-class functions and types. Imperative operations are possible but not essential.</p
 ><p
 >The lexical conventions are very simple. There kinds of tokens are spaces, line breaks, keywords, operators and delimiters as well as literals for symbols, strings and numbers. Indentation levels are rewritten as delimiters before interpretation, allowing nested expressions to be written without a large amount of parentheses. Thus indentation may be ommited altogether in generated code. For details on the lexical sytax, see the final chapter of this manual.</p
 ><h2 id="expressions"
@@ -352,11 +364,7 @@
   >Expressions</a
   ></h2
 ><p
->Functional languages are mainly concerened with the expression of values. Broadly speaking, values are pieces of data that represent something. Expressions are series of lexical tokens, each of which produces a value. Below are some simple expressions along with their result.<sup
-  ><a href="#fn1" class="footnoteRef" id="fnref1"
-    >1</a
-    ></sup
-  ></p
+>Functional languages are mainly concerened with the expression of values. Broadly speaking, values are pieces of data that represent something. Expressions are series of lexical tokens, each of which produces a value. Below are some simple expressions along with their result.</p
 ><pre
 ><code
   >1            =&gt; 1
@@ -388,8 +396,8 @@ phillipe
   ></h3
 ><p
 >Consists of an expression followed by one or more other expressions. The first expression is assumed to be a function, while the others are assumed to be its arguments.<sup
-  ><a href="#fn2" class="footnoteRef" id="fnref2"
-    >2</a
+  ><a href="#fn1" class="footnoteRef" id="fnref1"
+    >1</a
     ></sup
   ></p
 ><pre
@@ -837,8 +845,8 @@ fn parameter : type parameter : type ... expr
   ></h2
 ><p
 >Perhaps the most general musical property, time turns out difficult to model in a simple yet coherent way. Thus we will provide several different, though related, time models and a simple taxonomy to keep track of them, and their various properties.<sup
-  ><a href="#fn3" class="footnoteRef" id="fnref3"
-    >3</a
+  ><a href="#fn2" class="footnoteRef" id="fnref2"
+    >2</a
     ></sup
   ></p
 ><p
@@ -852,11 +860,7 @@ fn parameter : type parameter : type ... expr
   >synchronous</em
   > that relations between <code
   >time</code
-  > values can be taken to hold in all cases.<sup
-  ><a href="#fn4" class="footnoteRef" id="fnref4"
-    >4</a
-    ></sup
-  > This will be sufficient to represent most conventional music. Nonlinear and nonsynchronous time will be covered in later sections.</p
+  > values can be taken to hold in all cases. This will be sufficient to represent most conventional music. Nonlinear and nonsynchronous time will be covered in later sections.</p
 ><h3 id="time-scale"
 ><a href="#TOC"
   >Time scale</a
@@ -1000,9 +1004,7 @@ fn parameter : type parameter : type ... expr
   >Instrumentation</a
   ></h2
 ><p
->The concept of instrumentation (or <em
-  >orchestration</em
-  >) may be generalized to represent the distribution of a set of events across a set of <em
+>The concept of instrumentation may be generalized to represent the distribution of a set of events across a set of <em
   >performers</em
   > or <em
   >ensembles</em
@@ -1017,12 +1019,30 @@ fn parameter : type parameter : type ... expr
   instrument  = performer
 </code
   ></pre
-><p
->TODO choir, ensemble</p
-><p
->TODO model conventional settings?</p
-><p
->TODO arrangements, reductions</p
+><h3 id="performers"
+><a href="#TOC"
+  >Performers</a
+  ></h3
+><h3 id="choirs"
+><a href="#TOC"
+  >Choirs</a
+  ></h3
+><h3 id="ensembles"
+><a href="#TOC"
+  >Ensembles</a
+  ></h3
+><h3 id="standard-setups"
+><a href="#TOC"
+  >Standard setups</a
+  ></h3
+><h3 id="arrangements"
+><a href="#TOC"
+  >Arrangements</a
+  ></h3
+><h3 id="reductions"
+><a href="#TOC"
+  >Reductions</a
+  ></h3
 ><p
 >TODO</p
 ><h2 id="spacialization"
@@ -1032,11 +1052,7 @@ fn parameter : type parameter : type ... expr
 ><p
 >As instrumentation is concerned with distribution of events amongst discrete groups or individuals, we may also consider the distribution of events or processes in a spacial continuum.</p
 ><p
->Spacialization is generally mostly of interest in acousmatic music, as fine control of the spacial parameter is not available in the instrumental or vocal genres. However, if spacialization is treated a continous distribution in an abstract sense, there are possibilities of using &quot;virtual spaces&quot; to control other musical parameters.<sup
-  ><a href="#fn5" class="footnoteRef" id="fnref5"
-    >5</a
-    ></sup
-  > It may also be used in conjunction with instrumentation to model the real-life spacial setup of an ensemble.</p
+>Spacialization is generally mostly of interest in acousmatic music, as fine control of the spacial parameter is not available in the instrumental or vocal genres. However, if spacialization is treated a continous distribution in an abstract sense, there are possibilities of using &quot;virtual spaces&quot; to control other musical parameters. It may also be used in conjunction with instrumentation to model the real-life spacial setup of an ensemble.</p
 ><p
 >TODO</p
 ><h2 id="nonlinearity"
@@ -1055,9 +1071,9 @@ fn parameter : type parameter : type ... expr
   ></h2
 ><p
 >TODO</p
-><h1 id="practical-usage"
+><h1 id="practical-topics"
 ><a href="#TOC"
-  >Practical usage</a
+  >Practical topics</a
   ></h1
 ><h2 id="building-and-installing"
 ><a href="#TOC"
@@ -1239,23 +1255,11 @@ string
    /><ol
   ><li id="fn1"
     ><p
-      >The arrow-like sign not part of the language, but just a conventional way of wrinting what an expression evaluates to <a href="#fnref1" class="footnoteBackLink" title="Jump back to footnote 1">↩</a></p
+      >As in Haskell, functions may always partially applied. Thus function application may be seen as a left-associative binary operation, which is true to the original concept of the lambda calculus. <a href="#fnref1" class="footnoteBackLink" title="Jump back to footnote 1">↩</a></p
       ></li
     ><li id="fn2"
     ><p
-      >As in Haskell, functions may always partially applied. Thus function application may be seen as a left-associative binary operation, which is true to the original concept of the lambda calculus. <a href="#fnref2" class="footnoteBackLink" title="Jump back to footnote 2">↩</a></p
-      ></li
-    ><li id="fn3"
-    ><p
-      >Here time is taken to mean a measurable unit of time (as in the sentence &quot;one second's time&quot;), not the amount of beats in a musical pulsation. <a href="#fnref3" class="footnoteBackLink" title="Jump back to footnote 3">↩</a></p
-      ></li
-    ><li id="fn4"
-    ><p
-      >As long as the conductor (or the transport system of the studio) behaves properly. <a href="#fnref4" class="footnoteBackLink" title="Jump back to footnote 4">↩</a></p
-      ></li
-    ><li id="fn5"
-    ><p
-      >This would not have to be called spaces, but I find that name intuitive as the time dimension is already occupied <a href="#fnref5" class="footnoteBackLink" title="Jump back to footnote 5">↩</a></p
+      >Here time is taken to mean a measurable unit of time (as in the sentence &quot;one second's time&quot;), not the amount of beats in a musical pulsation. <a href="#fnref2" class="footnoteBackLink" title="Jump back to footnote 2">↩</a></p
       ></li
     ></ol
   ></div

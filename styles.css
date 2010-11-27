@@ -12,15 +12,16 @@
   
 
   div#top-menu {
+    border :            1px solid grey;    
     background-color :  #ddd;
   	opacity: 0.8  ;
     
-    padding :           5px 5px 5px 1em;
-    margin-left :       0px;
+    padding :           5px;
 
     position :          fixed;
-    width :             1000px;
-    border :            1px solid grey;    
+    left: 50%;
+    width :             780px;
+    margin-left:        -400px;
   }
 
   #top-menu table td {
@@ -34,16 +35,26 @@
 
   
 
-  div#TOC {
-    float: left;
-    margin-left:0px;
-    padding-top: 60px;
-    padding-left:1em;
-  
-/*    font-family: Arial, sans-serif; */
-    font-size: 11.8px;
-    line-height: 150%;
-/*    display: none; */
+  div#TOC {       
+    top: 52px;
+             
+    background-color :  #fff;
+  	opacity: 0.95;
+
+    
+    font-family: Arial, sans-serif; 
+    font-size:          11.8px;
+    line-height:        150%;  
+    padding :           5px;
+    padding-bottom :    15px;
+    
+
+    position :          fixed;
+    left: 50%;
+    width :             780px;
+    margin-left:        -400px;
+
+    display: none; 
   }
   #TOC a {
     color: #000;
@@ -62,14 +73,27 @@
   }
   #TOC li {
     marker-offset: 0px;
-  }
+  } 
+  
+  #TOC ul
+  {            
+  }    
+  
+  #TOC ul>li:nth-child(2) { float: left; width: 195px; }
+  #TOC ul>li:nth-child(3) { float: left; width: 195px; }
+  #TOC ul>li:nth-child(4) { float: left; width: 195px; }
+  #TOC ul>li:nth-child(5) { float: left; width: 195px; }
+
+
+
+  
 
   
 
   div#content {
+    margin-left: auto;
+    margin-right: auto;
     padding-top: 60px;
-    margin-left: 250px;  
-    padding-left:1em;
     max-width: 745px;
   }
   
