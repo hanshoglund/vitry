@@ -1,4 +1,4 @@
-var tocVisible = false;
+var tocVisible = true;
 
 function toggle() {
   

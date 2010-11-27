@@ -26,7 +26,7 @@
               <a href="http://github.com/hanshoglund/Vitry">Vitry on Github</a>
         	  </td>
             <td align="left">
-              <a id="toc-toggle" href="javascript:toggle()">Table of contents</a>
+              <a id="toc-toggle" href="javascript:toggle()">Hide table of contents</a>
             </td>
           </tr>
         </tbody>
@@ -43,24 +43,6 @@
           ><li
     	><a href="#about-this-manual"
     	  >About this manual</a
-    	  ></li
-    	></ul
-          ></li
-        ><li
-        ><a href="#first-steps"
-          >First steps</a
-          ><ul
-          ><li
-    	><a href="#building-and-installing"
-    	  >Building and installing</a
-    	  ></li
-    	><li
-    	><a href="#the-interpreter"
-    	  >The interpreter</a
-    	  ></li
-    	><li
-    	><a href="#scripts-and-compilation"
-    	  >Scripts and compilation</a
     	  ></li
     	></ul
           ></li
@@ -87,6 +69,22 @@
     	    ><li
     	    ><a href="#special-forms"
     	      >Special forms</a
+    	      ></li
+    	    ><li
+    	    ><a href="#delimiters"
+    	      >Delimiters</a
+    	      ></li
+    	    ><li
+    	    ><a href="#indentation"
+    	      >Indentation</a
+    	      ></li
+    	    ><li
+    	    ><a href="#comments"
+    	      >Comments</a
+    	      ></li
+    	    ><li
+    	    ><a href="#meta-expressions"
+    	      >Meta-expressions</a
     	      ></li
     	    ></ul
     	  ></li
@@ -121,34 +119,34 @@
     	    ></ul
     	  ></li
     	><li
-    	><a href="#delimiters"
-    	  >Delimiters</a
-    	  ><ul
-    	  ><li
-    	    ><a href="#indentation"
-    	      >Indentation</a
-    	      ></li
-    	    ></ul
-    	  ></li
-    	><li
-    	><a href="#bindings-and-scope"
-    	  >Bindings and scope</a
+    	><a href="#local-bindings"
+    	  >Local bindings</a
     	  ></li
     	><li
     	><a href="#functions"
     	  >Functions</a
     	  ></li
     	><li
+    	><a href="#higher-order-types"
+    	  >Higher-order types</a
+    	  ><ul
+    	  ><li
+    	    ><a href="#lists"
+    	      >Lists</a
+    	      ></li
+    	    ><li
+    	    ><a href="#tuples"
+    	      >Tuples</a
+    	      ></li
+    	    ></ul
+    	  ></li
+    	><li
     	><a href="#loops-and-recursion"
     	  >Loops and recursion</a
     	  ></li
     	><li
-    	><a href="#sequences"
-    	  >Sequences</a
-    	  ></li
-    	><li
-    	><a href="#predicates-and-matching"
-    	  >Predicates and matching</a
+    	><a href="#matching"
+    	  >Matching</a
     	  ></li
     	><li
     	><a href="#side-effects"
@@ -255,20 +253,28 @@
     	></ul
           ></li
         ><li
-        ><a href="#transcription-and-performance"
-          >Transcription and performance</a
-          ></li
-        ><li
-        ><a href="#miscellaneous-topics"
-          >Miscellaneous topics</a
+        ><a href="#practical-usage"
+          >Practical usage</a
           ><ul
           ><li
-    	><a href="#calling-foreign-languages"
-    	  >Calling foreign languages</a
+    	><a href="#building-and-installing"
+    	  >Building and installing</a
+    	  ></li
+    	><li
+    	><a href="#the-interpreter"
+    	  >The interpreter</a
+    	  ></li
+    	><li
+    	><a href="#scripts-and-compilation"
+    	  >Scripts and compilation</a
     	  ></li
     	><li
     	><a href="#setting-up-the-environment"
     	  >Setting up the environment</a
+    	  ></li
+    	><li
+    	><a href="#calling-foreign-languages"
+    	  >Calling foreign languages</a
     	  ></li
     	><li
     	><a href="#replacing-the-syntax"
@@ -312,7 +318,7 @@
   >Introduction</a
   ></h1
 ><p
->Vitry is a functional programming language and an environment for representation and manipulation of music. The language has infix syntax and an expressive type system based on predicate matching. The represented music can be output in a variety of formats, transcribed to musical notation or used as control data for sound synthesis.</p
+>Vitry is a programming language and an environment for representation and manipulation of music. The language has infix syntax and an expressive type system. The represented music can be output in a variety of formats, transcribed to musical notation or used as control data for sound synthesis.</p
 ><p
 >The representation of music is abstract in the sense that it is not concerned with actual sound, but the formal structure of music. The basic idea is to give the user the tools needed to impliment any kind of <em
   >musical model</em
@@ -332,99 +338,13 @@
   >About this manual</a
   ></h2
 ><p
->This manual is unfortunately very brief, and requires some knowledge of programming and music theory to be fully comprehended. Some more accesible tutorials should be added in the future.</p
-><h1 id="first-steps"
-><a href="#TOC"
-  >First steps</a
-  ></h1
-><h2 id="building-and-installing"
-><a href="#TOC"
-  >Building and installing</a
-  ></h2
-><p
->Vitry targets the <a href="http://en.wikipedia.org/wiki/Java_Virtual_Machine"
-  >Java Virtual Machine</a
-  >, and may be used with almost any operating system. The only dependency is the Java runtime environment. The build requirements are <a href="http://git-scm.com/"
-  >Git</a
-  > and <a href="http://ant.apache.org/"
-  >Apache Ant</a
-  >. You may check if these are installed as follows:</p
-><pre
-><code
-  >$ java
-$ git
-$ ant
-</code
-  ></pre
-><p
->If not, download and install from the sites above or through your package management system.</p
-><p
->As soon as the build requirements are in place, do:</p
-><pre
-><code
-  >$ git clone git@github.com:hanshoglund/vitry.git
-$ cd vitry
-$ ant
-$ sudo ant install
-</code
-  ></pre
-><p
->Or if you are on Windows:</p
-><pre
-><code
-  >$ git clone git@github.com:hanshoglund/vitry.git
-$ cd vitry
-$ ant
-$ ant install
-</code
-  ></pre
-><p
->You may append a directory to the install command.</p
-><h2 id="the-interpreter"
-><a href="#TOC"
-  >The interpreter</a
-  ></h2
-><p
->The interpreter is typically the simplest way to interact with Vitry. To run it, simply type <code
-  >vitry</code
-  >.</p
-><p
->TODO</p
-><p
->The interpreter also accepts special commands commenced by a colon. These are not part of the Vitry language, but exist for ease of use in the interpreter.</p
-><h2 id="scripts-and-compilation"
-><a href="#TOC"
-  >Scripts and compilation</a
-  ></h2
-><p
->While the interpreter provides a simple way to experiment and test out code, larger projects will require writing code in files. Vitry accepts text files or precompiled class files for execution. The only difference between the two is that class files may execute somewhat faster.</p
-><p
->Vitry code is written in standard text files. Only the UTF-8 encoding is accepted. File names typically have the <code
-  >.vitry</code
-  > suffix, allthough this is not required. There is no difference between the kind of expressions allowed in the interpreter and in file source code except that the interpreter commands are not allowed in files. Vitry files may have a shebang line, allowing them to be executed in standard Unix shells.</p
-><p
->In a large Vitry project, most source code files will be used to define modules and implicits. To make an executable program a module containin a main function is required.</p
-><pre
-><code
-  >in myApp
-  main = do
-    prompt &quot;Please enter your name:&quot;
-    post + (&quot;Hello &quot; ++ _)
-</code
-  ></pre
-><p
->To excute a script, simply use:</p
-><pre
-><code
-  >$ vitry hello.vitry
-</code
-  ></pre
+>This manual is the most comprehensive description of Vitry at the moment. It may require some knowledge of programming and music theory. Some more accesible tutorials should be added in the future.</p
 ><h1 id="the-language"
 ><a href="#TOC"
   >The language</a
   ></h1
 ><p
->Vitry is a functional programming language. Well known languages of this type include Lisp, ML and Haskell. Like these languages, Vitry is centered around functions, values and expressions. Imperative operations are possible but not required except for basic input and output tasks.</p
+>Vitry is a functional programming language. Well known languages of this type include Lisp, ML and Haskell. Like these languages, Vitry is centered around the notions of functions, values and expressions. Imperative operations are possible but not required except for basic input and output tasks.</p
 ><p
 >The lexical conventions are very simple. There kinds of tokens are spaces, line breaks, keywords, operators and delimiters as well as literals for symbols, strings and numbers. Indentation levels are rewritten as delimiters before interpretation, allowing nested expressions to be written without a large amount of parentheses. Thus indentation may be ommited altogether in generated code. For details on the lexical sytax, see the final chapter of this manual.</p
 ><h2 id="expressions"
@@ -488,10 +408,20 @@ sum 1 2 3 4
 ><pre
 ><code
   >1 + 2
-22 / 11
 23 % 11
-1, 2, 3, 4
+1, 2, 3
+-1
+~true
 true | false
+</code
+  ></pre
+><p
+>Prefix and infix operators are allowed, but not postfix.</p
+><p
+>The following operators are reserved for definitions, type restrictions and quotation respectively:</p
+><pre
+><code
+  >= : `
 </code
   ></pre
 ><h3 id="special-forms"
@@ -532,13 +462,111 @@ true | false
     >type</code
     > for type expressions.</li
   ></ul
+><h3 id="delimiters"
+><a href="#TOC"
+  >Delimiters</a
+  ></h3
 ><p
->The following operators are reserved for definitions, type restrictions and quotation respectively:</p
+>Delimiters consist of the characters <code
+  >( ) [ ] { }</code
+  >, and may be used to group expressions. Delimiters and must be written to balance. Thus the following expressions are all valid.</p
 ><pre
 ><code
-  >= : `
+  >(1)
+(1, 2)
+[(1 + 2)]
+{(1 + 2) * 3}
 </code
   ></pre
+><p
+>However, the following expression is not:</p
+><pre
+><code
+  >([1)]
+</code
+  ></pre
+><p
+>Delimiters are commonly used to indicate precedence:</p
+><pre
+><code
+  >2 * 3 + 4   =&gt; 10
+2 * (3 + 4) =&gt; 14
+</code
+  ></pre
+><p
+>Delimiters may also be bound to functions. By default, standard parentheses <code
+  >( )</code
+  > do nothing, while brackets <code
+  >[ ]</code
+  > and braces <code
+  >{ }</code
+  > are bound to the functions <code
+  >list</code
+  > and <code
+  >set</code
+  > respectively. Thus, these delimiters may be thought of as literals for lists and sets, a fact which is acknowledged by their written representations.</p
+><pre
+><code
+  >[1, 2, 3] : list
+  =&gt; true
+
+{1, 2, 3} : set
+  =&gt; true
+
+[0 + 1, 1 + 1, 1 + 2]
+  =&gt; [1, 2, 3]
+</code
+  ></pre
+><p
+>TODO We need non-evaluating arguments to get expressions such as [(1, 2, 3)] to differ from [1, 2, 3].</p
+><h3 id="indentation"
+><a href="#TOC"
+  >Indentation</a
+  ></h3
+><p
+>Vitry use indentation as a way of expressing nested expressions without actually having to write out all the delimiters. This is achieved by a process called indentation rewriting, which is performed on all code before interpretation.</p
+><p
+>TODO</p
+><pre
+><code
+  >john paul
+george ringo
+=&gt; (john paul) (george ringo)
+
+john paul
+  george ringo
+=&gt; (john paul (george ringo))
+
+john 
+  paul
+    george ringo
+=&gt; (john (paul (george ringo)))
+
+john 
+  paul
+  george
+    ringo
+=&gt; (john (paul) (george (ringo))) 
+
+john 
+  paul
+    george
+  ringo
+=&gt; (john (paul (george)) (ringo)) 
+</code
+  ></pre
+><h3 id="comments"
+><a href="#TOC"
+  >Comments</a
+  ></h3
+><p
+>TODO</p
+><h3 id="meta-expressions"
+><a href="#TOC"
+  >Meta-expressions</a
+  ></h3
+><p
+>TODO</p
 ><h2 id="types"
 ><a href="#TOC"
   >Types</a
@@ -680,116 +708,9 @@ true | false
 >Intersection types capture the notion of <em
   >composition</em
   > in object-oriented languages.</p
-><h2 id="delimiters"
+><h2 id="local-bindings"
 ><a href="#TOC"
-  >Delimiters</a
-  ></h2
-><p
->Delimiters consist of the characters <code
-  >( ) [ ] { }</code
-  >, and may be used to group expressions. Delimiters and must be written to balance. Thus the following expressions are all valid.</p
-><pre
-><code
-  >(1)
-(1, 2)
-[(1 + 2)]
-{(1 + 2) * 3}
-</code
-  ></pre
-><p
->However, the following expression is not:</p
-><pre
-><code
-  >([1)]
-</code
-  ></pre
-><p
->Delimiters are commonly used to indicate precedence:</p
-><pre
-><code
-  >2 * 3 + 4   =&gt; 10
-2 * (3 + 4) =&gt; 14
-</code
-  ></pre
-><p
->Delimiters may also be bound to functions. By default, standard parentheses <code
-  >( )</code
-  > do nothing, while brackets <code
-  >[ ]</code
-  > and braces <code
-  >{ }</code
-  > are bound to the functions <code
-  >list</code
-  > and <code
-  >set</code
-  > respectively. Thus, these delimiters may be thought of as literals for lists and sets, a fact which is acknowledged by their written representations.</p
-><pre
-><code
-  >[1, 2, 3] : list
-  =&gt; true
-
-{1, 2, 3} : set
-  =&gt; true
-
-[0 + 1, 1 + 1, 1 + 2]
-  =&gt; [1, 2, 3]
-</code
-  ></pre
-><p
->TODO We need non-evaluating arguments to get expressions such as [(1, 2, 3)] to differ from [1, 2, 3].</p
-><h3 id="indentation"
-><a href="#TOC"
-  >Indentation</a
-  ></h3
-><p
->Vitry use indentation as a way of expressing nested expressions without actually having to write out all the delimiters. This is achieved by a process called indentation rewriting, which is performed on all code before interpretation.</p
-><p
->TODO</p
-><pre
-><code
-  >john paul
-george ringo
-  =&gt;
-(john paul)
-(george ringo)
-</code
-  ></pre
-><pre
-><code
-  >john paul
-  george ringo
-  =&gt;
-(john paul
-  (george ringo))
-</code
-  ></pre
-><pre
-><code
-  >john 
-  paul
-    george ringo
-  =&gt;
-(john 
-  (paul
-    (george ringo)))
-</code
-  ></pre
-><pre
-><code
-  >john 
-  paul
-  george
-    ringo
-  =&gt;
-(john 
-  (paul)
-  (george
-    (ringo)))
-</code
-  ></pre
-><h2 id="bindings-and-scope"
-><a href="#TOC"
-  >Bindings and scope</a
+  >Local bindings</a
   ></h2
 ><p
 >Local bindings may be used with the <code
@@ -799,8 +720,10 @@ george ringo
   > forms. They are identical except that the let form expects the definition before the scoped expression and where the reverse. Bound expression evaluates to the value of the scoped expression with the given values bound in.</p
 ><pre
 ><code
-  >let atom = expr atom = expr ... expr
+  >let atom = expr expr
+let atom = expr atom = expr ... expr
 
+expr where atom = expr
 expr where atom = expr atom = expr ...
 </code
   ></pre
@@ -829,36 +752,57 @@ foo + bar where
 =&gt; 2
 </code
   ></pre
+><p
+>The <code
+  >let</code
+  > and <code
+  >where</code
+  > forms are very useful for creating local variables or factoring out expressions to make them more readable.</p
 ><h2 id="functions"
 ><a href="#TOC"
   >Functions</a
   ></h2
 ><p
+>Functions may be thought of as local bindings with unspecified values. They are defined by the <code
+  >fn</code
+  > special form:</p
+><pre
+><code
+  >fn expr
+fn parameter : type expr
+fn parameter : type parameter : type ... expr
+</code
+  ></pre
+><p
 >TODO</p
 ><p
 >At the semantic level, Vitry makes no distinction between functions, delimiters and operators.</p
+><h2 id="higher-order-types"
+><a href="#TOC"
+  >Higher-order types</a
+  ></h2
+><h3 id="lists"
+><a href="#TOC"
+  >Lists</a
+  ></h3
+><p
+>TODO</p
+><h3 id="tuples"
+><a href="#TOC"
+  >Tuples</a
+  ></h3
+><p
+>TODO</p
 ><h2 id="loops-and-recursion"
 ><a href="#TOC"
   >Loops and recursion</a
   ></h2
 ><p
 >TODO</p
-><h2 id="sequences"
+><h2 id="matching"
 ><a href="#TOC"
-  >Sequences</a
+  >Matching</a
   ></h2
-><p
->TODO</p
-><h2 id="predicates-and-matching"
-><a href="#TOC"
-  >Predicates and matching</a
-  ></h2
-><p
->A <em
-  >predicate</em
-  > is a function on the form <code
-  >? -&gt; bool</code
-  >.</p
 ><p
 >TODO</p
 ><h2 id="side-effects"
@@ -1111,23 +1055,101 @@ foo + bar where
   ></h2
 ><p
 >TODO</p
-><h1 id="transcription-and-performance"
+><h1 id="practical-usage"
 ><a href="#TOC"
-  >Transcription and performance</a
+  >Practical usage</a
   ></h1
-><h1 id="miscellaneous-topics"
+><h2 id="building-and-installing"
 ><a href="#TOC"
-  >Miscellaneous topics</a
-  ></h1
-><h2 id="calling-foreign-languages"
-><a href="#TOC"
-  >Calling foreign languages</a
+  >Building and installing</a
   ></h2
 ><p
+>Vitry targets the <a href="http://en.wikipedia.org/wiki/Java_Virtual_Machine"
+  >Java Virtual Machine</a
+  >, and may be used with almost any operating system. The only dependency is the Java runtime environment. The build requirements are <a href="http://git-scm.com/"
+  >Git</a
+  > and <a href="http://ant.apache.org/"
+  >Apache Ant</a
+  >. You may check if these are installed as follows:</p
+><pre
+><code
+  >$ java
+$ git
+$ ant
+</code
+  ></pre
+><p
+>If not, download and install from the sites above or through your package management system.</p
+><p
+>As soon as the build requirements are in place, do:</p
+><pre
+><code
+  >$ git clone git@github.com:hanshoglund/vitry.git
+$ cd vitry
+$ ant
+$ sudo ant install
+</code
+  ></pre
+><p
+>Or if you are on Windows:</p
+><pre
+><code
+  >$ git clone git@github.com:hanshoglund/vitry.git
+$ cd vitry
+$ ant
+$ ant install
+</code
+  ></pre
+><p
+>You may append a directory to the install command.</p
+><h2 id="the-interpreter"
+><a href="#TOC"
+  >The interpreter</a
+  ></h2
+><p
+>The interpreter is typically the simplest way to interact with Vitry. To run it, simply type <code
+  >vitry</code
+  >.</p
+><p
 >TODO</p
+><p
+>The interpreter also accepts special commands commenced by a colon. These are not part of the Vitry language, but exist for ease of use in the interpreter.</p
+><h2 id="scripts-and-compilation"
+><a href="#TOC"
+  >Scripts and compilation</a
+  ></h2
+><p
+>While the interpreter provides a simple way to experiment and test out code, larger projects will require writing code in files. Vitry accepts text files or precompiled class files for execution. The only difference between the two is that class files may execute somewhat faster.</p
+><p
+>Vitry code is written in standard text files. Only the UTF-8 encoding is accepted. File names typically have the <code
+  >.vitry</code
+  > suffix, allthough this is not required. There is no difference between the kind of expressions allowed in the interpreter and in file source code except that the interpreter commands are not allowed in files. Vitry files may have a shebang line, allowing them to be executed in standard Unix shells.</p
+><p
+>In a large Vitry project, most source code files will be used to define modules and implicits. To make an executable program a module containin a main function is required.</p
+><pre
+><code
+  >in myApp
+  main = do
+    prompt &quot;Please enter your name:&quot;
+    post + (&quot;Hello &quot; ++ _)
+</code
+  ></pre
+><p
+>To excute a script, simply use:</p
+><pre
+><code
+  >$ vitry hello.vitry
+</code
+  ></pre
 ><h2 id="setting-up-the-environment"
 ><a href="#TOC"
   >Setting up the environment</a
+  ></h2
+><p
+>TODO</p
+><h2 id="calling-foreign-languages"
+><a href="#TOC"
+  >Calling foreign languages</a
   ></h2
 ><p
 >TODO</p
@@ -1221,7 +1243,7 @@ string
       ></li
     ><li id="fn2"
     ><p
-      >As in Haskell, functions may always partially applied. Thus function application may be seen as a left-associative binary operation. <a href="#fnref2" class="footnoteBackLink" title="Jump back to footnote 2">↩</a></p
+      >As in Haskell, functions may always partially applied. Thus function application may be seen as a left-associative binary operation, which is true to the original concept of the lambda calculus. <a href="#fnref2" class="footnoteBackLink" title="Jump back to footnote 2">↩</a></p
       ></li
     ><li id="fn3"
     ><p

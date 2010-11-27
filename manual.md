@@ -10,7 +10,7 @@
 
 
 # Introduction
-Vitry is a functional programming language and an environment for representation and manipulation of music. The language has infix syntax and an expressive type system based on predicate matching. The represented music can be output in a variety of formats, transcribed to musical notation or used as control data for sound synthesis.
+Vitry is a programming language and an environment for representation and manipulation of music. The language has infix syntax and an expressive type system. The represented music can be output in a variety of formats, transcribed to musical notation or used as control data for sound synthesis.
 
 The representation of music is abstract in the sense that it is not concerned with actual sound, but the formal structure of music.  The basic idea is to give the user the tools needed to impliment any kind of *musical model*, while also providing implementations of standard cases.
 
@@ -22,75 +22,21 @@ Vitry may be used for composition, arranging, transcription or analysis. It is b
                    
 ## About this manual
 
-This manual is unfortunately very brief, and requires some knowledge of programming and music theory to be fully comprehended. Some more accesible tutorials should be added in the future.
+This manual is the most comprehensive description of Vitry at the moment. It may require some knowledge of programming and music theory. Some more accesible tutorials should be added in the future.
 
 
-
-
-
-# First steps
-
-## Building and installing
-
-
-Vitry targets the [Java Virtual Machine](http://en.wikipedia.org/wiki/Java_Virtual_Machine), and may be used with almost any operating system. The only dependency is the Java runtime environment. The build requirements are [Git](http://git-scm.com/) and [Apache Ant](http://ant.apache.org/). You may check if these are installed as follows:
-                                 
-    $ java
-    $ git
-    $ ant
-
-If not, download and install from the sites above or through your package management system.
-
-As soon as the build requirements are in place, do:
-
-    $ git clone git@github.com:hanshoglund/vitry.git
-    $ cd vitry
-    $ ant
-    $ sudo ant install
-                      
-Or if you are on Windows:
-
-    $ git clone git@github.com:hanshoglund/vitry.git
-    $ cd vitry
-    $ ant
-    $ ant install
-
-You may append a directory to the install command.
-
-         
-## The interpreter
-
-The interpreter is typically the simplest way to interact with Vitry. To run it, simply type `vitry`.
-
-TODO
-
-The interpreter also accepts special commands commenced by a colon. These are not part of the Vitry language, but exist for ease of use in the interpreter.
-
-
-## Scripts and compilation
-            
-While the interpreter provides a simple way to experiment and test out code, larger projects will require writing code in files. Vitry accepts text files or precompiled class files for execution. The only difference between the two is that class files may execute somewhat faster.
-
-Vitry code is written in standard text files. Only the UTF-8 encoding is accepted. File names typically have the `.vitry` suffix, allthough this is not required. There is no difference between the kind of expressions allowed in the interpreter and in file source code except that the interpreter commands are not allowed in files. Vitry files may have a shebang line, allowing them to be executed in standard Unix shells.
-
-In a large Vitry project, most source code files will be used to define modules and implicits. To make an executable program a module containin a main function is required.
-
-    in myApp
-      main = do
-        prompt "Please enter your name:"
-        post + ("Hello " ++ _)
-
-To excute a script, simply use:
-
-    $ vitry hello.vitry
 
 
 
 # The language                                                                        
 
-Vitry is a functional programming language. Well known languages of this type include Lisp, ML and Haskell. Like these languages, Vitry is centered around functions, values and expressions. Imperative operations are possible but not required except for basic input and output tasks.
+Vitry is a functional programming language. Well known languages of this type include Lisp, ML and Haskell. Like these languages, Vitry is centered around the notions of functions, values and expressions. Imperative  operations are possible but not required except for basic input and output tasks.
 
 The lexical conventions are very simple. There kinds of tokens are spaces, line breaks, keywords, operators and delimiters as well as literals for symbols, strings and numbers. Indentation levels are rewritten as delimiters before interpretation, allowing nested expressions to be written without a large amount of parentheses. Thus indentation may be ommited altogether in generated code. For details on the lexical sytax, see the final chapter of this manual.
+
+
+
+
 
                       
 ## Expressions
@@ -118,7 +64,7 @@ The simplest form of expression, literals are written representation of simple v
 
 ### Function application
 
-Consists of an expression followed by one or more other expressions. The first expression is assumed to be a function, while the others are assumed to be its arguments.^[As in Haskell, functions may always partially applied. Thus function application may be seen as a left-associative binary operation.]
+Consists of an expression followed by one or more other expressions. The first expression is assumed to be a function, while the others are assumed to be its arguments.^[As in Haskell, functions may always partially applied. Thus function application may be seen as a left-associative binary operation, which is true to the original concept of the lambda calculus.]
 
     print "hello world"
     not true
@@ -130,10 +76,17 @@ Consists of an expression followed by one or more other expressions. The first e
 Consists of other expressions, separated by operators. A familiar form is the arithmetic expressions. Examples are:
 
     1 + 2
-    22 / 11
     23 % 11
-    1, 2, 3, 4
+    1, 2, 3
+    -1
+    ~true
     true | false
+                
+Prefix and infix operators are allowed, but not postfix.
+
+The following operators are reserved for definitions, type restrictions and quotation respectively:
+
+    = : `
 
                                             
 ### Special forms
@@ -147,10 +100,82 @@ Special forms are identified special keywords, which are reserved for a particul
 - `in` and `imply` for module declarations
 - `type` for type expressions.
 
+            
 
-The following operators are reserved for definitions, type restrictions and quotation respectively:
+### Delimiters
 
-    = : `
+Delimiters consist of the characters `( ) [ ] { }`, and may be used to group expressions. Delimiters and must be written to balance. Thus the following expressions are all valid.
+
+    (1)
+    (1, 2)
+    [(1 + 2)]
+    {(1 + 2) * 3}
+
+However, the following expression is not:
+
+    ([1)]
+
+Delimiters are commonly used to indicate precedence:
+
+    2 * 3 + 4   => 10
+    2 * (3 + 4) => 14
+
+Delimiters may also be bound to functions. By default, standard parentheses `( )` do nothing, while brackets `[ ]` and braces `{ }` are bound to the functions `list` and `set` respectively. Thus, these delimiters may be thought of as literals for lists and sets, a fact which is acknowledged by their written representations.
+
+    [1, 2, 3] : list
+      => true
+
+    {1, 2, 3} : set
+      => true
+
+    [0 + 1, 1 + 1, 1 + 2]
+      => [1, 2, 3]
+      
+TODO We need non-evaluating arguments to get expressions such as [(1, 2, 3)] to differ from [1, 2, 3].
+
+
+### Indentation
+
+Vitry use indentation as a way of expressing nested expressions without actually having to write out all the delimiters. This is achieved by a process called indentation rewriting, which is performed on all code before interpretation.
+
+TODO
+
+    john paul
+    george ringo
+    => (john paul) (george ringo)
+
+    john paul
+      george ringo
+    => (john paul (george ringo))
+
+    john 
+      paul
+        george ringo
+    => (john (paul (george ringo)))
+
+    john 
+      paul
+      george
+        ringo
+    => (john (paul) (george (ringo))) 
+
+    john 
+      paul
+        george
+      ringo
+    => (john (paul (george)) (ringo)) 
+
+
+### Comments
+
+TODO
+
+### Meta-expressions
+
+TODO
+
+
+
 
 
 
@@ -223,94 +248,17 @@ Intersection types capture the notion of *composition* in object-oriented langua
     
 
 
-## Delimiters
 
-Delimiters consist of the characters `( ) [ ] { }`, and may be used to group expressions. Delimiters and must be written to balance. Thus the following expressions are all valid.
-
-    (1)
-    (1, 2)
-    [(1 + 2)]
-    {(1 + 2) * 3}
-
-However, the following expression is not:
-
-    ([1)]
-
-Delimiters are commonly used to indicate precedence:
-
-    2 * 3 + 4   => 10
-    2 * (3 + 4) => 14
-
-Delimiters may also be bound to functions. By default, standard parentheses `( )` do nothing, while brackets `[ ]` and braces `{ }` are bound to the functions `list` and `set` respectively. Thus, these delimiters may be thought of as literals for lists and sets, a fact which is acknowledged by their written representations.
-
-    [1, 2, 3] : list
-      => true
-
-    {1, 2, 3} : set
-      => true
-
-    [0 + 1, 1 + 1, 1 + 2]
-      => [1, 2, 3]
-      
-TODO We need non-evaluating arguments to get expressions such as [(1, 2, 3)] to differ from [1, 2, 3].
-
-
-### Indentation
-
-Vitry use indentation as a way of expressing nested expressions without actually having to write out all the delimiters. This is achieved by a process called indentation rewriting, which is performed on all code before interpretation.
-
-TODO
-
-~~~~~~~~~~
-john paul
-george ringo
-  =>
-(john paul)
-(george ringo)
-~~~~~~~~~~
-
-~~~~~~~~~~
-john paul
-  george ringo
-  =>
-(john paul
-  (george ringo))
-~~~~~~~~~~
-
-~~~~~~~~~~
-john 
-  paul
-    george ringo
-  =>
-(john 
-  (paul
-    (george ringo)))
-~~~~~~~~~~
-
-~~~~~~~~~~
-john 
-  paul
-  george
-    ringo
-  =>
-(john 
-  (paul)
-  (george
-    (ringo)))
-~~~~~~~~~~
-
-
-## Meta-expressions
-
-TODO
     
 
-## Bindings and scope
+## Local bindings
 
 Local bindings may be used with the `let` or `where` forms. They are identical except that the let form expects the definition before the scoped expression and where the reverse. Bound expression evaluates to the value of the scoped expression with the given values bound in.
 
+    let atom = expr expr
     let atom = expr atom = expr ... expr
     
+    expr where atom = expr
     expr where atom = expr atom = expr ...
 
 Example : 
@@ -332,13 +280,36 @@ Bindings are resolved by lexical scoping, thus inner bindings always override ou
         foo
     => 2
 
+The `let` and `where` forms are very useful for creating local variables or factoring out expressions to make them more readable.
 
 
 ## Functions       
 
-TODO  
+Functions may be thought of as local bindings with unspecified values. They are defined by the `fn` special form:
+
+    fn expr
+    fn parameter : type expr
+    fn parameter : type parameter : type ... expr
+
+TODO
 
 At the semantic level, Vitry makes no distinction between functions, delimiters and operators.
+
+
+
+
+
+
+## Higher-order types
+
+### Lists
+
+TODO
+
+### Tuples
+          
+TODO
+
 
 
 
@@ -347,14 +318,7 @@ At the semantic level, Vitry makes no distinction between functions, delimiters 
 TODO
 
 
-## Lists
-
-TODO
-
-
-## Predicates and matching
-
-A *predicate* is a function on the form `? -> bool`.
+## Matching
 
 TODO
 
@@ -366,7 +330,6 @@ TODO
 
 
 ## Modules
-
 
 TODO
 
@@ -530,22 +493,72 @@ TODO
 TODO
 
 
-# Transcription and performance
-
-
-
-
-
 
     
-# Miscellaneous topics
+# Practical usage
 
-## Calling foreign languages
+## Building and installing
+
+Vitry targets the [Java Virtual Machine](http://en.wikipedia.org/wiki/Java_Virtual_Machine), and may be used with almost any operating system. The only dependency is the Java runtime environment. The build requirements are [Git](http://git-scm.com/) and [Apache Ant](http://ant.apache.org/). You may check if these are installed as follows:
+                                 
+    $ java
+    $ git
+    $ ant
+
+If not, download and install from the sites above or through your package management system.
+
+As soon as the build requirements are in place, do:
+
+    $ git clone git@github.com:hanshoglund/vitry.git
+    $ cd vitry
+    $ ant
+    $ sudo ant install
+                      
+Or if you are on Windows:
+
+    $ git clone git@github.com:hanshoglund/vitry.git
+    $ cd vitry
+    $ ant
+    $ ant install
+
+You may append a directory to the install command.
+
+         
+## The interpreter
+
+The interpreter is typically the simplest way to interact with Vitry. To run it, simply type `vitry`.
+
+TODO
+
+The interpreter also accepts special commands commenced by a colon. These are not part of the Vitry language, but exist for ease of use in the interpreter.
+
+
+## Scripts and compilation
+            
+While the interpreter provides a simple way to experiment and test out code, larger projects will require writing code in files. Vitry accepts text files or precompiled class files for execution. The only difference between the two is that class files may execute somewhat faster.
+
+Vitry code is written in standard text files. Only the UTF-8 encoding is accepted. File names typically have the `.vitry` suffix, allthough this is not required. There is no difference between the kind of expressions allowed in the interpreter and in file source code except that the interpreter commands are not allowed in files. Vitry files may have a shebang line, allowing them to be executed in standard Unix shells.
+
+In a large Vitry project, most source code files will be used to define modules and implicits. To make an executable program a module containin a main function is required.
+
+    in myApp
+      main = do
+        prompt "Please enter your name:"
+        post + ("Hello " ++ _)
+
+To excute a script, simply use:
+
+    $ vitry hello.vitry
+
+
+
+
+## Setting up the environment
 
 TODO
 
 
-## Setting up the environment
+## Calling foreign languages
 
 TODO
 

@@ -40,10 +40,10 @@
     padding-top: 60px;
     padding-left:1em;
   
-/*    font-family: Arial, sans-serif;*/
+/*    font-family: Arial, sans-serif; */
     font-size: 11.8px;
     line-height: 150%;
-    display: none;
+/*    display: none; */
   }
   #TOC a {
     color: #000;
@@ -68,9 +68,9 @@
 
   div#content {
     padding-top: 60px;
-    margin-left: 0px;  
+    margin-left: 250px;  
     padding-left:1em;
-    max-width: 1030px;
+    max-width: 745px;
   }
   
   #content a, .title {
