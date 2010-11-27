@@ -37,6 +37,8 @@
 
   div#TOC {       
     top: 52px;
+    border-bottom : 1px solid grey;    
+    
              
     background-color :  #fff;
   	opacity: 0.95;
