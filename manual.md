@@ -299,6 +299,10 @@ john
     (ringo)))
 ~~~~~~~~~~
 
+
+## Meta-expressions
+
+TODO
     
 
 ## Bindings and scope
@@ -343,7 +347,7 @@ At the semantic level, Vitry makes no distinction between functions, delimiters 
 TODO
 
 
-## Sequences
+## Lists
 
 TODO
 
