@@ -10,7 +10,7 @@
 
 
 # Introduction
-Vitry is a functional programming language and an environment for representation and manipulation of music. The language features a succinct, expressive syntax and a powerful type system. The represented music can be output in a variety of formats, transcribed to musical notation or used as control data for sound synthesis.
+Vitry is a functional programming language and an environment for representation and manipulation of music. The language features an infix syntax and a simple, expressive type system. The represented music can be output in a variety of formats, transcribed to musical notation or used as control data for sound synthesis.
 
 The representation of music is abstract in the sense that it is not concerned with actual sound, but the formal structure of music.  The basic idea is to give the user the tools needed to impliment any kind of musical model, while also providing implementations of standard notions of time, pitch, phrasing etc.
 
@@ -27,7 +27,7 @@ Vitry may be used for composition, arranging, transcription or analysis. It is b
 
 # The language                                                                        
 
-Like most functional languages, Vitry depends on functions, values and types are the principal units of abstraction. Mutable state is avoided and recursion and looping are used interchangebly.
+Like most functional languages, Vitry depends on functions, values and types as the principal units of abstraction. Mutable state is avoided and recursion is used for looping and traversal.
 
 Unlike most languages, Vitry treats both functions and types as first class values, that may be referenced and passed to functions like any other. Evaluation is strict by default, but lazy evaluation is possible and lists are always lazy. The type system is based on the notions of implicit conversions.
 
