@@ -6,15 +6,15 @@
 
       font-family :       Geneva, sans-serif;
       font-size :         12px;
-      line-height :       170%;
+      line-height :       150%;
   }
   
   
 
   div#top-menu {
-    border :            1px solid grey;    
+    border :            1px solid Grey;    
     background-color :  #ddd;
-  	opacity: 0.8  ;
+  	opacity:            0.85;
     
     padding :           5px;
 
@@ -36,12 +36,10 @@
   
 
   div#TOC {       
-    top: 52px;
-    border-bottom : 1px solid grey;    
-    
+    border-bottom:      1px solid LightGrey;    
              
-    background-color :  #fff;
-  	opacity: 0.95;
+    background-color:   #fff;
+  	opacity:            0.92;
 
     
     font-family: Arial, sans-serif; 
@@ -52,6 +50,7 @@
     
 
     position :          fixed;
+    top: 46px;
     left: 50%;
     width :             780px;
     margin-left:        -400px;
@@ -87,7 +86,6 @@
   #TOC ul>li:nth-child(5) { float: left; width: 195px; }
 
 
-
   
 
   
@@ -101,7 +99,12 @@
   
   #content a, .title {
     color: CornflowerBlue;
+  }    
+
+  #content li {
+    padding-bottom: 0.6em;
   }
+  
   
   
   
@@ -135,14 +138,14 @@
   pre, code {           
       font-family: Monaco, monospace;
       font-size: 11.8px;
-      background: #F8FAFC;
-      border: 1px solid #ddd;
   }
   pre code {
     background: none;
     border: none;    
   }
   pre {   
+      background: #F8FAFC;
+      border: 1px solid #ddd;
       line-height: 120%;
       padding: 1.5em;
   }     
@@ -173,7 +176,7 @@
     display:none;
   }
   div#TOC {
-    display:none;
+/*    display:none;*/
   }
   
   body {
