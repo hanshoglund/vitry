@@ -10,7 +10,7 @@
 
 
 # Introduction
-Vitry is a programming language and an environment for representation and manipulation of music. The language features a succinct, expressive syntax and a powerful type system. The represented music can be output in a variety of formats, transcribed to musical notation or used as control data for sound synthesis.
+Vitry is a functional programming language and an environment for representation and manipulation of music. The language features a succinct, expressive syntax and a powerful type system. The represented music can be output in a variety of formats, transcribed to musical notation or used as control data for sound synthesis.
 
 The representation of music is abstract in the sense that it is not concerned with actual sound, but the formal structure of music.  The basic idea is to give the user the tools needed to impliment any kind of musical model, while also providing implementations of standard notions of time, pitch, phrasing etc.
 
@@ -27,11 +27,11 @@ Vitry may be used for composition, arranging, transcription or analysis. It is b
 
 # The language                                                                        
 
-Vitry is a functional programming language. Well known languages in this family include Lips and Haskell. Like these languages, it depends on functions, values and types are the principal units of abstraction. Mutable state is avoided and recursion and looping are used interchangebly.
+Like most functional languages, Vitry depends on functions, values and types are the principal units of abstraction. Mutable state is avoided and recursion and looping are used interchangebly.
 
-Unlike most languages, Vitry treats both functions and types as first class values, that may be referenced and passed to functions like any other. 
+Unlike most languages, Vitry treats both functions and types as first class values, that may be referenced and passed to functions like any other. Evaluation is strict by default, but lazy evaluation is possible and lists are always lazy. The type system is based on the notions of implicit conversions.
 
-Vitry strikes a balance between the eager, dynamic nature of the Lisp family and the declarative style of Haskell. Evaluation is strict by default, but non-strict evaluation is possible and lists are non-strict by default. In addition, the type system is based around the notions of implicit conversions, which may be specified in user code.
+TODO explain structural equivalence
 
 
 
@@ -41,21 +41,13 @@ Vitry strikes a balance between the eager, dynamic nature of the Lisp family and
 
 The lexical conventions are very simple. All code is parsed into one of the following kinds of tokens by the lexer: 
 
-- Spaces (including tabs and Unicode space characters)
+- Spaces
 - Line breaks
 - Operators and delimiters
 - Literals for symbols, strings and numbers
-- Keywords (for special forms)
+- Keywords for special forms
 
-Indentation levels are *expanded* to delimiters before interpretation, allowing nested expressions to be written without a large amount of parentheses. Thus indentation may be ommited altogether in generated code. For details on the lexical sytax, see the final chapter of this manual.
-
-                      
-
-
-## Values
-
-TODO explain structural equivalence
-
+Indentation levels are *expanded* to delimiters before interpretation, allowing nested expressions to be written without a large amount of parentheses. Thus indentation may be ommited altogether if delimiters are used instead. For details on the lexical sytax, see the final chapter of this manual.
 
 
 

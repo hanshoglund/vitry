@@ -32,7 +32,7 @@
               <a id="toc-toggle" href="">Mailing list</a>
             </td>
             <td align="left">
-              <a id="toc-toggle" href="">PDF version</a>
+              <a id="toc-toggle" href="manual.pdf">PDF version</a>
             </td>
           </tr>
         </tbody>
@@ -53,10 +53,6 @@
           ><li
     	><a href="#lexical-conventions"
     	  >Lexical conventions</a
-    	  ></li
-    	><li
-    	><a href="#values"
-    	  >Values</a
     	  ></li
     	><li
     	><a href="#types"
@@ -227,14 +223,14 @@
     	      >Rests</a
     	      ></li
     	    ><li
-    	    ><a href="#phrasing"
-    	      >Phrasing</a
-    	      ></li
-    	    ><li
     	    ><a href="#tags"
     	      >Tags</a
     	      ></li
     	    ></ul
+    	  ></li
+    	><li
+    	><a href="#phrasing"
+    	  >Phrasing</a
     	  ></li
     	><li
     	><a href="#processes"
@@ -289,12 +285,44 @@
     	  >Spacialization</a
     	  ></li
     	><li
-    	><a href="#nonlinearity"
-    	  >Nonlinearity</a
+    	><a href="#nonlinear-structures"
+    	  >Nonlinear structures</a
+    	  ></li
+    	></ul
+          ></li
+        ><li
+        ><a href="#transcriptions"
+          >Transcriptions</a
+          ><ul
+          ><li
+    	><a href="#standard-notation"
+    	  >Standard notation</a
+    	  ><ul
+    	  ><li
+    	    ><a href="#metrical-grouping"
+    	      >Metrical grouping</a
+    	      ></li
+    	    ><li
+    	    ><a href="#spelling"
+    	      >Spelling</a
+    	      ></li
+    	    ><li
+    	    ><a href="#style-options"
+    	      >Style options</a
+    	      ></li
+    	    ><li
+    	    ><a href="#formats"
+    	      >Formats</a
+    	      ></li
+    	    ></ul
     	  ></li
     	><li
-    	><a href="#indeterminate-structures"
-    	  >Indeterminate structures</a
+    	><a href="#free-form-notation"
+    	  >Free-form notation</a
+    	  ></li
+    	><li
+    	><a href="#midi"
+    	  >MIDI</a
     	  ></li
     	></ul
           ></li
@@ -364,7 +392,7 @@
   >Introduction</a
   ></h1
 ><p
->Vitry is a programming language and an environment for representation and manipulation of music. The language features a succinct, expressive syntax and a powerful type system. The represented music can be output in a variety of formats, transcribed to musical notation or used as control data for sound synthesis.</p
+>Vitry is a functional programming language and an environment for representation and manipulation of music. The language features a succinct, expressive syntax and a powerful type system. The represented music can be output in a variety of formats, transcribed to musical notation or used as control data for sound synthesis.</p
 ><p
 >The representation of music is abstract in the sense that it is not concerned with actual sound, but the formal structure of music. The basic idea is to give the user the tools needed to impliment any kind of musical model, while also providing implementations of standard notions of time, pitch, phrasing etc.</p
 ><p
@@ -382,11 +410,11 @@
   >The language</a
   ></h1
 ><p
->Vitry is a functional programming language. Well known languages in this family include Lips and Haskell. Like these languages, it depends on functions, values and types are the principal units of abstraction. Mutable state is avoided and recursion and looping are used interchangebly.</p
+>Like most functional languages, Vitry depends on functions, values and types are the principal units of abstraction. Mutable state is avoided and recursion and looping are used interchangebly.</p
 ><p
->Unlike most languages, Vitry treats both functions and types as first class values, that may be referenced and passed to functions like any other.</p
+>Unlike most languages, Vitry treats both functions and types as first class values, that may be referenced and passed to functions like any other. Evaluation is strict by default, but lazy evaluation is possible and lists are always lazy. The type system is based on the notions of implicit conversions.</p
 ><p
->Vitry strikes a balance between the eager, dynamic nature of the Lisp family and the declarative style of Haskell. Evaluation is strict by default, but non-strict evaluation is possible and lists are non-strict by default. In addition, the type system is based around the notions of implicit conversions, which may be specified in user code.</p
+>TODO explain structural equivalence</p
 ><h2 id="lexical-conventions"
 ><a href="#TOC"
   >Lexical conventions</a
@@ -395,7 +423,7 @@
 >The lexical conventions are very simple. All code is parsed into one of the following kinds of tokens by the lexer:</p
 ><ul
 ><li
-  >Spaces (including tabs and Unicode space characters)</li
+  >Spaces</li
   ><li
   >Line breaks</li
   ><li
@@ -403,18 +431,12 @@
   ><li
   >Literals for symbols, strings and numbers</li
   ><li
-  >Keywords (for special forms)</li
+  >Keywords for special forms</li
   ></ul
 ><p
 >Indentation levels are <em
   >expanded</em
-  > to delimiters before interpretation, allowing nested expressions to be written without a large amount of parentheses. Thus indentation may be ommited altogether in generated code. For details on the lexical sytax, see the final chapter of this manual.</p
-><h2 id="values"
-><a href="#TOC"
-  >Values</a
-  ></h2
-><p
->TODO explain structural equivalence</p
+  > to delimiters before interpretation, allowing nested expressions to be written without a large amount of parentheses. Thus indentation may be ommited altogether if delimiters are used instead. For details on the lexical sytax, see the final chapter of this manual.</p
 ><h2 id="types"
 ><a href="#TOC"
   >Types</a
@@ -1063,7 +1085,9 @@ recur expr expr ...
   >Events</a
   ></h2
 ><p
->Events is the abstract type representing discrete musical actions. TODO</p
+>The <code
+  >event</code
+  > is the abstract type representing discrete musical actions. TODO</p
 ><h3 id="notes"
 ><a href="#TOC"
   >Notes</a
@@ -1076,16 +1100,16 @@ recur expr expr ...
   ></h3
 ><p
 >TODO</p
-><h3 id="phrasing"
-><a href="#TOC"
-  >Phrasing</a
-  ></h3
-><p
->TODO</p
 ><h3 id="tags"
 ><a href="#TOC"
   >Tags</a
   ></h3
+><p
+>TODO</p
+><h2 id="phrasing"
+><a href="#TOC"
+  >Phrasing</a
+  ></h2
 ><p
 >TODO</p
 ><h2 id="processes"
@@ -1093,7 +1117,9 @@ recur expr expr ...
   >Processes</a
   ></h2
 ><p
->A musical process (not to be confused with a computational) is the abstract type representing continuous musical actions.</p
+>The <code
+  >process</code
+  > is the abstract type representing continuous musical actions.</p
 ><p
 >TODO</p
 ><h3 id="dynamics"
@@ -1119,11 +1145,13 @@ recur expr expr ...
   >Instrumentation</a
   ></h2
 ><p
->The concept of instrumentation may be generalized to represent the distribution of a set of events across a set of <em
+>An <code
+  >instrumentation</code
+  > represents the distribution of a set of events across a set of <em
   >performers</em
   > or <em
   >ensembles</em
-  >. This concept is useful not only for orchestral music, but also for distribution of events across synthesizers, or even virtual performers such as sub-processes of a generative piece.</p
+  >. This is useful not only for instrumental music, but also for distribution of events across synthesizers, or even virtual performers such as sub-processes of a generative piece.</p
 ><p
 >The atomic unit of instrumentation is the performer, defined as a receiver of musical events. There is no theoretical distinction between a vocal, instrumental or virtual performer, but we provide these synonyms for convenience.</p
 ><pre
@@ -1170,22 +1198,44 @@ recur expr expr ...
 >Spacialization is generally mostly of interest in acousmatic music, as fine control of the spacial parameter is not available in the instrumental or vocal genres. However, if spacialization is treated a continous distribution in an abstract sense, there are possibilities of using &quot;virtual spaces&quot; to control other musical parameters. It may also be used in conjunction with instrumentation to model the real-life spacial setup of an ensemble.</p
 ><p
 >TODO</p
-><h2 id="nonlinearity"
+><h2 id="nonlinear-structures"
 ><a href="#TOC"
-  >Nonlinearity</a
-  ></h2
-><p
->called <code
-  >nonlinear</code
-  > and <code
-  >nonsync</code
-  > TODO</p
-><h2 id="indeterminate-structures"
-><a href="#TOC"
-  >Indeterminate structures</a
+  >Nonlinear structures</a
   ></h2
 ><p
 >TODO</p
+><h1 id="transcriptions"
+><a href="#TOC"
+  >Transcriptions</a
+  ></h1
+><h2 id="standard-notation"
+><a href="#TOC"
+  >Standard notation</a
+  ></h2
+><h3 id="metrical-grouping"
+><a href="#TOC"
+  >Metrical grouping</a
+  ></h3
+><h3 id="spelling"
+><a href="#TOC"
+  >Spelling</a
+  ></h3
+><h3 id="style-options"
+><a href="#TOC"
+  >Style options</a
+  ></h3
+><h3 id="formats"
+><a href="#TOC"
+  >Formats</a
+  ></h3
+><h2 id="free-form-notation"
+><a href="#TOC"
+  >Free-form notation</a
+  ></h2
+><h2 id="midi"
+><a href="#TOC"
+  >MIDI</a
+  ></h2
 ><h1 id="practical-topics"
 ><a href="#TOC"
   >Practical topics</a
