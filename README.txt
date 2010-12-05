@@ -4,7 +4,7 @@ by Hans Höglund
 
 Pre-alpha, not usable
 
-Vitry is a functional programming language and an environment for representation and manipulation of music. The language features an infix syntax and a simple, expressive type system. The represented music can be output in a variety of formats, transcribed to musical notation or used as control data for sound synthesis.
+Vitry is a functional programming language and an environment for representation and manipulation of music. Features an infix syntax and a simple, expressive type system. Represented music can be output in a variety of formats, transcribed to musical notation or used as control data for sound synthesis.
 
 Targets the JVM, works on Windows, Linux and OS X.
 
