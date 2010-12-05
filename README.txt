@@ -13,9 +13,6 @@ Instructions
 
     Build
         $ ant
-                 
-    Build options
-        $ ant -p
     
     Run 
         $ java -cp lib/js.jar:lib/jline.jar:vitry.jar vitry.main

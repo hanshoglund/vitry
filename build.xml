@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project name="Vitry" basedir="." default="debug">
 
-	<description>
-Vitry
-
-A music composition environment
-
-This program is free software, see COPYING.txt for details.
-ABSOLUTELY NO WARRANTY IMPLIED.
-	</description>
-
 	<property name="javascriptVersion" value="180"/>
     <property name="src.js"            value="src/js"/>
 
@@ -46,31 +37,7 @@ ABSOLUTELY NO WARRANTY IMPLIED.
             <arg value="${src.js}/vitry/core.js"/>
             <arg value="${src.js}/vitry/header.js"/>
             <arg value="${src.js}/vitry/main.js"/>
-            <arg value="${src.js}/vitry/music.js"/>
-            <arg value="${src.js}/vitry/readers.js"/>
-            <arg value="${src.js}/vitry/writers.js"/>
-            <arg value="${src.js}/vitry/util.js"/>
 		</java>
-
-        <!--
-        <java fork="true"
-            classpath="lib/js.jar:lib/jline.jar:bin"
-            classname="org.mozilla.javascript.tools.jsc.Main"
-            failonerror="true">
-
-            <arg value="-d"/>
-            <arg value="bin"/>
-            <arg value="-nosource"/>
-            <arg value="-opt"/>
-            <arg value="0"/>
-            <arg value="-version"/>
-            <arg value="${javascriptVersion}"/>
-            <arg value="-package"/>
-            <arg value="vitry.util"/>
-
-            <arg value="${src.js}/vitry/util/javascript.js"/>
-        </java>
-        -->
 	</target>
 
     <!-- =============================================================== -->
