@@ -1,6 +1,8 @@
 /*
  * Vitry, copyright (c) Hans Höglund 2010, see COPYING.txt for details
  */
+ 
+// TODO Rewrite from scratch based on persistant classes
 
 /**
  * Provides the music model.
@@ -8,39 +10,91 @@
  * @author Hans Höglund
  * @date 2010
  */
+function Event(pitch, duration) {
+  if (!(this instanceof Event)) return new Event();
+  
+   this.duration = duration || new Rational(0)
+   this.pitch    = pitch    || -1
+}
 
-var Music           = function(){};
-
-var Notation        = function(){};
-var DynamicNotation = function(){};
-var PitchNotation   = function(){};
-var TimeNotation    = function(){};
-
-var Event           = function(){};
-var Note            = function(){};
-var Sound           = function(){};
-var Curve           = function(){};
-
-var Position        = function(){};
-var Duration        = function(){};
-
-var Pitch           = function(){};
-var PitchClass      = function(){};
-var PitchName       = function(){};
-var Accidental      = function(){};
-var Octave          = function(){};
-
-var Location        = function(){};
-
-var Key             = function(){};
-var Time            = function(){};
-var Tonality        = function(){};
+Event.prototype = {
+  serialize : function() {
+    return {
+      // type:     this.type,
+      duration: this.duration.serialize(),
+      pitch:    this.pitch
+    }
+  }
+}
 
 
-exports.add ( Music,
+/**
+ * A collection of musical Events indexed by time.
+ */
+function Score() {
+  if (!(this instanceof Score)) return new Score();
+  
+  this.attributes   = {};
+  this.events       = {};
+  this.lastPosition = new Rational(0);
+} 
+
+Score.prototype = {  
+  
+  clear : function() {
+    this.events       = {};
+    this.lastPosition = new Rational(0);
+  },
+
+  note : function(pitch, duration) {  
+    var dur = Rational.coerce(duration);
+    this.events[this.lastPosition.toString()] = [new Event(pitch, dur)];
+    incr(this, dur);
+  },
+
+  rest : function(duration) {
+    incr(this, Rational.coerce(duration));
+  },
+
+  pitches : function(fn, steps, dur) {
+    for ( var i = 0; i < steps; ++i)
+      this.note(fn.call(null, i), dur);
+  }, 
+  
+  serialize : function() {
+    var that = this;
+    return {
+      attributes: this.attributes,
+      events: 
+        this.events.keys() .
+        map(Rational.coerce) .
+        // sort(Rational.compare) . 
+        map(function(k) {
+          return [ k.serialize(), that.events[k.toString()] ]
+        })
+    }
+  },
+  
+  toString : function() {
+    return "[Score score]";
+  }
+} 
+
+function incr(score, dur) {
+  score.lastPosition = score.lastPosition.add(dur);
+}
+
+
+
+
+
+exports.add ( Score, Event
+
+
+              /*Music,
               Notation, DynamicNotation, PitchNotation, TimeNotation,
               Event, Note, Sound, Curve,
               Position, Duration,
               Pitch, PitchClass, PitchName, Accidental, Octave,
               Location,
-              Key, Time, Tonality );
+              Key, Time, Tonality*/ );
