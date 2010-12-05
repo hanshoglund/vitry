@@ -27,11 +27,9 @@ Vitry may be used for composition, arranging, transcription or analysis. It is b
 
 # The language                                                                        
 
-Like most functional languages, Vitry depends on functions, values and types as the principal units of abstraction. Mutable state is avoided and recursion is used for looping and traversal.
+Like most functional languages, Vitry depends on functions, values and types as the principal units of abstraction. Mutable state is avoided and recursion is used for looping and traversal. Evaluation is strict by default, but lazy evaluation is possible and lists are always non-strict.
 
-Unlike most languages, Vitry treats both functions and types as first class values, that may be referenced and passed to functions like any other. Evaluation is strict by default, but lazy evaluation is possible and lists are always lazy. The type system is based on the notions of implicit conversions.
-
-TODO explain structural equivalence
+Unlike most languages, Vitry treats both functions and types as first class values, that may be referenced and passed to functions like any other. 
 
 
 
@@ -43,16 +41,17 @@ The lexical conventions are very simple. All code is parsed into one of the foll
 
 - Spaces
 - Line breaks
-- Operators and delimiters
-- Literals for symbols, strings and numbers
-- Keywords for special forms
+- Operators: `! # $ % & \ * + , - . / ; < = > ? @ \ ^ _ ` ` ` | ~ '`
+- Delimiters: `( ) [ ] { }`
+- Literals for symbols, strings and numbers: `2  3.5  symbol "string"`
+- Keywords for special forms: `let where loop recur fn if match do in imply type`
 
-Indentation levels are *expanded* to delimiters before interpretation, allowing nested expressions to be written without a large amount of parentheses. Thus indentation may be ommited altogether if delimiters are used instead. For details on the lexical sytax, see the final chapter of this manual.
+Indentation structure expands to parentheses, allowing nested expressions to be written without a large amount of delimiters. Thus indentation may be ommited altogether if delimiters are used instead. For details on the lexical sytax, see the final chapter of this manual.
 
 
 
 
-## Types
+## Basic types
 
 TODO (determine) explain type equivalence 
 
@@ -99,13 +98,14 @@ Strings are lists of Unicode characters. The string type is written as `string`.
     "I hate music"
 
 
+## Defining types
+
+
 ### Symbols    
 
-Symbols are representations of unique values. As values equivalence is 
+Symbols are representations of unique values.
 
-
-
-
+TODO
 
  
 
@@ -121,19 +121,30 @@ The quote character may be used to access operators and delimiters as symbols. T
              
 
 
-### Or types
+### Sum types
 
-TODO
+Sum types (also called *unions*) is created using the `|` operator on existing types.
+ 
+    bool = true | false
 
-Intersection types capture the notion of *inheritance* in object-oriented languages.
+Sum types capture the notion of inheritance in object-oriented languages.
 
-### And types
+### Power types
 
-TODO
+Union types (also called *tuples*) is created using the `,` operator. Parentheses are added by convention.
 
-Intersection types capture the notion of *composition* in object-oriented languages.
+    rat = (nat, nat)
+
+Power types capture the notion of composition in object-oriented languages.
     
+### Lists
 
+    guests = [ person ]
+
+### Sets
+
+    color = { red, green, blue }
+    
 
 
 ## Expressions
@@ -310,9 +321,9 @@ At the semantic level, Vitry makes no distinction between functions, delimiters 
 
 ## Bindings
 
-Bindings is the notion of assigning references (values) to symbols. There are three kinds of bindings: global, parametric and local. 
+Bindings is the notion of assigning references (values) to symbols. To assure purity of functions, bindings may not be undone. Thus, there is no separate notion of constants or immutable values, instead every binding may be thought of as a *definition* made in a certain environment. There are three kinds of such environments: global, parametric and local. 
 
-Global bindings are typically used to define functions and types and can be accessed from any other expression. Despite the name, they are typically encapsulated into modules. Global bindings can be used declarative (i.e. without any need to concern oneself about evaluation order):
+Global bindings are typically used to define functions and types and can be accessed from any other expression. Despite the name, global bindings are local to the module in which it was defined, unless it is exported and imported by another module. However, there is no concept of nesting modules, all global bindings live in a flat namespace. Because of this, global bindings can be used declaratively (order does not matter):
     
     b = a + 2
     a = 2                                                                               
@@ -321,7 +332,9 @@ Global bindings are typically used to define functions and types and can be acce
     d = c    
     type c, d
 
-Parametric binding is the process of substituting a the parameters of a function with the given arguments upon evaluation. Local bindings are "one-off" associations that apply to a single expression. The only difference between local and parametric binding except that local binding is performed directly upon evaluation of the given expression. Both are resolved though lexical scoping, thus inner bindings always override outer:
+Parametric binding is the process of substituting a the parameters of a function with the given arguments upon evaluation. The similar local bindings are "one-off" associations that apply to a single expression. The only difference between local and parametric binding except that local binding is performed directly upon evaluation of the bound expression, while parametric binding is performed when the function is invoked. In other words, local binding is equivalent to a function that is invoked directly upon definition and then discarded. 
+
+Both local and parametric binding are resolved though lexical scoping, meaning that bindings of inner definitions always override those in outer:
 
     let foo = 1
       let foo = 2
@@ -338,7 +351,7 @@ Parametric binding is the process of substituting a the parameters of a function
 
 ### Let and where
 
-The `let` or `where` forms provide local binding. They are identical except that the let form expects the bound expression first, and the where form last. Bound expression evaluates to the value of the scoped expression with the given values bound in.
+The `let` or `where` forms provide basic local binding. They are identical except that the let form expects the bound expression first, and the where form last. Bound expression evaluates to the value of the scoped expression with the given values bound in.
 
     let atom = expr expr
     let atom = expr atom = expr ... expr
@@ -364,15 +377,15 @@ The `let` and `where` forms are very useful for creating local variables or fact
 
 ### Loop and recur
 
-The `loop` and `recur` forms (borrowed from [Clojure](http://clojure.org/)) are the most efficient way to traverse data structures.
-
-TODO
+The `loop` and `recur` forms (borrowed from [Clojure](http://clojure.org/)) are the most efficient way to traverse data structures. The `loop` form is equivalent to the `let` form, except that it establishes a recursion point. The `recur` form behaves like a function application, except that it rebinds the given values at the innermost function or recursion point.
 
     loop atom = expr expr
     loop atom = expr atom = expr ... expr
 
     recur expr
-    recur expr expr ...
+    recur expr expr ...                                                                     
+    
+TODO
 
 ### Do
 
@@ -386,16 +399,22 @@ TODO
 
 ## Conditions
 
+To provide alternative branches of execution, we need conditional evaluation.
+
 ### If
+
+    if expr expr expr
+    if expr expr else expr
 
 ### Match
 
-
+    match
 
 
 
 ## Modules
 
+Modules provide convenient environments for declaration of functions, types and other values. 
 
 ### Import
 

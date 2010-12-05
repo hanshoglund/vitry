@@ -55,8 +55,8 @@
     	  >Lexical conventions</a
     	  ></li
     	><li
-    	><a href="#types"
-    	  >Types</a
+    	><a href="#basic-types"
+    	  >Basic types</a
     	  ><ul
     	  ><li
     	    ><a href="#booleans"
@@ -70,17 +70,31 @@
     	    ><a href="#strings"
     	      >Strings</a
     	      ></li
-    	    ><li
+    	    ></ul
+    	  ></li
+    	><li
+    	><a href="#defining-types"
+    	  >Defining types</a
+    	  ><ul
+    	  ><li
     	    ><a href="#symbols"
     	      >Symbols</a
     	      ></li
     	    ><li
-    	    ><a href="#or-types"
-    	      >Or types</a
+    	    ><a href="#sum-types"
+    	      >Sum types</a
     	      ></li
     	    ><li
-    	    ><a href="#and-types"
-    	      >And types</a
+    	    ><a href="#power-types"
+    	      >Power types</a
+    	      ></li
+    	    ><li
+    	    ><a href="#lists"
+    	      >Lists</a
+    	      ></li
+    	    ><li
+    	    ><a href="#sets"
+    	      >Sets</a
     	      ></li
     	    ></ul
     	  ></li
@@ -392,7 +406,7 @@
   >Introduction</a
   ></h1
 ><p
->Vitry is a functional programming language and an environment for representation and manipulation of music. The language features a succinct, expressive syntax and a powerful type system. The represented music can be output in a variety of formats, transcribed to musical notation or used as control data for sound synthesis.</p
+>Vitry is a functional programming language and an environment for representation and manipulation of music. The language features an infix syntax and a simple, expressive type system. The represented music can be output in a variety of formats, transcribed to musical notation or used as control data for sound synthesis.</p
 ><p
 >The representation of music is abstract in the sense that it is not concerned with actual sound, but the formal structure of music. The basic idea is to give the user the tools needed to impliment any kind of musical model, while also providing implementations of standard notions of time, pitch, phrasing etc.</p
 ><p
@@ -410,11 +424,9 @@
   >The language</a
   ></h1
 ><p
->Like most functional languages, Vitry depends on functions, values and types are the principal units of abstraction. Mutable state is avoided and recursion and looping are used interchangebly.</p
+>Like most functional languages, Vitry depends on functions, values and types as the principal units of abstraction. Mutable state is avoided and recursion is used for looping and traversal. Evaluation is strict by default, but lazy evaluation is possible and lists are always non-strict.</p
 ><p
->Unlike most languages, Vitry treats both functions and types as first class values, that may be referenced and passed to functions like any other. Evaluation is strict by default, but lazy evaluation is possible and lists are always lazy. The type system is based on the notions of implicit conversions.</p
-><p
->TODO explain structural equivalence</p
+>Unlike most languages, Vitry treats both functions and types as first class values, that may be referenced and passed to functions like any other.</p
 ><h2 id="lexical-conventions"
 ><a href="#TOC"
   >Lexical conventions</a
@@ -427,19 +439,29 @@
   ><li
   >Line breaks</li
   ><li
-  >Operators and delimiters</li
+  >Operators: <code
+    >! # $ % &amp; \ * + , - . / ; &lt; = &gt; ? @ \ ^ _</code
+    > <code
+    >` | ~ '</code
+    ></li
   ><li
-  >Literals for symbols, strings and numbers</li
+  >Delimiters: <code
+    >( ) [ ] { }</code
+    ></li
   ><li
-  >Keywords for special forms</li
+  >Literals for symbols, strings and numbers: <code
+    >2  3.5  symbol &quot;string&quot;</code
+    ></li
+  ><li
+  >Keywords for special forms: <code
+    >let where loop recur fn if match do in imply type</code
+    ></li
   ></ul
 ><p
->Indentation levels are <em
-  >expanded</em
-  > to delimiters before interpretation, allowing nested expressions to be written without a large amount of parentheses. Thus indentation may be ommited altogether if delimiters are used instead. For details on the lexical sytax, see the final chapter of this manual.</p
-><h2 id="types"
+>Indentation structure expands to parentheses, allowing nested expressions to be written without a large amount of delimiters. Thus indentation may be ommited altogether if delimiters are used instead. For details on the lexical sytax, see the final chapter of this manual.</p
+><h2 id="basic-types"
 ><a href="#TOC"
-  >Types</a
+  >Basic types</a
   ></h2
 ><p
 >TODO (determine) explain type equivalence</p
@@ -532,12 +554,18 @@
 &quot;I hate music&quot;
 </code
   ></pre
+><h2 id="defining-types"
+><a href="#TOC"
+  >Defining types</a
+  ></h2
 ><h3 id="symbols"
 ><a href="#TOC"
   >Symbols</a
   ></h3
 ><p
->Symbols are representations of unique values. As values equivalence is</p
+>Symbols are representations of unique values.</p
+><p
+>TODO</p
 ><p
 >All the types described in this manual are in fact type values bound to symbols such as <code
   >bool</code
@@ -555,26 +583,58 @@
 `{} = set
 </code
   ></pre
-><h3 id="or-types"
+><h3 id="sum-types"
 ><a href="#TOC"
-  >Or types</a
+  >Sum types</a
   ></h3
 ><p
->TODO</p
+>Sum types (also called <em
+  >unions</em
+  >) is created using the <code
+  >|</code
+  > operator on existing types.</p
+><pre
+><code
+  >bool = true | false
+</code
+  ></pre
 ><p
->Intersection types capture the notion of <em
-  >inheritance</em
-  > in object-oriented languages.</p
-><h3 id="and-types"
+>Sum types capture the notion of inheritance in object-oriented languages.</p
+><h3 id="power-types"
 ><a href="#TOC"
-  >And types</a
+  >Power types</a
   ></h3
 ><p
->TODO</p
+>Union types (also called <em
+  >tuples</em
+  >) is created using the <code
+  >,</code
+  > operator. Parentheses are added by convention.</p
+><pre
+><code
+  >rat = (nat, nat)
+</code
+  ></pre
 ><p
->Intersection types capture the notion of <em
-  >composition</em
-  > in object-oriented languages.</p
+>Power types capture the notion of composition in object-oriented languages.</p
+><h3 id="lists"
+><a href="#TOC"
+  >Lists</a
+  ></h3
+><pre
+><code
+  >guests = [ person ]
+</code
+  ></pre
+><h3 id="sets"
+><a href="#TOC"
+  >Sets</a
+  ></h3
+><pre
+><code
+  >color = { red, green, blue }
+</code
+  ></pre
 ><h2 id="expressions"
 ><a href="#TOC"
   >Expressions</a
@@ -840,9 +900,11 @@ fn parameter : type parameter : type ... expr
   >Bindings</a
   ></h2
 ><p
->Bindings is the notion of assigning references (values) to symbols. There are three kinds of bindings: global, parametric and local.</p
+>Bindings is the notion of assigning references (values) to symbols. To assure purity of functions, bindings may not be undone. Thus, there is no separate notion of constants or immutable values, instead every binding may be thought of as a <em
+  >definition</em
+  > made in a certain environment. There are three kinds of such environments: global, parametric and local.</p
 ><p
->Global bindings are typically used to define functions and types and can be accessed from any other expression. Despite the name, they are typically encapsulated into modules. Global bindings can be used declarative (i.e. without any need to concern oneself about evaluation order):</p
+>Global bindings are typically used to define functions and types and can be accessed from any other expression. Despite the name, global bindings are local to the module in which it was defined, unless it is exported and imported by another module. However, there is no concept of nesting modules, all global bindings live in a flat namespace. Because of this, global bindings can be used declaratively (order does not matter):</p
 ><pre
 ><code
   >b = a + 2
@@ -854,7 +916,9 @@ type c, d
 </code
   ></pre
 ><p
->Parametric binding is the process of substituting a the parameters of a function with the given arguments upon evaluation. Local bindings are &quot;one-off&quot; associations that apply to a single expression. The only difference between local and parametric binding except that local binding is performed directly upon evaluation of the given expression. Both are resolved though lexical scoping, thus inner bindings always override outer:</p
+>Parametric binding is the process of substituting a the parameters of a function with the given arguments upon evaluation. The similar local bindings are &quot;one-off&quot; associations that apply to a single expression. The only difference between local and parametric binding except that local binding is performed directly upon evaluation of the bound expression, while parametric binding is performed when the function is invoked. In other words, local binding is equivalent to a function that is invoked directly upon definition and then discarded.</p
+><p
+>Both local and parametric binding are resolved though lexical scoping, meaning that bindings of inner definitions always override those in outer:</p
 ><pre
 ><code
   >let foo = 1
@@ -878,7 +942,7 @@ type c, d
   >let</code
   > or <code
   >where</code
-  > forms provide local binding. They are identical except that the let form expects the bound expression first, and the where form last. Bound expression evaluates to the value of the scoped expression with the given values bound in.</p
+  > forms provide basic local binding. They are identical except that the let form expects the bound expression first, and the where form last. Bound expression evaluates to the value of the scoped expression with the given values bound in.</p
 ><pre
 ><code
   >let atom = expr expr
@@ -920,18 +984,24 @@ foo + bar where
   >recur</code
   > forms (borrowed from <a href="http://clojure.org/"
   >Clojure</a
-  >) are the most efficient way to traverse data structures.</p
-><p
->TODO</p
+  >) are the most efficient way to traverse data structures. The <code
+  >loop</code
+  > form is equivalent to the <code
+  >let</code
+  > form, except that it establishes a recursion point. The <code
+  >recur</code
+  > form behaves like a function application, except that it rebinds the given values at the innermost function or recursion point.</p
 ><pre
 ><code
   >loop atom = expr expr
 loop atom = expr atom = expr ... expr
 
 recur expr
-recur expr expr ...
+recur expr expr ...                                                                     
 </code
   ></pre
+><p
+>TODO</p
 ><h3 id="do"
 ><a href="#TOC"
   >Do</a
@@ -942,18 +1012,33 @@ recur expr expr ...
 ><a href="#TOC"
   >Conditions</a
   ></h2
+><p
+>To provide alternative branches of execution, we need conditional evaluation.</p
 ><h3 id="if"
 ><a href="#TOC"
   >If</a
   ></h3
+><pre
+><code
+  >if expr expr expr
+if expr expr else expr
+</code
+  ></pre
 ><h3 id="match"
 ><a href="#TOC"
   >Match</a
   ></h3
+><pre
+><code
+  >match
+</code
+  ></pre
 ><h2 id="modules"
 ><a href="#TOC"
   >Modules</a
   ></h2
+><p
+>Modules provide convenient environments for declaration of functions, types and other values.</p
 ><h3 id="import"
 ><a href="#TOC"
   >Import</a
