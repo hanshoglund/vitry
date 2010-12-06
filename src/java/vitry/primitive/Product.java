@@ -7,25 +7,26 @@ package vitry.primitive;
  */
 public class Product extends Value implements Reference {
 
-    private Boolean cacheConcrete = null;
+    private short cacheConcrete = -1;
     
-    // TODO hasValue, equals
-    
-
+    public boolean equals(Object o) {
+        return references(o);
+    }
+ 
     public boolean isConcrete(Value v) {
-        if (cacheConcrete == null) cacheConcrete = _isConcrete(v);
-        return cacheConcrete;
+        if (cacheConcrete < 0) cacheConcrete = _isConcrete(v);
+        return cacheConcrete > 0;
     }
     
-    private boolean _isConcrete(Value v) {
+    private short _isConcrete(Value v) {
         for (Value child : getChildren()) {
-            if (!child.isConcrete()) return false;
+            if (!child.isConcrete()) return 0;
         }
-        return true;
+        return 1;
     }
     
-    public boolean references(Value v) {
-        // TODO
-        return false;
+    public boolean references(Object o) {
+        Value[] children = getChildren();
+        return children.length == 1 && children[0] == o;
     }
 }

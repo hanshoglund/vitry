@@ -8,5 +8,5 @@ package vitry.primitive;
  */
 public interface Reference {
     
-    public boolean references(Value v);
+    public boolean references(Object v);
 }
