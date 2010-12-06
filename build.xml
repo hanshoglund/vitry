@@ -46,6 +46,9 @@
             <classpath>
                 <pathelement location="lib/js.jar" />
                 <pathelement location="lib/jline.jar" />
+                <pathelement location="lib/antlr.jar" />
+                <pathelement location="lib/asm-3.3.jar" />
+                <pathelement location="lib/asm-util-3.3.jar" />
             </classpath>
         </javac>
 	</target>

@@ -51,26 +51,12 @@ package vitry.primitive;
  * @author hans
  */
 public abstract class Value extends GraphNode {
-    
-    /**
-     * Structural equality.
-     */
-    @Override
+
     public boolean equals(Object o) {
         return false;
     }
-    
-    /**
-     * True if the given value matches this value as a type.
-     */
+
     public boolean hasValue(Value v) {
-        return equals(v);
+        return false;
     }
-    
-    /**
-     * TODO placeholder - Should be a lazy list.
-     */
-    public Value[] enumerate() {
-        return null;
-    }    
 }

@@ -1331,11 +1331,7 @@ function parseArgs(a) {
 // Environment
 
 var vitryModules = {
-  core          : "vitry/core",
-  music         : "vitry/music",
-  readers       : "vitry/readers",
-  util          : "vitry/util",
-  writers       : "vitry/writers"
+  core          : "vitry/core"
 }
 
 /**
