@@ -1,0 +1,8 @@
+
+- Implement a very simple core language in Java (vitry.primitive)
+    - Contains notions of Type, Value and Function
+    - AST etc is handled by ANTRL
+                                               
+    - Implement basic eq logic in Value and subtypes 
+    - Implement classes Util, Core, Compiler
+    - Compile some classes from Compiler.main()
