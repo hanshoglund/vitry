@@ -24,6 +24,7 @@ package vitry.primitive;
  * @author hans
  */
 public class Core {
+    
 
     // TODO implement StackedClassLoader...
 }

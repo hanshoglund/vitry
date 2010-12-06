@@ -4,6 +4,6 @@ package vitry.primitive;
  * 
  * @author hans
  */
-public class Compiler {
+public class Compiler implements Evaluator {
 
 }

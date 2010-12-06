@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class Symbol extends Atom {
 
-    String name;
+    private final  String name;
     private static Map<String, Symbol> table = new HashMap<String, Symbol>();
 
     private Symbol(String name)

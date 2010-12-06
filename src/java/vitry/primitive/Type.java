@@ -12,10 +12,6 @@ public class Type extends Value {
         else
             return o == this;
     }
-
-    public boolean hasValue(Value v) {
-        return false;
-    }
     
     // TODO enumerate
 }
