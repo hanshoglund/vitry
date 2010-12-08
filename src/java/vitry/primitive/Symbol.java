@@ -8,8 +8,8 @@ import java.util.Map;
  *   Symbol.generate(S) equals Symbol.generate(S)
  * 
  * If we get memory problems, we should replace the table by a soft table,
- * trading of comparison efficiency. Note that equals will fall back on string
- * comparison in this case.
+ * trading of comparison efficiency. In this case equals must fall back on string
+ * comparison.
  * 
  * @author hans
  */
@@ -23,7 +23,7 @@ public class Symbol extends Atom {
         this.name = name;
     }
 
-    public static Symbol generate(String name) {
+    public static Symbol intern(String name) {
         if (table.containsKey(name))
             return table.get(name);
         else {
@@ -33,11 +33,19 @@ public class Symbol extends Atom {
         }
     }
 
+    @Override
     public String toString() {
         return name;
     }
 
+    @Override
     public boolean equals(Object o) {
-        return o == this || o.toString() == this.name;
+//        return o == this || o.toString() == this.name;
+        return o == this;
     }
+    
+    @Override
+    public int hashCode() {
+        return this.name.hashCode();
+    }    
 }

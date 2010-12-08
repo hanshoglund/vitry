@@ -2,7 +2,76 @@
 - Implement a very simple core language in Java (vitry.primitive)
     - Contains notions of Type, Value and Function
     - AST etc is handled by ANTRL
+        - AST nodes are values in the language
                                                
     - Implement basic eq logic in Value and subtypes 
     - Implement classes Util, Core, Compiler
     - Compile some classes from Compiler.main()
+    
+    
+
+    - Semantics of the eq logic
+        - Notions of equality and type membership
+        - Power types, unions and functions
+        - What about:
+            - "Concrete" vs "abstract" values
+            - Representation of 1-tuple
+            - Type tagging
+
+        - Basic relations
+            - Equality
+            - Type membership (informally "matches" , "has type", "has value")
+            
+            - Java implementation:
+                - Equality is Object.equals() with the same semantics
+                - Type memebership is Value.hasValue()
+                - Problem : we may want to use other classes (i.e. Boolean, Float, Double)
+                - Does not this make the implentation less than straightforward? Every time we pass a
+                value, we must overload that method with an Object.
+                - The benefit of manipulating the value graph directly is great for future 
+                optimization and crucial to define type operations. If we were to refactor this to other
+                classes, what happens?
+                - I would much prefer to keep everything a vitry.p.Value subclass and add the possibility
+                of primitives (in a restricted sense) later on.
+               
+
+- How are symbols resolved
+    - Is the "environment" notion of Scheme etc to dynamic
+    - Can we use only statically/lexically scoped references
+        - Then we rewrite *all* expressions (including modules etc) as functions/let bindings and resolve all identifiers directly.
+    - How is this implemented in the translation to functions
+    
+    
+- Lazy evalutations
+    - Thunks?
+    - fexpr-like functionality
+        - Basically a way to define functions were all arguments are implicitly wrapped in thunks
+        
+- Implementing lambdas
+    - Use eval/apply (see "Making a Fast Curry" paper) for varargs
+        - This code can go into the Function abstract class
+    - How are statical scope resolved (see above)
+    - Conceptually, we want to make *every* function expression an concrete instance of vitry.primitive.Function. Is this efficient? Can we inline certain expression patterns as local jumps instead?
+    
+- Jumps in general
+    - The JVM disallows non-local jumps (?)
+        - Good for conceptual purity
+    - We implement match statements as "switches" using local jumps
+    - We implement loop/recur as well as self-call (thorugh recur) as a goto into the function head
+        - Basically, at recur position we push the new values to the arguments and jumps
+            - Meaning: no tail-call opt for indirect self-recursion (a la Clojure)
+                - Possible alternative, the mini-interpreter (see NestedVM, kawa?)    
+
+
+- Lists (!)
+    - We should represent lists as functions returning types, i.e.
+        list a = type a, (list a | ())
+        `[] a  = type a, [a] | ()
+        Here assuming that | has higher predecence than ,
+    - We should probably do most of this in java for efficiency
+    
+- Maps (i.e. simple functions)
+
+==================================================
+Future (i.e. much later) work: 
+
