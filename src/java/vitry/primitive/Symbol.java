@@ -5,7 +5,7 @@ import java.util.Map;
 
 /**
  * Invariant: 
- *   Symbol.generate(S) equals Symbol.generate(S)
+ *   Symbol.generate(S) = Symbol.generate(S)    where S is any string
  * 
  * If we get memory problems, we should replace the table by a soft table,
  * trading of comparison efficiency. In this case equals must fall back on string
@@ -13,7 +13,7 @@ import java.util.Map;
  * 
  * @author hans
  */
-public class Symbol extends Atom {
+public class Symbol extends Atom implements Label {
 
     private final  String name;
     private static Map<String, Symbol> table = new HashMap<String, Symbol>();

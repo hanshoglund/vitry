@@ -1,21 +1,16 @@
 package vitry.primitive;
 
 /**
- * Abstracs operations on the value graph, allowing us to select different 
- * implementations and do optimization.
+ * A node in a directed, labeled graph.
  * 
  * @author hans
  */
 public abstract class Node {
-    
-    public Symbol getLabel() {
+
+    public Label getLabel() {
         return null;
     }
 
-    public Node[] getParents() {
-        return null;
-    }
-    
     public Node[] getChildren() {
         return null;
     }

@@ -3,7 +3,7 @@ package vitry.primitive;
 /**
  * The core environment defined by the current set of loaded modules, including
  * the "prelude" module. To be able to reload modules we use a stack of chained
- * classloaders, where the top element refers to this class (how?).
+ * classloaders, where the top element refers to this class.
  * 
  * Modules are loaded from source code files, or from precompiled class files.
  * Either way, the result is an instance of vitry.primitive.Function that
