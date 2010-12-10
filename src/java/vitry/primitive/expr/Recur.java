@@ -1,9 +1,12 @@
 package vitry.primitive.expr;
 
+import vitry.primitive.Expr;
+
 /**
  *
  * @author hans
  */
-public class Recur {
+public class Recur extends Expr
+{
 
 }

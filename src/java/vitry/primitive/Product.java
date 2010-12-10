@@ -5,7 +5,11 @@ package vitry.primitive;
  * 
  * @author hans
  */
-public class Product extends Value {
+public class Product extends Value implements Taggable {
+
+    public Type getTag() {
+        return null;
+    }
 
 //    private short cacheConcrete = -1;
 //

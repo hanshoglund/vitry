@@ -1,9 +1,7 @@
 package vitry.primitive;
 
 /**
- *
+ * Marker interface.
  * @author hans
  */
-public interface Label {
-
-}
+public interface Label {}
