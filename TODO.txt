@@ -90,7 +90,9 @@ Vitry Intermediate code (VIC)
 VIC is an intermediate format for Vitry, used to implement closures and lazy evaluation
 
 Characteristics:
-    - Just a data structure, no binary representation. May easily be translated to JVM bytecode.
+    - Just a data structure, no binary representation. 
+    - Assumes a JVM-like stack arhitecture where arguments are placed in the lower local variables of the current frame.
+    - May easily be translated to JVM bytecode.
     - Reference types only (we will add primitives later).
     - May create and invoke functions and/or thunks.
     - Variables may be of type local and shared. The latter form is used to implement closure.
@@ -103,41 +105,70 @@ Notation:
 Instructions are on the form:
     name operand* (instruction*)
 
-    pushLocal index
-            Pushes (fetches) a local variable.
-
-    popLocal index   
+    store index   
+    ... value -> ...    
             Pops (stores) a local variable.
             
-    pushEnv index    
-            Pushes (fetches) a lexical environment variable.
+    fetch index
+    ... -> ... value
+            Pushes (fetches) a local variable.
+                                               
+    fetchGuarded index
+    ... -> ... value
+            Like fetch, but inserts required thunk expansion.
+
+    fetchChecked index
+    ... -> ... value
+            Like fetch, but inserts optional thunk expansion.
+
+    define 
+    ... symbol value -> ...    
+            Pushes (fetches) a variable from the current lexical environment.
             
-    popEnv   index
-            Pops (stores) a lexical environment variable.
+    lookup
+    ... symbol -> ... value    
+            Pops (stores) a variable to the current lexical environment.
                                                                        
-    thunk <nested code>
+    thunk <nested code>                      
+    ... -> ... thunk    
             Effects the generation of a thunk class at compile-time. 
             Emits bytecode that creates an instance of that class.
+            Generated code inherits the enclosing environment.
 
     function <nested code>                            
+    ... -> ... function    
             Effects the generation of a function class at compile-time. 
             Emits bytecode that creates an instance of that class.
+            Generated code inherits the enclosing environment.
             
-    normalFunction <nested code>
-            Like function, but forces generated code to check for thunks whenever local or shared variables are read.
+    functionGuarded <nested code>
+    ... -> ... function    
+            Like function, but forces generated code to use fetchGuarded in place of fetch.
+
+    functionChecked <nested code>
+    ... -> ... function    
+            Like function, but forces generated code to use fetchChecked in place of fetch.
             
-    invoke  
+    invoke arity 
+    ... f a1 [... aN] -> ... value
             Invokes a function.
             If given too few arguments, return a partially applied function.
             If given too many arguments, return the application (((f aN) aN+1) ... aN+i).
             
-    label
-    goto
-    if      
+    label symbol
+            Used for branch statements.
 
-    matches
+    if symbol
+    ... v -> ...
+            Branch on the given value (vitry false/true).
+            
+    ifPred arity label
+    ... f a1 [... aN] -> ...
+            Branch on the given predicate.
+            
     switch
-    
+            
+                
 
 We write "nested declarations" like this
 

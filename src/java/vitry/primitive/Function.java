@@ -14,9 +14,17 @@ public abstract class Function extends Atom {
         this.environment = e;
     }
 
+    protected final Value define(Symbol s, Value v) {
+        return environment.put(s, v);
+    }
+
+    protected final Value lookup(Symbol s) {
+        return environment.get(s);
+    }
+
     public abstract int arity();
 
-    public abstract FunctionType type();
+    public abstract Functor type();
 
     public abstract Value apply(Value n);
 }

@@ -9,12 +9,12 @@ package vitry.primitive;
 public abstract class Atom extends Value {
 
     @Override
-    public boolean matches(Value v) {
+    public boolean isTypeOf(Value v) {
         return equals(v);
     }
     
     @Override
-    public boolean isConcrete() {
+    public boolean isType() {
         return true;
     }
 }

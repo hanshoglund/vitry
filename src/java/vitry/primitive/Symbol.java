@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Invariant: Symbol.generate(S) = Symbol.generate(S) where S is any string
+ * Invariants:
+ *  Symbol.generate(S) = Symbol.generate(S) where S is any string
  * 
  * If we get memory problems, we should replace the table by a soft table,
  * trading of comparison efficiency. In this case equals must fall back on
@@ -15,8 +16,9 @@ import java.util.Map;
 public class Symbol extends Atom implements Label {
 
     private final String name;
-    private int cacheHashCode = -1;
-    
+    private boolean hasCachedHashCode = false;
+    private int cachedHashCode;
+
     private static Map<String, Symbol> table = new HashMap<String, Symbol>();
 
     private Symbol(String name)
@@ -47,8 +49,10 @@ public class Symbol extends Atom implements Label {
 
     @Override
     public int hashCode() {
-        if (cacheHashCode < 0)
-            cacheHashCode = this.name.hashCode();
-        return cacheHashCode;
+        if (!hasCachedHashCode) {
+            cachedHashCode = this.name.hashCode();
+            hasCachedHashCode = true;
+        }
+        return cachedHashCode;
     }
 }

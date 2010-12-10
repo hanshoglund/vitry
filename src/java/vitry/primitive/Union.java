@@ -4,11 +4,11 @@ package vitry.primitive;
  * 
  * @author hans
  */
-public class UnionType extends Type {
+public class Union extends Value {
 
-    public boolean matches(Value v) {
+    public boolean isTypeOf(Value v) {
         for (Value node : getChildren())
-            if (node.matches(v))
+            if (node.isTypeOf(v))
                 return true;
         return false;
     }

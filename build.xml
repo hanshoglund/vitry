@@ -2,17 +2,17 @@
 <project name="Vitry" basedir="." default="debug">
 
 	<property name="javascriptVersion" value="180"/>
-    <property name="src.js"            value="src/js"/>
+	<property name="src.js"            value="src/js"/>
 
 
-    <!-- =============================================================== -->
+	<!-- =============================================================== -->
 	<target name="clean" description="">
-        <delete dir="bin" failonerror="false" />
+		<delete dir="bin" failonerror="false" />
 	</target>
 
-    <!-- =============================================================== -->
+	<!-- =============================================================== -->
 	<target name="dirs">
-	    <mkdir dir="bin"/>
+		<mkdir dir="bin"/>
 	</target>
 
 	<!-- =============================================================== -->
@@ -20,40 +20,41 @@
 		<!-- TODO use some fancy property operation to factor
 		out common code -->
 
-        <java fork="true"
+		<java fork="true"
 		    classpath="lib/js.jar:lib/jline.jar:bin"
 		    classname="org.mozilla.javascript.tools.jsc.Main"
 		    failonerror="true">
-	        <arg value="-d"/>
-            <arg value="bin"/>
-	        <arg value="-nosource"/>
-	        <arg value="-opt"/>
-	        <arg value="0"/>
-            <arg value="-version"/>
-	        <arg value="${javascriptVersion}"/>
-            <arg value="-package"/>
-            <arg value="vitry"/>
+			<arg value="-d"/>
+			<arg value="bin"/>
+			<arg value="-nosource"/>
+			<arg value="-opt"/>
+			<arg value="0"/>
+			<arg value="-version"/>
+			<arg value="${javascriptVersion}"/>
+			<arg value="-package"/>
+			<arg value="vitry"/>
 
-            <arg value="${src.js}/vitry/core.js"/>
-            <arg value="${src.js}/vitry/header.js"/>
-            <arg value="${src.js}/vitry/main.js"/>
+			<arg value="${src.js}/vitry/core.js"/>
+			<arg value="${src.js}/vitry/header.js"/>
+			<arg value="${src.js}/vitry/main.js"/>
 		</java>
 	</target>
 
-    <!-- =============================================================== -->
-    <target name="javac" description="">
-        <javac srcdir="src" destdir="bin" extdirs="">
-            <classpath>
-                <pathelement location="lib/js.jar" />
-                <pathelement location="lib/jline.jar" />
-                <pathelement location="lib/antlr.jar" />
-                <pathelement location="lib/asm-3.3.jar" />
-                <pathelement location="lib/asm-util-3.3.jar" />
-            </classpath>
-        </javac>
+	<!-- =============================================================== -->
+	<target name="javac" description="">
+		<javac srcdir="src" destdir="bin" extdirs="">
+			<classpath>
+				<pathelement location="lib/js.jar" />
+				<pathelement location="lib/jline.jar" />
+				<pathelement location="lib/antlr.jar" />
+				<pathelement location="lib/asm-3.3.jar" />
+				<pathelement location="lib/asm-commons-3.3.jar" />
+				<pathelement location="lib/asm-util-3.3.jar" />
+			</classpath>
+		</javac>
 	</target>
 
-    <!-- =============================================================== -->
+	<!-- =============================================================== -->
 	<target name="jar">
 		<jar destfile="vitry.jar" description="">
 			<fileset dir="bin">
@@ -66,11 +67,11 @@
 	<target name="debug" depends="clean, dirs, javac, jsc" description="">
 	</target>
 
-   <!-- =============================================================== -->
-    <target name="usage" description="">
-        <echo>Usage: ant release</echo>
-        <echo>       ant debug</echo>
-        <echo>       ant -p for help</echo>
-    </target>
+	<!-- =============================================================== -->
+	<target name="usage" description="">
+		<echo>Usage: ant release</echo>
+		<echo>       ant debug</echo>
+		<echo>       ant -p for help</echo>
+	</target>
 
 </project>

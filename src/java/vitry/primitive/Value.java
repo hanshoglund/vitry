@@ -21,11 +21,11 @@ public abstract class Value extends Node {
         return false;
     }
 
-    public boolean matches(Value v) {
+    public boolean isTypeOf(Value v) {
         return false;
     }
 
-    public boolean isConcrete() {
+    public boolean isType() {
         return false;
     }
 

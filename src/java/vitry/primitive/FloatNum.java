@@ -1,7 +1,7 @@
 package vitry.primitive;
 
 /**
- * TODO copy java.lang.Float
+ * TODO make java.lang.Float equivalent
  *
  * @author hans
  */

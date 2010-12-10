@@ -4,6 +4,6 @@ package vitry.primitive;
  *
  * @author hans
  */
-public class FunctionType extends Type {
+public class Functor extends Value {
 
 }

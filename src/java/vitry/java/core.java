@@ -33,7 +33,6 @@ public class core {
     Context context = Context.enter();
     try {
       return (new Require(context, scope,
-      // TODO
           (new ModuleScriptProvider(){
             public ModuleScript getModuleScript(Context context, String id, Scriptable paths)
                 throws Exception {

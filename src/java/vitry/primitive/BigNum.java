@@ -1,7 +1,7 @@
 package vitry.primitive;
 
 /**
- * TODO copy BigInteger
+ * TODO make BigInteger equivalent
  * 
  * @author hans
  */

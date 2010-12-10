@@ -7,9 +7,9 @@ package vitry.primitive;
  */
 public class Product extends Value implements Taggable {
 
-    public Type getTag() {
-        return null;
-    }
+//    public Type getTag() {
+//        return null;
+//    }
 
 //    private short cacheConcrete = -1;
 //
