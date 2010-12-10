@@ -26,7 +26,7 @@ public class Compiler implements Evaluator {
     // Intermediate representation
 
     /**
-     * Expands to a finite set of JVM instructions.
+     * Expands to a set of JVM instructions.
      * 
      * May take parameters to determine exact configuration of emitted code
      * (used for arity, identifiers etc).
@@ -36,8 +36,8 @@ public class Compiler implements Evaluator {
     }
 
     /**
-     * Forces generation of callable units (JVM classes). Typically expands to
-     * instructions that load this unit.
+     * Forces generation of callable units (JVM classes). 
+     * Expands to JVM instructions that load this unit.
      */
     abstract public static class CallableInstruction extends Instruction {
         
@@ -161,7 +161,10 @@ public class Compiler implements Evaluator {
         
         @Override
         public void emit(GeneratorAdapter g) {
-            // TODO Auto-generated method stub
+            // symbol value on the stack
+            // push this
+            // manipulate stack so we have [this symbol value]
+            // inv Callable.define
         }
     }
     
@@ -174,7 +177,10 @@ public class Compiler implements Evaluator {
 
         @Override
         public void emit(GeneratorAdapter g) {
-            // TODO Auto-generated method stub
+            // symbol on the stack
+            // push this
+            // swap so we have [this symbol]
+            // inv Callable.lookup
         }
     }
     

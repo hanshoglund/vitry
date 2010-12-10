@@ -5,21 +5,11 @@ package vitry.primitive;
  * 
  * @author hans
  */
-public abstract class Function extends Atom {
-
-    private Environment environment;
+public abstract class Function extends Callable {
 
     public Function(Environment e)
     {
-        this.environment = e;
-    }
-
-    protected final Value define(Symbol s, Value v) {
-        return environment.put(s, v);
-    }
-
-    protected final Value lookup(Symbol s) {
-        return environment.get(s);
+        super(e);
     }
 
     public abstract int arity();
