@@ -4,7 +4,7 @@ package vitry.primitive;
  * 
  * @author hans
  */
-public class Union extends Type {
+public class UnionType extends Type {
 
     public boolean matches(Value v) {
         for (Value node : getChildren())

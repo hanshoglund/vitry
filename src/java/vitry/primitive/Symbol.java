@@ -4,18 +4,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Invariant: 
- *   Symbol.generate(S) = Symbol.generate(S)    where S is any string
+ * Invariant: Symbol.generate(S) = Symbol.generate(S) where S is any string
  * 
  * If we get memory problems, we should replace the table by a soft table,
- * trading of comparison efficiency. In this case equals must fall back on string
- * comparison.
+ * trading of comparison efficiency. In this case equals must fall back on
+ * string comparison.
  * 
  * @author hans
  */
 public class Symbol extends Atom implements Label {
 
-    private final  String name;
+    private final String name;
+    private int cacheHashCode = -1;
+    
     private static Map<String, Symbol> table = new HashMap<String, Symbol>();
 
     private Symbol(String name)
@@ -40,12 +41,14 @@ public class Symbol extends Atom implements Label {
 
     @Override
     public boolean equals(Object o) {
-//        return o == this || o.toString() == this.name;
+        // return o == this || o.toString() == this.name;
         return o == this;
     }
-    
+
     @Override
     public int hashCode() {
-        return this.name.hashCode();
-    }    
+        if (cacheHashCode < 0)
+            cacheHashCode = this.name.hashCode();
+        return cacheHashCode;
+    }
 }

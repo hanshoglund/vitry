@@ -72,17 +72,6 @@
         add a:int b:int
         add as:[int]
     are converted to RestArgFunctions of arity 0 containing a *match* expression (or native equivalent).
-    
-    
-- Special forms
-    - The JVM disallows non-local jumps (?)
-        - Good for conceptual purity
-    - We implement match statements as "switches" using local jumps
-    - We implement loop/recur as well as self-call (thorugh recur) as a goto into the function head
-        - Basically, at recur position we push the new values to the arguments and jumps
-            - Meaning: no tail-call opt for indirect self-recursion (a la Clojure)
-                - Possible alternative, the mini-interpreter (see NestedVM, kawa?)    
-
 
 - Lists (!)
     - We should represent lists as functions returning types, i.e.
@@ -108,32 +97,46 @@ Characteristics:
     - Supports nested instructions (functions and thunks). These are implemented as different JVM classes and a new instruction
       in the enclosing function.
 
+
 Notation:
 
 Instructions are on the form:
     name operand* (instruction*)
 
-    load    
-            Load a local variable to the stack.
-    store   
-            Store a local variable from the stack.
-    
-    func    
-            Creates an instance of the (generated) function, assure closure bindings are copied or made accessible and push it.
-            We implement closures just as in java, i.e. required bindings are passed to the <init> method and stored in val$N where N is the name of the binding.
-             
-    thunk   
-            Creates an instance of the (generated) thunk,  assure closure bindings are copied or made accessible and push it.
+    pushLocal index
+            Pushes (fetches) a local variable.
 
-    invoke  fn args ...    
-            Invoke a function from the top of the stack, using N arguments from the stack.
+    popLocal index   
+            Pops (stores) a local variable.
+            
+    pushEnv index    
+            Pushes (fetches) a lexical environment variable.
+            
+    popEnv   index
+            Pops (stores) a lexical environment variable.
+                                                                       
+    thunk <nested code>
+            Effects the generation of a thunk class at compile-time. 
+            Emits bytecode that creates an instance of that class.
+
+    function <nested code>                            
+            Effects the generation of a function class at compile-time. 
+            Emits bytecode that creates an instance of that class.
+            
+    normalFunction <nested code>
+            Like function, but forces generated code to check for thunks whenever local or shared variables are read.
+            
+    invoke  
+            Invokes a function.
             If given too few arguments, return a partially applied function.
             If given too many arguments, return the application (((f aN) aN+1) ... aN+i).
-            If one argument or more is a thunk and evaluation is not forced, wrap in a thunk.
-    
-    force   th
-            Force evaluation of a thunk from the stack.
+            
+    label
+    goto
+    if      
 
+    matches
+    switch
     
 
 We write "nested declarations" like this
@@ -159,51 +162,16 @@ Any list of VIC instructions may be translated to a JVM class, subclassing vitry
 
 
 ==================================================
-JVM op cheat sheet
+JVM ops
 
-aconst_null
 aload
-aload_<n>
-areturn
-astore
-astore_<n>
-athrow
-dup
-dup_x1
-dup_x2
-dup2
-dup2_x1
-dup2_x2  
-getfield
-getstatic
-goto
-goto_w  
-if_acmp_<cond>       
-if<cond>
-ifnonnull
-ifnull
-instanceof
-invokeinterface
-invokespecial
-invokestatic
-invokevirtual
-jsr
-jsr_w
-lookupswitch    
-lcd      
-lcd_w
-monitorenter
-monitorexit
-multianewarray
+astore   
 new
-nop
-pop
-pop2
 putfield
+getfield
 putstatic
-swap
-tableswitch
-wide
+getstatic
+instanceof
 
 
 ==================================================

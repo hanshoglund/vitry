@@ -1,9 +1,10 @@
 package vitry.primitive;
 
+
 /**
  *
  * @author hans
  */
-public class Reference extends Value {
+public abstract class Expr extends Value {
 
 }

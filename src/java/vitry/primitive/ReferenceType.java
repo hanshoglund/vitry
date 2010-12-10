@@ -4,6 +4,6 @@ package vitry.primitive;
  *
  * @author hans
  */
-public class Reference extends Value {
+public class ReferenceType extends Type {
 
 }
