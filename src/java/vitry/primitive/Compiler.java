@@ -3,6 +3,7 @@ package vitry.primitive;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.GeneratorAdapter;
 import org.objectweb.asm.commons.Method;
@@ -21,7 +22,7 @@ import vitry.primitive.expr.Where;
 
 /**
  * General workflow:
- *  1) External resources (i.e. the runtime) calls static eval or compile methods
+ *  1) External resources (i.e. the runtime) calls eval or compile methods
  *     passing language expressions
  *     
  *  2) A class receiver object is manufactured (or it has been passed).
@@ -79,69 +80,6 @@ public class Compiler {
 
     // Intermediate representation
     
-    /**
-     * Emits a sequence of JVM instructions.
-     * 
-     * Subclasses typically take constructor parameters for information known
-     * at compile time, such as arity, identifiers etc.
-     * 
-     * Implementations override the emit method.
-     */
-    public static abstract class Instruction {
-        abstract protected void emitJVMBytecode(GeneratorAdapter g);
-    }
-
-    /**
-         * Emits JVM instructions that load a generated unit (i.e. a the bytecode 
-         * of a class).
-         */
-        abstract public static class CallableInstruction extends Instruction {
-    
-            public CallableInstruction()
-            {
-                this.instrs = new LinkedList<Instruction>();
-            }
-    
-            public CallableInstruction(Iterable<? extends Instruction> instrns)
-            {
-                this.instrs = new LinkedList<Instruction>(instrs);
-            }
-    
-            public CallableInstruction add(Instruction i) {
-                if (compilationStarted)
-                    throw new IllegalStateException("Can not modify instruction"
-                            + "after start of compilation. Make a new instruction"
-                            + "instead");
-                instrs.add(i);
-                return this;
-            }
-    
-            public byte[] compile() {
-                // emit prelude
-                // emit instructions
-                //      if one is callable 
-                //      call compile and store result elsewhere
-                //      call emit on it etc
-                // emit postlude
-                return null; // TODO
-            }
-            
-    //        public abstract void prelude();
-    //        public abstract void postlude();
-    
-            @Override
-            protected void emitJVMBytecode(GeneratorAdapter g) {
-                // push this
-                // inv Callable.makeChildEnvironent
-                // new
-            }
-    
-            private   boolean compilationStarted = false;
-            protected Type type;
-            protected List<Instruction> instrs;
-            protected int locals;
-        }
-
     public void compile(Module e) {
     }
     public void compile(Fn e) {
@@ -164,52 +102,122 @@ public class Compiler {
     }
     public void compile(Where e) {
     }
-    
-    
-    public static Instruction createStore(byte index) {
-        return new IR_Store(index);
+
+
+    /**
+     * Represents instructions format, i.e. stateless entities that work on
+     * stack elements.
+     * 
+     * Subclasses typically take constructor parameters for information known
+     * at compile time, such as arity, identifiers etc.
+     */
+    public static interface Instruction {
+        abstract public void emit(GeneratorAdapter g);
     }
 
-    public static Instruction createFetch(byte index) {
-        return new IR_Fetch(index);
-    }
+    /**
+     * Represents instructions that generates callable entities. These
+     * encapsulate a list of instructions as well as information on
+     * accessible local variables, labels etc.
+     * 
+     * Each instance implicitly generate a single JVM class, as well as
+     * instructions to load the generated class (of which is a subclass of 
+     * vitry.primitive.Callable).
+     */
+    abstract public static class CallableInstruction implements Instruction {
 
-    public static Instruction createFetchGuarded(byte index) {
-        return new IR_FetchGuarded(index);
-    }
+        public CallableInstruction()
+        {
+            this.instrs = new LinkedList<Instruction>();
+        }
 
-    public static Instruction createFetchChecked(byte index) {
-        return new IR_FetchChecked(index);
-    }
+        public CallableInstruction(Iterable<? extends Instruction> instrns)
+        {
+            this.instrs = new LinkedList<Instruction>(instrs);
+        }
 
-    public static Instruction createDefine() {
-        return new IR_Define();
-    }
+        public CallableInstruction add(Instruction i) {
+            if (compilationStarted)
+                throw new IllegalStateException("Can not modify instruction"
+                        + "after start of compilation. Make a new instruction"
+                        + "instead");
+            instrs.add(i);
+            return this;
+        }
+        
+        
+        public void addStore(byte index) {
+            add(new StoreInstr(index));
+        }
 
-    public static Instruction createLookup() {
-        return new IR_LookUp();
-    }
+        public void addFetch(byte index) {
+            add(new FetchInstr(index));
+        }
 
-    public static Instruction createInvoke(int arity) {
-        return new IR_Invoke(arity);
-    }
+        public void addFetchGuarded(byte index) {
+            add(new FetchGuardedInstr(index));
+        }
 
-    public static CallableInstruction createThunk() {
-        return null; // TODO
-    }
+        public void addFetchChecked(byte index) {
+            add(new FetchCheckedInstr(index));
+        }
 
-    public static CallableInstruction createFunction() {
-        return null; // TODO
+        public void addDefine() {
+            add(new DefineInstr());
+        }
+
+        public void addLookup() {
+            add(new LookUpInstr());
+        }
+
+        public void addInvoke(int arity) {
+            add(new InvokeInstr(arity));
+        }
+
+        public CallableInstruction addThunk() {
+            return null; // TODO
+        }
+
+        public CallableInstruction addFunction() {
+            return null; // TODO
+        }
+
+        // public abstract void prelude();
+        // public abstract void postlude();
+
+        @Override
+        public void emit(GeneratorAdapter g) {
+            // push this
+            // inv Callable.makeChildEnvironent
+            // new
+        }
+
+        public byte[] compile(ClassReceiver recv) {
+            // emit prelude
+            // emit instructions
+            // if one is callable
+            // call compile and store result elsewhere
+            // call emit on it etc
+            // emit postlude
+            return null; // TODO
+        }
+
+        protected List<Instruction> instrs;
+        protected String name;
+        protected boolean guarded = false;
+        protected boolean checked = false;
+
+        private boolean compilationStarted = false;
+        protected int locals;
     }
-    
 
     /*
      * store index   
      * ... value -> ...    
      *         Pops (stores) a local variable.
      */
-    static class IR_Store extends Instruction {
-        public IR_Store(byte index)
+    public static class StoreInstr implements Instruction {
+        public StoreInstr(byte index)
         {
             this.index = index;
         }
@@ -217,7 +225,7 @@ public class Compiler {
         private byte index;
 
         @Override
-        public void emitJVMBytecode(GeneratorAdapter g) {
+        public void emit(GeneratorAdapter g) {
             g.storeLocal(index);            
         }
     }
@@ -227,8 +235,8 @@ public class Compiler {
      * ... -> ... value
      *         Pushes (fetches) a local variable.
      */    
-    static class IR_Fetch extends Instruction {
-        public IR_Fetch(byte index)
+    public static class FetchInstr implements Instruction {
+        public FetchInstr(byte index)
         {
             this.index = index;
         }
@@ -236,7 +244,7 @@ public class Compiler {
         protected byte index;
 
         @Override
-        public void emitJVMBytecode(GeneratorAdapter g) {
+        public void emit(GeneratorAdapter g) {
             g.loadLocal(index);
         }
     }
@@ -244,42 +252,46 @@ public class Compiler {
                                                  
     /* fetchGuarded index
      * ... -> ... value
-     *         Like fetch, but inserts required thunk expansion.
+     *         Like fetch, but inserts forcing thunk expansion.
      */
-    static class IR_FetchGuarded extends IR_Fetch {
-        public IR_FetchGuarded(byte index)
+    public static class FetchGuardedInstr extends FetchInstr {
+        public FetchGuardedInstr(byte index)
         {
             super(index);
         }
 
         @Override
-        public void emitJVMBytecode(GeneratorAdapter g) {
-            g.loadLocal(index);
-            g.invokeVirtual(thunk, get);
+        public void emit(GeneratorAdapter g) {
+            g.loadLocal(index);             // -> .. thunk
+            g.invokeVirtual(_Thunk, _get);  // -> .. value
         }
 
-        protected static final Type thunk = Type.getType(Thunk.class);
-        protected static final Method get = Method.getMethod("Value get()");
+        static final Type _Thunk = Type.getType(Thunk.class);
+        static final Method _get = Method.getMethod("Value get()");
     }
     
       
     /* fetchChecked index
      * ... -> ... value
-     *         Like fetch, but inserts optional thunk expansion.
+     *         Like fetch, but inserts careful thunk expansion.
      */
-    static class IR_FetchChecked extends IR_FetchGuarded {
-        public IR_FetchChecked(byte index)
+    public static class FetchCheckedInstr extends FetchGuardedInstr {
+        public FetchCheckedInstr(byte index)
         {
             super(index);
         }
 
         @Override
-        public void emitJVMBytecode(GeneratorAdapter g) {
-            g.loadLocal(index);
-            g.dup();
-            g.instanceOf(thunk);
-            // TODO branch
-            g.invokeVirtual(thunk, get);
+        public void emit(GeneratorAdapter g) {
+            Label jump = new Label();
+            
+            g.loadLocal(index);                  // -> .. thunk?
+            g.dup();                             // -> .. thunk? thunk?
+            g.instanceOf(_Thunk);                // -> .. thunk? res            
+            g.ifZCmp(GeneratorAdapter.EQ, jump); // if 0 jump
+            g.invokeVirtual(_Thunk, _get);       // -> .. res
+            g.mark(jump);
+                                                 // -> .. notthunk
         }
     }
     
@@ -288,15 +300,19 @@ public class Compiler {
      * ... symbol value -> ...    
      *         Pushes (fetches) a variable from the current lexical environment.
      */
-    static class IR_Define extends Instruction {
+    public static class DefineInstr implements Instruction {
         
         @Override
-        public void emitJVMBytecode(GeneratorAdapter g) {
-            // symbol value on the stack
-            // push this
-            // manipulate stack so we have [this symbol value]
-            // inv Callable.define
+        public void emit(GeneratorAdapter g) {
+                            //    .. sym val
+            g.loadThis();   // -> .. sym val this
+            g.dupX2();      // -> .. this sym val this 
+            g.pop();        // -> .. this sym val
+            g.invokeVirtual(_Callable, _define);            
         }
+        
+        static final Type _Callable = Type.getType(Callable.class);
+        static final Method _define = Method.getMethod("define(Symbol, Value)");
     }
     
               
@@ -304,15 +320,17 @@ public class Compiler {
      * ... symbol -> ... value    
      *         Pops (stores) a variable to the current lexical environment.
      */
-    static class IR_LookUp extends Instruction {
+    public static class LookUpInstr implements Instruction {
 
         @Override
-        public void emitJVMBytecode(GeneratorAdapter g) {
-            // symbol on the stack
-            // push this
-            // swap so we have [this symbol]
-            // inv Callable.lookup
+        public void emit(GeneratorAdapter g) {
+            g.loadThis();
+            g.swap();       // .. this sym
+            g.invokeVirtual(_Callable, _lookup);
         }
+        
+        static final Type _Callable = Type.getType(Callable.class);
+        static final Method _lookup = Method.getMethod("lookup(Symbol)");
     }
     
                                                                          
@@ -322,8 +340,8 @@ public class Compiler {
      *         If given too few arguments, return a partially applied function.
      *         If given too many arguments, return the application (((f aN) aN+1) ... aN+i).
      */
-    static class IR_Invoke extends Instruction {
-        public IR_Invoke(int arity)
+    public static class InvokeInstr implements Instruction {
+        public InvokeInstr(int arity)
         {
             this.arity = arity;
         }
@@ -331,7 +349,7 @@ public class Compiler {
         private int arity;
     
         @Override
-        public void emitJVMBytecode(GeneratorAdapter g) {
+        public void emit(GeneratorAdapter g) {
             // TODO push fn
             // store arity
         }
@@ -340,7 +358,7 @@ public class Compiler {
 //    /* label symbol
 //     *         Used for branch statements.
 //     */
-//    static class IR_Label extends Instruction {
+//    static class IR_Label implements Instruction {
 //        public IR_Label(Symbol label)
 //        {
 //            this.label = label;
@@ -358,7 +376,7 @@ public class Compiler {
 //     * ... v -> ...
 //     *         Branch on the given value (vitry false/true).
 //     */
-//    static class IR_If extends Instruction {
+//    static class IR_If implements Instruction {
 //        public IR_If(Symbol label)
 //        {
 //            this.label = label;
@@ -376,7 +394,7 @@ public class Compiler {
 //     * ... f a1 [... aN] -> ...
 //     *         Branch on the given predicate.
 //     */
-//    static class IR_IfPred extends Instruction {
+//    static class IR_IfPred implements Instruction {
 //        public IR_IfPred(int arity, Symbol label)
 //        {
 //            this.arity = arity;
@@ -398,13 +416,13 @@ public class Compiler {
      *         Emits bytecode that creates an instance of that class.
      *         Generated code inherits the enclosing environment.
      */
-    static class IR_Thunk extends CallableInstruction {
+    public static class ThunkInstr extends CallableInstruction {
 
-        @Override
-        public byte[] compile() {
-            return null;
-            // TODO Auto-generated method stub
-        }
+//        @Override
+//        public byte[] compile() {
+//            return null;
+//            // TODO Auto-generated method stub
+//        }
     }
        
       
@@ -414,12 +432,12 @@ public class Compiler {
      *         Emits bytecode that creates an instance of that class.
      *         Generated code inherits the enclosing environment.
      */    
-    static class IR_Function extends CallableInstruction {
-        @Override
-        public byte[] compile() {
-            return null;
-            // TODO Auto-generated method stub
-        }
+    public static class FunctionInstr extends CallableInstruction {
+//        @Override
+//        public byte[] compile() {
+//            return null;
+//            // TODO Auto-generated method stub
+//        }
     }
 
               
@@ -428,12 +446,12 @@ public class Compiler {
      *         Like function, but forces generated code to use fetchGuarded
      *         in place of fetch.
      */    
-    static class IR_FunctionGuarded extends IR_Function {
-        @Override
-        public byte[] compile() {
-            return null;
-            // TODO Auto-generated method stub
-        }
+    public static class FunctionGuardedInstr extends FunctionInstr {
+//        @Override
+//        public byte[] compile() {
+//            return null;
+//            // TODO Auto-generated method stub
+//        }
     }
 
       
@@ -442,12 +460,12 @@ public class Compiler {
      *         Like function, but forces generated code to use fetchChecked
      *         in place of fetch.
      */
-    static class IR_FunctionChecked extends IR_Function {
-        @Override
-        public byte[] compile() {
-            return null;
-            // TODO Auto-generated method stub
-        }
+    public static class FunctionCheckedInstr extends FunctionInstr {
+//        @Override
+//        public byte[] compile() {
+//            return null;
+//            // TODO Auto-generated method stub
+//        }
     }
 
 

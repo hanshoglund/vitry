@@ -7,10 +7,6 @@ package vitry.primitive;
  */
 public abstract class Node {
 
-    public Label getLabel() {
-        return null;
-    }
-
     public Node[] getChildren() {
         return null;
     }
