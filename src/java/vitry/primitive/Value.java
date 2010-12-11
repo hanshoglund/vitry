@@ -30,11 +30,6 @@ public abstract class Value extends Node {
     }
 
     @Override
-    public Symbol getLabel() {
-        return null;
-    }
-
-    @Override
     public Value[] getChildren() {
         return null;
     }

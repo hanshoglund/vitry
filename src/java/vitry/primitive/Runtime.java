@@ -1,5 +1,7 @@
 package vitry.primitive;
 
+import java.util.List;
+
 /**
  * The core environment defined by the current set of loaded modules, including
  * the "prelude" module. To be able to reload modules we use a stack of chained
@@ -12,19 +14,23 @@ package vitry.primitive;
  * 
  * Mapping to Java names:
  * 
- * Module: 
- *   a.b -> a/b/$.class
- *   prelude -> prelude/$.class
+ * Module: a.b -> a/b/$.class prelude -> prelude/$.class
  * 
- * Functions, types etc:
- *   prelude.main -> prelude/main.class
- *   prelude.nat -> prelude/nat.class
+ * Functions, types etc: prelude.main -> prelude/main.class prelude.nat ->
+ * prelude/nat.class
  * 
  * 
  * @author hans
  */
 public class Runtime {
-    
 
-    // TODO implement a class loader...
+    private Evaluator interpreter;
+
+    private Compiler compiler;
+    
+    private ClassLoader vitrySystemLoader;
+    
+    private List<Thread> activeThreads;
+    
+    private List<Thread> pausedThreads;
 }

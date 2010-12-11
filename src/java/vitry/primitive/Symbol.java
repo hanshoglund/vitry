@@ -13,7 +13,7 @@ import java.util.Map;
  * 
  * @author hans
  */
-public class Symbol extends Atom implements Label {
+public class Symbol extends Atom {
 
     private final String name;
     private boolean hasCachedHashCode = false;

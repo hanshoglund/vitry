@@ -1,6 +1,7 @@
 package vitry.primitive;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -26,14 +27,14 @@ import java.util.Set;
  * 
  * @author hans
  */
-public class Environment<K,V> implements Map<K,V> {
+public class Environment<K,V> extends HashMap<K,V> {
     
     @SuppressWarnings("rawtypes")
     public static final Environment EMPTY = new Emtpy();
 
     @SuppressWarnings("unchecked")
     public Environment() {
-        this(EMPTY);
+        this.parent = EMPTY;
     }
     
     public Environment(Environment<K,V> parent) {
@@ -42,11 +43,11 @@ public class Environment<K,V> implements Map<K,V> {
 
     @Override
     public void putAll(Map<? extends K, ? extends V> coll) {
-        local.putAll(coll);
+        super.putAll(coll);
     }
     
     public Environment<K,V> define(K k, V v) {
-        if (local.containsKey(k)) throw new AlreadyBoundException();
+        if (super.containsKey(k)) throw new BindingException();
         put(k, v);
         return this;
     }
@@ -59,45 +60,45 @@ public class Environment<K,V> implements Map<K,V> {
 
     @Override
     public V put(K key, V value) {
-        return local.put(key, value);
+        return super.put(key, value);
     }
 
     @Override
     public V get(Object k) {
-        V localVal = local.get(k);
+        V localVal = super.get(k);
         return localVal != null ? localVal : parent.get(k);
     }
 
     public V removeLocal(Object k) {
-        return local.remove(k);
+        return super.remove(k);
     }
 
     public void clearLocal() {
-        local.clear();
+        super.clear();
     }
 
     @Override
     public boolean containsKey(Object k) {
-        return local.containsKey(k) || parent.containsKey(k);
+        return super.containsKey(k) || parent.containsKey(k);
     }
 
     @Override
     public boolean containsValue(Object v) {
-        return local.containsValue(v) || parent.containsValue(v);
+        return super.containsValue(v) || parent.containsValue(v);
     }
 
     @Override
     public int size() {
-        return local.size() + parent.size();
+        return super.size() + parent.size();
     }
 
     public int localSize() {
-        return local.size();
+        return super.size();
     }
 
     @Override
     public boolean isEmpty() {
-        return local.isEmpty() && parent.isEmpty();
+        return super.isEmpty() && parent.isEmpty();
     }
 
     // Unsupported
@@ -131,13 +132,22 @@ public class Environment<K,V> implements Map<K,V> {
         throw new UnsupportedOperationException(
                 "Can not get mutable set view of an environment.");
     }
+    
+    @Override
+    public String toString() {
+        return "";
+    }
 
 
-    private Map<K, V> local = new HashMap<K, V>();
+    final private Map<K, V> parent;
+    
 
-    private Environment<K, V> parent;
+    private static final long serialVersionUID = -6996447274349433461L;
+
+
 
     private static class Emtpy<K, V> extends Environment<K, V> {
+        
         @Override
         public boolean containsKey(Object k) {
             return false;
@@ -174,7 +184,8 @@ public class Environment<K,V> implements Map<K,V> {
         public int size() {
             return 0;
         }
-    
+
+        private static final long serialVersionUID = 6051189537876638330L;
     }
  
 

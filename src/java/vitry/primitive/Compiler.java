@@ -9,36 +9,37 @@ import org.objectweb.asm.commons.GeneratorAdapter;
 import org.objectweb.asm.commons.Method;
 
 import vitry.primitive.expr.Apply;
-import vitry.primitive.expr.Do;
 import vitry.primitive.expr.Fn;
 import vitry.primitive.expr.If;
 import vitry.primitive.expr.Let;
-import vitry.primitive.expr.Loop;
 import vitry.primitive.expr.Match;
 import vitry.primitive.expr.Module;
-import vitry.primitive.expr.Recur;
 import vitry.primitive.expr.TypeExpr;
-import vitry.primitive.expr.Where;
 
 /**
  * General workflow:
- *  1) External resources (i.e. the runtime) calls eval or compile methods
- *     passing language expressions
- *     
- *  2) A class receiver object is manufactured (or it has been passed).
- *  
- *  3) A callable instruction object is manufactured.
- *  
- *  4) Its compile() method is invoked, forcing compilation.
- *  
+ * 
+ *  1) Runtime calls eval or compile method
+ *  2) A ClassReceiver object is manufactured (if it has not been passed).
+ *  3) A ClassGen object is manufactured.
+ *  4) Its genClasses() method is invoked.
  *  5) Any number of compiled units (classes) is passed to the receiver.
  *     The generated classes must all be visible from each other's class loaders
  *     as must the vitry.primitive package.
- *     
  *  6) If an eval method was invoked, a dynamic classloader is created and
  *     the top-level callable object evaluated.
  *     
+ * 
+ * To do:
+ * 
+ *   - Tail calls
+ *      See General tail-call elimination at
+ *      http://www.gnu.org/software/kawa/internals/complications.html
+ *   
+ *   - Inlining and other rewrites
  *     
+ *     
+ * 
  * How-to:
  * 
  *  Add primitive support?
@@ -46,7 +47,8 @@ import vitry.primitive.expr.Where;
  *          Assert safe type hints are available in certain kinds of exprs
  *      Backend level    
  *          Assert other instructions can handle primitives safely
- *          Replace invoke instructions with something in the line of "primitiveInvoke"
+ *          Replace invoke instructions with something in the line of 
+ *          "primitiveInvoke"
  *  
  *  Add more expressions?
  *      Add new Expr subclasses and corresponding compile(...) methods.
@@ -66,119 +68,193 @@ import vitry.primitive.expr.Where;
  * 
  * @author hans
  */
-public class Compiler {
+public class Compiler implements Evaluator {
     
-    /**
-     * Stateless, apart from "miscellaneous" configurations, i.e. flags.
-     */
     public Compiler(){}
+
+    public Compiler(boolean localTailCallOpt, boolean generalTailCallOpt,
+            String[] specialForms)
+    {
+        this.localTailCallOpt = localTailCallOpt;
+        this.generalTailCallOpt = generalTailCallOpt;
+        this.specialForms = specialForms;
+    }                   
     
+    /** Perform general TCO (using trampolines) */
+    protected boolean localTailCallOpt   = false;
+
+    /** Perform local TCO (using Baker's trick) */
+    protected boolean generalTailCallOpt = false;
+
+    protected String[] specialForms = { "where", "do", "loop", "recur" };
+    
+
+    
+    
+    @Override
+    public Value eval(Expr e) throws Exception {
+        ClassLoader dynClassLoader = null; // TODO
+        return eval(e, dynClassLoader);
+    }
+
+    @Override
+    public Value eval(Expr e, ClassLoader linkWith) throws Exception {
+        // get dynamic classloader
+        // link with runtime
+        // link with supplied, if not null
+        
+        if (e instanceof Module) {
+            // compile and evaluate
+        } else {
+            // add implicit module
+            // compile and evaluate            
+        }
+        
+        return null; // TODO
+    }
+    
+    
+    
+    public ClassGen compile(Module e) {
+        // transform imports to assignments
+        // transform top-level type declarations to assignments
+        // transform top-level value declarations to assignments
+        // transform top-level fn declarations to assignments
+        // transform top-level implicits to assignments
+        
+        return null; // TODO
+    }
+
+    public ClassGen compile(Fn e) {
+        // create FunctionGen
+        // pass parameter info
+        // lazy, TCO info?
+        // compile and pass subexprs
+        
+        return null; // TODO
+    }
+    
+    public Emitter compile(Let e) {
+        return null; // TODO
+    }
+
+//    public Emitter compile(Where e) {
+//        // transform to where
+//        return null; // TODO
+//    }
+
+    public Emitter compile(Apply e) {
+        return null; // TODO
+    }
+
+    public Emitter compile(TypeExpr e) {
+        return null; // TODO
+    }
+
+//    public Emitter compile(Do e) {
+//        // create SeqEmitter
+//        // compile and pass subexprs
+//        return null; // TODO
+//    }
+
+    public BranchingEmitter compile(If e) {
+        // create IfEmitter
+        // compile and pass subexprs
+        return null; // TODO
+    }
+
+//    public BranchingEmitter compile(Loop e) {
+//        // create LoopEmitter
+//        // emit label
+//        // compile and pass subexprs
+//        return null; // TODO
+//    }
+//
+//    public BranchingEmitter compile(Recur e) {
+//        // obtain recursion point (how?)
+//        // compile and pass subexprs
+//        return null; // TODO
+//    }
+    
+    public BranchingEmitter compile(Match e) {
+        // create MatchEmitter
+        // compile and pass subexprs
+        return null; // TODO
+    }
+    
+    
+
+    public interface Emitter {
+        void emit(CallableGen enc, GeneratorAdapter g);
+    }
+
+    public interface ClassGen {
+        void genClasses(ClassReceiver recv);
+    }
 
     public interface ClassReceiver {
         public void receiveClass(String name, byte[] bytecode);
     }
 
-    // Intermediate representation
-    
-    public void compile(Module e) {
-    }
-    public void compile(Fn e) {
-    }
-    public void compile(Apply e) {
-    }
-    public void compile(Do e) {
-    }
-    public void compile(If e) {
-    }
-    public void compile(Let e) {
-    }
-    public void compile(Loop e) {
-    }
-    public void compile(Match e) {
-    }
-    public void compile(Recur e) {
-    }
-    public void compile(TypeExpr e) {
-    }
-    public void compile(Where e) {
-    }
+    abstract public static class CallableGen implements Emitter, ClassGen {
 
-
-    /**
-     * Represents instructions format, i.e. stateless entities that work on
-     * stack elements.
-     * 
-     * Subclasses typically take constructor parameters for information known
-     * at compile time, such as arity, identifiers etc.
-     */
-    public static interface Instruction {
-        abstract public void emit(GeneratorAdapter g);
-    }
-
-    /**
-     * Represents instructions that generates callable entities. These
-     * encapsulate a list of instructions as well as information on
-     * accessible local variables, labels etc.
-     * 
-     * Each instance implicitly generate a single JVM class, as well as
-     * instructions to load the generated class (of which is a subclass of 
-     * vitry.primitive.Callable).
-     */
-    abstract public static class CallableInstruction implements Instruction {
-
-        public CallableInstruction()
+        public CallableGen()
         {
-            this.instrs = new LinkedList<Instruction>();
+            this.instrs = new LinkedList<Emitter>();
         }
 
-        public CallableInstruction(Iterable<? extends Instruction> instrns)
-        {
-            this.instrs = new LinkedList<Instruction>(instrs);
-        }
-
-        public CallableInstruction add(Instruction i) {
-            if (compilationStarted)
-                throw new IllegalStateException("Can not modify instruction"
-                        + "after start of compilation. Make a new instruction"
-                        + "instead");
-            instrs.add(i);
-            return this;
-        }
+//        public CallableInstruction(Iterable<? extends Instruction> instrns)
+//        {
+//            this.instrs = new LinkedList<Instruction>(instrs);
+//        }
+//
+//        public CallableInstruction add(Instruction i) {
+//            if (compilationStarted)
+//                throw new IllegalStateException("Can not modify instruction "
+//                        + "after start of compilation. Make a new instruction "
+//                        + "instead");
+//            instrs.add(i);
+//            return this;
+//        }
         
         
-        public void addStore(byte index) {
-            add(new StoreInstr(index));
-        }
+//        public void addStore(byte index) {
+//            add(new StoreInstr(index));
+//        }
+//
+//        public void addFetch(byte index) {
+//            add(new FetchInstr(index));
+//        }
 
-        public void addFetch(byte index) {
-            add(new FetchInstr(index));
-        }
+//        public void addFetchGuarded(byte index) {
+//            add(new FetchGuardedInstr(index));
+//        }
+//
+//        public void addFetchChecked(byte index) {
+//            add(new FetchCheckedInstr(index));
+//        }
 
-        public void addFetchGuarded(byte index) {
-            add(new FetchGuardedInstr(index));
-        }
-
-        public void addFetchChecked(byte index) {
-            add(new FetchCheckedInstr(index));
-        }
-
-        public void addDefine() {
-            add(new DefineInstr());
-        }
-
-        public void addLookup() {
-            add(new LookUpInstr());
-        }
-
-        public void addInvoke(int arity) {
-            add(new InvokeInstr(arity));
-        }
-
-        public CallableInstruction addThunk() {
-            return null; // TODO
-        }
-
-        public CallableInstruction addFunction() {
+//        public void addDefine() {
+//            add(new DefineInstr());
+//        }
+//
+//        public void addLookup() {
+//            add(new LookUpInstr());
+//        }
+//
+//        public void addInvoke(int arity) {
+//            add(new InvokeInstr(arity));
+//        }
+//
+//        public CallableInstruction addThunk() {
+//            return null; // TODO
+//        }
+//
+//        public CallableInstruction addFunction() {
+//            return null; // TODO
+//        }
+//        
+        public Emitter getTailPosition() {
             return null; // TODO
         }
 
@@ -186,229 +262,49 @@ public class Compiler {
         // public abstract void postlude();
 
         @Override
-        public void emit(GeneratorAdapter g) {
+        public void emit(CallableGen enc, GeneratorAdapter g) {
             // push this
             // inv Callable.makeChildEnvironent
             // new
         }
 
-        public byte[] compile(ClassReceiver recv) {
+        @Override
+        public void genClasses(ClassReceiver recv) {
             // emit prelude
             // emit instructions
             // if one is callable
             // call compile and store result elsewhere
             // call emit on it etc
             // emit postlude
-            return null; // TODO
         }
 
-        protected List<Instruction> instrs;
-        protected String name;
+        protected List<Emitter> instrs;
+        protected Type enclosingType;
+        protected int locals;
+        
+        /** Force guarded fetch */
         protected boolean guarded = false;
+        /** Force checked fetch */
         protected boolean checked = false;
 
         private boolean compilationStarted = false;
-        protected int locals;
     }
 
-    /*
-     * store index   
-     * ... value -> ...    
-     *         Pops (stores) a local variable.
+    /**
+    *
+    */
+    abstract public static class TailCallableGen extends
+            CallableGen {
+        // Decorator
+    }
+
+    /**
+     *
      */
-    public static class StoreInstr implements Instruction {
-        public StoreInstr(byte index)
-        {
-            this.index = index;
-        }
-
-        private byte index;
-
-        @Override
-        public void emit(GeneratorAdapter g) {
-            g.storeLocal(index);            
-        }
-    }
-
-              
-    /* fetch index
-     * ... -> ... value
-     *         Pushes (fetches) a local variable.
-     */    
-    public static class FetchInstr implements Instruction {
-        public FetchInstr(byte index)
-        {
-            this.index = index;
-        }
-
-        protected byte index;
-
-        @Override
-        public void emit(GeneratorAdapter g) {
-            g.loadLocal(index);
-        }
-    }
-
-                                                 
-    /* fetchGuarded index
-     * ... -> ... value
-     *         Like fetch, but inserts forcing thunk expansion.
-     */
-    public static class FetchGuardedInstr extends FetchInstr {
-        public FetchGuardedInstr(byte index)
-        {
-            super(index);
-        }
-
-        @Override
-        public void emit(GeneratorAdapter g) {
-            g.loadLocal(index);             // -> .. thunk
-            g.invokeVirtual(_Thunk, _get);  // -> .. value
-        }
-
-        static final Type _Thunk = Type.getType(Thunk.class);
-        static final Method _get = Method.getMethod("Value get()");
+    abstract public static class TrampolineGen extends CallableGen {
+        // Decorator        
     }
     
-      
-    /* fetchChecked index
-     * ... -> ... value
-     *         Like fetch, but inserts careful thunk expansion.
-     */
-    public static class FetchCheckedInstr extends FetchGuardedInstr {
-        public FetchCheckedInstr(byte index)
-        {
-            super(index);
-        }
-
-        @Override
-        public void emit(GeneratorAdapter g) {
-            Label jump = new Label();
-            
-            g.loadLocal(index);                  // -> .. thunk?
-            g.dup();                             // -> .. thunk? thunk?
-            g.instanceOf(_Thunk);                // -> .. thunk? res            
-            g.ifZCmp(GeneratorAdapter.EQ, jump); // if 0 jump
-            g.invokeVirtual(_Thunk, _get);       // -> .. res
-            g.mark(jump);
-                                                 // -> .. notthunk
-        }
-    }
-    
-      
-    /* define 
-     * ... symbol value -> ...    
-     *         Pushes (fetches) a variable from the current lexical environment.
-     */
-    public static class DefineInstr implements Instruction {
-        
-        @Override
-        public void emit(GeneratorAdapter g) {
-                            //    .. sym val
-            g.loadThis();   // -> .. sym val this
-            g.dupX2();      // -> .. this sym val this 
-            g.pop();        // -> .. this sym val
-            g.invokeVirtual(_Callable, _define);            
-        }
-        
-        static final Type _Callable = Type.getType(Callable.class);
-        static final Method _define = Method.getMethod("define(Symbol, Value)");
-    }
-    
-              
-    /* lookup
-     * ... symbol -> ... value    
-     *         Pops (stores) a variable to the current lexical environment.
-     */
-    public static class LookUpInstr implements Instruction {
-
-        @Override
-        public void emit(GeneratorAdapter g) {
-            g.loadThis();
-            g.swap();       // .. this sym
-            g.invokeVirtual(_Callable, _lookup);
-        }
-        
-        static final Type _Callable = Type.getType(Callable.class);
-        static final Method _lookup = Method.getMethod("lookup(Symbol)");
-    }
-    
-                                                                         
-    /* invoke arity 
-     * ... f a1 [... aN] -> ... value
-     *         Invokes a function.
-     *         If given too few arguments, return a partially applied function.
-     *         If given too many arguments, return the application (((f aN) aN+1) ... aN+i).
-     */
-    public static class InvokeInstr implements Instruction {
-        public InvokeInstr(int arity)
-        {
-            this.arity = arity;
-        }
-    
-        private int arity;
-    
-        @Override
-        public void emit(GeneratorAdapter g) {
-            // TODO push fn
-            // store arity
-        }
-    }
-//
-//    /* label symbol
-//     *         Used for branch statements.
-//     */
-//    static class IR_Label implements Instruction {
-//        public IR_Label(Symbol label)
-//        {
-//            this.label = label;
-//        }
-//    
-//        private Symbol label;
-//    
-//        @Override
-//        public void emit(GeneratorAdapter g) {
-//            // TODO Auto-generated method stub
-//        }
-//    }
-//
-//    /* if label
-//     * ... v -> ...
-//     *         Branch on the given value (vitry false/true).
-//     */
-//    static class IR_If implements Instruction {
-//        public IR_If(Symbol label)
-//        {
-//            this.label = label;
-//        }
-//    
-//        private Symbol label;
-//    
-//        @Override
-//        public void emit(GeneratorAdapter g) {
-//            // TODO Auto-generated method stub
-//        }
-//    }
-//
-//    /* ifPred arity label
-//     * ... f a1 [... aN] -> ...
-//     *         Branch on the given predicate.
-//     */
-//    static class IR_IfPred implements Instruction {
-//        public IR_IfPred(int arity, Symbol label)
-//        {
-//            this.arity = arity;
-//            this.label = label;
-//        }
-//    
-//        private int arity;
-//        private Symbol label;
-//    
-//        @Override
-//        public void emit(GeneratorAdapter g) {
-//            // TODO Auto-generated method stub
-//        }
-//    }
 
     /* thunk <nested code>                      
      * ... -> ... thunk    
@@ -416,60 +312,198 @@ public class Compiler {
      *         Emits bytecode that creates an instance of that class.
      *         Generated code inherits the enclosing environment.
      */
-    public static class ThunkInstr extends CallableInstruction {
-
-//        @Override
-//        public byte[] compile() {
-//            return null;
-//            // TODO Auto-generated method stub
-//        }
+    public static class ThunkGen extends CallableGen {
     }
-       
-      
+
     /* function <nested code>                            
      * ... -> ... function    
      *         Effects the generation of a function class at compile-time. 
      *         Emits bytecode that creates an instance of that class.
      *         Generated code inherits the enclosing environment.
      */    
-    public static class FunctionInstr extends CallableInstruction {
-//        @Override
-//        public byte[] compile() {
-//            return null;
-//            // TODO Auto-generated method stub
-//        }
+    public static class FunctionGen extends CallableGen {
     }
 
-              
     /* functionGuarded <nested code>
      * ... -> ... function    
      *         Like function, but forces generated code to use fetchGuarded
      *         in place of fetch.
      */    
-    public static class FunctionGuardedInstr extends FunctionInstr {
-//        @Override
-//        public byte[] compile() {
-//            return null;
-//            // TODO Auto-generated method stub
-//        }
+    public static class FunctionGuardedGen extends FunctionGen {
     }
 
-      
     /* functionChecked <nested code>
      * ... -> ... function    
      *         Like function, but forces generated code to use fetchChecked
      *         in place of fetch.
      */
-    public static class FunctionCheckedInstr extends FunctionInstr {
-//        @Override
-//        public byte[] compile() {
-//            return null;
-//            // TODO Auto-generated method stub
-//        }
+    public static class FunctionCheckedGen extends FunctionGen {
+    }
+    
+    
+    // Branching emitters
+    // TODO
+    
+    abstract public static class BranchingEmitter implements Emitter {
+    }
+    
+    public static class IfEmitter extends BranchingEmitter {
+
+        @Override
+        public void emit(CallableGen enc, GeneratorAdapter g) {
+            // TODO Auto-generated method stub
+        }
+    }
+    public static class MatchEmitter extends BranchingEmitter {
+
+        @Override
+        public void emit(CallableGen enc, GeneratorAdapter g) {
+            // TODO Auto-generated method stub
+        }
     }
 
+    
+    // Simple emitters
 
-    // TODO switch/match
+    /*
+     * store index   
+     * ... value -> ...    
+     *         Pops (stores) a local variable.
+     */
+    public static class StoreEmitter implements Emitter {
+        public StoreEmitter(byte index)
+        {
+            this.index = index;
+        }
+        private byte index;
+
+        @Override
+        public void emit(CallableGen enc, GeneratorAdapter g) {
+            g.storeLocal(index);            
+        }
+    }
+              
+    /* fetch index
+     * ... -> ... value
+     *         Pushes (fetches) a local variable.
+     */    
+    public static class FetchEmitter implements Emitter {
+        public FetchEmitter(byte index)
+        {
+            this.index = index;
+        }
+        protected byte index;
+
+        @Override
+        public void emit(CallableGen enc, GeneratorAdapter g) {
+            g.loadLocal(index);
+        }
+    }
+                                                 
+    /* fetchGuarded index
+     * ... -> ... value
+     *         Like fetch, but inserts forcing thunk expansion.
+     */
+    public static class FetchGuardedEmitter extends FetchEmitter {
+        public FetchGuardedEmitter(byte index)
+        {
+            super(index);
+        }        
+        static final Type _Thunk = Type.getType(Thunk.class);
+        static final Method _get = Method.getMethod("Value get()");
+
+        @Override
+        public void emit(CallableGen enc, GeneratorAdapter g) {
+            g.loadLocal(index);             // -> .. thunk
+            g.invokeVirtual(_Thunk, _get);  // -> .. value
+        }
+    }
+      
+    /* fetchChecked index
+     * ... -> ... value
+     *         Like fetch, but inserts careful thunk expansion.
+     */
+    public static class FetchCheckedEmitter extends FetchGuardedEmitter {
+        public FetchCheckedEmitter(byte index)
+        {
+            super(index);
+        }
+
+        @Override
+        public void emit(CallableGen enc, GeneratorAdapter g) {
+            Label jump = new Label();
+            g.loadLocal(index);                  // -> .. thunk?
+            g.dup();                             // -> .. thunk? thunk?
+            g.instanceOf(_Thunk);                // -> .. thunk? res            
+            g.ifZCmp(GeneratorAdapter.EQ, jump); // if 0 jump
+            g.invokeVirtual(_Thunk, _get);       // -> .. res
+            g.mark(jump);                        // -> .. notthunk
+        }
+    }
+      
+    /* define 
+     * ... symbol value -> ...    
+     *         Pushes (fetches) a variable from the current lexical environment.
+     */
+    public static class DefineEmitter implements Emitter {
+        static final Type _Callable = Type.getType(Callable.class);
+        static final Method _define = Method.getMethod("define(Symbol, Value)");
+        
+        @Override
+        public void emit(CallableGen encl, GeneratorAdapter g) {
+            g.loadThis();   // -> .. sym val this
+            g.dupX2();      // -> .. this sym val this 
+            g.pop();        // -> .. this sym val
+            g.invokeVirtual(_Callable, _define);            
+        }        
+    }
+              
+    /* lookup
+     * ... symbol -> ... value    
+     *         Pops (stores) a variable to the current lexical environment.
+     */
+    public static class LookUpEmitter implements Emitter {
+        static final Type _Callable = Type.getType(Callable.class);
+        static final Method _lookup = Method.getMethod("lookup(Symbol)");
+
+        @Override
+        public void emit(CallableGen enc, GeneratorAdapter g) {
+            g.loadThis();
+            g.swap();       // .. this sym
+            g.invokeVirtual(_Callable, _lookup);
+        }        
+    }
+                                                                         
+    /* invoke arity 
+     * ... f a1 [... aN] -> ... value
+     *         Invokes a function.
+     *         If given too few arguments, return a partially applied function.
+     *         If given too many arguments, return the application (((f aN) aN+1) ... aN+i).
+     */
+    public static class InvokeEmitter implements Emitter {
+        public InvokeEmitter(int arity)
+        {
+            this.arity = arity;
+        }
+    
+        private int arity;
+    
+        @Override
+        public void emit(CallableGen enc, GeneratorAdapter g) {
+            // TODO push fn
+            // store arity
+        }
+    }
+    
+    public static class InvokeTailEmitter implements Emitter {
+
+        @Override
+        public void emit(CallableGen enc, GeneratorAdapter g) {
+            // TODO Auto-generated method stub
+        }
+        
+    }
+
 
     // TODO monitors
 }
