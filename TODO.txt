@@ -50,10 +50,11 @@
     - Implementation-wise, however, the following invariants hold:
         - A function is an object that inherits from vitry.p.Function
         - A function has the following properties
+            - An environment (implicit)
             - Arity, defined by Function.getArity()
             - Type, defined by Function.getType()
-            - Body                                 
-        - For any function f, f.arity
+            - Body, defined by Function.invoke()                                 
+
         - Whenever a function f is called with N arguments:
             if not f instanceof RestArgFunction
                 if  N   < f.arity,  then a partial application is returned

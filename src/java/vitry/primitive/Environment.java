@@ -46,7 +46,7 @@ public class Environment<K,V> implements Map<K,V> {
     }
     
     public Environment<K,V> define(K k, V v) {
-        if (local.containsKey(k)) throw new OverwriteException();
+        if (local.containsKey(k)) throw new AlreadyBoundException();
         put(k, v);
         return this;
     }
