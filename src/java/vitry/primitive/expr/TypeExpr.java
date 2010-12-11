@@ -6,7 +6,7 @@ import vitry.primitive.Expr;
  *
  * @author hans
  */
-public class Type extends Expr
+public class TypeExpr extends Expr
 {
 
 }
