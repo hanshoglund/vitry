@@ -36,11 +36,41 @@ import vitry.primitive.expr.Where;
  *     
  *  6) If an eval method was invoked, a dynamic classloader is created and
  *     the top-level callable object evaluated.
+ *     
+ *     
+ * How-to:
+ * 
+ *  Add primitive support?
+ *      Expr level
+ *          Assert safe type hints are available in certain kinds of exprs
+ *      Backend level    
+ *          Assert other instructions can handle primitives safely
+ *          Replace invoke instructions with something in the line of "primitiveInvoke"
+ *  
+ *  Add more expressions?
+ *      Add new Expr subclasses and corresponding compile(...) methods.
+ *  
+ *  Add new backend?
+ *      Reimplement Instruction and CallableInstruction
+ *      If the result is not JVM classes, use something other than ClassReceiver.
+ *      
+ *  Support global non-strict evaluation?
+ *      Expr level
+ *          Assert parameters to all invoked expressions are wrapped in thunks.
+ *          Assert all fetch instruction are safely checked or guarded.
+ *      Backend level
+ *          Find a way to optimize guards.
+ *      
  * 
  * 
  * @author hans
  */
 public class Compiler {
+    
+    /**
+     * Stateless, apart from "miscellaneous" configurations, i.e. flags.
+     */
+    public Compiler(){}
     
 
     public interface ClassReceiver {

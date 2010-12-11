@@ -6,6 +6,8 @@ package vitry.primitive;
  * @author hans
  */
 public class Main {
+    
+    private Main(){}
 
     public static void main(String[] args) {
 
