@@ -8,4 +8,8 @@ import vitry.primitive.Expr;
  */
 public class If extends Expr {
 
+    public Expr cond;
+    public Expr alt1;
+    public Expr alt2;
+    
 }

@@ -15,17 +15,6 @@ import java.util.Map;
  */
 public class Symbol extends Atom {
 
-    private final String name;
-    private boolean hasCachedHashCode = false;
-    private int cachedHashCode;
-
-    private static Map<String, Symbol> table = new HashMap<String, Symbol>();
-
-    private Symbol(String name)
-    {
-        this.name = name;
-    }
-
     public static Symbol intern(String name) {
         if (table.containsKey(name))
             return table.get(name);
@@ -54,5 +43,15 @@ public class Symbol extends Atom {
             hasCachedHashCode = true;
         }
         return cachedHashCode;
+    }
+
+    private final String name;
+    private boolean hasCachedHashCode = false;
+    private int cachedHashCode;
+    private static Map<String, Symbol> table = new HashMap<String, Symbol>();
+
+    private Symbol(String name)
+    {
+        this.name = name;
     }
 }

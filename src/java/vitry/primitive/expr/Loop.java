@@ -8,5 +8,7 @@ import vitry.primitive.Expr;
  */
 public class Loop extends Expr
 {
-
+    
+    public Assign[] assigns;
+    public Expr body;
 }

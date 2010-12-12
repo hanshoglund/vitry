@@ -8,5 +8,5 @@ import vitry.primitive.Expr;
  */
 public class Recur extends Expr
 {
-
+    public Expr[] args;
 }

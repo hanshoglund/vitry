@@ -7,5 +7,7 @@ import vitry.primitive.Expr;
  * @author hans
  */
 public class Do extends Expr {
+    
+    public Expr[] exprs;
 
 }

@@ -8,5 +8,8 @@ import vitry.primitive.Expr;
  */
 public class TypeExpr extends Expr
 {
+    
+    public Expr value;
+    public Expr type;
 
 }
