@@ -1,27 +1,10 @@
 
+
 - Implement a simple core language
     - Type system                   
     - Lexer/Parser, Interpreter, Compiler, Runtime
 
-
-- Runtime
-    - Think through
-        - Class loader strategy
-        - Where to store value graph
-        - Thread support
-
-- DynamicClassLoader     
-
-- Pre-compiler
-    - Module rewrite (the match trick)
-                           
-- Compiler
-    - Add BranchingEmitter (see that it will work for TCO strategies as well...)
-    - Implement (most) compile methods
-    - Implement Evaluator properly
-    - TEST!
-
-                
+          
 - Semantics of the eq logic
     - Two basic relations:
         - Equals
@@ -37,6 +20,32 @@
         - Equality is Object.equals() with the same semantics
             - We strive to minimate duplicate objects to save memory and shorten comparison time
         - Type memebership is Value.memberOf()
+
+- Destructuring and type matching
+    - How to combine?
+
+
+- Runtime
+    - Think through
+        - Class loader strategy
+        - Where to store value graph
+        - Thread support
+
+- DynamicClassLoader 
+
+- Parser and Lexer (already in ANTLR proj)    
+
+- Pre-compiler
+    - Module rewrite (the match trick)
+                           
+- Compiler
+    - Add BranchingEmitter (see that it will work for TCO strategies as well...)
+    - Implement (most) compile methods
+    - Implement Evaluator properly
+    - TEST!
+
+                
+
 
     
 - Functions
