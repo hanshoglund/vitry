@@ -2,10 +2,13 @@ package vitry.primitive;
 
 import java.util.LinkedList;
 
+import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.GeneratorAdapter;
 import org.objectweb.asm.commons.Method;
+
+import com.sun.xml.internal.ws.org.objectweb.asm.Opcodes;
 
 import vitry.primitive.expr.*;
 
@@ -72,25 +75,27 @@ import vitry.primitive.expr.*;
  * @author hans
  */
 public class Compiler implements Evaluator {
-   
-    
+
     public Compiler()
     {
         this.localTailCallOpt = false;
         this.generalTailCallOpt = false;
+        this.enableForms = false;
         this.specialForms = new String[0];
     }
+    
 
     public Compiler(boolean localTailCallOpt, boolean generalTailCallOpt,
-            String[] specialForms)
+            boolean enableForms, String[] specialForms)
     {
         this.localTailCallOpt = localTailCallOpt;
         this.generalTailCallOpt = generalTailCallOpt;
+        this.enableForms = enableForms;
         this.specialForms = specialForms;
-    }                     
+    }
 
 
-    public interface ClassReceiver {   
+    public interface ClassReceiver {
         /**
          * Called whenever a class has been generated.
          */
@@ -103,24 +108,17 @@ public class Compiler implements Evaluator {
          */
         void createClasses(ClassReceiver recv);
     }
-    
 
-    /*
-     * Implements eval 
-     */
-    
-    public Value eval(Expr e) throws Exception {
-        // TODO
-        ClassLoader dynClassLoader = null;
-        return eval(e, dynClassLoader);
+    public Value eval(Expr expr) throws Exception {
+        return eval(expr, null);
     }
 
-    public Value eval(Expr e, ClassLoader linkWith) throws Exception {
+    public Value eval(Expr expr, ClassLoader link) throws Exception {
         // get dynamic classloader
         // link with runtime
         // link with supplied, if not null
 
-        if (e instanceof ModuleExpr) {
+        if (expr instanceof ModuleExpr) {
             // compile and evaluate
         } else {
             // add implicit module
@@ -129,24 +127,12 @@ public class Compiler implements Evaluator {
 
         return null; // TODO
     }
-    
-    
-    /*
-     * Compilation
-     */
+
+    public ClassGenerator compile(Fn expr) {
+        return compile(expr, null);
+    }
 
     public ClassGenerator compile(ModuleExpr expr) {
-        ModuleGen mod = new ModuleGen(expr.name);
-
-        for (String name : expr.imports)
-            mod.addImport(name);
-        for (Assign ass : expr.assigns)
-            compile(ass, mod);
-        
-        return mod;
-    }
-    
-    public ClassGenerator compile(Fn expr) {
         return compile(expr, null);
     }
 
@@ -155,48 +141,72 @@ public class Compiler implements Evaluator {
     }
 
     void compile(Expr expr, CallableGen ctxt, boolean leftSide) {
-        if (expr instanceof ModuleExpr) compile((ModuleExpr) expr);
-        if (expr instanceof Fn)       compile((Fn) expr, ctxt);
-        if (expr instanceof Let)      compile((Let) expr, ctxt);
-        if (expr instanceof Where)    compile((Where) expr, ctxt);
-        if (expr instanceof Assign)   compile((Assign) expr, ctxt);
-        if (expr instanceof Left)     compile((Left) expr, ctxt);
-        if (expr instanceof Apply)    compile((Apply) expr, ctxt, leftSide);
-        if (expr instanceof TypeExpr) compile((TypeExpr) expr, ctxt, leftSide);
-        if (expr instanceof If)       compile((If) expr, ctxt);
-        if (expr instanceof Match)    compile((Match) expr, ctxt);
-        if (expr instanceof Loop)     compile((Loop) expr, ctxt);
-        if (expr instanceof Recur)    compile((Recur) expr, ctxt);
-        if (expr instanceof Literal)  compile((Literal) expr, ctxt, leftSide);
-    
-        throw new RuntimeException("Unrecognized expression type.");
+        if (expr instanceof ModuleExpr)
+            compile((ModuleExpr) expr, null);
+        if (expr instanceof Fn)
+            compile((Fn) expr, ctxt);
+        if (expr instanceof Let)
+            compile((Let) expr, ctxt);
+        if (expr instanceof Where)
+            compile((Where) expr, ctxt);
+        if (expr instanceof Assign)
+            compile((Assign) expr, ctxt);
+        if (expr instanceof Left)
+            compile((Left) expr, ctxt);
+        if (expr instanceof Apply)
+            compile((Apply) expr, ctxt, leftSide);
+        if (expr instanceof TypeExpr)
+            compile((TypeExpr) expr, ctxt, leftSide);
+        if (expr instanceof If)
+            compile((If) expr, ctxt);
+        if (expr instanceof Match)
+            compile((Match) expr, ctxt);
+        if (expr instanceof Loop)
+            compile((Loop) expr, ctxt);
+        if (expr instanceof Recur)
+            compile((Recur) expr, ctxt);
+        if (expr instanceof Literal)
+            compile((Literal) expr, ctxt, leftSide);
+
+        throw new RuntimeException("Invalid expression type.");
+    }
+
+    ClassGenerator compile(ModuleExpr expr, CallableGen _) {
+        ModuleGen module = new ModuleGen(expr.name);
+
+        for (String name : expr.imports)
+            module.addImport(name);
+        for (Assign assign : expr.assigns)
+            compile(assign, module);
+
+        return module;
     }
 
     ClassGenerator compile(Fn expr, CallableGen ctxt) {
         int arity = expr.params.length;
         CallableGen func;
         if (ctxt == null)
-            func = new FunctionGen(arity, ctxt);
+            func = new FunctionGen(VitryRuntime.getAnonymousFnName(), arity, ctxt);
         else
-            func = ctxt.addFunction(arity, ctxt);
-    
+            func = ctxt.addFunction(arity);
+
         for (int i = 0; i < arity; i++)
             func.addLoad(i + 1);
-        
+
         // Arguments are now on stack
         // We restart from here during tail calls etc
         func.setRecursionPoint();
-        
+
         for (int i = 0; i < arity; i++)
             compile(expr.params[i], func);
-        
+
         compile(expr.body, func);
         return func;
     }
 
     void compile(Let expr, CallableGen ctxt) {
         ctxt.addPushEnv();
-        for (Assign assign : expr.assigns) 
+        for (Assign assign : expr.assigns)
             compile(assign, ctxt);
         compile(expr.body, ctxt);
         ctxt.addPopEnv();
@@ -204,7 +214,7 @@ public class Compiler implements Evaluator {
 
     void compile(Where expr, CallableGen ctxt) {
         ctxt.addPushEnv();
-        for (Assign assign : expr.assigns) 
+        for (Assign assign : expr.assigns)
             compile(assign, ctxt);
         compile(expr.body, ctxt);
         ctxt.addPopEnv();
@@ -221,10 +231,10 @@ public class Compiler implements Evaluator {
 
     void compile(Apply expr, CallableGen ctxt, boolean leftSide) {
         int arity = expr.args.length;
-        
+
         compile(expr.f, ctxt, leftSide);
         for (Expr arg : expr.args)
-            compile(arg, ctxt);
+            compile(arg, ctxt, leftSide);
 
         if (leftSide)
             ctxt.addInvokeInverse(arity);
@@ -233,21 +243,36 @@ public class Compiler implements Evaluator {
     }
 
     void compile(TypeExpr expr, CallableGen ctxt, boolean leftSide) {
-        compile(expr.value, ctxt);
-        compile(expr.type, ctxt);
+        compile(expr.value, ctxt, leftSide);
+        compile(expr.type, ctxt, leftSide);
         if (leftSide)
-            ctxt.addTypeCheck();
+            ctxt.addTypeCheck(); // XXX How to esc from this in match statements?
         else
             ctxt.addTypeTag();
     }
 
     void compile(If expr, CallableGen ctxt) {
+        compile(expr.cond, ctxt);
+        // TODO branch
+        compile(expr.alt1, ctxt);
+        compile(expr.alt2, ctxt);
     }
-    
+
     void compile(Match expr, CallableGen ctxt) {
     }
 
     void compile(Loop expr, CallableGen ctxt) {
+        ctxt.addPushEnv();
+        for (Assign assign : expr.assigns)
+            compile(assign.right, ctxt);
+
+        ctxt.setRecursionPoint();
+        
+        for (Assign assign : expr.assigns)
+            compile(assign.left, ctxt);
+        
+        compile(expr.body, ctxt);
+        ctxt.addPopEnv();
     }
 
     void compile(Recur expr, CallableGen ctxt) {
@@ -263,21 +288,22 @@ public class Compiler implements Evaluator {
             ;
     }
     
+    // TODO str, float, num
     
     
     /**
      * Marks classes that generate code.
      */
-    interface Emitter {
-        /** The number of stack elements pushed (positive) or consumed (negative). */
-        int getStackElementsPushed();
-    }
+    interface Emitter {}
     
     /**
      * Marks classes that generate JVM bytecode.
      */
     interface ByteCodeEmitter extends Emitter {
         void emit(GeneratorAdapter g);        
+
+        /** The number of stack elements pushed (positive) or consumed (negative). */
+        int getStackElementsPushed();
     }
 
     /**
@@ -288,34 +314,20 @@ public class Compiler implements Evaluator {
      */
     abstract static class CallableGen implements ByteCodeEmitter, ClassGenerator {
 
-        public CallableGen(CallableGen parent)
+        public CallableGen(String name, CallableGen parent)
         {
             this.parent = parent;
-            this.emitters = new LinkedList<Emitter>();
+            this.emitters = new LinkedList<ByteCodeEmitter>();
         }
 
-        /**
-         * 
-         */
-        public void addRecur() {
-            // TODO Auto-generated method stub
-        }
-
-        /**
-         * 
-         */
-        public void setRecursionPoint() {
-            // TODO Auto-generated method stub
-        }
-
-        public CallableGen(CallableGen parent, LinkedList<Emitter> emitters)
+        public CallableGen(String name, CallableGen parent, LinkedList<ByteCodeEmitter> emitters)
         {
             this.parent = parent;
             this.emitters = emitters;
         }
 
 
-        public CallableGen add(Emitter i) {
+        public CallableGen add(ByteCodeEmitter i) {
 //            if (this.generationStarted)
 //                throw new IllegalStateException("Can not modify instruction "
 //                        + "after start of compilation. Make a new instruction "
@@ -325,7 +337,7 @@ public class Compiler implements Evaluator {
         }
 
         public int addStore() {
-            int address = nextLocal();
+            int address = reserveLocal();
             add(new StoreEmitter(address));
             return address;
         }
@@ -365,31 +377,37 @@ public class Compiler implements Evaluator {
         }
 
         public void addInvoke(int arity) {
-            add(new InvokeEmitter(arity));
+            // TODO
         }
 
         public void addInvokeInverse(int arity) {
-            // TODO Auto-generated method stub
+            // TODO
         }
 
         public void addTypeTag() {
-            // TODO Auto-generated method stub
+            // TODO
         }
 
         public void addTypeCheck() {
-            // TODO Auto-generated method stub
+            // TODO
+        }
+
+        public void addRecur() {
+            // TODO
         }
 
         public CallableGen addThunk() {
-            return null; // TODO
+            String name = this.name + "$thunk" + (anonymousThunks++);
+            return new ThunkGen(name, this);
         }
 
-        public CallableGen addFunction(int arity, CallableGen context) {
-            return new FunctionGen(arity, context);
+        public CallableGen addFunction(int arity) {
+            String name = this.name + "$fn" + (anonymousFns++);
+            return new FunctionGen(name, arity, this);
         }
-
-        public int nextLocal() {
-            return reservedLocals++;
+        
+        public String getName() {
+            return name;
         }
 
         public ClassGenerator getEnclosing() {
@@ -404,21 +422,75 @@ public class Compiler implements Evaluator {
             return getTail() instanceof FunctionGen;
         }
 
-        public void emit(GeneratorAdapter g) {
-            // TODO
+        public int reserveLocal() {
+            return reservedLocals++;
         }
-        public void createClasses(ClassReceiver recv) {
-            // TODO
+
+        public void setRecursionPoint() {
+            // TODO Auto-generated method stub
+        }
+
+        /**
+         * Throws an exception if the current sequence of instructions in
+         * the generated method does not leave exactly one object on the
+         * stack. 
+         */
+        public void verifyStackLength() {
+            int length = 0;
+            for (ByteCodeEmitter emitter : this.emitters)
+                length += emitter.getStackElementsPushed();
+            if (length != 1) throw new IllegalStateException("Corrupt stack " +
+            		"allocation in " + name);
+        }
+
+        public int getStackElementsPushed() {
+            return 1;
         }
         
-        abstract public int preReservedLocals();
-        abstract public boolean checkForThunks();
-        abstract public boolean guardForThunks();
+        public void emit(GeneratorAdapter g) {
+            // TODO copy environment
+            g.newInstance(Type.getType(this.name));
+        }
+        
+        public void createClasses(ClassReceiver recv) {            
+            ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
+            
+            int version = 0;
+            int access = Opcodes.ACC_PUBLIC;
+            String superName = superClass().getInternalName();
+            cw.visit(version, access, this.name, null, superName, null);
+            
+            Method m = generatedMethod();
+            GeneratorAdapter mg = new GeneratorAdapter(Opcodes.ACC_PUBLIC, m , null, null, cw);
 
-        private int reservedLocals = preReservedLocals();
-        protected CallableGen parent;
-        private LinkedList<Emitter> emitters;
+            for (ByteCodeEmitter emitter : this.emitters) {
+                emitter.emit(mg);            
+                if (emitter instanceof ClassGenerator)
+                    ((ClassGenerator) emitter).createClasses(recv);
+            }
+            mg.endMethod();
+            cw.visitEnd();
+            
+            recv.receiveClass(this.name, cw.toByteArray());
+        }
+        
+        /** The number of locals to reserve for arguments etc */
+        abstract protected int preReservedLocals();
 
+        /** Inserts thunk checks or guards after lookup and fetch instructions */
+        abstract protected boolean checkForThunks();
+        abstract protected boolean guardForThunks();
+
+        /** Description of method to override */
+        abstract public Type   superClass();
+        abstract public Method generatedMethod();
+
+        String name;
+        CallableGen parent;
+        int reservedLocals = preReservedLocals();
+        int anonymousThunks = 0;
+        int anonymousFns = 0;
+        LinkedList<ByteCodeEmitter> emitters;
     }
     
     
@@ -430,9 +502,9 @@ public class Compiler implements Evaluator {
      */
     static class ThunkGen extends CallableGen {
 
-        public ThunkGen(CallableGen parent)
+        public ThunkGen(String name, CallableGen parent)
         {
-            super(parent);
+            super(name, parent);
         }
 
         public int getStackElementsPushed() {
@@ -450,6 +522,14 @@ public class Compiler implements Evaluator {
         public boolean guardForThunks() {
             return parent.guardForThunks();
         }
+        
+        public Type superClass() {
+            return _Thunk;
+        }
+
+        public Method generatedMethod() {
+            return _get;
+        }
     }
 
     /* function <nested code>                            
@@ -460,14 +540,18 @@ public class Compiler implements Evaluator {
      */    
     static class FunctionGen extends CallableGen {
 
-        public FunctionGen(int arity, CallableGen parent)
+        public FunctionGen(String name, int arity, CallableGen parent)
         {
-            super(parent);
+            super(name, parent);
+            if (arity < Function.MIN_ARITY || arity > Function.MAX_ARITY)
+                throw new IllegalArgumentException(
+                        "Function arity must be in bounds " 
+                        + Function.MIN_ARITY + "-"
+                        + Function.MAX_ARITY);
+            
             this.arity = arity;
         }
         
-        private int arity;
-
         public int getStackElementsPushed() {
             return 1; // pushing genrated fn, not invocation
         }
@@ -483,6 +567,16 @@ public class Compiler implements Evaluator {
         public boolean guardForThunks() {
             return parent.guardForThunks();
         }
+        
+        public Type superClass() {
+            return _Function;
+        }
+
+        public Method generatedMethod() {
+            return _apply[arity];
+        }
+        
+        private int arity;
     }
     
     static class ModuleGen extends CallableGen {
@@ -491,7 +585,7 @@ public class Compiler implements Evaluator {
          */
         public ModuleGen(String name)
         {
-            super(null);
+            super(name, null);
             this.name = name;
         }
 
@@ -518,14 +612,22 @@ public class Compiler implements Evaluator {
             return false;
         }
 
-        private final String name;        
+        private final String name;
+
+        public Type superClass() {
+            return _Module;
+        }
+        
+        public Method generatedMethod() {
+            return _get;
+        }     
     }
     
     static class FormGen extends FunctionGen {
 
-        public FormGen(int arity, CallableGen encl)
+        public FormGen(String name, int arity, CallableGen encl)
         {
-            super(arity, encl);
+            super(name, arity, encl);
         }
         
         public boolean guardForThunks() {
@@ -607,15 +709,27 @@ public class Compiler implements Evaluator {
 //        }
 //    }       
 //                         
-    static final Type _InvocationException = Type
-            .getType(InvocationException.class);
-
-    static final Type _Thunk = Type.getType(Thunk.class);
-    static final Method _get = Method.getMethod("Value get()");
-
-    static final Type _Callable = Type.getType(Callable.class);
-    static final Method _define = Method.getMethod("define(Symbol, Value)");
-    static final Method _lookup = Method.getMethod("lookup(Symbol)");
+    static final Type   _Callable           = Type.getType(Callable.class);
+    static final Method _define             = Method.getMethod("define(Symbol, Value)");
+    static final Method _lookup             = Method.getMethod("lookup(Symbol)");
+    static final Type   _Thunk              = Type.getType(Thunk.class);
+    static final Method _get                = Method.getMethod("Value get()");
+    static final Type   _Function           = Type.getType(Function.class);
+    static final Type   _Module             = Type.getType(Module.class);
+    static final Type   _InvocationException = Type.getType(InvocationException.class);
+    
+    static final Method[] _apply            = new Method[Function.MAX_ARITY];
+    static {
+        for (int i = Function.MIN_ARITY; i <= Function.MAX_ARITY; ++i) {
+            String sign = "Value apply(";
+            sign += "Value";
+            for (int j = 0; j < (i-1); ++j)
+                sign += ",Value";
+            sign += ")";
+            
+            _apply[i] = Method.getMethod(sign);
+        }
+    }
                                                            
 //    public interface BranchingEmitter extends Emitter {}
 //
@@ -818,5 +932,7 @@ public class Compiler implements Evaluator {
 
     private boolean generalTailCallOpt;
 
+    private boolean enableForms;
+    
     private String[] specialForms;
 }

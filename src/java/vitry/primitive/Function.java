@@ -21,6 +21,10 @@ package vitry.primitive;
  * @author hans
  */
 abstract public class Function extends Callable {
+    
+    /* Restrict arity (both inclusive) */
+    static int MIN_ARITY = 1;
+    static int MAX_ARITY = 0xf;
 
     public Function(Environment<Symbol, Value> e)
     {
