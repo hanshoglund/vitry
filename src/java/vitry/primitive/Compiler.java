@@ -94,13 +94,23 @@ public class Compiler implements Evaluator {
         this.specialForms = specialForms;
     }
 
+    
+    
+    public interface Emitter {
+        
+        /**
+         * Emit bytecode.
+         */
+        abstract public void emit(GeneratorAdapter g);
 
-    // TODO str, float, num
-    
-    
-    public interface Emitter {}
+        /**
+         * The number of stack elements pushed (positive) or consumed (negative).
+         */
+        abstract public int getFramesPushed();
+    }
 
     public interface ClassReceiver {
+        
         /**
          * Called whenever a class has been generated.
          */
@@ -108,12 +118,15 @@ public class Compiler implements Evaluator {
     }
 
     public interface ClassGenerator extends Emitter {
+        
         /**
          * Force generation of compiled classes.
          */
         void createClasses(ClassReceiver recv);
     }
 
+    
+    
     public Value eval(Expr expr) throws Exception {
         return eval(expr, null);
     }
@@ -132,61 +145,15 @@ public class Compiler implements Evaluator {
 
         return null; // TODO
     }
-
-    public ClassGenerator compile(Fn expr) {
-        return compile(expr, null);
-    }
+    
+    
 
     public ClassGenerator compile(ModuleExpr expr) {
         return compile(expr, null);
     }
 
-    void compile(Expr expr, CallableGen ctxt) {
-        compile(expr, ctxt, false);
-    }
-
-    void compile(Expr expr, CallableGen ctxt, boolean leftSide) {
-        if (expr instanceof ModuleExpr)
-            compile((ModuleExpr) expr, null);
-        if (expr instanceof Fn)
-            compile((Fn) expr, ctxt);
-        
-        if (expr instanceof Let)
-            compile((Let) expr, ctxt);
-        if (expr instanceof Where)
-            compile((Where) expr, ctxt);
-        if (expr instanceof Assign)
-            compile((Assign) expr, ctxt);
-        if (expr instanceof Left)
-            compile((Left) expr, ctxt);
-        
-        if (expr instanceof Apply)
-            compile((Apply) expr, ctxt, leftSide);
-        if (expr instanceof TypeExpr)
-            compile((TypeExpr) expr, ctxt, leftSide);
-        if (expr instanceof If)
-            compile((If) expr, ctxt);
-        if (expr instanceof Match)
-            compile((Match) expr, ctxt);
-        if (expr instanceof Loop)
-            compile((Loop) expr, ctxt);
-        if (expr instanceof Recur)
-            compile((Recur) expr, ctxt);
-        
-        if (expr instanceof NumLiteral)
-            compile((NumLiteral) expr, ctxt, leftSide);
-        if (expr instanceof FloatLiteral)
-            compile((FloatLiteral) expr, ctxt, leftSide);
-        if (expr instanceof SymLiteral)
-            compile((SymLiteral) expr, ctxt, leftSide);
-        if (expr instanceof StrLiteral)
-            compile((StrLiteral) expr, ctxt, leftSide);
-
-        throw new RuntimeException("Invalid expression type.");
-    }
-
-    ClassGenerator compile(ModuleExpr expr, CallableGen _) {
-        ModuleGen module = new ModuleGen(expr.name);
+    public ClassGenerator compile(ModuleExpr expr, CallableGenerator _) {
+        ModuleGenerator module = new ModuleGenerator(expr.name);
 
         for (String name : expr.imports)
             module.addImport(name);
@@ -196,11 +163,16 @@ public class Compiler implements Evaluator {
         return module;
     }
 
-    ClassGenerator compile(Fn expr, CallableGen ctxt) {
+    public ClassGenerator compile(Fn expr) {
+        return compile(expr, null);
+    }
+
+
+    public ClassGenerator compile(Fn expr, CallableGenerator ctxt) {
         int arity = expr.params.length;
-        CallableGen func;
+        CallableGenerator func;
         if (ctxt == null)
-            func = new FunctionGen(VitryRuntime.getAnonymousFnName(), arity, ctxt);
+            func = new FunctionGenerator(VitryRuntime.getAnonymousFnName(), arity, ctxt);
         else
             func = ctxt.addFunction(arity);
 
@@ -217,8 +189,10 @@ public class Compiler implements Evaluator {
         compile(expr.body, func);
         return func;
     }
+    
+    
 
-    void compile(Let expr, CallableGen ctxt) {
+    public void compile(Let expr, CallableGenerator ctxt) {
         ctxt.addPushEnv();
         for (Assign assign : expr.assigns)
             compile(assign, ctxt);
@@ -226,7 +200,7 @@ public class Compiler implements Evaluator {
         ctxt.addPopEnv();
     }
 
-    void compile(Where expr, CallableGen ctxt) {
+    public void compile(Where expr, CallableGenerator ctxt) {
         ctxt.addPushEnv();
         for (Assign assign : expr.assigns)
             compile(assign, ctxt);
@@ -234,16 +208,18 @@ public class Compiler implements Evaluator {
         ctxt.addPopEnv();
     }
 
-    void compile(Assign expr, CallableGen ctxt) {
+    public void compile(Assign expr, CallableGenerator ctxt) {
         compile(expr.right, ctxt);
         compile(expr.left, ctxt);
     }
 
-    void compile(Left expr, CallableGen ctxt) {
+    public void compile(Left expr, CallableGenerator ctxt) {
         compile(expr, ctxt, true);
     }
+    
+    
 
-    void compile(Apply expr, CallableGen ctxt, boolean leftSide) {
+    public void compile(Apply expr, CallableGenerator ctxt, boolean leftSide) {
         int arity = expr.args.length;
 
         compile(expr.f, ctxt, leftSide);
@@ -256,7 +232,7 @@ public class Compiler implements Evaluator {
             ctxt.addInvoke(arity);
     }
 
-    void compile(TypeExpr expr, CallableGen ctxt, boolean leftSide) {
+    public void compile(TypeExpr expr, CallableGenerator ctxt, boolean leftSide) {
         compile(expr.value, ctxt, leftSide);
         compile(expr.type, ctxt, leftSide);
         if (leftSide)
@@ -265,18 +241,18 @@ public class Compiler implements Evaluator {
             ctxt.addTypeTag();
     }
 
-    void compile(If expr, CallableGen ctxt) {
+    public void compile(If expr, CallableGenerator ctxt) {
         compile(expr.cond, ctxt);
         // TODO branch
         compile(expr.alt1, ctxt);
         compile(expr.alt2, ctxt);
     }
 
-    void compile(Match expr, CallableGen ctxt) {
+    public void compile(Match expr, CallableGenerator ctxt) {
         // TODO
     }
 
-    void compile(Loop expr, CallableGen ctxt) {
+    public void compile(Loop expr, CallableGenerator ctxt) {
         ctxt.addPushEnv();
         for (Assign assign : expr.assigns)
             compile(assign.right, ctxt);
@@ -290,32 +266,40 @@ public class Compiler implements Evaluator {
         ctxt.addPopEnv();
     }
 
-    void compile(Recur expr, CallableGen ctxt) {
+    public void compile(Recur expr, CallableGenerator ctxt) {
         for (Expr arg : expr.args)
             compile(arg, ctxt);
         ctxt.addRecur();
     }
+    
+    
 
-    void compile(NumLiteral expr, CallableGen ctxt, boolean leftSide) {
+    public void compile(
+            NumLiteral expr, CallableGenerator ctxt, boolean leftSide) {
         if (leftSide)
             ;
         else
             ;
     }
-    void compile(FloatLiteral expr, CallableGen ctxt, boolean leftSide) {
+
+    public void compile(FloatLiteral expr, CallableGenerator ctxt,
+            boolean leftSide) {
         if (leftSide)
             ;
         else
             ;
     }
-    void compile(SymLiteral expr, CallableGen ctxt, boolean leftSide) {
+
+    public void compile(SymLiteral expr, CallableGenerator ctxt,
+            boolean leftSide) {
         if (leftSide)
             ;
         else {
             ;
         }
     }
-    void compile(StrLiteral expr, CallableGen ctxt, boolean leftSide) {
+    
+    public void compile(StrLiteral expr, CallableGenerator ctxt, boolean leftSide) {
         if (leftSide)
             ;
         else
@@ -323,19 +307,50 @@ public class Compiler implements Evaluator {
     }
     
     
+    
+    public void compile(Expr expr, CallableGenerator ctxt) {
+        compile(expr, ctxt, false);
+    }
+    
+    
+
+    public void compile(Expr expr, CallableGenerator ctxt, boolean leftSide) {
+        if (expr instanceof ModuleExpr) compile((ModuleExpr) expr, null);
+        if (expr instanceof Fn)         compile((Fn) expr, ctxt);
+        
+        if (expr instanceof Let)        compile((Let) expr, ctxt);
+        if (expr instanceof Where)      compile((Where) expr, ctxt);
+        if (expr instanceof Assign)     compile((Assign) expr, ctxt);
+        if (expr instanceof Left)       compile((Left) expr, ctxt);
+        
+        if (expr instanceof Apply)      compile((Apply) expr, ctxt, leftSide);
+        if (expr instanceof TypeExpr)   compile((TypeExpr) expr, ctxt, leftSide);
+        if (expr instanceof If)         compile((If) expr, ctxt);
+        if (expr instanceof Match)      compile((Match) expr, ctxt);
+        if (expr instanceof Loop)       compile((Loop) expr, ctxt);
+        if (expr instanceof Recur)      compile((Recur) expr, ctxt);
+        
+        if (expr instanceof NumLiteral) compile((NumLiteral) expr, ctxt, leftSide);
+        if (expr instanceof FloatLiteral) compile((FloatLiteral) expr, ctxt, leftSide);
+        if (expr instanceof SymLiteral) compile((SymLiteral) expr, ctxt, leftSide);
+        if (expr instanceof StrLiteral) compile((StrLiteral) expr, ctxt, leftSide);
+    
+        throw new RuntimeException("Invalid expression type.");
+    }
+
+
+
     /**
      * Marks classes that generate JVM bytecode.
      */
-    abstract static class ByteCodeEmitter implements Emitter {
-        abstract public void emit(GeneratorAdapter g);        
-
-        /** The number of stack elements pushed (positive) or consumed (negative). */
-        abstract public int getFramesPushed();
+    public abstract static class AbstractEmitter implements Emitter {
         
-        public String toString(){
+        public String toString() {
             return getClass().getSimpleName() + " pushing " + getFramesPushed();
         }
     }
+    
+    
 
     /**
      * Handles generation of callable entities (classes, modules, thunks).
@@ -343,16 +358,16 @@ public class Compiler implements Evaluator {
      * Generates one class for itself and one for each nested callable entity.
      * Emits code that loads this entity (except for modules).
      */
-    abstract static class CallableGen extends ByteCodeEmitter implements ClassGenerator {
+    abstract public static class CallableGenerator extends AbstractEmitter implements ClassGenerator {
 
-        public CallableGen(String name, CallableGen parent)
+        public CallableGenerator(String name, CallableGenerator parent)
         {
             this.name = name;
             this.parent = parent;
-            this.emitters = new LinkedList<ByteCodeEmitter>();
+            this.emitters = new LinkedList<AbstractEmitter>();
         }
 
-        public CallableGen(String name, CallableGen parent, LinkedList<ByteCodeEmitter> emitters)
+        public CallableGenerator(String name, CallableGenerator parent, LinkedList<AbstractEmitter> emitters)
         {
             this.name = name;
             this.parent = parent;
@@ -360,7 +375,7 @@ public class Compiler implements Evaluator {
         }
 
 
-        public CallableGen add(ByteCodeEmitter i) {
+        public CallableGenerator add(AbstractEmitter i) {
             if (this.generating)
                 throw new IllegalStateException("Can not add emitters"
                         + "during class generation. Make a new "
@@ -433,16 +448,16 @@ public class Compiler implements Evaluator {
             add(new ReturnEmitter());
         }
 
-        public ThunkGen addThunk() {
+        public ThunkGenerator addThunk() {
             String name = this.name + "$thunk" + (anonymousThunks++);
-            ThunkGen gen = new ThunkGen(name, this);
+            ThunkGenerator gen = new ThunkGenerator(name, this);
             add(gen);
             return gen;
         }
 
-        public FunctionGen addFunction(int arity) {
+        public FunctionGenerator addFunction(int arity) {
             String name = this.name + "$fn" + (anonymousFns++);
-            FunctionGen gen = new FunctionGen(name, arity, this);
+            FunctionGenerator gen = new FunctionGenerator(name, arity, this);
             add(gen);
             return gen;
         }
@@ -455,37 +470,6 @@ public class Compiler implements Evaluator {
             return reservedLocals++;
         }
         
-        /**
-         * Computes the stack size after all instructions have been executed,
-         * based on information from the emitters.
-         */
-        public int getFinalStackSize() {
-            int size = 0;
-            for (ByteCodeEmitter emitter : this.emitters)
-                size += emitter.getFramesPushed();
-            return size;
-        }
-
-        /**
-         * Performs basic checks on the generated instructions. 
-         */
-        public void verifyStack() {
-            int fs = getFinalStackSize();
-            if (fs != 0)
-                throw new IllegalStateException("Final stack size is " + fs
-                        + ", should be 0.");
-        }
-        
-        public void dumpEmitters() {
-            System.out.println(this.toString());
-            for (ByteCodeEmitter emitter : this.emitters)
-                System.out.println("    " + emitter.toString());
-        }
-        
-        public String toString() {
-            return super.toString() + " " + this.getName();
-        }
-
         public String getName() {
             return name;
         }
@@ -501,6 +485,17 @@ public class Compiler implements Evaluator {
         public boolean hasTailCall() {
 //            return getTail() instanceof FunctionGen;
             return false; // TODO
+        }
+
+        /**
+         * Computes the stack size after all instructions have been executed,
+         * based on information from the emitters.
+         */
+        public int getFinalStackSize() {
+            int size = 0;
+            for (AbstractEmitter emitter : this.emitters)
+                size += emitter.getFramesPushed();
+            return size;
         }
 
         public int getFramesPushed() {
@@ -526,7 +521,7 @@ public class Compiler implements Evaluator {
             Method m = getMethod();
             GeneratorAdapter mg = new GeneratorAdapter(Opcodes.ACC_PUBLIC, m , null, null, cw);
 
-            for (ByteCodeEmitter emitter : this.emitters) {
+            for (AbstractEmitter emitter : this.emitters) {
                 emitter.emit(mg);            
                 if (emitter instanceof ClassGenerator)
                     ((ClassGenerator) emitter).createClasses(recv);
@@ -537,6 +532,26 @@ public class Compiler implements Evaluator {
             recv.receiveClass(this.name, cw.toByteArray());
         }
         
+        /**
+         * Performs basic checks on the generated instructions. 
+         */
+        public void verifyStack() {
+            int fs = getFinalStackSize();
+            if (fs != 0)
+                throw new IllegalStateException("Final stack size is " + fs
+                        + ", should be 0.");
+        }
+
+        public void dumpEmitters() {
+            System.out.println(this.toString());
+            for (AbstractEmitter emitter : this.emitters)
+                System.out.println("    " + emitter.toString());
+        }
+
+        public String toString() {
+            return super.toString() + " " + this.getName();
+        }
+
         abstract protected Type    getSuperClass();
         abstract protected Method  getMethod();
 
@@ -547,14 +562,15 @@ public class Compiler implements Evaluator {
         abstract protected boolean checkForThunks();
         abstract protected boolean guardForThunks();
 
-        private String        name;
-        protected CallableGen parent;
+        private final String        name;
+        protected final CallableGenerator parent;
         private int           reservedLocals = getReservedLocals();
         private int           anonymousThunks = 0;
         private int           anonymousFns = 0;
         private boolean       generating = false;
-        private LinkedList<ByteCodeEmitter> emitters;
+        private final LinkedList<AbstractEmitter> emitters;
     }
+    
     
     
     /* thunk <nested code>                      
@@ -563,8 +579,8 @@ public class Compiler implements Evaluator {
      *         Emits bytecode that creates an instance of that class.
      *         Generated code inherits the enclosing environment.
      */
-    static class ThunkGen extends CallableGen {
-        public ThunkGen(String name, CallableGen parent)
+    public static class ThunkGenerator extends CallableGenerator {
+        public ThunkGenerator(String name, CallableGenerator parent)
         {
             super(name, parent);
         }
@@ -596,9 +612,9 @@ public class Compiler implements Evaluator {
      *         Emits bytecode that creates an instance of that class.
      *         Generated code inherits the enclosing environment.
      */    
-    static class FunctionGen extends CallableGen {
+    public static class FunctionGenerator extends CallableGenerator {
 
-        public FunctionGen(String name, int arity, CallableGen parent)
+        public FunctionGenerator(String name, int arity, CallableGenerator parent)
         {
             super(name, parent);
             if (arity < Function.MIN_ARITY || arity > Function.MAX_ARITY)
@@ -633,9 +649,9 @@ public class Compiler implements Evaluator {
         private int arity;
     }
     
-    static class ModuleGen extends CallableGen {
+    public static class ModuleGenerator extends CallableGenerator {
 
-        public ModuleGen(String name)
+        public ModuleGenerator(String name)
         {
             super(name, null);
             this.moduleName = name;
@@ -672,9 +688,9 @@ public class Compiler implements Evaluator {
         private final String moduleName;     
     }
     
-    static class FormGen extends FunctionGen {
+    public static class FormGenerator extends FunctionGenerator {
 
-        public FormGen(String name, int arity, CallableGen encl)
+        public FormGenerator(String name, int arity, CallableGenerator encl)
         {
             super(name, arity, encl);
         }
@@ -683,6 +699,7 @@ public class Compiler implements Evaluator {
             return true;
         }
     }
+    
 
 
     static final Type   _Callable           = Type.getType(Callable.class);
@@ -711,14 +728,12 @@ public class Compiler implements Evaluator {
 //    public interface BranchingEmitter extends Emitter {}
 //
 //    public static class IfEmitter implements BranchingEmitter {
-//        @Override
 //        public void emit(CallableGen enc, GeneratorAdapter g) {
 //            // TODO Auto-generated method stub
 //        }
 //    }
 //
 //    public static class MatchEmitter implements BranchingEmitter {
-//        @Override
 //        public void emit(CallableGen enc, GeneratorAdapter g) {
 //            // TODO Auto-generated method stub
 //        }
@@ -732,7 +747,7 @@ public class Compiler implements Evaluator {
      * ... value -> ...    
      *         Pops (stores) a local variable.
      */
-    static class StoreEmitter extends ByteCodeEmitter {
+    static class StoreEmitter extends AbstractEmitter {
         public StoreEmitter(int i) { this.index = i; }
         int index;
         public int getFramesPushed() { return -1; }
@@ -746,7 +761,7 @@ public class Compiler implements Evaluator {
      * ... -> ... value
      *         Pushes (fetches) a local variable.
      */    
-    static class LoadEmitter extends ByteCodeEmitter {
+    static class LoadEmitter extends AbstractEmitter {
         public LoadEmitter(int index) { this.index = index; }
         int index;
         public int getFramesPushed() { return 1; }
@@ -787,7 +802,7 @@ public class Compiler implements Evaluator {
         }
     }
     
-    static class PushEnvEmitter extends ByteCodeEmitter {
+    static class PushEnvEmitter extends AbstractEmitter {
         public int getFramesPushed() { return 0; }
 
         public void emit(GeneratorAdapter g) {
@@ -795,7 +810,7 @@ public class Compiler implements Evaluator {
         }      
     }
     
-    static class PopEnvEmitter extends ByteCodeEmitter {
+    static class PopEnvEmitter extends AbstractEmitter {
         public int getFramesPushed() { return 0; }
 
         public void emit(GeneratorAdapter g) {
@@ -807,7 +822,7 @@ public class Compiler implements Evaluator {
      * ... symbol value -> ...    
      *         Pushes (fetches) a variable from the current lexical environment.
      */
-    static class DefineEmitter extends ByteCodeEmitter {
+    static class DefineEmitter extends AbstractEmitter {
         public int getFramesPushed() { return -2; }
 
         public void emit(GeneratorAdapter g) {
@@ -822,7 +837,7 @@ public class Compiler implements Evaluator {
      * ... symbol -> ... value    
      *         Pops (stores) a variable to the current lexical environment.
      */
-    static class LookupEmitter extends ByteCodeEmitter {
+    static class LookupEmitter extends AbstractEmitter {
         public int getFramesPushed() { return -1 + 1; }
 
         public void emit(GeneratorAdapter g) {
@@ -872,7 +887,7 @@ public class Compiler implements Evaluator {
      *         If given too few arguments, return a partially applied function.
      *         If given too many arguments, return the application (((f aN) aN+1) ... aN+i).
      */
-    static class InvokeEmitter extends ByteCodeEmitter {
+    static class InvokeEmitter extends AbstractEmitter {
         public InvokeEmitter(int arity) { this.arity = arity; }
         int arity;
         public int getFramesPushed() { return -(arity + 1) + 1; }
@@ -904,25 +919,25 @@ public class Compiler implements Evaluator {
         public InvokeInverseEmitter(int arity) { super(arity); }
     }
     
-    static class TypeTagEmitter extends ByteCodeEmitter {
+    static class TypeTagEmitter extends AbstractEmitter {
         public int getFramesPushed() { return -2; }
         public void emit(GeneratorAdapter g) {
         }
     }
     
-    static class TypeCheckEmitter extends ByteCodeEmitter {
+    static class TypeCheckEmitter extends AbstractEmitter {
         public int getFramesPushed() { return -2 + 1; }
         public void emit(GeneratorAdapter g) {
         }
     }
     
-    static class JumpEmitter extends ByteCodeEmitter {
+    static class JumpEmitter extends AbstractEmitter {
         public int getFramesPushed() { return 0; }
         public void emit(GeneratorAdapter g) {
         }
     }
     
-    static class ReturnEmitter extends ByteCodeEmitter {
+    static class ReturnEmitter extends AbstractEmitter {
         public int getFramesPushed() { return -1; }
         public void emit(GeneratorAdapter g) {
         }

@@ -6,6 +6,4 @@ package vitry.primitive;
  * @author hans
  */
 public interface Taggable {
-    
-//    Type getTag();
 }

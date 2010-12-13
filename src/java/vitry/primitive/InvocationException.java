@@ -11,5 +11,4 @@ public class InvocationException extends RuntimeException {
     }
 
     private static final long serialVersionUID = -6117454140018535837L;
-
 }

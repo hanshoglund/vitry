@@ -3,11 +3,10 @@ package vitry.primitive.expr;
 import vitry.primitive.Expr;
 
 /**
- *
+ * 
  * @author hans
  */
 public class Do extends Expr {
-    
-    public Expr[] exprs;
 
+    public Expr[] exprs;
 }

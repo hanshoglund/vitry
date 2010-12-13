@@ -9,5 +9,4 @@ abstract public class RestArgFunction extends Function {
     {
         super(e);
     }
-
 }

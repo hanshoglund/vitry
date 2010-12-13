@@ -16,7 +16,6 @@ package vitry.primitive;
  */
 public abstract class Value extends Node {
 
-    @Override
     public boolean equals(Object o) {
         return false;
     }
@@ -29,7 +28,6 @@ public abstract class Value extends Node {
         return false;
     }
 
-    @Override
     public Value[] getChildren() {
         return null;
     }
