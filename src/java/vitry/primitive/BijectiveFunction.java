@@ -3,7 +3,7 @@ package vitry.primitive;
 /**
  * An invertible function. 
  * 
- * These may be used in left-hand expressions.
+ * Used for destructuring etc.
  */
 abstract public class BijectiveFunction extends Function {
 

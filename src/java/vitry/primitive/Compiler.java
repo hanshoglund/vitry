@@ -8,7 +8,7 @@ import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.GeneratorAdapter;
 import org.objectweb.asm.commons.Method;
 
-import com.sun.xml.internal.ws.org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Opcodes;
 
 import vitry.primitive.expr.*;
 
@@ -95,6 +95,11 @@ public class Compiler implements Evaluator {
     }
 
 
+    // TODO str, float, num
+    
+    
+    public interface Emitter {}
+
     public interface ClassReceiver {
         /**
          * Called whenever a class has been generated.
@@ -145,6 +150,7 @@ public class Compiler implements Evaluator {
             compile((ModuleExpr) expr, null);
         if (expr instanceof Fn)
             compile((Fn) expr, ctxt);
+        
         if (expr instanceof Let)
             compile((Let) expr, ctxt);
         if (expr instanceof Where)
@@ -153,6 +159,7 @@ public class Compiler implements Evaluator {
             compile((Assign) expr, ctxt);
         if (expr instanceof Left)
             compile((Left) expr, ctxt);
+        
         if (expr instanceof Apply)
             compile((Apply) expr, ctxt, leftSide);
         if (expr instanceof TypeExpr)
@@ -165,8 +172,15 @@ public class Compiler implements Evaluator {
             compile((Loop) expr, ctxt);
         if (expr instanceof Recur)
             compile((Recur) expr, ctxt);
-        if (expr instanceof Literal)
-            compile((Literal) expr, ctxt, leftSide);
+        
+        if (expr instanceof NumLiteral)
+            compile((NumLiteral) expr, ctxt, leftSide);
+        if (expr instanceof FloatLiteral)
+            compile((FloatLiteral) expr, ctxt, leftSide);
+        if (expr instanceof SymLiteral)
+            compile((SymLiteral) expr, ctxt, leftSide);
+        if (expr instanceof StrLiteral)
+            compile((StrLiteral) expr, ctxt, leftSide);
 
         throw new RuntimeException("Invalid expression type.");
     }
@@ -259,6 +273,7 @@ public class Compiler implements Evaluator {
     }
 
     void compile(Match expr, CallableGen ctxt) {
+        // TODO
     }
 
     void compile(Loop expr, CallableGen ctxt) {
@@ -281,29 +296,45 @@ public class Compiler implements Evaluator {
         ctxt.addRecur();
     }
 
-    void compile(Literal expr, CallableGen ctxt, boolean leftSide) {
+    void compile(NumLiteral expr, CallableGen ctxt, boolean leftSide) {
+        if (leftSide)
+            ;
+        else
+            ;
+    }
+    void compile(FloatLiteral expr, CallableGen ctxt, boolean leftSide) {
+        if (leftSide)
+            ;
+        else
+            ;
+    }
+    void compile(SymLiteral expr, CallableGen ctxt, boolean leftSide) {
+        if (leftSide)
+            ;
+        else {
+            ;
+        }
+    }
+    void compile(StrLiteral expr, CallableGen ctxt, boolean leftSide) {
         if (leftSide)
             ;
         else
             ;
     }
     
-    // TODO str, float, num
-    
-    
-    /**
-     * Marks classes that generate code.
-     */
-    interface Emitter {}
     
     /**
      * Marks classes that generate JVM bytecode.
      */
-    interface ByteCodeEmitter extends Emitter {
-        void emit(GeneratorAdapter g);        
+    abstract static class ByteCodeEmitter implements Emitter {
+        abstract public void emit(GeneratorAdapter g);        
 
         /** The number of stack elements pushed (positive) or consumed (negative). */
-        int getStackElementsPushed();
+        abstract public int getFramesPushed();
+        
+        public String toString(){
+            return getClass().getSimpleName() + " pushing " + getFramesPushed();
+        }
     }
 
     /**
@@ -312,26 +343,28 @@ public class Compiler implements Evaluator {
      * Generates one class for itself and one for each nested callable entity.
      * Emits code that loads this entity (except for modules).
      */
-    abstract static class CallableGen implements ByteCodeEmitter, ClassGenerator {
+    abstract static class CallableGen extends ByteCodeEmitter implements ClassGenerator {
 
         public CallableGen(String name, CallableGen parent)
         {
+            this.name = name;
             this.parent = parent;
             this.emitters = new LinkedList<ByteCodeEmitter>();
         }
 
         public CallableGen(String name, CallableGen parent, LinkedList<ByteCodeEmitter> emitters)
         {
+            this.name = name;
             this.parent = parent;
             this.emitters = emitters;
         }
 
 
         public CallableGen add(ByteCodeEmitter i) {
-//            if (this.generationStarted)
-//                throw new IllegalStateException("Can not modify instruction "
-//                        + "after start of compilation. Make a new instruction "
-//                        + "instead");
+            if (this.generating)
+                throw new IllegalStateException("Can not add emitters"
+                        + "during class generation. Make a new "
+                        + "instruction instead");
             emitters.add(i);
             return this;
         }
@@ -377,73 +410,100 @@ public class Compiler implements Evaluator {
         }
 
         public void addInvoke(int arity) {
-            // TODO
+            add(new InvokeEmitter(arity));
         }
 
         public void addInvokeInverse(int arity) {
-            // TODO
+            add(new InvokeInverseEmitter(arity));
         }
 
         public void addTypeTag() {
-            // TODO
+            add(new TypeTagEmitter());
         }
 
         public void addTypeCheck() {
-            // TODO
+            add(new TypeCheckEmitter());
         }
 
         public void addRecur() {
             // TODO
         }
-
-        public CallableGen addThunk() {
-            String name = this.name + "$thunk" + (anonymousThunks++);
-            return new ThunkGen(name, this);
+        
+        public void addReturn() {
+            add(new ReturnEmitter());
         }
 
-        public CallableGen addFunction(int arity) {
+        public ThunkGen addThunk() {
+            String name = this.name + "$thunk" + (anonymousThunks++);
+            ThunkGen gen = new ThunkGen(name, this);
+            add(gen);
+            return gen;
+        }
+
+        public FunctionGen addFunction(int arity) {
             String name = this.name + "$fn" + (anonymousFns++);
-            return new FunctionGen(name, arity, this);
+            FunctionGen gen = new FunctionGen(name, arity, this);
+            add(gen);
+            return gen;
         }
         
-        public String getName() {
-            return name;
-        }
-
-        public ClassGenerator getEnclosing() {
-            return parent;
-        }
-
-        public Emitter getTail() {
-            return emitters.getLast();
-        }
-
-        public boolean hasTailCall() {
-            return getTail() instanceof FunctionGen;
+        public void setRecursionPoint() {
+            // TODO Auto-generated method stub
         }
 
         public int reserveLocal() {
             return reservedLocals++;
         }
-
-        public void setRecursionPoint() {
-            // TODO Auto-generated method stub
+        
+        /**
+         * Computes the stack size after all instructions have been executed,
+         * based on information from the emitters.
+         */
+        public int getFinalStackSize() {
+            int size = 0;
+            for (ByteCodeEmitter emitter : this.emitters)
+                size += emitter.getFramesPushed();
+            return size;
         }
 
         /**
-         * Throws an exception if the current sequence of instructions in
-         * the generated method does not leave exactly one object on the
-         * stack. 
+         * Performs basic checks on the generated instructions. 
          */
-        public void verifyStackLength() {
-            int length = 0;
+        public void verifyStack() {
+            int fs = getFinalStackSize();
+            if (fs != 0)
+                throw new IllegalStateException("Final stack size is " + fs
+                        + ", should be 0.");
+        }
+        
+        public void dumpEmitters() {
+            System.out.println(this.toString());
             for (ByteCodeEmitter emitter : this.emitters)
-                length += emitter.getStackElementsPushed();
-            if (length != 1) throw new IllegalStateException("Corrupt stack " +
-            		"allocation in " + name);
+                System.out.println("    " + emitter.toString());
+        }
+        
+        public String toString() {
+            return super.toString() + " " + this.getName();
         }
 
-        public int getStackElementsPushed() {
+        public String getName() {
+            return name;
+        }
+
+        public ClassGenerator getParent() {
+            return parent;
+        }
+
+        public Emitter getTail() {
+            return null; // TODO
+        }
+
+        public boolean hasTailCall() {
+//            return getTail() instanceof FunctionGen;
+            return false; // TODO
+        }
+
+        public int getFramesPushed() {
             return 1;
         }
         
@@ -452,15 +512,18 @@ public class Compiler implements Evaluator {
             g.newInstance(Type.getType(this.name));
         }
         
-        public void createClasses(ClassReceiver recv) {            
+        public void createClasses(ClassReceiver recv) {   
+            verifyStack();
+            generating = true;
+            
             ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
             
             int version = 0;
             int access = Opcodes.ACC_PUBLIC;
-            String superName = superClass().getInternalName();
+            String superName = getSuperClass().getInternalName();
             cw.visit(version, access, this.name, null, superName, null);
             
-            Method m = generatedMethod();
+            Method m = getMethod();
             GeneratorAdapter mg = new GeneratorAdapter(Opcodes.ACC_PUBLIC, m , null, null, cw);
 
             for (ByteCodeEmitter emitter : this.emitters) {
@@ -474,23 +537,23 @@ public class Compiler implements Evaluator {
             recv.receiveClass(this.name, cw.toByteArray());
         }
         
+        abstract protected Type    getSuperClass();
+        abstract protected Method  getMethod();
+
         /** The number of locals to reserve for arguments etc */
-        abstract protected int preReservedLocals();
+        abstract protected int     getReservedLocals();
 
         /** Inserts thunk checks or guards after lookup and fetch instructions */
         abstract protected boolean checkForThunks();
         abstract protected boolean guardForThunks();
 
-        /** Description of method to override */
-        abstract public Type   superClass();
-        abstract public Method generatedMethod();
-
-        String name;
-        CallableGen parent;
-        int reservedLocals = preReservedLocals();
-        int anonymousThunks = 0;
-        int anonymousFns = 0;
-        LinkedList<ByteCodeEmitter> emitters;
+        private String        name;
+        protected CallableGen parent;
+        private int           reservedLocals = getReservedLocals();
+        private int           anonymousThunks = 0;
+        private int           anonymousFns = 0;
+        private boolean       generating = false;
+        private LinkedList<ByteCodeEmitter> emitters;
     }
     
     
@@ -501,17 +564,20 @@ public class Compiler implements Evaluator {
      *         Generated code inherits the enclosing environment.
      */
     static class ThunkGen extends CallableGen {
-
         public ThunkGen(String name, CallableGen parent)
         {
             super(name, parent);
         }
 
-        public int getStackElementsPushed() {
-            return 1;
+        public Type getSuperClass() {
+            return _Thunk;
         }
 
-        public int preReservedLocals() {
+        public Method getMethod() {
+            return _get;
+        }
+
+        public int getReservedLocals() {
             return 1; // this
         }
 
@@ -521,14 +587,6 @@ public class Compiler implements Evaluator {
 
         public boolean guardForThunks() {
             return parent.guardForThunks();
-        }
-        
-        public Type superClass() {
-            return _Thunk;
-        }
-
-        public Method generatedMethod() {
-            return _get;
         }
     }
 
@@ -546,61 +604,52 @@ public class Compiler implements Evaluator {
             if (arity < Function.MIN_ARITY || arity > Function.MAX_ARITY)
                 throw new IllegalArgumentException(
                         "Function arity must be in bounds " 
-                        + Function.MIN_ARITY + "-"
+                        + Function.MIN_ARITY + " <= n <= "
                         + Function.MAX_ARITY);
             
             this.arity = arity;
         }
         
-        public int getStackElementsPushed() {
-            return 1; // pushing genrated fn, not invocation
+        public Type getSuperClass() {
+            return _Function;
         }
 
-        public int preReservedLocals() {
+        public Method getMethod() {
+            return _apply[arity];
+        }
+
+        public int getReservedLocals() {
             return 1 + arity; // this + arg ...
         }
 
         public boolean checkForThunks() {
-            return parent.checkForThunks();
+            return parent == null ? false : parent.checkForThunks();
         }
 
         public boolean guardForThunks() {
-            return parent.guardForThunks();
-        }
-        
-        public Type superClass() {
-            return _Function;
-        }
-
-        public Method generatedMethod() {
-            return _apply[arity];
+            return parent == null ? false : parent.guardForThunks();
         }
         
         private int arity;
     }
     
     static class ModuleGen extends CallableGen {
-        /**
-         * @param parent
-         */
+
         public ModuleGen(String name)
         {
             super(name, null);
-            this.name = name;
+            this.moduleName = name;
         }
 
-        /**
-         * @param name2
-         */
-        public void addImport(String name2) {
-            // TODO Auto-generated method stub
+        public Type getSuperClass() {
+            return _Module;
         }
 
-        public int getStackElementsPushed() {
-            return 0;
+        public Method getMethod() {
+            return _get;
         }
 
-        public int preReservedLocals() {
+        public int getReservedLocals() {
             return 0;
         }
 
@@ -612,15 +661,15 @@ public class Compiler implements Evaluator {
             return false;
         }
 
-        private final String name;
-
-        public Type superClass() {
-            return _Module;
+        public void addImport(String name) {
+            // TODO
         }
         
-        public Method generatedMethod() {
-            return _get;
-        }     
+        public void emit(GeneratorAdapter g){
+            throw new UnsupportedOperationException("Can not emit modules.");
+        }
+
+        private final String moduleName;     
     }
     
     static class FormGen extends FunctionGen {
@@ -636,93 +685,21 @@ public class Compiler implements Evaluator {
     }
 
 
-//    // TODO
-//    public static class TailableFunctionGen extends
-//            CallableGen {
-//
-//        public TailableFunctionGen(CallableGen source)
-//        {
-//            this.source = source;
-//        }
-//        
-//        private CallableGen source;
-//
-//        @Override
-//        public boolean checkLocals() {
-//            return source.checkLocals();
-//        }
-//
-//        @Override
-//        public boolean guardLocals() {
-//            return source.guardLocals();
-//        }
-//
-//        @Override
-//        public int preLoadedLocals() {
-//            return source.preLoadedLocals();
-//        }
-//
-//        @Override
-//        public void emit(CallableGen enc, GeneratorAdapter g) {
-//            // TODO Auto-generated method stub
-//        }
-//
-//        @Override
-//        public void generateClasses(ClassReceiver recv) {
-//            // TODO Auto-generated method stub
-//        }
-//    }
-//
-//    // TODO
-//    public static class TrampolineGen extends CallableGen {
-//
-//        public TrampolineGen(CallableGen source)
-//        {
-//            this.source = source;
-//        }
-//
-//        private CallableGen source;
-//
-//        @Override
-//        public boolean checkLocals() {
-//            return source.checkLocals();
-//        }
-//
-//        @Override
-//        public boolean guardLocals() {
-//            return source.guardLocals();
-//        }
-//
-//        @Override
-//        public int preLoadedLocals() {
-//            return source.preLoadedLocals();
-//        }
-//
-//        @Override
-//        public void emit(CallableGen enc, GeneratorAdapter g) {
-//            // TODO Auto-generated method stub
-//        }
-//
-//        @Override
-//        public void generateClasses(ClassReceiver recv) {
-//            // TODO Auto-generated method stub
-//        }
-//    }       
-//                         
     static final Type   _Callable           = Type.getType(Callable.class);
-    static final Method _define             = Method.getMethod("define(Symbol, Value)");
-    static final Method _lookup             = Method.getMethod("lookup(Symbol)");
+    static final Method _define             = Method.getMethod("Value define(Symbol, Value)");
+    static final Method _lookup             = Method.getMethod("Value lookup(Symbol)");
     static final Type   _Thunk              = Type.getType(Thunk.class);
     static final Method _get                = Method.getMethod("Value get()");
     static final Type   _Function           = Type.getType(Function.class);
     static final Type   _Module             = Type.getType(Module.class);
     static final Type   _InvocationException = Type.getType(InvocationException.class);
     
-    static final Method[] _apply            = new Method[Function.MAX_ARITY];
+    static final Method[] _apply            = new Method[Function.MAX_ARITY + 1];
     static {
         for (int i = Function.MIN_ARITY; i <= Function.MAX_ARITY; ++i) {
             String sign = "Value apply(";
-            sign += "Value";
+            if (i > 0);
+                sign += "Value";
             for (int j = 0; j < (i-1); ++j)
                 sign += ",Value";
             sign += ")";
@@ -755,10 +732,10 @@ public class Compiler implements Evaluator {
      * ... value -> ...    
      *         Pops (stores) a local variable.
      */
-    static class StoreEmitter implements ByteCodeEmitter {
+    static class StoreEmitter extends ByteCodeEmitter {
         public StoreEmitter(int i) { this.index = i; }
         int index;
-        public int getStackElementsPushed() { return -1; }
+        public int getFramesPushed() { return -1; }
 
         public void emit(GeneratorAdapter g) {
             g.storeLocal(index);            
@@ -769,10 +746,10 @@ public class Compiler implements Evaluator {
      * ... -> ... value
      *         Pushes (fetches) a local variable.
      */    
-    static class LoadEmitter implements ByteCodeEmitter {
+    static class LoadEmitter extends ByteCodeEmitter {
         public LoadEmitter(int index) { this.index = index; }
         int index;
-        public int getStackElementsPushed() { return 1; }
+        public int getFramesPushed() { return 1; }
 
         public void emit(GeneratorAdapter g) {
             g.loadLocal(index);
@@ -810,16 +787,16 @@ public class Compiler implements Evaluator {
         }
     }
     
-    static class PushEnvEmitter implements ByteCodeEmitter {
-        public int getStackElementsPushed() { return 0; }
+    static class PushEnvEmitter extends ByteCodeEmitter {
+        public int getFramesPushed() { return 0; }
 
         public void emit(GeneratorAdapter g) {
             // TODO
         }      
     }
     
-    static class PopEnvEmitter implements ByteCodeEmitter {
-        public int getStackElementsPushed() { return 0; }
+    static class PopEnvEmitter extends ByteCodeEmitter {
+        public int getFramesPushed() { return 0; }
 
         public void emit(GeneratorAdapter g) {
             // TODO
@@ -830,8 +807,8 @@ public class Compiler implements Evaluator {
      * ... symbol value -> ...    
      *         Pushes (fetches) a variable from the current lexical environment.
      */
-    static class DefineEmitter implements ByteCodeEmitter {
-        public int getStackElementsPushed() { return -2; }
+    static class DefineEmitter extends ByteCodeEmitter {
+        public int getFramesPushed() { return -2; }
 
         public void emit(GeneratorAdapter g) {
             g.loadThis();   // -> .. sym val this
@@ -845,8 +822,8 @@ public class Compiler implements Evaluator {
      * ... symbol -> ... value    
      *         Pops (stores) a variable to the current lexical environment.
      */
-    static class LookupEmitter implements ByteCodeEmitter {
-        public int getStackElementsPushed() { return 1 - 1; }
+    static class LookupEmitter extends ByteCodeEmitter {
+        public int getFramesPushed() { return -1 + 1; }
 
         public void emit(GeneratorAdapter g) {
             g.loadThis();
@@ -895,12 +872,11 @@ public class Compiler implements Evaluator {
      *         If given too few arguments, return a partially applied function.
      *         If given too many arguments, return the application (((f aN) aN+1) ... aN+i).
      */
-    static class InvokeEmitter implements ByteCodeEmitter {
+    static class InvokeEmitter extends ByteCodeEmitter {
         public InvokeEmitter(int arity) { this.arity = arity; }
         int arity;
-        public int getStackElementsPushed() { return 1 - (arity + 1); }
+        public int getFramesPushed() { return -(arity + 1) + 1; }
     
-        @Override
         public void emit(GeneratorAdapter g) {
             // TODO isn't it better if everything was pushed backwards?
             
@@ -917,6 +893,41 @@ public class Compiler implements Evaluator {
                         // apply in turn
         }
     }
+    
+    /* invokeInverse arity 
+     * ... fn a1 [... aN] -> ... value
+     *  where N is arity
+     *         Invokes the inverse of a bijective function.
+     *         Used for destructuring etc.
+     */
+    static class InvokeInverseEmitter extends InvokeEmitter {
+        public InvokeInverseEmitter(int arity) { super(arity); }
+    }
+    
+    static class TypeTagEmitter extends ByteCodeEmitter {
+        public int getFramesPushed() { return -2; }
+        public void emit(GeneratorAdapter g) {
+        }
+    }
+    
+    static class TypeCheckEmitter extends ByteCodeEmitter {
+        public int getFramesPushed() { return -2 + 1; }
+        public void emit(GeneratorAdapter g) {
+        }
+    }
+    
+    static class JumpEmitter extends ByteCodeEmitter {
+        public int getFramesPushed() { return 0; }
+        public void emit(GeneratorAdapter g) {
+        }
+    }
+    
+    static class ReturnEmitter extends ByteCodeEmitter {
+        public int getFramesPushed() { return -1; }
+        public void emit(GeneratorAdapter g) {
+        }
+    }
+
     
     // For use with the Tailable function gen in general TCO impl
 //    public static class InvokeTailEmitter extends InvokeEmitter {
@@ -935,4 +946,26 @@ public class Compiler implements Evaluator {
     private boolean enableForms;
     
     private String[] specialForms;
+    
+    
+    
+    
+    public static void main(String[] args) {
+//        FunctionGen f = new FunctionGen("test", 1, null);
+//        f.addLoad(1);
+//        f.addLoad(2);
+//        f.addLoad(3);
+//        CallableGen f2 = f.addFunction(10); {
+//            f2.addLoad(2);            
+//        }
+//        f.addStore();
+//        f.addStore();
+//        f.addStore();
+//        f.addReturn();
+//        
+//        f.verifyStack();
+//        f2.verifyStack();
+//        f.dumpEmitters();
+        
+    }
 }
