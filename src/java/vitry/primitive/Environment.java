@@ -41,11 +41,6 @@ public class Environment<K,V> extends HashMap<K,V> {
         this.parent = parent;
     }
 
-    @Override
-    public void putAll(Map<? extends K, ? extends V> coll) {
-        super.putAll(coll);
-    }
-    
     public Environment<K,V> define(K k, V v) {
         if (super.containsKey(k)) throw new BindingException();
         put(k, v);
@@ -67,6 +62,11 @@ public class Environment<K,V> extends HashMap<K,V> {
     public V get(Object k) {
         V localVal = super.get(k);
         return localVal != null ? localVal : parent.get(k);
+    }
+
+    @Override
+    public void putAll(Map<? extends K, ? extends V> coll) {
+        super.putAll(coll);
     }
 
     public V removeLocal(Object k) {

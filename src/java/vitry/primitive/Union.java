@@ -6,9 +6,9 @@ package vitry.primitive;
  */
 public class Union extends Value {
 
-    public boolean isTypeOf(Value v) {
+    public boolean memberOf(Value v) {
         for (Value node : getChildren())
-            if (node.isTypeOf(v))
+            if (node.memberOf(v))
                 return true;
         return false;
     }

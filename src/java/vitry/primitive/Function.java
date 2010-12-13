@@ -20,7 +20,7 @@ package vitry.primitive;
  * 
  * @author hans
  */
-public abstract class Function extends Callable {
+abstract public class Function extends Callable {
 
     public Function(Environment<Symbol, Value> e)
     {

@@ -21,7 +21,7 @@ public abstract class Value extends Node {
         return false;
     }
 
-    public boolean isTypeOf(Value v) {
+    public boolean memberOf(Value v) {
         return false;
     }
 

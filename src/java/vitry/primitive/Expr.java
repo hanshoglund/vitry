@@ -5,6 +5,6 @@ package vitry.primitive;
  *
  * @author hans
  */
-public abstract class Expr extends Product {
+abstract public class Expr extends Product {
 
 }

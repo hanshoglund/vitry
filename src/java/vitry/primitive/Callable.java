@@ -3,7 +3,7 @@ package vitry.primitive;
 /**
  *
  */
-public abstract class Callable extends Atom {
+abstract public class Callable extends Atom {
     
     public Callable(Environment<Symbol, Value> e)
     {

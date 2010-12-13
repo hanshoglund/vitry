@@ -9,7 +9,7 @@ package vitry.primitive;
 public abstract class Atom extends Value {
 
     @Override
-    public boolean isTypeOf(Value v) {
+    public boolean memberOf(Value v) {
         return equals(v);
     }
     

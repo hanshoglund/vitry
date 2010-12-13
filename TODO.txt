@@ -1,37 +1,29 @@
 
-- Implement a very simple core language in Java (vitry.primitive)
-    - Contains notions of Type, Value and Function
-    - AST etc is handled by ANTRL
-        - AST nodes are values in the language
-                                               
-    - Implement basic eq logic in Value and subtypes 
-    - Implement classes Util, Core, Compiler
+- Implement a simple core language
+    - Type system                   
+    - Lexer/Parser, Interpreter, Compiler, Runtime
     
     
                 
 - Semantics of the eq logic
-    - Notions of equality and type membership
+
+    - Two basic relations:
+        - Equals
+        - Contains/MemberOf
+
     - Power types, unions and functions
     - What about:
         - "Concrete" vs "abstract" values
         - Representation of 1-tuple
         - Type tagging
 
-    - Basic relations
-        - Equality
-        - Type membership (informally "matches" , "has type", "has value")
+
         
         - Java implementation:
             - Equality is Object.equals() with the same semantics
-            - Type memebership is Value.hasValue()
-            - Problem : we may want to use other classes (i.e. Boolean, Float, Double)
-            - Does not this make the implentation less than straightforward? Every time we pass a
-            value, we must overload that method with an Object.
-            - The benefit of manipulating the value graph directly is great for future 
-            optimization and crucial to define type operations. If we were to refactor this to other
-            classes, what happens?
-            - I would much prefer to keep everything a vitry.p.Value subclass and add the possibility
-            of primitives (in a restricted sense) later on.
+                - We strive to minimate duplicate objects to save memory and shorten comparison time
+            - Type memebership is Value.memberOf()
+
                
 
 - Symbols
@@ -45,7 +37,8 @@
     
 - Functions
     - Extends vitry.p.Function
-    - We use Java calling conventions, i.e. invokevirtual
+    - We use Java calling conventions (invokevirtual) by default
+        - Others may be added for TCO, see Compiler
     - Semantically, all functions are unary and curried
     - Implementation-wise, however, the following invariants hold:
         - A function is an object that inherits from vitry.p.Function
@@ -83,108 +76,6 @@
     
 - Maps (i.e. simple functions)
 
-
-
-==================================================
-Vitry Intermediate code (VIC)
-
-VIC is an intermediate format for Vitry, used to implement closures and lazy evaluation
-
-Characteristics:
-    - Just a data structure, no binary representation. 
-    - Assumes a JVM-like stack arhitecture where arguments are placed in the lower local variables of the current frame.
-    - May easily be translated to JVM bytecode.
-    - Reference types only (we will add primitives later).
-    - May create and invoke functions and/or thunks.
-    - Variables may be of type local and shared. The latter form is used to implement closure.
-    - Supports nested instructions (functions and thunks). These are implemented as different JVM classes and a new instruction
-      in the enclosing function.
-
-
-Notation:
-
-Instructions are on the form:
-    name operand* (instruction*)
-
-    store index   
-    ... value -> ...    
-            Pops (stores) a local variable.
-            
-    fetch index
-    ... -> ... value
-            Pushes (fetches) a local variable.
-                                               
-    fetchGuarded index
-    ... -> ... value
-            Like fetch, but inserts required thunk expansion.
-
-    fetchChecked index
-    ... -> ... value
-            Like fetch, but inserts optional thunk expansion.
-
-    define 
-    ... symbol value -> ...    
-            Pushes (fetches) a variable from the current lexical environment.
-            
-    lookup
-    ... symbol -> ... value    
-            Pops (stores) a variable to the current lexical environment.
-                                                                       
-    thunk <nested code>                      
-    ... -> ... thunk    
-            Effects the generation of a thunk class at compile-time. 
-            Emits bytecode that creates an instance of that class.
-            Generated code inherits the enclosing environment.
-
-    function <nested code>                            
-    ... -> ... function    
-            Effects the generation of a function class at compile-time. 
-            Emits bytecode that creates an instance of that class.
-            Generated code inherits the enclosing environment.
-            
-    functionGuarded <nested code>
-    ... -> ... function    
-            Like function, but forces generated code to use fetchGuarded in place of fetch.
-
-    functionChecked <nested code>
-    ... -> ... function    
-            Like function, but forces generated code to use fetchChecked in place of fetch.
-            
-    invoke arity 
-    ... f a1 [... aN] -> ... value
-            Invokes a function.
-            If given too few arguments, return a partially applied function.
-            If given too many arguments, return the application (((f aN) aN+1) ... aN+i).
-            
-    label symbol
-            Used for branch statements.
-
-    if symbol
-    ... v -> ...
-            Branch on the given value (vitry false/true).
-            
-    ifPred arity label
-    ... f a1 [... aN] -> ...
-            Branch on the given predicate.
-            
-    switch
-            
-                
-
-We write "nested declarations" like this
-
-function (
-    X
-    X
-    thunk (
-    
-    )
-)
-
-
-Examples:  
-
-    
                                                                                              
 
 
@@ -194,25 +85,13 @@ Any list of VIC instructions may be translated to a JVM class, subclassing vitry
 
 
 ==================================================
-JVM ops
-
-aload
-astore   
-new
-putfield
-getfield
-putstatic
-getstatic
-instanceof
-
-
-==================================================
 Future (i.e. much later) work: 
 
 - Simple database routine (via JDBC) for configuratione etc.
 - Project management (working with git)
 - Build system on top of ANT
 - Primitives
+- Proper tail-call opt
 - Kinds (library level)
 - Macros/user defined syntax
 
