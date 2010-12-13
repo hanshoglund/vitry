@@ -2,11 +2,27 @@
 - Implement a simple core language
     - Type system                   
     - Lexer/Parser, Interpreter, Compiler, Runtime
-    
-    
+
+
+- Runtime
+    - Think through
+        - Class loader strategy
+        - Where to store value graph
+        - Thread support
+
+- DynamicClassLoader     
+
+- Pre-compiler
+    - Module rewrite (the match trick)
+                           
+- Compiler
+    - Add BranchingEmitter (see that it will work for TCO strategies as well...)
+    - Implement (most) compile methods
+    - Implement Evaluator properly
+    - TEST!
+
                 
 - Semantics of the eq logic
-
     - Two basic relations:
         - Equals
         - Contains/MemberOf
@@ -16,24 +32,12 @@
         - "Concrete" vs "abstract" values
         - Representation of 1-tuple
         - Type tagging
-
-
         
-        - Java implementation:
-            - Equality is Object.equals() with the same semantics
-                - We strive to minimate duplicate objects to save memory and shorten comparison time
-            - Type memebership is Value.memberOf()
+    - Java implementation:
+        - Equality is Object.equals() with the same semantics
+            - We strive to minimate duplicate objects to save memory and shorten comparison time
+        - Type memebership is Value.memberOf()
 
-               
-
-- Symbols
-    - Symbols should just be identifiers, regardless of context 
-    - We use only statically/lexically scoped references
-        - We rewrite *all* expressions (including modules etc) as functions/let bindings and resolve all identifiers directly.
-        - No dynamic "environment" as in Scheme
-        
-- Lazy evalutations
-    - The compiler may add thunks, i.e. concrete implementations of vitry.p.Thunk
     
 - Functions
     - Extends vitry.p.Function
@@ -67,21 +71,15 @@
         add as:[int]
     are converted to RestArgFunctions of arity 0 containing a *match* expression (or native equivalent).
 
+
+
 - Lists (!)
     - We should represent lists as functions returning types, i.e.
         list a = type a, (list a | ())
         `[] a  = type a, [a] | ()
         Here assuming that | has higher predecence than ,
     - We should probably do most of this in java for efficiency
-    
-- Maps (i.e. simple functions)
-
                                                                                              
-
-
-Translation:
-
-Any list of VIC instructions may be translated to a JVM class, subclassing vitry.p.Function, where the JVM instructions form the body of the invoke() method.
 
 
 ==================================================
