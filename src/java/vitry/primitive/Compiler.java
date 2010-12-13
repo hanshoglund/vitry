@@ -10,15 +10,10 @@ import org.objectweb.asm.commons.Method;
 import vitry.primitive.expr.*;
 
 /**
- * General workflow:
+ * Compiles expressions to classes.
+ * Implements Evaluator by compiling and loading objects dynamically.
  * 
- *  1) Runtime calls eval or compile method
- *  2) A ClassReceiver is manufactured if it has not been passed.
- *  3) A ClassGenerator is manufactured.
- *  4) Its generateClasses() method is invoked.
- *  5) Any number of compiled units (classes) is passed to the receiver.
- *  6) If an eval method was invoked, a dynamic classloader is created and
- *     the top-level callable object evaluated.
+ * See ClassGenerator and ClassReceiver for general API
  *     
  * 
  * To do:
@@ -79,23 +74,40 @@ import vitry.primitive.expr.*;
 public class Compiler implements Evaluator {
    
     
-    
-    public Compiler() {
+    public Compiler()
+    {
         this.localTailCallOpt = false;
         this.generalTailCallOpt = false;
-        this.specialForms = new String[]{ 
-        };
+        this.specialForms = new String[0];
     }
 
-    public Compiler(boolean localTailCallOpt, boolean generalTailCallOpt, String[] specialForms) {
-        this.localTailCallOpt   = localTailCallOpt;
+    public Compiler(boolean localTailCallOpt, boolean generalTailCallOpt,
+            String[] specialForms)
+    {
+        this.localTailCallOpt = localTailCallOpt;
         this.generalTailCallOpt = generalTailCallOpt;
-        this.specialForms       = specialForms;
-    }                   
-            
+        this.specialForms = specialForms;
+    }                     
 
+
+    public interface ClassReceiver {   
+        /**
+         * Called whenever a class has been generated.
+         */
+        public void receiveClass(String name, byte[] bytecode);
+    }
+
+    public interface ClassGenerator extends Emitter {
+        /**
+         * Force generation of compiled classes.
+         */
+        void createClasses(ClassReceiver recv);
+    }
     
-    
+
+    /*
+     * Implements eval 
+     */
     
     public Value eval(Expr e) throws Exception {
         // TODO
@@ -118,45 +130,32 @@ public class Compiler implements Evaluator {
         return null; // TODO
     }
     
-        
     
-
-    
-    public ClassGenerator compile(ModuleExpr expr) {
-        return null;
-    }
-
-    public ClassGenerator compile(Fn expr, CallableGen ctxt) {
-        int arity = expr.params.length;
-        CallableGen func;
-        if (ctxt == null)
-            func = new FunctionGen(arity, ctxt);
-        else
-            func = ctxt.addFunction(arity, ctxt);
-
-        for (int i = 0; i < arity; i++)
-            func.addLoad(i + 1);
-        
-        // Arguments are now on stack
-        // We restart from here during tail calls etc
-        func.setRecursionPoint();
-        
-        for (int i = 0; i < arity; i++)
-            compile(expr.params[i], func);
-        
-        compile(expr.body, func);
-        return func;
-    }
-
-    /* 
-     * Main AST walker. Assumes well-formed expression tree. 
+    /*
+     * Compilation
      */
+
+    public ClassGenerator compile(ModuleExpr expr) {
+        ModuleGen mod = new ModuleGen(expr.name);
+
+        for (String name : expr.imports)
+            mod.addImport(name);
+        for (Assign ass : expr.assigns)
+            compile(ass, mod);
+        
+        return mod;
+    }
+    
+    public ClassGenerator compile(Fn expr) {
+        return compile(expr, null);
+    }
+
     void compile(Expr expr, CallableGen ctxt) {
         compile(expr, ctxt, false);
     }
 
     void compile(Expr expr, CallableGen ctxt, boolean leftSide) {
-        if (expr instanceof ModuleExpr)   compile((ModuleExpr) expr);
+        if (expr instanceof ModuleExpr) compile((ModuleExpr) expr);
         if (expr instanceof Fn)       compile((Fn) expr, ctxt);
         if (expr instanceof Let)      compile((Let) expr, ctxt);
         if (expr instanceof Where)    compile((Where) expr, ctxt);
@@ -171,6 +170,28 @@ public class Compiler implements Evaluator {
         if (expr instanceof Literal)  compile((Literal) expr, ctxt, leftSide);
     
         throw new RuntimeException("Unrecognized expression type.");
+    }
+
+    ClassGenerator compile(Fn expr, CallableGen ctxt) {
+        int arity = expr.params.length;
+        CallableGen func;
+        if (ctxt == null)
+            func = new FunctionGen(arity, ctxt);
+        else
+            func = ctxt.addFunction(arity, ctxt);
+    
+        for (int i = 0; i < arity; i++)
+            func.addLoad(i + 1);
+        
+        // Arguments are now on stack
+        // We restart from here during tail calls etc
+        func.setRecursionPoint();
+        
+        for (int i = 0; i < arity; i++)
+            compile(expr.params[i], func);
+        
+        compile(expr.body, func);
+        return func;
     }
 
     void compile(Let expr, CallableGen ctxt) {
@@ -244,27 +265,27 @@ public class Compiler implements Evaluator {
     
     
     
-    
+    /**
+     * Marks classes that generate code.
+     */
     interface Emitter {
         /** The number of stack elements pushed (positive) or consumed (negative). */
         int getStackElementsPushed();
     }
     
+    /**
+     * Marks classes that generate JVM bytecode.
+     */
     interface ByteCodeEmitter extends Emitter {
         void emit(GeneratorAdapter g);        
     }
 
-    public interface ClassGenerator extends Emitter {
-        void createClasses(ClassReceiver recv);
-    }
-
-    public interface ClassReceiver {
-        public void receiveClass(String name, byte[] bytecode);
-    }     
-    
-
-    
-    
+    /**
+     * Handles generation of callable entities (classes, modules, thunks).
+     * 
+     * Generates one class for itself and one for each nested callable entity.
+     * Emits code that loads this entity (except for modules).
+     */
     abstract static class CallableGen implements ByteCodeEmitter, ClassGenerator {
 
         public CallableGen(CallableGen parent)
@@ -462,6 +483,42 @@ public class Compiler implements Evaluator {
         public boolean guardForThunks() {
             return parent.guardForThunks();
         }
+    }
+    
+    static class ModuleGen extends CallableGen {
+        /**
+         * @param parent
+         */
+        public ModuleGen(String name)
+        {
+            super(null);
+            this.name = name;
+        }
+
+        /**
+         * @param name2
+         */
+        public void addImport(String name2) {
+            // TODO Auto-generated method stub
+        }
+
+        public int getStackElementsPushed() {
+            return 0;
+        }
+
+        public int preReservedLocals() {
+            return 0;
+        }
+
+        public boolean checkForThunks() {
+            return false;
+        }
+
+        public boolean guardForThunks() {
+            return false;
+        }
+
+        private final String name;        
     }
     
     static class FormGen extends FunctionGen {
