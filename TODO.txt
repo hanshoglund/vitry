@@ -2,9 +2,21 @@
 
 - Implement a simple core language
     - Type system                   
-    - Lexer/Parser, Interpreter, Compiler, Runtime
+    - Lexer/Parser, Interpreter, Compiler, Runtime  
+    
+- Compiler
+    - Current implementation too ugly
+    - New strategy: 
+        - Implement data structures first
+        - Do parsing as multistage traversal, using internal match
+            - Pass 1: Resolve symbols (replace local lookups etc)
+            - Pass 2: Generate compilation tree/DG
+                - Class gen node
+                - Branch node
+                - Standard snode
+            - Convert to bytecode
 
-          
+
 - Semantics of the eq logic
     - Two basic relations:
         - Equals
@@ -15,34 +27,65 @@
         - "Concrete" vs "abstract" values
         - Representation of 1-tuple
         - Type tagging
-        
-    - Java implementation:
-        - Equality is Object.equals() with the same semantics
-            - We strive to minimate duplicate objects to save memory and shorten comparison time
-        - Type memebership is Value.memberOf()
 
 - Destructuring and type matching
-    - How to combine?
+    - Use combined traversal (or reduce at expr level?)
 
 
-- Runtime
-    - Think through
-        - Class loader strategy
-        - Where to store value graph
-        - Thread support
+- Runtime                                  
+    - The "VitrySystem" class provides static methods to create systems
+        - Thus Java primitives may use several systems on the same JVM
 
-- DynamicClassLoader 
+    - A system is a set of loaded modules
+        - Each module is a callable that when called generates
+          a top environment containing functions/types/values
+        - The  class loader provides an internal "import" function 
+          that load other modules as needed, then copy the selected 
+          members to the importer.
+        - In case of recursive dependency, store incomplete modules,
+          set unresolvable field to null, and make reattempt.
+    - For the REPL, we actually replace the top-level for each command,
+      persistantly copying previous assignments. (Required to prevent
+      repeated assignments in the same command block).  
+        - Modules may not be defined on the REPL, however, fns and other
+          class generators may.
+        - To load callables generated on the REPL, we need to generate a dummy
+          class that automatically interprets some encapsulated code.
+      
+    implementation:      
+      
+      - A ModuleClassLoader can load modules (i.e. classes named $.class)
+        and resolve their bindings. Thus a MCL can easily encapsulate an
+        entire Vitry system.                     
+           - Classes may be loaded from the $CLASSPATH. To provide 
+             alternative ways of loading, simply hoist some custom CL
+             as parent of the  MCL instead of using the SystemCL.
+           - vitry.primitive should be available from the SystemCL         
+           - Standard Stack:
+            
+            JVM
+              BoostrapCL
+              ExtensionCL
+              SystemCL
+                class VitrySystem
+                  instance0          
+                    ...
+                    ModuleClassLoader
+                  ...
+                  instanceN
+           
+               - For the REPL ... ?
+
+    important:
+    - VitrySystem must not use *any* static state as this would be visible
+      from concurrently running systems.
+
+
+    
+    
 
 - Parser and Lexer (already in ANTLR proj)    
 
-- Pre-compiler
-    - Module rewrite (the match trick)
-                           
-- Compiler
-    - Add BranchingEmitter (see that it will work for TCO strategies as well...)
-    - Implement (most) compile methods
-    - Implement Evaluator properly
-    - TEST!
 
                 
 

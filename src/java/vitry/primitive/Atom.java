@@ -6,13 +6,16 @@ package vitry.primitive;
  * 
  * @author hans
  */
-public abstract class Atom extends Value {
+public abstract class Atom extends Value
+  {
 
-    public boolean memberOf(Value v) {
+    public boolean memberOf( Value v )
+      {
         return equals(v);
-    }
-    
-    public boolean isType() {
+      }
+
+    public boolean isType()
+      {
         return true;
-    }
-}
+      }
+  }

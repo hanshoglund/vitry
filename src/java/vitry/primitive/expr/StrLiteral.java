@@ -1,9 +1,8 @@
 package vitry.primitive.expr;
 
-
 /**
  *
  */
-public class FloatLiteral extends Literal
+public class StrLiteral extends Literal
   {
   }

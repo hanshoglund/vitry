@@ -14,21 +14,18 @@ package vitry.primitive;
  * 
  * @author hans
  */
-public abstract class Value extends Node {
+public abstract class Value extends Node
+  {
 
-    public boolean equals(Object o) {
-        return false;
+    public boolean equals( Object o ) {
+      return false;
     }
 
-    public boolean memberOf(Value v) {
-        return false;
+    public boolean memberOf( Value v ) {
+      return false;
     }
 
     public boolean isType() {
-        return false;
+      return false;
     }
-
-    public Value[] getChildren() {
-        return null;
-    }
-}
+  }

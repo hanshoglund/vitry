@@ -6,8 +6,8 @@ import vitry.primitive.Expr;
  *
  * @author hans
  */
-public class Fn extends Expr {
-    
+public class Fn extends Expr
+  {
     public Left[] params;
-    public Expr body;
-}
+    public Expr   body;
+  }

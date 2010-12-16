@@ -6,10 +6,10 @@ import vitry.primitive.Expr;
  *
  * @author hans
  */
-public class Match extends Expr {
-    
+public class Match extends Expr
+  {
     public Left[] lefts;
     public Expr[] rights;
-    public Expr def;
+    public Expr   def;
 
-}
+  }

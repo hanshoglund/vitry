@@ -13,45 +13,44 @@ import java.util.Map;
  * 
  * @author hans
  */
-public class Symbol extends Atom {
+public class Symbol extends Atom
+  {
 
-    public static Symbol intern(String name) {
-        if (table.containsKey(name))
-            return table.get(name);
-        else {
-            Symbol sym = new Symbol(name);
-            table.put(name, sym);
-            return sym;
-        }
+    public static Symbol intern( String name ) {
+      if (table.containsKey(name)) return table.get(name);
+      else {
+        Symbol sym = new Symbol(name);
+        table.put(name, sym);
+        return sym;
+      }
     }
 
     @Override
     public String toString() {
-        return name;
+      return name;
     }
 
     @Override
-    public boolean equals(Object o) {
-        // return o == this || o.toString() == this.name;
-        return o == this;
+    public boolean equals( Object o ) {
+      // return o == this || o.toString() == this.name;
+      return o == this;
     }
 
     @Override
     public int hashCode() {
-        if (!hasCachedHashCode) {
-            cachedHashCode = this.name.hashCode();
-            hasCachedHashCode = true;
-        }
-        return cachedHashCode;
+      if (!hasCachedHashCode) {
+        cachedHashCode = this.name.hashCode();
+        hasCachedHashCode = true;
+      }
+      return cachedHashCode;
     }
 
-    private final String name;
-    private boolean hasCachedHashCode = false;
-    private int cachedHashCode;
-    private static Map<String, Symbol> table = new HashMap<String, Symbol>();
+    private final String               name;
+    private boolean                    hasCachedHashCode = false;
+    private int                        cachedHashCode;
+    private static Map<String, Symbol> table             = new HashMap<String, Symbol>();
 
-    private Symbol(String name)
-    {
-        this.name = name;
+    private Symbol( String name ) {
+      this.name = name;
     }
-}
+  }

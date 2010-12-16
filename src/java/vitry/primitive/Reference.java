@@ -4,5 +4,6 @@ package vitry.primitive;
  *
  * @author hans
  */
-public class Reference extends Product {
-}
+public class Reference extends Product
+  {
+  }

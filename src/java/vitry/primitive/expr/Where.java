@@ -7,8 +7,7 @@ import vitry.primitive.Expr;
  * @author hans
  */
 public class Where extends Expr
-{
-    
-    public Expr body;
+  {
+    public Expr     body;
     public Assign[] assigns;
-}
+  }

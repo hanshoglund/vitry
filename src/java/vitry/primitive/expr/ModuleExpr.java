@@ -4,10 +4,10 @@ import vitry.primitive.Expr;
 
 /**
  *
- * @author hans
  */
-public class Loop extends Expr
+public class ModuleExpr extends Expr
   {
+    public String   name;
+    public String[] imports;
     public Assign[] assigns;
-    public Expr     body;
   }

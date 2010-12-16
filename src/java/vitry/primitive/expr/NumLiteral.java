@@ -3,5 +3,6 @@ package vitry.primitive.expr;
 /**
  *
  */
-public class NumLiteral extends Literal {
-}
+public class NumLiteral extends Literal
+  {
+  }

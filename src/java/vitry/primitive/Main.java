@@ -5,11 +5,13 @@ package vitry.primitive;
  * 
  * @author hans
  */
-public class Main {
-    
-    private Main(){}
+public class Main
+  {
 
-    public static void main(String[] args) {
-        // TODO
+    private Main( ) {
     }
-}
+
+    public static void main( String[] args ) {
+      // TODO
+    }
+  }

@@ -5,5 +5,6 @@ package vitry.primitive;
  *
  * @author hans
  */
-public class FloatNum extends Atom {
-}
+public class FloatNum extends Atom
+  {
+  }

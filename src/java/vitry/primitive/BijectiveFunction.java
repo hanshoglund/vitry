@@ -5,12 +5,12 @@ package vitry.primitive;
  * 
  * Used for destructuring etc.
  */
-abstract public class BijectiveFunction extends Function {
+abstract public class BijectiveFunction extends Function
+  {
 
-    public BijectiveFunction(Environment<Symbol, Value> e)
-    {
-        super(e);
+    public BijectiveFunction( Environment<Symbol, Value> e ) {
+      super(e);
     }
-    
+
     abstract public BijectiveFunction getInverse();
-}
+  }

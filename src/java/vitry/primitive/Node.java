@@ -5,9 +5,10 @@ package vitry.primitive;
  * 
  * @author hans
  */
-public abstract class Node {
+public abstract class Node
+  {
 
     public Node[] getChildren() {
-        return null;
+      return null;
     }
-}
+  }
