@@ -27,103 +27,110 @@ abstract public class Function extends Callable
     static int MIN_ARITY = 1;
     static int MAX_ARITY = 0xf;
 
-    public Function( Environment<Symbol, Value> e ) {
+    public Function( Env<Symbol, Object> e ) {
       super(e);
+    }
+
+    /**
+     * 
+     */
+    public Function() {
+        // TODO Auto-generated constructor stub
     }
 
     public abstract int arity();
 
-    public abstract Functor type();
+    public abstract FunctionType type();
 
-    public Value apply( Value a0, Value a1 ) throws Exception {
+    public Object apply( Object a0, Object a1 ) throws Exception {
       throw new InvocationException("Expected function " + this
                 + " to have arity " + arity());
     }
 
-    public Value apply( Value a0, Value a1, Value a2 ) throws Exception {
+    public Object apply( Object a0, Object a1, Object a2 ) throws Exception {
       throw new InvocationException("Expected function " + this
                 + " to have arity " + arity());
     }
 
-    public Value apply( Value a0, Value a1, Value a2, Value a3 ) throws Exception {
+    public Object apply( Object a0, Object a1, Object a2, Object a3 ) throws Exception {
       throw new InvocationException("Expected function " + this
                 + " to have arity " + arity());
     }
 
-    public Value apply( Value a0, Value a1, Value a2, Value a3, Value a4 )
+    public Object apply( Object a0, Object a1, Object a2, Object a3, Object a4 )
             throws Exception {
       throw new InvocationException("Expected function " + this
                 + " to have arity " + arity());
     }
 
-    public Value apply( Value a0, Value a1, Value a2, Value a3, Value a4,
-            Value a5 ) throws Exception {
+    public Object apply( Object a0, Object a1, Object a2, Object a3, Object a4,
+            Object a5 ) throws Exception {
       throw new InvocationException("Expected function " + this
                 + " to have arity " + arity());
     }
 
-    public Value apply( Value a0, Value a1, Value a2, Value a3, Value a4,
-            Value a5, Value a6 ) throws Exception {
+    public Object apply( Object a0, Object a1, Object a2, Object a3, Object a4,
+            Object a5, Object a6 ) throws Exception {
       throw new InvocationException("Expected function " + this
                 + " to have arity " + arity());
     }
 
-    public Value apply( Value a0, Value a1, Value a2, Value a3, Value a4,
-            Value a5, Value a6, Value a7 ) throws Exception {
+    public Object apply( Object a0, Object a1, Object a2, Object a3, Object a4,
+            Object a5, Object a6, Object a7 ) throws Exception {
       throw new InvocationException("Expected function " + this
                 + " to have arity " + arity());
     }
 
-    public Value apply( Value a0, Value a1, Value a2, Value a3, Value a4,
-            Value a5, Value a6, Value a7, Value a8 ) throws Exception {
+    public Object apply( Object a0, Object a1, Object a2, Object a3, Object a4,
+            Object a5, Object a6, Object a7, Object a8 ) throws Exception {
       throw new InvocationException("Expected function " + this
                 + " to have arity " + arity());
     }
 
-    public Value apply( Value a0, Value a1, Value a2, Value a3, Value a4,
-            Value a5, Value a6, Value a7, Value a8, Value a9 ) throws Exception {
+    public Object apply( Object a0, Object a1, Object a2, Object a3, Object a4,
+            Object a5, Object a6, Object a7, Object a8, Object a9 ) throws Exception {
       throw new InvocationException("Expected function " + this
                 + " to have arity " + arity());
     }
 
-    public Value apply( Value a0, Value a1, Value a2, Value a3, Value a4,
-            Value a5, Value a6, Value a7, Value a8, Value a9, Value a10 )
+    public Object apply( Object a0, Object a1, Object a2, Object a3, Object a4,
+            Object a5, Object a6, Object a7, Object a8, Object a9, Object a10 )
             throws Exception {
       throw new InvocationException("Expected function " + this
                 + " to have arity " + arity());
     }
 
-    public Value apply( Value a0, Value a1, Value a2, Value a3, Value a4,
-            Value a5, Value a6, Value a7, Value a8, Value a9, Value a10,
-            Value a11 ) throws Exception {
+    public Object apply( Object a0, Object a1, Object a2, Object a3, Object a4,
+            Object a5, Object a6, Object a7, Object a8, Object a9, Object a10,
+            Object a11 ) throws Exception {
       throw new InvocationException("Expected function " + this
                 + " to have arity " + arity());
     }
 
-    public Value apply( Value a0, Value a1, Value a2, Value a3, Value a4,
-            Value a5, Value a6, Value a7, Value a8, Value a9, Value a10,
-            Value a11, Value a12 ) throws Exception {
+    public Object apply( Object a0, Object a1, Object a2, Object a3, Object a4,
+            Object a5, Object a6, Object a7, Object a8, Object a9, Object a10,
+            Object a11, Object a12 ) throws Exception {
       throw new InvocationException("Expected function " + this
                 + " to have arity " + arity());
     }
 
-    public Value apply( Value a0, Value a1, Value a2, Value a3, Value a4,
-            Value a5, Value a6, Value a7, Value a8, Value a9, Value a10,
-            Value a11, Value a12, Value a13 ) throws Exception {
+    public Object apply( Object a0, Object a1, Object a2, Object a3, Object a4,
+            Object a5, Object a6, Object a7, Object a8, Object a9, Object a10,
+            Object a11, Object a12, Object a13 ) throws Exception {
       throw new InvocationException("Expected function " + this
                 + " to have arity " + arity());
     }
 
-    public Value apply( Value a0, Value a1, Value a2, Value a3, Value a4,
-            Value a5, Value a6, Value a7, Value a8, Value a9, Value a10,
-            Value a11, Value a12, Value a13, Value a14 ) throws Exception {
+    public Object apply( Object a0, Object a1, Object a2, Object a3, Object a4,
+            Object a5, Object a6, Object a7, Object a8, Object a9, Object a10,
+            Object a11, Object a12, Object a13, Object a14 ) throws Exception {
       throw new InvocationException("Expected function " + this
                 + " to have arity " + arity());
     }
 
-    public Value apply( Value a0, Value a1, Value a2, Value a3, Value a4,
-            Value a5, Value a6, Value a7, Value a8, Value a9, Value a10,
-            Value a11, Value a12, Value a13, Value a14, Value a15 )
+    public Object apply( Object a0, Object a1, Object a2, Object a3, Object a4,
+            Object a5, Object a6, Object a7, Object a8, Object a9, Object a10,
+            Object a11, Object a12, Object a13, Object a14, Object a15 )
             throws Exception {
       throw new InvocationException("Expected function " + this
                 + " to have arity " + arity());

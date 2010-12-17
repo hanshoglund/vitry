@@ -6,7 +6,7 @@ package vitry.primitive;
 public class Module extends Callable
   {
 
-    public Module( Environment<Symbol, Value> e ) {
+    public Module( Env<Symbol, Object> e ) {
       super(e);
     }
 

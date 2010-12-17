@@ -1,16 +1,11 @@
 package vitry.primitive;
 
-import java.util.List;
 
 /**
- * The core environment defined by the current set of loaded modules, including
- * the "prelude" module. To be able to reload modules we use a stack of chained
- * classloaders, where the top element refers to this class.
- * 
+ * The core environment, defined by the current set of loaded modules.
  * Modules are loaded from source code files, or from precompiled class files.
  * Either way, the result is an instance of vitry.primitive.Function that
  * returns the module when called.
- * 
  * 
  * Mapping to Java names:
  * 
@@ -23,21 +18,61 @@ import java.util.List;
  * @author hans
  */
 public class VitryRuntime
-  {
+    {
+        private static int anonymousFns = 0;
 
-    private static int anonymousFns = 0;
+        static String getAnonymousFnName() {
+            return "fn$" + (anonymousFns++);
+        }
 
-    static String getAnonymousFnName() {
-      return "fn$" + (anonymousFns++);
+        private Evaluator         interpreter;
+
+        private Compiler          compiler;
+
+        private ModuleClassLoader modules;
+
+
+        // Core
+
+        static Type               top    = new Type()
+                                     {
+
+                                     };
+
+        static Function           type;
+
+        static Function           hasType;
+
+        static Function           typeTag;
+
+        static Function           equals = new Function()
+                                     {
+                                         public int arity() {
+                                             return 2;
+                                         }
+
+                                         public FunctionType type() {
+                                             return null; // TODO
+                                         }
+
+                                         public Object apply(
+                                                 Object a0,
+                                                 Object a1) {
+                                             return null; // TODO
+                                         }
+                                     };
+
+        static BijectiveFunction  compose;
+
+        static BijectiveFunction  decompose;
+
+        static Function           union;
+
+        static Function           intersection;
+
+        static Function           invoke;
+
+        static Function           invokeInverse;
+
+        static Function           eval;
     }
-
-    private Evaluator    interpreter;
-
-    private Compiler     compiler;
-
-    private ClassLoader  vitrySystemLoader;
-
-    private List<Thread> activeThreads;
-
-    private List<Thread> pausedThreads;
-  }

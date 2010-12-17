@@ -1,11 +1,8 @@
 package vitry.primitive;
 
-/**
- *
- */
 abstract public class RestArgFunction extends Function
   {
-    public RestArgFunction( Environment<Symbol, Value> e ) {
+    public RestArgFunction( Env<Symbol, Object> e ) {
       super(e);
     }
   }

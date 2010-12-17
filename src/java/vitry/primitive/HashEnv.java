@@ -27,27 +27,30 @@ import java.util.Set;
  * 
  * @author hans
  */
-public class Environment<K, V> extends HashMap<K, V>
+public class HashEnv<K, V> extends HashMap<K, V> implements Env<K, V>
   {
 
     @SuppressWarnings("rawtypes")
-    public static final Environment EMPTY = new Emtpy();
+    public static final HashEnv EMPTY = new Emtpy();
 
     @SuppressWarnings("unchecked")
-    public Environment( ) {
+    public HashEnv( ) {
       this.parent = EMPTY;
     }
 
-    public Environment( Environment<K, V> parent ) {
-      this.parent = parent;
+    public HashEnv( Env<K, V> parent ) {
+        // TODO remove cast, rewrite this class as needed
+      this.parent = (Map<K, V>) parent;
     }
 
-    public Environment<K, V> define( K k, V v ) {
+    @Override
+    public Env<K, V> define( K k, V v ) {
       if (super.containsKey(k)) throw new BindingException();
       put(k, v);
       return this;
     }
 
+    @Override
     public V lookup( Object k ) {
       V val = get(k);
       if (val == null) throw new UndefinedException();
@@ -93,6 +96,7 @@ public class Environment<K, V> extends HashMap<K, V>
       return super.size() + parent.size();
     }
 
+    @Override
     public int localSize() {
       return super.size();
     }
@@ -147,7 +151,7 @@ public class Environment<K, V> extends HashMap<K, V>
 
 
 
-    private static class Emtpy<K, V> extends Environment<K, V>
+    private static class Emtpy<K, V> extends HashEnv<K, V>
       {
 
         @Override

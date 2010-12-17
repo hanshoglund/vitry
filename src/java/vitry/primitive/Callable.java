@@ -6,21 +6,25 @@ package vitry.primitive;
 abstract public class Callable extends Atom
   {
 
-    public Callable( Environment<Symbol, Value> e ) {
+    public Callable() {
+        this.environment = HashEnv.EMPTY;
+    }
+
+    public Callable( Env<Symbol, Object> e ) {
       this.environment = e;
     }
 
-    protected final Environment<Symbol, Value> define( Symbol s, Value v ) {
+    protected final Env<Symbol, Object> define( Symbol s, Value v ) {
       return environment.define(s, v);
     }
 
-    protected final Value lookup( Symbol s ) {
+    protected final Object lookup( Symbol s ) {
       return environment.lookup(s);
     }
 
-    protected final Environment<Symbol, Value> makeChildEnvironent() {
-      return new Environment<Symbol, Value>(this.environment);
-    }
+//    protected final Env<Symbol, Value> makeChildEnvironent() {
+//      return new HashEnv<Symbol, Value>(this.environment);
+//    }
 
-    private Environment<Symbol, Value> environment;
+    private Env<Symbol, Object> environment;
   }

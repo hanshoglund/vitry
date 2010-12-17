@@ -7,7 +7,7 @@ package vitry.primitive;
 abstract public class Thunk extends Callable
   {
 
-    public Thunk( Environment<Symbol, Value> e ) {
+    public Thunk( Env<Symbol, Object> e ) {
       super(e);
     }
 

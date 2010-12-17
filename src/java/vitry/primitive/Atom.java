@@ -8,14 +8,4 @@ package vitry.primitive;
  */
 public abstract class Atom extends Value
   {
-
-    public boolean memberOf( Value v )
-      {
-        return equals(v);
-      }
-
-    public boolean isType()
-      {
-        return true;
-      }
   }

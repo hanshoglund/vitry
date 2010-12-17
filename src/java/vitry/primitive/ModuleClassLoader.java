@@ -141,7 +141,9 @@ public class ModuleClassLoader extends ClassLoader
 
                 public Class<?> loadClass(String name, ModuleClassLoader parent)
                         throws ClassNotFoundException {
-                    // Store parent for recursive invocations
+                    // Store parent temporarily for recursive invocations by the JVM
+                    // We must set it to null before return, to prevent outdated instances 
+                    // of ModuleClassLoader from being recycled.
                     tempParent = parent;
                     Class<?> c = loadClass(name);
                     tempParent.classes.put(name, c);
