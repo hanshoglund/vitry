@@ -1,18 +1,24 @@
 package vitry.primitive;
 
+import java.io.Serializable;
+
 /**
+ * Used for non-local variable access.
+ * 
  * Invariants:
- *  TODO
+ *     lookup, define and getParent are referentially transparent
+ *     lookup checks parent environments and throws exceptions as needed
+ *     
+ *     at returns local binding or null
+ *  
  */
-public interface Env<K, V>
+public interface Env<K, V> extends Serializable
     {
-        public abstract Env<K, V> define(K k, V v);
+        Env<K, V> define(K key, V val) throws BindingException;
 
-        public abstract V lookup(Object k);
+        V lookup(K key) throws UndefinedException;
 
-        public abstract int size();
+        V at(Object key);
 
-        public abstract int localSize();
-
-        public abstract boolean isEmpty();
+        Env<K, V> parent();
     }

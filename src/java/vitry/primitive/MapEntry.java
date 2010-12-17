@@ -1,5 +1,9 @@
 package vitry.primitive;
 
-public class Union extends Value
+/**
+ *
+ */
+public class MapEntry
     {
+
     }

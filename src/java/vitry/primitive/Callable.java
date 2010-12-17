@@ -7,11 +7,11 @@ abstract public class Callable extends Atom
   {
 
     public Callable() {
-        this.environment = HashEnv.EMPTY;
+        // TODO
     }
 
     public Callable( Env<Symbol, Object> e ) {
-      this.environment = e;
+        // TODO
     }
 
     protected final Env<Symbol, Object> define( Symbol s, Value v ) {

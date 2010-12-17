@@ -2,18 +2,7 @@ package vitry.primitive;
 
 
 /**
- * The core environment, defined by the current set of loaded modules.
- * Modules are loaded from source code files, or from precompiled class files.
- * Either way, the result is an instance of vitry.primitive.Function that
- * returns the module when called.
- * 
- * Mapping to Java names:
- * 
- * Module: a.b -> a/b/$.class prelude -> prelude/$.class
- * 
- * Functions, types etc: prelude.main -> prelude/main.class prelude.nat ->
- * prelude/nat.class
- * 
+ * The core runtime environment.
  * 
  * @author hans
  */
@@ -33,11 +22,6 @@ public class VitryRuntime
 
 
         // Core
-
-        static Type               top    = new Type()
-                                     {
-
-                                     };
 
         static Function           type;
 
@@ -62,9 +46,9 @@ public class VitryRuntime
                                          }
                                      };
 
-        static BijectiveFunction  compose;
+        static InvertibleFunction  compose;
 
-        static BijectiveFunction  decompose;
+        static InvertibleFunction  decompose;
 
         static Function           union;
 
