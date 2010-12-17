@@ -13,17 +13,16 @@ import java.util.Map;
  * Invariants:
  * - The method loadClass(S) is referentially transparent.
  * - If this class delegates loading of a class C to another loader L,
- *   then for any type T that is linked to by C, this.loadClass == L.loadClass(). 
+ *   then for any type T that is referenced by C, this.loadClass == L.loadClass(). 
  *   
- * Used to load modules. This class basically behaves like a persistent
- * collection, i.e. the unloadClass(S) and reloadClass(S) methods return a
- * new instance of ModuleClassLoader with the class represented by S removed.
- * 
- * TODO
- *   To actually un/reload a module, we have to make it unreachable, that
- *   is un/reload all modules that depend on it as well. We could attempt
- *   to track that here, or use information available in the modules themselves
- *   at RT level.
+ * Operation:
+ * - Loads classes from java.class.path and/or any specified path. 
+ *   - Delegates base packages by default
+ *   - Delegates other classes if it can not find them
+ * - Loads each requested class separately along with its references
+ * - unloadClass and reloadClass works like a persistent collection
+ *   - Unloaded classes may be GC iff there are no external reference to them
+ *   
  */
 @SuppressWarnings("rawtypes")
 public class ModuleClassLoader extends ClassLoader
@@ -51,7 +50,7 @@ public class ModuleClassLoader extends ClassLoader
         public synchronized Class<?> loadClass(String name, boolean resolve)
                 throws ClassNotFoundException {
 
-            boolean delegateEagerly = inDelegatedPackage(name);
+            boolean delegateEagerly = moduleLoaderShouldDelegate(name);
             ClassNotFoundException ex = null;
 
             Class<?> theClass = findLoadedClass(name);
@@ -68,14 +67,14 @@ public class ModuleClassLoader extends ClassLoader
             }
             if (theClass == null) {
                 try {
-                    theClass = new DefiningClassLoader().getTheClass(name);
+                    theClass = new DefiningClassLoader(getPathsArray()).loadClass(name, this);
                 } catch (ClassNotFoundException e) {
                 }
             }
             if (theClass == null) {
                 if (delegateEagerly) throw ex; // Already checked parent
                 else {
-                    // Delegate, throws if none found
+                    // Throws if none found
                     theClass = this.getParent().loadClass(name);
                 }
             }
@@ -94,11 +93,11 @@ public class ModuleClassLoader extends ClassLoader
             return new ModuleClassLoader(removed);
         }
 
-        public synchronized ModuleClassLoader reloadClass(String name) {
-            // TODO how to check reachability?
-            // We can use WeakReference, but this would give unusable error
-            // messages
-            throw new UnsupportedOperationException();
+        public synchronized ModuleClassLoader reloadClass(String name)
+                throws ClassNotFoundException {
+            ModuleClassLoader mcl = this.unloadClass(name);
+            mcl.loadClass(name);
+            return mcl;
         }
 
         public void addPath(String path) {
@@ -109,7 +108,7 @@ public class ModuleClassLoader extends ClassLoader
             try {
                 addPath(path.toURI().toURL());
             } catch (MalformedURLException e) {
-                // TODO
+                throw new RuntimeException("Could not translate file name to URL.", e);
             }
         }
         
@@ -118,23 +117,36 @@ public class ModuleClassLoader extends ClassLoader
         }
 
 
-        class DefiningClassLoader extends URLClassLoader
+        static class DefiningClassLoader extends URLClassLoader
             {
-                public DefiningClassLoader() {
-                    super(ModuleClassLoader.this.getPathsArray(), ModuleClassLoader.this);
+                public DefiningClassLoader(URL[] paths) {
+                    super(paths, null);
                 }
 
-                private Class<?> theClass;
+                private ModuleClassLoader tempParent;
 
-                // This method will only be called once
-                // Dependencies will delegate to the enclosing ModuleClassLoader
-                public Class<?> getTheClass(String name) throws ClassNotFoundException {
-                    if (theClass != null)
-                        throw new IllegalStateException(
-                                "A DefiningClassLoader is only meant to be used once.");
-                    theClass = super.findClass(name);
-                    classes.put(name, theClass);
-                    return theClass;
+                public Class<?> loadClass(String name) throws ClassNotFoundException {
+                    
+                    Class<?> c = findLoadedClass(name);
+                    
+                    if (c == null) {
+                        if (definingLoaderShouldDelegate(name)) {
+                            c = tempParent.loadClass(name);                          
+                        } else {
+                            c = super.findClass(name);                            
+                        }
+                    }
+                    return c;
+                }
+
+                public Class<?> loadClass(String name, ModuleClassLoader parent)
+                        throws ClassNotFoundException {
+                    // Store parent for recursive invocations
+                    tempParent = parent;
+                    Class<?> c = loadClass(name);
+                    tempParent.classes.put(name, c);
+                    tempParent = null;
+                    return c;
                 }
             }
         
@@ -142,17 +154,27 @@ public class ModuleClassLoader extends ClassLoader
             return paths.toArray(new URL[paths.size()]);
         }
         
-        static boolean inDelegatedPackage(String name) {
-            // TODO add when stable
-            for (String prefix : DELEGATED_PREFICES) {
+        static boolean moduleLoaderShouldDelegate(String name) {
+            for (String prefix : DEFINING_DELEGATES) {
+                if (name.startsWith(prefix)) return true;
+            }
+            return false;
+        }
+        static boolean definingLoaderShouldDelegate(String name) {
+            for (String prefix : DEFINING_DELEGATES) {
                 if (name.startsWith(prefix)) return true;
             }
             return false;
         }
 
-        static final String[]  DELEGATED_PREFICES = {
+        static final String[]  MODULE_DELEGATES   = {
                                                   "java.",
                                                   "javax."
+                                                  };
+        static final String[]  DEFINING_DELEGATES = {
+                                                  "java.",
+                                                  "javax.",
+                                                  "vitry."
                                                   };
 
 
@@ -169,37 +191,6 @@ public class ModuleClassLoader extends ClassLoader
                     // TODO add fallback on systemCL, probably log
                 }
             }
-        }
-
-        public static void main(String[] args) throws Exception {
-            //            for (URL p : CLASS_PATH)
-            //                System.out.println(p);
-
-            ModuleClassLoader cl = new ModuleClassLoader();
-            Class node = cl.loadClass("vitry.primitive.Node");
-            Class value = cl.loadClass("vitry.primitive.Value");
-            Class atom = cl.loadClass("vitry.primitive.Atom");
-
-            System.out.println(node.getClassLoader());
-            System.out.println(value.getClassLoader());
-            System.out.println(atom.getClassLoader());
-            System.out.println(node.isAssignableFrom(value));
-            System.out.println(value.isAssignableFrom(atom));
-
-            cl = cl.unloadClass("vitry.primitive.Node");
-            cl = cl.unloadClass("vitry.primitive.Value");
-            cl = cl.unloadClass("vitry.primitive.Atom");
-            System.gc();
-            
-            node = cl.loadClass("vitry.primitive.Node");
-            value = cl.loadClass("vitry.primitive.Value");
-            atom = cl.loadClass("vitry.primitive.Atom");
-
-            System.out.println(node.getClassLoader());
-            System.out.println(value.getClassLoader());
-            System.out.println(atom.getClassLoader());
-            System.out.println(node.isAssignableFrom(value));
-            System.out.println(value.isAssignableFrom(atom));
         }
 
     }

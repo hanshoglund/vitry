@@ -43,7 +43,12 @@
           that load other modules as needed, then copy the selected 
           members to the importer.
         - In case of recursive dependency, store incomplete modules,
-          set unresolvable field to null, and make reattempt.
+          set unresolvable field to null, and make reattempt.  
+    implementation:
+        The ModuleClassLoader can works like a persistent collection that
+        can "unload" modules, by manufacturing a version of itself in
+        which the unloaded module is not present. 
+          
     - For the REPL, we actually replace the top-level for each command,
       persistantly copying previous assignments. (Required to prevent
       repeated assignments in the same command block).  
