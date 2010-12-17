@@ -24,14 +24,16 @@ public class EmptyEnv extends AbstractEnv<Object, Object>
             throw new UnsupportedOperationException();
         }
 
-        public Object at(Object key) {
+        public Object get(Object key) {
             throw new LookupFailedException();
         }
 
+        @SuppressWarnings("rawtypes")
         public static Env getInstance() {
             return instance;
         }
 
+        @SuppressWarnings("rawtypes")
         private static Env        instance         = new EmptyEnv();
 
         private static final long serialVersionUID = 4460929197701994252L;

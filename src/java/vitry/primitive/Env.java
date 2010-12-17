@@ -9,7 +9,7 @@ import java.io.Serializable;
  *     lookup, define and getParent are referentially transparent
  *     lookup checks parent environments and throws exceptions as needed
  *     
- *     at returns local binding or null
+ *     get returns local binding or null
  *  
  */
 public interface Env<K, V> extends Serializable
@@ -18,7 +18,7 @@ public interface Env<K, V> extends Serializable
 
         V lookup(K key) throws UndefinedException;
 
-        V at(Object key);
+        V get(Object key);
 
         Env<K, V> parent();
     }
