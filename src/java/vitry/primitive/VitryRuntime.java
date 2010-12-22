@@ -23,28 +23,28 @@ public class VitryRuntime
 
         // Core
 
+        static Function           equals = new Function()
+         {
+             public int arity() {
+                 return 2;
+             }
+        
+             public FunctionType type() {
+                 return null; // TODO
+             }
+        
+             public Object apply(
+                     Object a0,
+                     Object a1) {
+                 return null; // TODO
+             }
+         };
+
         static Function           type;
 
         static Function           hasType;
 
         static Function           typeTag;
-
-        static Function           equals = new Function()
-                                     {
-                                         public int arity() {
-                                             return 2;
-                                         }
-
-                                         public FunctionType type() {
-                                             return null; // TODO
-                                         }
-
-                                         public Object apply(
-                                                 Object a0,
-                                                 Object a1) {
-                                             return null; // TODO
-                                         }
-                                     };
 
         static InvertibleFunction  compose;
 

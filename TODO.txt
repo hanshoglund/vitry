@@ -3,6 +3,93 @@
 - Implement a simple core language
     - Type system                   
     - Lexer/Parser, Interpreter, Compiler, Runtime  
+
+
+
+    
+- Type system
+    - We define the equational logic of Vitry in terms of the following domains and functions:
+        
+        Term         := Atom 
+                      | Product
+                      | Union
+                      | Set
+                      | FunctionType
+                      | Type              
+        Atom         := Function
+                      | Value             
+        Product      := Term (, Term)*
+        Union        := Term (, Term)*
+        Set          := Term (, Term)*
+        Type         := (Term, Tag)
+        FunctionType := (Term, Term)
+        Value        := trivial (numbers, characters etc.)
+        Tag          := trivial (a simple identity generated on-the-fly)
+
+        equals   : Term -> Term -> Boolean
+        matches : Term -> Term -> Boolean
+        tag      : Term -> Type -> Term
+        getTag   : Term -> Type            
+
+        - equals is an equivalence relation
+            equals x:Atom y:Atom        trivial
+            equals x:Product y:Product  iff for each element ex in x, ey in y ex equals ey
+            equals x:Union y:Union      TODO
+            equals x:Set y:Set          TODO
+            equals x:Set y:Union        TODO
+            equals x:Union y:Set        TODO
+            all other false
+            
+        - matches behaves as equals for atomic values, otherwise it matches a component value
+            matches c:Atom e:Atom            iff c equals e
+            matches c:Product e:Product      iff for each element ex in x, ey in y ex matches ey
+            matches c:Union e:(Atom|Product) iff for some element ex in c, ex matches e
+            matches c:Union e:Union          iff for some element ex in c, ex matches e
+            matches c:Union e:Set            iff for some element ex in c, ex equals e
+            matches c:Union e:Type           TODO matches
+            matches c:Set e:(Atom|Product)   iff for some element ex in c, ex equals e
+            matches c:Set e:Union            iff for some element ex in c, ex matches e
+            matches c:Set e:Set              iff for some element ex in c, ex equals e
+            matches c:Set e:Type             TODO equals
+            all other false
+
+
+        - tag and getTag is used to create type-tagged values                   
+            - tag verifys that the given term correspond to the given type before applying the tag
+                - Thus 
+            - This way we obtain a nominal type system on top of the structural core
+
+        - Should a non-tagged type match its tagged isomorphic variants?
+            - For example 
+                if age = Tag(nat), does Contains(nat, (2 : age)) hold?
+                
+            - Subtyping.
+            - Problem: generic functions (i.e. add, map) should preserve type integrity.
+            - Intuitively, it seems better to simulate covariants as sets/subsets.  
+            
+        - Some cases that should hold:
+            a = a
+            (a,b) = (a,b)
+            (a,(b,c)) = (a,(b,c))
+            a|(b|c) = (a|b)|c
+            {a,b,c} = {a,b,c}
+            a,b,c : a,b,c
+            a : a|b|c
+            b : a|b|c
+            c : a|b|c
+            a : a|(b|c)
+            b : a|(b|c)
+            c : a|(b|c)
+            a : {a,b,c} 
+            b : {a,b,c} 
+            c : {a,b,c}
+            a : {a,{b,c}}
+            {b, c} : {a,{b,c}}
+            
+        - Add proof?
+
+
+
     
 - Compiler
     - Current implementation too ugly
@@ -17,10 +104,10 @@
             - Convert to bytecode
 
 
-- Semantics of the eq logic
-    - Two basic relations:
-        - Equals
-        - Contains/MemberOf
+
+
+
+
 
     - Power types, unions and functions
     - What about:
@@ -105,8 +192,8 @@
         - A function is an object that inherits from vitry.p.Function
         - A function has the following properties
             - An environment (implicit)
-            - Arity, defined by Function.getArity()
-            - Type, defined by Function.getType()
+            - Arity, defined by Function.arity()
+            - Type, defined by Function.type()
             - Body, defined by Function.invoke()                                 
 
         - Whenever a function f is called with N arguments:

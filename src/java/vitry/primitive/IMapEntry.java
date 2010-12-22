@@ -1,5 +1,5 @@
-package vitry.primitive;
-
-public interface IMapEntry
-    {
-    }
+//package vitry.primitive;
+//
+//public interface IMapEntry
+//    {
+//    }

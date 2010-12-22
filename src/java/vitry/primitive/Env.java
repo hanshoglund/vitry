@@ -6,10 +6,11 @@ import java.io.Serializable;
  * Used for non-local variable access.
  * 
  * Invariants:
- *     lookup, define and getParent are referentially transparent
- *     lookup checks parent environments and throws exceptions as needed
+ *     - lookup, define and parent are referentially transparent
+ *     - lookup checks parent environments and throws exception as needed,
+ *       normal return implies a valid binding
  *     
- *     get returns local binding or null
+ *     - get returns local binding or null
  *  
  */
 public interface Env<K, V> extends Serializable
@@ -18,7 +19,7 @@ public interface Env<K, V> extends Serializable
 
         V lookup(K key) throws UndefinedException;
 
-        V get(Object key);
+        V at(K key);
 
         Env<K, V> parent();
     }

@@ -4,20 +4,21 @@ abstract public class AbstractEnv<K, V> implements Env<K, V>
     {
 
         public Env<K, V> define(K key, V val) throws BindingException {
-            if (get(key) != null) throw new BindingException(key, this);
-            put(key, val);
+            if (at(key) != null) throw new BindingException(key, this);
+            store(key, val);
             return this;
         }
 
         public V lookup(K key) throws UndefinedException {
-            V val = get(key);
+            V val = at(key);
 
             if (val == null) {
                 Env<K, V> env = this;
                 try {
+                    // Loop to avoid stack-consuming recusive call
                     do {
                         env = env.parent();
-                        val = env.get(key);
+                        val = env.at(key);
                     } while (val == null);
                 } catch (LookupFailedException e) {
                     throw new UndefinedException(key, this);
@@ -26,16 +27,17 @@ abstract public class AbstractEnv<K, V> implements Env<K, V>
             return val;
         }
 
-        abstract protected void put(K key, V val);
+        abstract public V at(K key);
 
-        abstract public V get(Object key);
+        abstract protected void store(K key, V val);
+
 
         private static final long serialVersionUID = 8402893922379900923L;
     }
 
 
 /**
- * Thrown by empty to signal failed lookup.
+ * Thrown by the empty environment to signal failed lookup.
  */
 class LookupFailedException extends RuntimeException
     {

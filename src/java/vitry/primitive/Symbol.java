@@ -9,6 +9,8 @@ import java.util.Map;
  *  Symbol.generate(S) = Symbol.generate(S) where S is any string
  * 
  * TODO
+ *   - Change impl to use interned strings instead? No need to use a separate
+ *     table in this case (but harder to optimize memory).
  *   - Check memory performance
  *     If we get memory problems, we should replace the table by a soft table,
  *     trading of comparison efficiency. In this case equals must fall back on

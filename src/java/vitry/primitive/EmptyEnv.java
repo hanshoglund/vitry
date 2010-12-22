@@ -1,12 +1,16 @@
 package vitry.primitive;
 
-/**
- *
- */
 public class EmptyEnv extends AbstractEnv<Object, Object>
     {
-        private EmptyEnv() {
+        private EmptyEnv() {}
+
+        @SuppressWarnings("unchecked")
+        public static <K, V> Env<K, V> getInstance() {
+            // Casting this instance is always safe, 
+            // as no methods return values
+            return (Env<K, V>) instance;
         }
+        
 
         public Env<Object, Object> define(Object key, Object val) {
             throw new UnsupportedOperationException();
@@ -16,7 +20,7 @@ public class EmptyEnv extends AbstractEnv<Object, Object>
             throw new UnsupportedOperationException();
         }
 
-        protected void put(Object key, Object val) {
+        protected void store(Object key, Object val) {
             throw new UnsupportedOperationException();
         }
 
@@ -24,17 +28,13 @@ public class EmptyEnv extends AbstractEnv<Object, Object>
             throw new UnsupportedOperationException();
         }
 
-        public Object get(Object key) {
+        public Object at(Object key) {
             throw new LookupFailedException();
         }
 
-        @SuppressWarnings("rawtypes")
-        public static Env getInstance() {
-            return instance;
-        }
 
-        @SuppressWarnings("rawtypes")
-        private static Env        instance         = new EmptyEnv();
+        private static Env<?, ?>  instance         = new EmptyEnv();
 
-        private static final long serialVersionUID = 4460929197701994252L;
+
+        private static final long          serialVersionUID = 4460929197701994252L;
     }

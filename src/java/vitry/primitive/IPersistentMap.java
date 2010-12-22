@@ -1,8 +1,8 @@
-package vitry.primitive;
-
-/**
- *
- */
-public interface IPersistentMap
-    {
-    }
+//package vitry.primitive;
+//
+///**
+// *
+// */
+//public interface IPersistentMap
+//    {
+//    }

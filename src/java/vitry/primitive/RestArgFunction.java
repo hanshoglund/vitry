@@ -7,8 +7,24 @@ package vitry.primitive;
  *           if  N = f.arity,  then f(a1,a2..a[N]) is returned
  *           if  N > f.arity,  then f(a1,a2..a[f.arity], rest) is returned, 
  *              where rest is an array containing a[f.arity]...a[N]
+ *   
+ * This class is provided to make it possible to implement top-level
+ * function polymorphism as match expressions. We want to rewrite something
+ * like
+ * 
+ *   foo x:a      = M
+ *   foo x:b, y:z = N
+ * 
+ * into
+ *   foo = fn input
+ *     match input
+ *       (x:a)      (M)
+ *       (x:b, y:c) (N)
+ * 
  *              
- * TODO add missing cases
+ * TODO
+ *  Add missing cases
+ *  Use Vitry seq instead of JVM array?
  */
 abstract public class RestArgFunction extends Function
     {
@@ -22,7 +38,6 @@ abstract public class RestArgFunction extends Function
                     return apply(new Object[]{ a0, a1 });
                 case 2:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1);
             }
@@ -37,7 +52,6 @@ abstract public class RestArgFunction extends Function
                     return apply(a0, new Object[]{ a1, a2 });
                 case 3:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2);
             }
@@ -49,7 +63,6 @@ abstract public class RestArgFunction extends Function
 
                 case 4:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3);
             }
@@ -62,7 +75,6 @@ abstract public class RestArgFunction extends Function
 
                 case 5:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4);
             }
@@ -75,7 +87,6 @@ abstract public class RestArgFunction extends Function
 
                 case 6:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5);
             }
@@ -89,7 +100,6 @@ abstract public class RestArgFunction extends Function
                 
                 case 7:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6);
             }
@@ -117,7 +127,6 @@ abstract public class RestArgFunction extends Function
                 
                 case 9:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8);
             }
@@ -147,7 +156,6 @@ abstract public class RestArgFunction extends Function
                 
                 case 11:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10);
@@ -164,7 +172,6 @@ abstract public class RestArgFunction extends Function
                 
                 case 12:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10, a11);
@@ -181,7 +188,6 @@ abstract public class RestArgFunction extends Function
                 
                 case 13:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10, a11, a12);
@@ -198,7 +204,6 @@ abstract public class RestArgFunction extends Function
                 
                 case 14:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10, a11, a12, a13);
@@ -216,7 +221,6 @@ abstract public class RestArgFunction extends Function
 
                 case 15:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10, a11, a12, a13, a14);
@@ -275,7 +279,6 @@ abstract public class RestArgFunction extends Function
                             new Object[]{ a14, a15 });
                 case 16:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10, a11, a12, a13, a14, a15);

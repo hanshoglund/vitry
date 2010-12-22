@@ -13,6 +13,7 @@ package vitry.primitive;
  * See "Making a Fast Curry: Push/Enter vs Eval/Apply for Higher-order 
  * Languages" by Marlow and Jones
  * 
+ * 
  * @author hans
  */
 abstract public class Function extends Callable
@@ -44,7 +45,6 @@ abstract public class Function extends Callable
             switch (arity) {
                 case 1:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0);
             }
@@ -54,10 +54,10 @@ abstract public class Function extends Callable
 
             switch (arity) {
                 case 1:
+                    // XXX catch ClassCastExceptions and try something else?
                     return ((Function) this.apply(a0)).apply(a1);
                 case 2:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1);
             }
@@ -72,7 +72,6 @@ abstract public class Function extends Callable
                     return ((Function) this.apply(a0, a1)).apply(a2);
                 case 3:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2);
             }
@@ -89,7 +88,6 @@ abstract public class Function extends Callable
                     return ((Function) this.apply(a0, a1, a2)).apply(a3);
                 case 4:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3);
             }
@@ -109,7 +107,6 @@ abstract public class Function extends Callable
                     return ((Function) this.apply(a0, a1, a2, a3)).apply(a4);
                 case 5:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4);
             }
@@ -131,7 +128,6 @@ abstract public class Function extends Callable
                     return ((Function) this.apply(a0, a1, a2, a3, a4)).apply(a5);
                 case 6:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5);
             }
@@ -155,7 +151,6 @@ abstract public class Function extends Callable
                     return ((Function) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6);
                 case 7:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6);
             }
@@ -181,7 +176,6 @@ abstract public class Function extends Callable
                     return ((Function) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7);
                 case 8:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7);
             }
@@ -209,7 +203,6 @@ abstract public class Function extends Callable
                     return ((Function) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8);
                 case 9:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8);
             }
@@ -248,7 +241,6 @@ abstract public class Function extends Callable
                             .apply(a9);
                 case 10:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9);
             }
@@ -290,7 +282,6 @@ abstract public class Function extends Callable
                             .apply(a10);
                 case 11:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10);
@@ -337,7 +328,6 @@ abstract public class Function extends Callable
                             .apply(a11);
                 case 12:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10, a11);
@@ -387,7 +377,6 @@ abstract public class Function extends Callable
                             a11)).apply(a12);
                 case 13:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10, a11, a12);
@@ -440,7 +429,6 @@ abstract public class Function extends Callable
                             a11, a12)).apply(a13);
                 case 14:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10, a11, a12, a13);
@@ -497,7 +485,6 @@ abstract public class Function extends Callable
 
                 case 15:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10, a11, a12, a13, a14);
@@ -556,7 +543,6 @@ abstract public class Function extends Callable
                             a11, a12, a13, a14)).apply(a15);
                 case 16:
                     throw new NoImplementationException();
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10, a11, a12, a13, a14, a15);
@@ -626,35 +612,34 @@ class PartialApplication extends Function
     {
 
         PartialApplication(Function original, Object... args) {
-            this.arity = original.arity() - args.length;
-            this.type = null;
+            this.newArity = original.arity() - args.length;
+            this.newType = null;
             this.original = original;
             this.args = args;
 
-            assert (arity > 0);
+            assert (newArity > 0);
         }
         
-        private int arity;
-        
-        private FunctionType type;
+        private int          newArity;
+
+        private FunctionType newType;
 
         private Function     original;
 
         private Object[]     args;
 
         public int arity() {
-            return this.arity;
+            return this.newArity;
         }
 
         public FunctionType type() {
-            return this.type;
+            return this.newType;
         }
 
         public Object apply(Object a0) throws Exception {
-            switch (arity) {
+            switch (newArity) {
                 case 1:
                     return original.applyVariadic(Util.concat(args, a0));
-
                 default:
                     return new PartialApplication(this, a0);
             }
@@ -662,12 +647,11 @@ class PartialApplication extends Function
 
         public Object apply(Object a0, Object a1) throws Exception {
 
-            switch (arity) {
+            switch (newArity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1);
                 case 2:
                     return original.applyVariadic(Util.concat(args, a0, a1));
-
                 default:
                     return new PartialApplication(this, a0, a1);
             }
@@ -675,14 +659,13 @@ class PartialApplication extends Function
 
         public Object apply(Object a0, Object a1, Object a2) throws Exception {
 
-            switch (arity) {
+            switch (newArity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2);
                 case 2:
                     return ((Function) this.apply(a0, a1)).apply(a2);
                 case 3:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2));
-
                 default:
                     return new PartialApplication(this, a0, a1, a2);
             }
@@ -690,7 +673,7 @@ class PartialApplication extends Function
 
         public Object apply(Object a0, Object a1, Object a2, Object a3) throws Exception {
 
-            switch (arity) {
+            switch (newArity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3);
                 case 2:
@@ -699,7 +682,6 @@ class PartialApplication extends Function
                     return ((Function) this.apply(a0, a1, a2)).apply(a3);
                 case 4:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2, a3));
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3);
             }
@@ -708,7 +690,7 @@ class PartialApplication extends Function
         public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4)
                 throws Exception {
 
-            switch (arity) {
+            switch (newArity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3, a4);
                 case 2:
@@ -719,7 +701,6 @@ class PartialApplication extends Function
                     return ((Function) this.apply(a0, a1, a2, a3)).apply(a4);
                 case 5:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2, a3, a4));
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4);
             }
@@ -728,7 +709,7 @@ class PartialApplication extends Function
         public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5)
                 throws Exception {
 
-            switch (arity) {
+            switch (newArity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3, a4, a5);
                 case 2:
@@ -741,7 +722,6 @@ class PartialApplication extends Function
                     return ((Function) this.apply(a0, a1, a2, a3, a4)).apply(a5);
                 case 6:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2, a3, a4, a5));
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5);
             }
@@ -750,7 +730,7 @@ class PartialApplication extends Function
         public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
                 Object a6) throws Exception {
 
-            switch (arity) {
+            switch (newArity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6);
                 case 2:
@@ -766,7 +746,6 @@ class PartialApplication extends Function
                 case 7:
                     return original.applyVariadic(Util
                             .concat(args, a0, a1, a2, a3, a4, a5, a6));
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6);
             }
@@ -775,7 +754,7 @@ class PartialApplication extends Function
         public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
                 Object a6, Object a7) throws Exception {
 
-            switch (arity) {
+            switch (newArity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7);
                 case 2:
@@ -802,7 +781,7 @@ class PartialApplication extends Function
         public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
                 Object a6, Object a7, Object a8) throws Exception {
 
-            switch (arity) {
+            switch (newArity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8);
                 case 2:
@@ -822,7 +801,6 @@ class PartialApplication extends Function
                 case 9:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2, a3, a4, a5,
                             a6, a7, a8));
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8);
             }
@@ -831,7 +809,7 @@ class PartialApplication extends Function
         public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
                 Object a6, Object a7, Object a8, Object a9) throws Exception {
 
-            switch (arity) {
+            switch (newArity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8,
                             a9);
@@ -862,7 +840,6 @@ class PartialApplication extends Function
                 case 10:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2, a3, a4, a5,
                             a6, a7, a8, a9));
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9);
             }
@@ -871,7 +848,7 @@ class PartialApplication extends Function
         public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
                 Object a6, Object a7, Object a8, Object a9, Object a10) throws Exception {
 
-            switch (arity) {
+            switch (newArity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10);
@@ -905,7 +882,6 @@ class PartialApplication extends Function
                 case 11:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2, a3, a4, a5,
                             a6, a7, a8, a9, a10));
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10);
@@ -916,7 +892,7 @@ class PartialApplication extends Function
                 Object a6, Object a7, Object a8, Object a9, Object a10, Object a11)
                 throws Exception {
 
-            switch (arity) {
+            switch (newArity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10, a11);
@@ -953,7 +929,6 @@ class PartialApplication extends Function
                 case 12:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2, a3, a4, a5,
                             a6, a7, a8, a9, a10, a11));
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10, a11);
@@ -964,7 +939,7 @@ class PartialApplication extends Function
                 Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12)
                 throws Exception {
 
-            switch (arity) {
+            switch (newArity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10, a11, a12);
@@ -1004,7 +979,6 @@ class PartialApplication extends Function
                 case 13:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2, a3, a4, a5,
                             a6, a7, a8, a9, a10, a11, a12));
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10, a11, a12);
@@ -1015,7 +989,7 @@ class PartialApplication extends Function
                 Object a6, Object a7, Object a8, Object a9, Object a10, Object a11,
                 Object a12, Object a13) throws Exception {
 
-            switch (arity) {
+            switch (newArity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10, a11, a12, a13);
@@ -1058,7 +1032,6 @@ class PartialApplication extends Function
                 case 14:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2, a3, a4, a5,
                             a6, a7, a8, a9, a10, a11, a12, a13));
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10, a11, a12, a13);
@@ -1069,7 +1042,7 @@ class PartialApplication extends Function
                 Object a6, Object a7, Object a8, Object a9, Object a10, Object a11,
                 Object a12, Object a13, Object a14) throws Exception {
 
-            switch (arity) {
+            switch (newArity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10, a11, a12, a13, a14);
@@ -1116,7 +1089,6 @@ class PartialApplication extends Function
                 case 15:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2, a3, a4, a5,
                             a6, a7, a8, a9, a10, a11, a12, a13, a14));
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10, a11, a12, a13, a14);
@@ -1127,7 +1099,7 @@ class PartialApplication extends Function
                 Object a6, Object a7, Object a8, Object a9, Object a10, Object a11,
                 Object a12, Object a13, Object a14, Object a15) throws Exception {
 
-            switch (arity) {
+            switch (newArity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10, a11, a12, a13, a14, a15);
@@ -1176,19 +1148,15 @@ class PartialApplication extends Function
                 case 16:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2, a3, a4, a5,
                             a6, a7, a8, a9, a10, a11, a12, a13, a14, a15));
-
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10, a11, a12, a13, a14, a15);
             }
         }
-
-
     }
 
 
 class NoImplementationException extends RuntimeException
     {
-
         private static final long serialVersionUID = 2787250838481872800L;
     }

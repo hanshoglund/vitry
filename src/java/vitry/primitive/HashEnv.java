@@ -5,9 +5,8 @@ import java.util.HashMap;
 
 public class HashEnv<K, V> extends AbstractEnv<K, V>
     {
-        @SuppressWarnings("unchecked")
         public HashEnv() {
-            this.parent = EmptyEnv.getInstance();
+            this.parent = EmptyEnv.<K,V>getInstance();
         }
 
         public HashEnv(Env<K, V> parent) {
@@ -18,11 +17,11 @@ public class HashEnv<K, V> extends AbstractEnv<K, V>
             return parent;
         }
 
-        protected void put(K key, V val) {
+        protected void store(K key, V val) {
             bindings.put(key, val);
         }
 
-        public V get(Object key) {
+        public V at(Object key) {
             return bindings.get(key);
         }
 
