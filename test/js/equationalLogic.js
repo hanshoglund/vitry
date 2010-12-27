@@ -1,9 +1,9 @@
 /*
- * load("~/macbook/Vitry/test/js/equationalLogic.js");
- * 
- * Test of the basic equational logic
- * See TODO
- */
+load("~/macbook/Vitry/test/js/equationalLogic.js");
+
+Test of the basic equational logic
+See TODO
+*/
 Term = function() {};
 
 Atom = function() {};
@@ -44,12 +44,12 @@ Term.prototype = {
   }  
 }
 
-Atom.prototype = new Term();
+Atom.prototype    = new Term();
 Product.prototype = new Term();
-Set.prototype = new Term();
-Union.prototype = new Term();
+Set.prototype     = new Term();
+Union.prototype   = new Term();
 Intersection.prototype = new Term();
-Value.prototype = new Atom();
+Value.prototype   = new Atom();
 
 
 
@@ -106,24 +106,42 @@ Value.prototype.matches = function(that) {
   if (that instanceof Atom) {
     // x = y
     return this.equals(that);
+  }                            
+  if (that instanceof Intersection) {
+    // y : head(x) or head(x) : y or y : tail(x) or tail(x) : y  
+    let some = false;       
+    for each (thatVal in that) {  
+      if (thatVal.matches(this) || this.matches(thatVal)) some = true;
+    }
+    return some;
   }
   return false;
 }
 
 Product.prototype.matches = function(that) {
-  if (!(that instanceof Product)) return false;
+  if (that instanceof Product) {
   
-  // x = y
-  if (this.equals(that)) return true;
+    // x = y
+    if (this.equals(that)) return true;
 
-  // head(x) : head(y) and tail(x) : tail(y)
+    // head(x) : head(y) and tail(x) : tail(y)
 
-  if (this.keys().length !== that.keys().length) 
-    return false;                            
-  for (i = 0; i < this.keys().length; i++) {
-    if (!this[i].matches(that[i])) return false;    
+    if (this.keys().length !== that.keys().length) 
+      return false;                            
+    for (i = 0; i < this.keys().length; i++) {
+      if (!this[i].matches(that[i])) return false;    
+    }
+    return true;   
   }
-  return true;
+  if (that instanceof Intersection) {
+    // y : head(x) or head(x) : y or y : tail(x) or tail(x) : y  
+    let some = false;       
+    for each (thatVal in that) {  
+      if (thatVal.matches(this) || this.matches(thatVal)) some = true;
+    }
+    return some;
+  }      
+  return false;
 }
 
 Set.prototype.matches = function(that) {
@@ -209,16 +227,16 @@ Intersection.prototype.matches = function(that) {
     throw new Error("No implementation.");
   }
   if (that instanceof Intersection) {
-    // for each element E in x, ( E : head(y) or head(y) : E ) and ( E : tail(y) or tail(y) : E )
-    for each (thatVal in that) {
-      let every = true;
-      for each (thisVal in this) {
-        // FIXME
-        if (!(thisVal.matches(thatVal)) && !(thatVal.matches(thisVal))) every = false;
-//        if (!(thisVal.matches(thatVal)) && thatVal.matches(thisVal)) every = false;
-//        if (thisVal.matches(thatVal) && !(thatVal.matches(thisVal))) every = false;
+    // for each element E in y, E : head(x) or head(x) : E or E : tail(x) or tail(x) : E
+    for each (thisVal in this) {
+      let some = false;       
+      for each (thatVal in that) {  
+        if (thatVal.matches(thisVal) 
+          || thisVal.matches(thatVal)
+        ) some = true;
+        matching = thatVal;
       }
-      if (!every) return false;    
+      if (!some) return false;    
     }
     return true;
   }
@@ -275,14 +293,14 @@ Union.prototype.toString = function() {
 }
 
 Intersection.prototype.toString = function() {
-  var str = "";
+  var str = "(";
   for (k in this) {
     if (k > 0) {
       str += " & ";
     }
     str += this[k];
   }
-  str += "";
+  str += ")";
   return str;
 }
 
@@ -309,7 +327,8 @@ Object.enumerable(Term.prototype,    ["toString", "equals", "matches"], false);
 Object.enumerable(Atom.prototype,    ["toString", "equals", "matches"], false);
 Object.enumerable(Product.prototype, ["toString", "equals", "matches"], false);
 Object.enumerable(Union.prototype,   ["toString", "equals", "matches"], false);
-Object.enumerable(Intersection.prototype, ["toString", "equals", "matches"], false);
+Object.enumerable(Intersection.prototype, 
+                                     ["toString", "equals", "matches"], false);
 Object.enumerable(Set.prototype,     ["toString", "equals", "matches"], false);
 Object.enumerable(Value.prototype,   ["toString", "equals", "matches"], false);
 
@@ -399,6 +418,8 @@ printMatches(new U(a,b), new U(a,new U(b,c)));
 printMatches(a, new I(a,new U(a,b)));
 printMatches(new I(a,a), new I(a,new U(a,b)));
 printMatches(new I(a,b), new I(a,new U(a,b)));
+printMatches(new I(a,b,c), new I(a,b));
+printMatches(new I(a,new I(b,c)), new I(a,b));
 
 print();
 print("false cases:");                    
@@ -412,7 +433,7 @@ printMatches(a, new I(a, b));
 printMatches(new S(b, c), new S(a, new S(b, c)));
 printMatches(new S(a, b, c), new S(a, new S(b, c)));
 printMatches(new P(a, b, c), new P(a,new S(a,b), new S(b,new U(c,d))))
-printMatches(new I(a,b), new I(a,new U(a,b), c));
+printMatches(new I(a,b), new I(a,b,c));
 //printMatches(new U(a,b), new S(a,b));
 
 

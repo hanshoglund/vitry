@@ -68,7 +68,7 @@
                 iff x : y and y : x
             
             
-        : behaves as equals for concrete values, otherwise it matches a component value
+        : is a partial order
             x:Value (:)  
             y:Value
                 iff x = y
@@ -107,7 +107,7 @@
             
             x:Union (:)  
             y:Set             
-                TODO requires enumeration
+                enumeration?
             
             x:Union (:)  
             y:Union
@@ -115,20 +115,23 @@
                 
             x:Union (:)  
             y:Intersection
-                TODO rewriting solution?
+                rewriting?
+                           
+            x:Intersection (:)
+            y:(Atom|Product)
+                iff y : head(x) or head(x) : y or y : tail(x) or tail(x) : y  
 
             x:Intersection (:)  
             y:Set
-                TODO requires enumeration
+                enumeration?
             
             x:Intersection (:)  
             y:Union
-                TODO rewriting solution?
+                rewriting?
 
             x:Intersection (:)  
             y:Intersection
-                iff for each element E in x, ( E : head(y) or head(y) : E ) and ( E : tail(y) or tail(y) : E )
-                ???
+                iff for each element E in y, head(x) : E or tail (x) : E
 
            
         
