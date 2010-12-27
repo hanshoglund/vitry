@@ -3,7 +3,7 @@ load("~/macbook/Vitry/test/js/equationalLogic.js");
 
 Test of the basic equational logic
 See TODO
-*/
+*/        
 Term = function() {};
 
 Atom = function() {};
@@ -32,7 +32,12 @@ Intersection = function(/* ... */){
   if (arguments.length <= 1) throw Error("An intersection requires at least two components.");
   for(let i=0; i<arguments.length;i++)
     this[i] = arguments[i];
-};
+};     
+
+FunctionType = function(codom, dom) {
+  this.codom = codom;
+  this.dom = dom;
+};        
          
 Term.prototype = {
   equals : function(v) {
@@ -49,6 +54,7 @@ Product.prototype = new Term();
 Set.prototype     = new Term();
 Union.prototype   = new Term();
 Intersection.prototype = new Term();
+FunctionType.prototype   = new Term();
 Value.prototype   = new Atom();
 
 
@@ -80,6 +86,11 @@ Product.prototype.equals = function(that) {
   return true;
 }
 
+FunctionType.prototype.equals = function(that) {
+  if (!(that instanceof FunctionType)) return false;
+  return this.codom.equals(that.codom) && this.dom.equals(that.dom);
+}    
+
 Set.prototype.equals = function(that) {
   if (!(that instanceof Set)) return false;
 
@@ -97,6 +108,7 @@ Union.prototype.equals = function(that) {
 Intersection.prototype.equals = function(that) {
   return this.matches(that) && that.matches(this);
 }
+
 
 
 
@@ -142,10 +154,15 @@ Product.prototype.matches = function(that) {
     return some;
   }      
   return false;
+}           
+
+FunctionType.prototype.matches = function(that) {
+  if (!(that instanceof FunctionType)) return false;            
+  return this.codom.matches(that.codom) && this.dom.matches(that.dom);
 }
 
 Set.prototype.matches = function(that) {
-  if (that instanceof Atom || that instanceof Product) {
+  if (that instanceof Atom || that instanceof Product || that instanceof FunctionType) {
     // iff x = head(y) or x = tail(y)
     for each (v in this)
       if (v.equals(that)) return true;
@@ -171,7 +188,7 @@ Set.prototype.matches = function(that) {
 }
 
 Union.prototype.matches = function(that) {
-  if (that instanceof Atom || that instanceof Product) {
+  if (that instanceof Atom || that instanceof Product || that instanceof FunctionType) {
     // iff x : head(y) or x : tail(y)
     for each (v in this)
       if (v.matches(that)) return true;
@@ -206,7 +223,7 @@ Union.prototype.matches = function(that) {
 }
 
 Intersection.prototype.matches = function(that) {
-  if (that instanceof Atom || that instanceof Product) {
+  if (that instanceof Atom || that instanceof Product || that instanceof FunctionType) {
     // iff x : head(y) and x : tail(y)
     for each (v in this)
       if (!v.matches(that)) return false;
@@ -242,6 +259,7 @@ Intersection.prototype.matches = function(that) {
   }
   return false;
 }
+
 
     
 
@@ -304,7 +322,6 @@ Intersection.prototype.toString = function() {
   return str;
 }
 
-
 Set.prototype.toString = function() {
   var str = "{";
   for (k in this) {
@@ -315,8 +332,11 @@ Set.prototype.toString = function() {
   }
   str += "}";
   return str;
-}
+}    
 
+FunctionType.prototype.toString = function() {
+  return "" + this.codom + " -> " + this.dom;
+}
 
 Value.prototype.toString = function() {
   return String(this.wrap);
@@ -368,6 +388,7 @@ U = Union;
 I = Intersection;
 S = Set;
 V = Value;
+F = FunctionType;
 a = new V("a");
 b = new V("b");
 c = new V("c");
@@ -387,6 +408,8 @@ printEquals(new U(a, new U(b, c)), new U(new U(a, b), c));
 printEquals(new S(a, b), new S(b, a));
 printEquals(new S,new S);
 printEquals(new S(new S),new S(new S));
+printMatches(new F(a,b),new F(a,b));
+printMatches(new F(a,new F(b,c)),new F(a,new F(b,c)));
 
 print();
 printMatches(a, a);
@@ -419,7 +442,10 @@ printMatches(a, new I(a,new U(a,b)));
 printMatches(new I(a,a), new I(a,new U(a,b)));
 printMatches(new I(a,b), new I(a,new U(a,b)));
 printMatches(new I(a,b,c), new I(a,b));
-printMatches(new I(a,new I(b,c)), new I(a,b));
+printMatches(new I(a,new I(b,c)), new I(a,b));    
+
+printMatches(new F(a,new F(b,c)), new F(a,new U(new F(b,c), new F(b,a))));
+
 
 print();
 print("false cases:");                    
