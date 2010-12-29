@@ -15,7 +15,11 @@ Value = function (wrap) {
 Product = function(/* ... */){
   for(let i=0; i<arguments.length;i++)
     this[i] = arguments[i];
-};
+};  
+
+LazyProduct = function(routine){
+  this.__iterator__ = routine;
+}
 
 Set = function(/* ... */){
   for(let i=0; i<arguments.length;i++)
@@ -26,7 +30,11 @@ Union = function(/* ... */){
   if (arguments.length <= 1) throw Error("A union requires at least two components.");
   for(let i=0; i<arguments.length;i++)
     this[i] = arguments[i];
-};
+};   
+
+LazyUnion = function(routine){
+  this.__iterator__ = routine;
+}
 
 Intersection = function(/* ... */){
   if (arguments.length <= 1) throw Error("An intersection requires at least two components.");
@@ -38,6 +46,12 @@ FunctionType = function(codom, dom) {
   this.codom = codom;
   this.dom = dom;
 };        
+                  
+Type = function(root, name) {
+  this.root = root;
+  this.name = name;
+}     
+
          
 Term.prototype = {
   equals : function(v) {
@@ -51,10 +65,13 @@ Term.prototype = {
 
 Atom.prototype    = new Term();
 Product.prototype = new Term();
+LazyProduct.prototype = new Product();
 Set.prototype     = new Term();
 Union.prototype   = new Term();
+LazyUnion.prototype   = Union.prototype;
 Intersection.prototype = new Term();
-FunctionType.prototype   = new Term();
+FunctionType.prototype = new Term();
+Type.prototype   = new Term();
 Value.prototype   = new Atom();
 
 
@@ -64,7 +81,7 @@ Value.prototype   = new Atom();
 
 
 
-Value.prototype.equals = function(that) {  
+Value.prototype.equals = function(that) {    
   // trivial
   return  this.wrap === that.wrap;
 }
@@ -84,12 +101,7 @@ Product.prototype.equals = function(that) {
     if (!this[i].equals(that[i])) return false;    
   }
   return true;
-}
-
-FunctionType.prototype.equals = function(that) {
-  if (!(that instanceof FunctionType)) return false;
-  return this.codom.equals(that.codom) && this.dom.equals(that.dom);
-}    
+}  
 
 Set.prototype.equals = function(that) {
   if (!(that instanceof Set)) return false;
@@ -107,6 +119,15 @@ Union.prototype.equals = function(that) {
 
 Intersection.prototype.equals = function(that) {
   return this.matches(that) && that.matches(this);
+}    
+
+FunctionType.prototype.equals = function(that) {
+  if (!(that instanceof FunctionType)) return false;
+  return this.codom.equals(that.codom) && this.dom.equals(that.dom);
+}
+
+Type.prototype.equals = function(that) {
+  return this === that || this.name === that.name;
 }
 
 
@@ -156,11 +177,6 @@ Product.prototype.matches = function(that) {
   return false;
 }           
 
-FunctionType.prototype.matches = function(that) {
-  if (!(that instanceof FunctionType)) return false;            
-  return this.codom.matches(that.codom) && this.dom.matches(that.dom);
-}
-
 Set.prototype.matches = function(that) {
   if (that instanceof Atom || that instanceof Product || that instanceof FunctionType) {
     // iff x = head(y) or x = tail(y)
@@ -187,7 +203,7 @@ Set.prototype.matches = function(that) {
   return false;
 }
 
-Union.prototype.matches = function(that) {
+Union.prototype.matches = function(that) {   
   if (that instanceof Atom || that instanceof Product || that instanceof FunctionType) {
     // iff x : head(y) or x : tail(y)
     for each (v in this)
@@ -222,7 +238,7 @@ Union.prototype.matches = function(that) {
   return false;
 }
 
-Intersection.prototype.matches = function(that) {
+Intersection.prototype.matches = function(that) { 
   if (that instanceof Atom || that instanceof Product || that instanceof FunctionType) {
     // iff x : head(y) and x : tail(y)
     for each (v in this)
@@ -260,10 +276,66 @@ Intersection.prototype.matches = function(that) {
   return false;
 }
 
+FunctionType.prototype.matches = function(that) { 
+  if (!(that instanceof FunctionType)) return false;            
+  return this.codom.matches(that.codom) && this.dom.matches(that.dom);
+}
+
+Type.prototype.matches = function(that) {
+  return (that.type.equals(this));
+}
+
+
 
     
 
+// Nominal types
 
+
+/*let*/ 
+Ref = function (value, type) {
+ return {        
+   value : value,
+   type : type,
+   // equals : value.equals.bind(value),
+   // matches : value.matches.bind(value), 
+   equals : function(that) {
+     return this === that;
+   },
+   matches : function(that) {
+     return this === that;
+   },
+   toString : function() {
+     return "(" + value + " : " + type + ")";
+   },   
+   __iterator__ : function() {
+     Iterator(value);
+   }
+ }         
+}              
+
+tag = function(value, type) {
+  if (type.root.matches(value)) {
+    return new Ref(value, type);
+  } else {
+    throw new Error("Can not apply tag " + type + " to " + value);
+  }
+}
+
+
+// Higher-order
+
+list = function(type) {
+  return new Type(list2(type), "[" + type + "]");
+}                  
+
+// () | (a, list a)                            
+let list2 = function(type) {
+  return new LazyUnion(function(){
+    yield new Product;
+    yield new Product(type, list2(type));  
+  });
+}
 
 // Wildcard
 
@@ -287,36 +359,42 @@ wildcard.toString = function() {
 
 
 Product.prototype.toString = function() {
-  var str = "(";
-  for (k in this) {
+  var str = "(";  
+  let k = 0;
+  for each (v in this) {
     if (k > 0) {
       str += ",";
     }
-    str += this[k];
+    str += v;
+    k++;
   }
   str += ")";
   return str;
 }
 
 Union.prototype.toString = function() {
-  var str = "(";
-  for (k in this) {
+  var str = "(";      
+  let k = 0;
+  for each (v in this) {
     if (k > 0) {
       str += "|";
     }
-    str += this[k];
+    str += v;
+    k++;
   }
   str += ")";
   return str;
 }
 
 Intersection.prototype.toString = function() {
-  var str = "(";
-  for (k in this) {
+  var str = "(";               
+  let k = 0;
+  for each (v in this) {
     if (k > 0) {
       str += " & ";
     }
-    str += this[k];
+    str += v;
+    k++;
   }
   str += ")";
   return str;
@@ -324,11 +402,13 @@ Intersection.prototype.toString = function() {
 
 Set.prototype.toString = function() {
   var str = "{";
-  for (k in this) {
+  let k = 0;
+  for each (v in this) {
     if (k > 0) {
       str += ",";
     }
-    str += this[k];
+    k++;
+    str += v;
   }
   str += "}";
   return str;
@@ -336,6 +416,10 @@ Set.prototype.toString = function() {
 
 FunctionType.prototype.toString = function() {
   return "" + this.codom + " -> " + this.dom;
+}
+
+Type.prototype.toString = function() {
+  return "" + this.name;
 }
 
 Value.prototype.toString = function() {
@@ -389,11 +473,24 @@ I = Intersection;
 S = Set;
 V = Value;
 F = FunctionType;
+T = Type;
+l = list;
 a = new V("a");
 b = new V("b");
 c = new V("c");
-d = new V("d");
+d = new V("d");  
+e = new V("e");  
+f = new V("f");  
+g = new V("g");  
+h = new V("h");  
+i = new V("i");  
 
+asList = function(values) {
+  if (values.length == 0)
+    return new P;
+  else
+    return new P(values.slice(0, 1), asList(values.slice(1)));
+}
 
 
 
@@ -447,6 +544,20 @@ printMatches(new I(a,new I(b,c)), new I(a,b));
 printMatches(new F(a,new F(b,c)), new F(a,new U(new F(b,c), new F(b,a))));
 
 
+ab = new T(new U(a,b), "ab");
+a_ = tag(a, ab);
+b_ = tag(b, ab);
+
+print();
+print("nominal:");                    
+printEquals(a_, a_);
+printEquals(ab, ab);
+printMatches(a_, a_);
+printMatches(a_, ab);
+
+la = tag(new P(a,new P), list(a));
+printMatches(la, list(a));  
+
 print();
 print("false cases:");                    
 
@@ -461,5 +572,13 @@ printMatches(new S(a, b, c), new S(a, new S(b, c)));
 printMatches(new P(a, b, c), new P(a,new S(a,b), new S(b,new U(c,d))))
 printMatches(new I(a,b), new I(a,b,c));
 //printMatches(new U(a,b), new S(a,b));
+
+printMatches(a_, a);
+printEquals(a, a_);
+printEquals(a_, a);
+printMatches(a, a_);
+printMatches(a_, a);
+printEquals(a_, b_);  
+                                       
 
 

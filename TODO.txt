@@ -135,9 +135,9 @@
 
            
         
-        - Should a non-tagged type match its tagged isomorphic variants?
+        - Should a non-type match isomorphic types?
             - For example 
-                if age = Tag(nat), does Contains(nat, (2 : age)) hold?
+                if age = Type(nat), does Contains(nat, (2 : age)) hold?
                 
             - Subtyping.
             - Problem: generic functions (i.e. add, map) should preserve type integrity.
@@ -284,7 +284,8 @@
         list a = type a, (list a | ())
         `[] a  = type a, [a] | ()
         Here assuming that | has higher predecence than ,
-    - We should probably do most of this in java for efficiency
+    - We should probably do most of this in java for efficiency           
+
                                                                                              
 
 

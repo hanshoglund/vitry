@@ -15,7 +15,7 @@ abstract public class AbstractEnv<K, V> implements Env<K, V>
             if (val == null) {
                 Env<K, V> env = this;
                 try {
-                    // Loop to avoid stack-consuming recusive call
+                    // Loop to save stack
                     do {
                         env = env.parent();
                         val = env.at(key);
