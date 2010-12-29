@@ -68,10 +68,10 @@ Product.prototype = new Term();
 LazyProduct.prototype = new Product();
 Set.prototype     = new Term();
 Union.prototype   = new Term();
-LazyUnion.prototype   = Union.prototype;
+LazyUnion.prototype = Union.prototype;
 Intersection.prototype = new Term();
 FunctionType.prototype = new Term();
-Type.prototype   = new Term();
+Type.prototype    = new Term();
 Value.prototype   = new Atom();
 
 
@@ -126,7 +126,8 @@ FunctionType.prototype.equals = function(that) {
   return this.codom.equals(that.codom) && this.dom.equals(that.dom);
 }
 
-Type.prototype.equals = function(that) {
+Type.prototype.equals = function(that) {   
+  if (!(that instanceof Type)) return false;  
   return this === that || this.name === that.name;
 }
 
@@ -282,6 +283,7 @@ FunctionType.prototype.matches = function(that) {
 }
 
 Type.prototype.matches = function(that) {
+  // if (!(that instanceof Ref)) return false;  
   return (that.type.equals(this));
 }
 
@@ -485,11 +487,11 @@ g = new V("g");
 h = new V("h");  
 i = new V("i");  
 
-asList = function(values) {
-  if (values.length == 0)
+asList = function(/*...*/) {
+  if (arguments.length == 0)
     return new P;
   else
-    return new P(values.slice(0, 1), asList(values.slice(1)));
+    return new P(arguments[0], asList.apply(null, Array.prototype.slice.call(arguments, 1)));
 }
 
 
@@ -555,8 +557,12 @@ printEquals(ab, ab);
 printMatches(a_, a_);
 printMatches(a_, ab);
 
-la = tag(new P(a,new P), list(a));
-printMatches(la, list(a));  
+printMatches(tag(asList(), list(a)), list(a));  
+printMatches(tag(asList(a), list(a)), list(a));  
+printMatches(tag(asList(a,a,a), list(a)), list(a));  
+printMatches(tag(asList(a,b,c), list(new U(a,b,c))), list(new U(a,b,c)));  
+
+printMatches(tag(asList(new P(a,b), new P(b,a)), list(new P(wildcard, wildcard))), list(new P(wildcard, wildcard)));  
 
 print();
 print("false cases:");                    
@@ -572,6 +578,10 @@ printMatches(new S(a, b, c), new S(a, new S(b, c)));
 printMatches(new P(a, b, c), new P(a,new S(a,b), new S(b,new U(c,d))))
 printMatches(new I(a,b), new I(a,b,c));
 //printMatches(new U(a,b), new S(a,b));
+                                       
+printMatches(tag(asList(a,b,c), list(new U(a,b,c))), list(new I(a,b))); 
+printMatches(tag(asList(new P(a,b,c), new P(b,a,c)), list(new P(wildcard, wildcard,c))), list(wildcard));
+
 
 printMatches(a_, a);
 printEquals(a, a_);
