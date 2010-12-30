@@ -6,5 +6,5 @@ package vitry.primitive;
  */
 public interface Taggable<T>
   {
-        T tag(Object tag);
+        T tag(Type tag);
   }
