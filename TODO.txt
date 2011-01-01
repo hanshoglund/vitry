@@ -58,19 +58,21 @@
                 
         = is an equivalence relation
         : is a partial ordering
-
-        (a = b) iff (a € A, b € A, a == b)
-                  | (a € P, b € P, a ~ b)
-                  | (let Z := S | U | I) (a € Z, b € Z, a : b | b : a )
         
-        (a : b) iff (a € A, b € A, a = b)
-                  | (a € P, b € P, a = b)
-                  | (a € (A | P), b € S, for some x (x € b,   a = x)) 
-                  | (a € (A | P), b € U, for some x (x € b,   a : x)) 
-                  | (a € (A | P), b € I, for all x  (x € b -> a : x)) 
-                  | (a € S, b € (S|U|I), for all x  (x € a -> x : b)) 
-                  | (a € U, b € (S|U|I), for all x  (x € a -> x : b)) 
-                  | (a € I, b € (S|U|I), for some x (x € a,   x : b))
+        Z := S ∪ U ∪ I
+
+        (a = b) iff (a ∈ A, b ∈ A, trivially)
+                  | (a ∈ P, b ∈ P, a ~ b)
+                  | (a ∈ Z, b ∈ Z, a : b ∪ b : a )
+        
+        (a : b) iff (a ∈ A, b ∈ A, a = b)
+                  | (a ∈ P, b ∈ P, a = b)
+                  | (a ∈ (A ∪ P), b ∈ S, ∃x (x ∈ b,   a = x)) 
+                  | (a ∈ (A ∪ P), b ∈ U, ∃x (x ∈ b,   a : x)) 
+                  | (a ∈ (A ∪ P), b ∈ I, ∀x (x ∈ b -> a : x)) 
+                  | (a ∈ S, b ∈ Z, ∀x (x ∈ a -> x : b)) 
+                  | (a ∈ U, b ∈ Z, ∀x (x ∈ a -> x : b)) 
+                  | (a ∈ I, b ∈ Z, ∃x (x ∈ a,   x : b))
            
         
         - Should a non-type match isomorphic types?
@@ -98,8 +100,8 @@
 
         - Other values implement the Pattern interface
             - Pattern.matches represent : on types
-            - The compiler inserts the following code to represent : on other objects
-                (o instanceof Pattern) ? o.matches(v) : o.equals(v)
+            - The compiler inserts a check to represent : on other objects
+              PROBLEM: What about types matching primitives (i.e. nat)
                 
         - ISSUES:
             - The Product/Set/Union/Intersection implementations of eq/matches are orthogonal to the problem
@@ -141,7 +143,7 @@
                 interface Intersection <: Pattern
                 interface Type <: Pattern
                 interface FunctionType <: Pattern
-                class Wildcard
+                class Wildcard <: Pattern
                 class Reference
             interface Seq (head, tail)
                 abstract AbstractPattern (equals, accept)
