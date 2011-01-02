@@ -141,14 +141,14 @@ Value.prototype.matches = function(that) {
     // x = y
     return this.equals(that);
   }                            
-  if (that instanceof Intersection) {
-    // y : head(x) or head(x) : y or y : tail(x) or tail(x) : y  
-    let some = false;       
-    for each (thatVal in that) {  
-      if (thatVal.matches(this) || this.matches(thatVal)) some = true;
-    }
-    return some;
-  }
+//  if (that instanceof Intersection) {
+//    // y : head(x) or head(x) : y or y : tail(x) or tail(x) : y  
+//    let some = false;       
+//    for each (thatVal in that) {  
+//      if (thatVal.matches(this) || this.matches(thatVal)) some = true;
+//    }
+//    return some;
+//  }
   return false;
 }
 
@@ -167,14 +167,14 @@ Product.prototype.matches = function(that) {
     }
     return true;   
   }
-  if (that instanceof Intersection) {
-    // y : head(x) or head(x) : y or y : tail(x) or tail(x) : y  
-    let some = false;       
-    for each (thatVal in that) {  
-      if (thatVal.matches(this) || this.matches(thatVal)) some = true;
-    }
-    return some;
-  }      
+//  if (that instanceof Intersection) {
+//    // y : head(x) or head(x) : y or y : tail(x) or tail(x) : y  
+//    let some = false;       
+//    for each (thatVal in that) {  
+//      if (thatVal.matches(this) || this.matches(thatVal)) some = true;
+//    }
+//    return some;
+//  }      
   return false;
 }           
 

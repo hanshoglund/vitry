@@ -14,7 +14,7 @@ public class VitryRuntime
             return "fn$" + (anonymousFns++);
         }
 
-        private Evaluator         interpreter;
+//        private Evaluator         interpreter;
 
         private Compiler          compiler;
 
@@ -34,29 +34,36 @@ public class VitryRuntime
              }
         
              public Object apply(
-                     Object a0,
-                     Object a1) {
+                     Object a,
+                     Object b) {
+                 return a.equals(b);
+             }
+         };
+         
+         static Function           match = new Function()
+         {
+             public int arity() {
+                 return 2;
+             }
+        
+             public FunctionType type() {
                  return null; // TODO
+             }
+        
+             public Object apply(
+                     Object a,
+                     Object b) {
+                 if (b instanceof Pattern) {
+                     if (a instanceof Pattern)
+                         return ((Pattern) b).match((Pattern) a);
+                     else
+                         return ((Pattern) b).match(a);
+                 } else {
+                     return a.equals(b);
+                 }
              }
          };
 
-        static Function           type;
 
-        static Function           hasType;
 
-        static Function           typeTag;
-
-        static InvertibleFunction  compose;
-
-        static InvertibleFunction  decompose;
-
-        static Function           union;
-
-        static Function           intersection;
-
-        static Function           invoke;
-
-        static Function           invokeInverse;
-
-        static Function           eval;
     }

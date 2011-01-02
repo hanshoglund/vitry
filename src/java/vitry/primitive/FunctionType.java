@@ -2,8 +2,7 @@ package vitry.primitive;
 
 /**
  *
- * @author hans
  */
-public class FunctionType extends Value
+public interface FunctionType extends Value, Pattern
   {
   }

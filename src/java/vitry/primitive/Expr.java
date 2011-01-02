@@ -1,9 +1,9 @@
 package vitry.primitive;
 
 /**
- *
- * @author hans
+ * TO BE REMOVED
  */
-abstract public class Expr extends Product
+public class Expr
     {
+
     }

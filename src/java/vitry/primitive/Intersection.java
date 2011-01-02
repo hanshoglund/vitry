@@ -1,25 +1,25 @@
 package vitry.primitive;
 
 /**
- * The | type.
+ * The & type.
  */
-public interface Union extends Value, Pattern
+public interface Intersection extends Value, Pattern
     {
     }
 
 
-abstract class AbstractUnion extends CompoundPattern implements Union
+abstract class AbstractIntersection extends CompoundPattern implements Intersection
     {
         public boolean match(Object a) {
             for (Pattern x : this)
-                if (x.match(a)) return true;
-            return false;
+                if (!x.match(a)) return false;
+            return true;
         }
 
         public boolean match(Product a) {
             for (Pattern x : this)
-                if (x.match(a)) return true;
-            return false;
+                if (!x.match(a)) return false;
+            return true;
         }
         
         public boolean matchedBy(Pattern p) {

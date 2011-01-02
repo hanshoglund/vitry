@@ -3,7 +3,6 @@ package vitry.primitive;
 /**
  *
  */
-public class Type extends Value
+public interface Type extends Value, Pattern
     {
-
     }

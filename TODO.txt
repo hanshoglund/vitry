@@ -62,11 +62,11 @@
         Z := S ∪ U ∪ I
 
         (a = b) iff (a ∈ A, b ∈ A, trivially)
-                  | (a ∈ P, b ∈ P, a ~ b)
+                  | (a ∈ P, b ∈ P, a =~ b)
                   | (a ∈ Z, b ∈ Z, a : b ∪ b : a )
         
         (a : b) iff (a ∈ A, b ∈ A, a = b)
-                  | (a ∈ P, b ∈ P, a = b)
+                  | (a ∈ P, b ∈ P, a :~ b)
                   | (a ∈ (A ∪ P), b ∈ S, ∃x (x ∈ b,   a = x)) 
                   | (a ∈ (A ∪ P), b ∈ U, ∃x (x ∈ b,   a : x)) 
                   | (a ∈ (A ∪ P), b ∈ I, ∀x (x ∈ b -> a : x)) 
