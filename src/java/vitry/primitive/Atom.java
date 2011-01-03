@@ -15,7 +15,8 @@ abstract public class Atom implements Value, Pattern
         }
 
         public boolean match(Object o) {
-            return this.equals(o);
+//            return this.equals(o);
+            return o.equals(this) || this.equals(o);
         }
 
         public boolean match(Product p) {

@@ -14,7 +14,7 @@ public class PrimitiveValue extends Atom
         public boolean equals(Object o) {
             if (o instanceof PrimitiveValue)
                 return obj.equals(((PrimitiveValue) o).obj);
-            return false;
+            return obj.equals(o);
         }
 
         public int hashCode() {

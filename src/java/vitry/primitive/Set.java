@@ -12,13 +12,13 @@ abstract class AbstractSet extends AbstractCompoundPattern implements Set
     {
         public boolean match(Object a) {
             for (Pattern x : this)
-                if (a.equals(x)) return true;
+                if (a.equals(x) || x.equals(a)) return true;
             return false;
         }
 
         public boolean match(Product a) {
             for (Pattern x : this)
-                if (a.equals(x)) return true;
+                if (a.equals(x) || x.equals(a)) return true;
             return false;
         }
 

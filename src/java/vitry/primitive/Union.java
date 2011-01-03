@@ -27,6 +27,7 @@ abstract class AbstractUnion extends AbstractCompoundPattern implements Union
         }
         
         public String toString() {
-            return Util.join(this, "", " | ", "");
+            return Util.join(this, "(", " | ", ")");
+//            return Util.join(this, "", " | ", "");
         }
     }
