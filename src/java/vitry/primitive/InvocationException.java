@@ -1,11 +1,7 @@
 package vitry.primitive;
 
-/**
- *
- */
 public class InvocationException extends RuntimeException
     {
-
         public InvocationException(String string) {
             super(string);
         }

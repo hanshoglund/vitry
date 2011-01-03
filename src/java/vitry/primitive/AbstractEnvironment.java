@@ -5,10 +5,10 @@ package vitry.primitive;
  *   - Provide store/fetch
  *   - (opt) Provide empty and (Env parent) constructors
  */
-abstract public class AbstractEnv<K, V> implements Env<K, V>
+abstract public class AbstractEnvironment<K, V> implements Environment<K, V>
     {
 
-        public Env<K, V> define(K key, V val) throws BindingException {
+        public Environment<K, V> define(K key, V val) throws BindingException {
             if (fetch(key) != null) throw new BindingException(key, this);
             store(key, val);
             return this;
@@ -18,9 +18,8 @@ abstract public class AbstractEnv<K, V> implements Env<K, V>
             V val = fetch(key);
 
             if (val == null) {
-                Env<K, V> env = this;
+                Environment<K, V> env = this;
                 try {
-                    // Loop to save stack
                     do {
                         env = env.parent();
                         val = env.fetch(key);
@@ -37,36 +36,36 @@ abstract public class AbstractEnv<K, V> implements Env<K, V>
         abstract protected void store(K key, V val);
 
 
-        @SuppressWarnings("unchecked")
-        public static <K, V> Env<K, V> getEmptyEnv() {
-            // Casting this object is always safe, 
-            // as the empty environment never return values
-            if (empty == null) empty = new EmptyEnv();
-            return (Env<K, V>) empty;
+        @SuppressWarnings("unchecked") 
+        public static <K, V> Environment<K, V> getEmptyEnv() {
+            if (empty == null) empty = new EmptyEnv();            
+            
+            // Safe, as the we never return values
+            return (Environment<K, V>) empty;
         }
 
 
-        public static boolean isEmptyEnv(Env<?,?> env) {
+        public static boolean isEmptyEnv(Environment<?,?> env) {
             return env == empty;
         }
 
 
-        private static Env<?, ?>  empty;
+        private static Environment<?, ?>  empty;
 
         private static final long serialVersionUID = 8402893922379900923L;
     }
 
 
-class EmptyEnv extends AbstractEnv<Object, Object>
+class EmptyEnv extends AbstractEnvironment<Object, Object>
     {
         EmptyEnv() {
         }
 
-        public Env<Object, Object> define(Object key, Object val) {
+        public Environment<Object, Object> define(Object key, Object val) {
             throw new UnsupportedOperationException();
         }
 
-        public Env<Object, Object> parent() {
+        public Environment<Object, Object> parent() {
             throw new UnsupportedOperationException();
         }
 

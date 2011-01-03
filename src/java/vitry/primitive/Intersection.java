@@ -3,12 +3,12 @@ package vitry.primitive;
 /**
  * The & type.
  */
-public interface Intersection extends Value, Pattern
+public interface Intersection extends Value, CompoundPattern
     {
     }
 
 
-abstract class AbstractIntersection extends CompoundPattern implements Intersection
+abstract class AbstractIntersection extends AbstractCompoundPattern implements Intersection
     {
         public boolean match(Object a) {
             for (Pattern x : this)
@@ -22,7 +22,11 @@ abstract class AbstractIntersection extends CompoundPattern implements Intersect
             return true;
         }
         
-        public boolean matchedBy(Pattern p) {
+        public boolean matchFor(Pattern p) {
             return p.match(this);
+        }
+        
+        public String toString() {
+            return Util.join(this, "", " & ", "");
         }
     }

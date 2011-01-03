@@ -2,18 +2,17 @@ package vitry.primitive;
 
 import java.util.HashMap;
 
-
-public class HashEnv<K, V> extends AbstractEnv<K, V>
+public class HashEnvironment<K, V> extends AbstractEnvironment<K, V>
     {
-        public HashEnv() {
-            this.parent = AbstractEnv.<K,V>getEmptyEnv();
+        public HashEnvironment() {
+            this.parent = AbstractEnvironment.<K,V>getEmptyEnv();
         }
 
-        public HashEnv(Env<K, V> parent) {
+        public HashEnvironment(Environment<K, V> parent) {
             this.parent = parent;
         }
 
-        public Env<K, V> parent() {
+        public Environment<K, V> parent() {
             return parent;
         }
 
@@ -25,7 +24,7 @@ public class HashEnv<K, V> extends AbstractEnv<K, V>
             return bindings.get(key);
         }
 
-        private Env<K, V>         parent;
+        private Environment<K, V>         parent;
 
         private HashMap<K, V>     bindings         = new HashMap<K, V>();
 

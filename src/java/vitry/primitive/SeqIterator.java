@@ -2,9 +2,6 @@ package vitry.primitive;
 
 import java.util.Iterator;
 
-/**
- *
- */
 public class SeqIterator<T> implements Iterator<T>
     {
         private Seq<T> seq;

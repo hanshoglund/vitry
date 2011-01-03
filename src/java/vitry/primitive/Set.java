@@ -3,12 +3,12 @@ package vitry.primitive;
 /**
  * The {} type.
  */
-public interface Set extends Value, Pattern
+public interface Set extends Value, CompoundPattern
     {
     }
 
 
-abstract class AbstractSet extends CompoundPattern implements Set
+abstract class AbstractSet extends AbstractCompoundPattern implements Set
     {
         public boolean match(Object a) {
             for (Pattern x : this)
@@ -22,7 +22,11 @@ abstract class AbstractSet extends CompoundPattern implements Set
             return false;
         }
 
-        public boolean matchedBy(Pattern p) {
+        public boolean matchFor(Pattern p) {
             return p.match(this);
+        }
+        
+        public String toString() {
+            return Util.join(this, "{", ", ", "}");
         }
     }

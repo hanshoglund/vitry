@@ -3,12 +3,12 @@ package vitry.primitive;
 /**
  * The | type.
  */
-public interface Union extends Value, Pattern
+public interface Union extends Value, CompoundPattern
     {
     }
 
 
-abstract class AbstractUnion extends CompoundPattern implements Union
+abstract class AbstractUnion extends AbstractCompoundPattern implements Union
     {
         public boolean match(Object a) {
             for (Pattern x : this)
@@ -22,7 +22,11 @@ abstract class AbstractUnion extends CompoundPattern implements Union
             return false;
         }
         
-        public boolean matchedBy(Pattern p) {
+        public boolean matchFor(Pattern p) {
             return p.match(this);
+        }
+        
+        public String toString() {
+            return Util.join(this, "", " | ", "");
         }
     }

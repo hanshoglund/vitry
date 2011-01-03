@@ -1,9 +1,7 @@
 package vitry.primitive;
 
 /**
- * Marks values that are not host objects.
- * 
- * @author hans
+ * Marker for non-host objects.
  */
 public interface Value
     {

@@ -1,12 +1,18 @@
 package vitry.primitive;
 
+import java.util.Iterator;
+
 /**
  * The () type.
+ * 
+ * Invariants:
+ *   - For any product p, p.tail() != null 
+ *     (we can not guarantee equality to be reflexive in this case)
+ * 
  */
-public interface Product extends Value, Pattern
+public interface Product extends Value, Pattern, Seq<Pattern>
     {
     }
-
 
 abstract class AbstractProduct extends AbstractPattern implements Product
     {
@@ -19,7 +25,7 @@ abstract class AbstractProduct extends AbstractPattern implements Product
             Seq<Pattern> right = this;
 
             while (left != null && right != null) {
-                if (!left.head().matchedBy(right.head())) return false;
+                if (!left.head().matchFor(right.head())) return false;
                 left = left.tail();
                 right = right.tail();
             }
@@ -46,15 +52,16 @@ abstract class AbstractProduct extends AbstractPattern implements Product
             return false;
         }
 
-        public boolean matchedBy(Pattern p) {
+        public boolean matchFor(Pattern p) {
             return p.match(this);
         }
         
         public boolean equals(Object o) {
+            if (o == this)
+                return true;
+            
             if (o instanceof Product) {
-                Product p = (Product) o;
-                
-                Seq<Pattern> left = p;
+                Seq<Pattern> left = (Product) o;
                 Seq<Pattern> right = this;
 
                 while (left != null && right != null) {
@@ -68,4 +75,12 @@ abstract class AbstractProduct extends AbstractPattern implements Product
         }
         
         // TODO hashCode
+        
+        public Iterator<Pattern> iterator() {
+            return new SeqIterator<Pattern>(this);
+        }
+        
+        public String toString() {
+            return Util.join(this, "(", ", ", ")");
+        }
     }

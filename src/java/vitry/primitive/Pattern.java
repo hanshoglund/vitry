@@ -1,13 +1,16 @@
 package vitry.primitive;
 
 /**
- * Values that may appear on the right side of a match expression.
+ * Implements non-trivial matching semantics.
  * 
- * this.match(x)     <=> x : this
- * this.matchedBy(x) <=> this : x
+ * Invariants:
+ *   - !(x instanceof Pattern) -> x = y <=> x : y
  * 
+ * Semantics:
+ *   this.match(x)    <=> x : this
+ *   this.matchFor(x) <=> this : x
  */
-public interface Pattern extends Seq<Pattern>
+public interface Pattern
     {
         boolean match(Object o);
         
@@ -23,5 +26,5 @@ public interface Pattern extends Seq<Pattern>
 
         boolean match(FunctionType p);
         
-        boolean matchedBy(Pattern p);
+        boolean matchFor(Pattern p);
     }

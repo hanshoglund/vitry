@@ -1,16 +1,38 @@
 package vitry.primitive;
 
-import java.util.Iterator;
-
-
 /**
  * Implement:
- *   - Provide match and matchedBy
- *   - Provide head and tail
+ *   - provide matchedBy
+ *   - (opt) override match
+ *   - (opt) provide constructors (Pattern...) and (Seq<Pattern>)
  */
 public abstract class AbstractPattern implements Pattern
     {
-        public Iterator<Pattern> iterator() {
-            return new SeqIterator<Pattern>(this);
+        public boolean match(Object o) {
+            return false;
+        }
+
+        public boolean match(Product p) {
+            return false;
+        }
+
+        public boolean match(Union p) {
+            return false;
+        }
+
+        public boolean match(Set p) {
+            return false;
+        }
+
+        public boolean match(Intersection p) {
+            return false;
+        }
+
+        public boolean match(Type p) {
+            return false;
+        }
+
+        public boolean match(FunctionType p) {
+            return false;
         }
     }
