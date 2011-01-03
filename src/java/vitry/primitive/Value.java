@@ -1,10 +1,8 @@
 package vitry.primitive;
 
 /**
- * Invariants:
- * 
- * @author hans
+ * Marker for non-host objects.
  */
-public abstract class Value
+public interface Value
     {
     }

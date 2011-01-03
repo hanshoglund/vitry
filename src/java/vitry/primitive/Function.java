@@ -1,6 +1,5 @@
 package vitry.primitive;
 
-
 /**
  * Invariants:
  *   Whenever a Function f is called with N arguments:

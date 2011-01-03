@@ -1,8 +1,8 @@
 package vitry.primitive;
 
-public class UndefinedException extends Exception
+public class UndefinedException extends RuntimeException
     {
-        public UndefinedException(Object key, Env<?,?> source) {
+        public UndefinedException(Object key, Environment<?,?> source) {
             super("Could not find key " + key + " in " + source);
         }
 

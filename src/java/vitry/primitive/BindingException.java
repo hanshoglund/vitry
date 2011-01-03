@@ -1,9 +1,8 @@
 package vitry.primitive;
 
-
-public class BindingException extends Exception
+public class BindingException extends RuntimeException
     {
-        public BindingException(Object key, Env<?, ?> env) {
+        public BindingException(Object key, Environment<?, ?> env) {
             super("Key " + key + " already defined in " + env);
         }
 

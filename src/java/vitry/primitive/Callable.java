@@ -4,16 +4,16 @@ abstract public class Callable extends Atom
     {
 
         public Callable() {
-            this.env = new HashEnv<Symbol, Object>();
+            this.env = new HashEnvironment<Symbol, Object>();
         }
 
         public Callable(Callable encl) {
             this(encl.env);
         }
 
-        public Callable(Env<Symbol, Object> env) {
+        public Callable(Environment<Symbol, Object> env) {
             this.env = env;
         }
 
-        Env<Symbol, Object> env;
+        Environment<Symbol, Object> env;
     }

@@ -3,7 +3,6 @@ package vitry.primitive;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
  * Invariants:
  *  Symbol.generate(S) = Symbol.generate(S) where S is any string

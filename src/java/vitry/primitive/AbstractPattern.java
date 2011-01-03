@@ -2,21 +2,14 @@ package vitry.primitive;
 
 /**
  * Implement:
- *   - equals (adjust for Refs!)
+ *   - provide matchedBy
+ *   - (opt) override match
+ *   - (opt) provide constructors (Pattern...) and (Seq<Pattern>)
  */
-abstract public class Atom implements Value, Pattern
+public abstract class AbstractPattern implements Pattern
     {
-        public Pattern head() {
-            return this;
-        }
-
-        public Seq<Pattern> tail() {
-            return null;
-        }
-
         public boolean match(Object o) {
-            return this.equals(o);
-//            return o.equals(this) || this.equals(o);
+            return false;
         }
 
         public boolean match(Product p) {
@@ -41,9 +34,5 @@ abstract public class Atom implements Value, Pattern
 
         public boolean match(FunctionType p) {
             return false;
-        }
-
-        public boolean matchFor(Pattern p) {
-            return p.match(this);
         }
     }
