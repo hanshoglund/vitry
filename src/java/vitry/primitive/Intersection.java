@@ -10,7 +10,7 @@ public interface Intersection extends Value, CompoundPattern
 
 abstract class AbstractIntersection extends AbstractCompoundPattern implements Intersection
     {
-        public boolean match(Object a) {
+        public boolean match(Atom a) {
             for (Pattern x : this)
                 if (!x.match(a)) return false;
             return true;
@@ -26,6 +26,10 @@ abstract class AbstractIntersection extends AbstractCompoundPattern implements I
             for (Pattern x : this)
                 if (!x.match(a)) return false;
             return true;
+        }
+        
+        public boolean eqFor(Value p) {
+            return p.eq(this);
         }
         
         public boolean matchFor(Pattern p) {

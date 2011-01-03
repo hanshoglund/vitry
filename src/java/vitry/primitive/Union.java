@@ -10,7 +10,7 @@ public interface Union extends Value, CompoundPattern
 
 abstract class AbstractUnion extends AbstractCompoundPattern implements Union
     {
-        public boolean match(Object a) {
+        public boolean match(Atom a) {
             for (Pattern x : this)
                 if (x.match(a)) return true;
             return false;
@@ -20,6 +20,10 @@ abstract class AbstractUnion extends AbstractCompoundPattern implements Union
             for (Pattern x : this)
                 if (x.match(a)) return true;
             return false;
+        }
+        
+        public boolean eqFor(Value p) {
+            return p.eq(this);
         }
         
         public boolean matchFor(Pattern p) {

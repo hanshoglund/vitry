@@ -1,18 +1,14 @@
 package vitry.primitive;
 
 /**
- * Implements non-trivial matching semantics.
+ * Matching semantics.
  * 
- * Invariants:
- *   - !(x instanceof Pattern) -> x = y <=> x : y
- * 
- * Semantics:
  *   this.match(x)    <=> x : this
  *   this.matchFor(x) <=> this : x
  */
-public interface Pattern
+public interface Pattern extends Value
     {
-        boolean match(Object o);
+        boolean match(Atom o);
         
         boolean match(Product p);
 

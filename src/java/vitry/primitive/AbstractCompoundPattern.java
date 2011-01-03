@@ -2,8 +2,22 @@ package vitry.primitive;
 
 import java.util.Iterator;
 
-public abstract class AbstractCompoundPattern extends AbstractPattern implements CompoundPattern
-    {        
+
+public abstract class AbstractCompoundPattern extends AbstractPattern implements
+        CompoundPattern
+    {
+        public boolean eq(Set o) {
+            return this.match(o) && this.matchFor(o);
+        }
+
+        public boolean eq(Union o) {
+            return this.match(o) && this.matchFor(o);
+        }
+
+        public boolean eq(Intersection o) {
+            return this.match(o) && this.matchFor(o);
+        }
+
         public boolean match(Set a) {
             for (Pattern x : a)
                 if (!x.matchFor(this)) return false;
@@ -34,24 +48,15 @@ public abstract class AbstractCompoundPattern extends AbstractPattern implements
 
         public boolean equals(Object o) {
             if (o == this) return true;
-            
-            if (o instanceof Set) {
-                Set x = (Set) o;
-                return this.match(x) && this.matchFor(x);
-            }
-            if (o instanceof Union) {
-                Union x = (Union) o;
-                return this.match(x) && this.matchFor(x);
-            }
-            if (o instanceof Intersection) {
-                Intersection x = (Intersection) o;
-                return this.match(x) && this.matchFor(x);
-            }
+
+            if (o instanceof Set) return this.eq((Set) o);
+            if (o instanceof Union) return this.eq((Union) o);
+            if (o instanceof Intersection) return this.eq((Intersection) o);
             return false;
         }
-        
+
         // TODO hashCode
-        
+
         public Iterator<Pattern> iterator() {
             return new SeqIterator<Pattern>(this);
         }

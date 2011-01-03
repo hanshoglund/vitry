@@ -12,19 +12,19 @@ public class Unit extends Atom implements Product
             return instance;
         }
 
-        public Iterator<Pattern> iterator() {
-            throw new UnsupportedOperationException();
-        }
-
         public String toString() {
             return "()";
         }
-
+        
         public Pattern head() {
-            return null;
+            throw new AssertionError("Attempted to read head of ().");
         }
 
         public Seq<Pattern> tail() {
-            return null;
+            throw new AssertionError("Attempted sequencing over ().");
+        }
+
+        public Iterator<Pattern> iterator() {
+            return new SeqIterator<Pattern>(this);
         }
     }

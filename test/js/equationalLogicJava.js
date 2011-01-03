@@ -55,8 +55,9 @@ pads = [];
 
 
 test = function() {
-  failed = 0, succeeded = 0;
-
+  failed = 0, succeeded = 0;  
+  
+  print("true:");
   printEquals(a, a);
   printEquals(u, u);
   printEquals(P(a, b), P(a, b));
@@ -108,11 +109,16 @@ test = function() {
   
   printMatches(a, I(a, U(a, b)));
 
+  print();
+  print("true with rewriting semantics:");
+  printMatches(U(P(a,a),P(a,b)), P(a,U(a,b)));
+  printMatches(P(a,U(a,b)), U(P(a,a),P(a,b)));
+
   // printMatches(F(a,F(b,c)), F(a,U(F(b,c), F(b,a))));
 
 
   print();
-  print("false cases:");
+  print("false:");
 
   printMatches(a, b);
   printMatches(a, new P(a, b));

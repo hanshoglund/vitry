@@ -2,25 +2,18 @@ package vitry.primitive;
 
 /**
  * Implement:
- *   - equals (adjust for Refs!)
+ *   - Value.eq OR Object.equals
+ *   - Object.hashCode
  */
-abstract public class Atom implements Value, Pattern
+abstract public class Atom extends AbstractPattern
     {
-        public boolean match(Object o) {
+
+        public boolean eq(Atom o) {
             return this.equals(o);
-//            return o.equals(this) || this.equals(o);
         }
 
-        public boolean match(Product p) {
-            return false;
-        }
-
-        public boolean match(Union p) {
-            return false;
-        }
-
-        public boolean match(Set p) {
-            return false;
+        public boolean match(Atom o) {
+            return this.eq(o);
         }
 
         public boolean match(Intersection a) {
@@ -29,15 +22,20 @@ abstract public class Atom implements Value, Pattern
             return false;
         }
 
-        public boolean match(Type p) {
-            return false;
-        }
-
-        public boolean match(FunctionType p) {
-            return false;
+        public boolean eqFor(Value o) {
+            return o.eq(this);
         }
 
         public boolean matchFor(Pattern p) {
             return p.match(this);
+        }
+
+
+        // Java stuff
+
+        public boolean equals(Object o) {
+            if (o == this) return true;
+            if (o instanceof Atom) return eq((Atom) o);
+            return false;
         }
     }

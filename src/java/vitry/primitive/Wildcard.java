@@ -1,16 +1,21 @@
 package vitry.primitive;
 
-public class Wildcard extends AbstractPattern implements Value
+public class Wildcard extends Atom
     {
-        private Wildcard() {}
+        private Wildcard() {
+        }
 
         private static Wildcard instance = new Wildcard();
 
         public static Wildcard getInstance() {
             return instance;
         }
-        
-        public boolean match(Object o) {
+
+        public boolean eq(Atom o) {
+            return o == this;
+        }
+
+        public boolean match(Atom o) {
             return true;
         }
 
@@ -36,10 +41,6 @@ public class Wildcard extends AbstractPattern implements Value
 
         public boolean match(FunctionType p) {
             return true;
-        }
-
-        public boolean matchFor(Pattern p) {
-            return p == this;
         }
 
         public String toString() {
