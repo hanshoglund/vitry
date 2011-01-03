@@ -27,6 +27,6 @@ abstract class AbstractIntersection extends AbstractCompoundPattern implements I
         }
         
         public String toString() {
-            return Util.join(this, "", " & ", "");
+            return Util.join(this, "(", " & ", ")");
         }
     }

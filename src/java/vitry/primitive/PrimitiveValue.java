@@ -1,7 +1,7 @@
 package vitry.primitive;
 
 /**
- * Wrapper for host objects that need to implement Value or Pattern.
+ * Wrapper for host objects that need to implement Pattern.
  */
 public class PrimitiveValue extends Atom
     {
@@ -25,15 +25,15 @@ public class PrimitiveValue extends Atom
             return obj.toString();
         }
 
-        public static PrimitiveValue wrap(Object o) {
-            if (o instanceof PrimitiveValue) 
-                return (PrimitiveValue) o;
+        public static Pattern wrap(Object o) {
+            if (o instanceof Pattern) 
+                return (Pattern) o;
             else
                 return new PrimitiveValue(o);
         }
 
-        public static PrimitiveValue[] wrap(Object... values) {
-            PrimitiveValue[] values2 = new PrimitiveValue[values.length];
+        public static Pattern[] wrap(Object... values) {
+            Pattern[] values2 = new Pattern[values.length];
             for (int i = 0; i < values.length; ++i)
                 values2[i] = wrap(values[i]);
             return values2;

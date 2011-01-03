@@ -7,6 +7,9 @@
 
     
 - Type system
+    - Implement ->, ? and {} in Java
+    - Special types to match nat, int etc.
+
     - We define the equational logic of Vitry in terms of the following domains and functions:
         
         Term         := Atom 
