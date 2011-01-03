@@ -1,13 +1,10 @@
 package vitry.primitive.test;
 
+import static java.lang.System.out;
 import vitry.primitive.Pattern;
-import vitry.primitive.SimpleProduct;
 import vitry.primitive.SimpleUnion;
 import vitry.primitive.Symbol;
-import vitry.primitive.Unit;
 import vitry.primitive.Util;
-import vitry.primitive.Value;
-import static java.lang.System.out;
 
 /**
  *
