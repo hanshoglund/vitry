@@ -19,4 +19,12 @@ public class Unit extends Atom implements Product
         public String toString() {
             return "()";
         }
+
+        public Pattern head() {
+            return null;
+        }
+
+        public Seq<Pattern> tail() {
+            return null;
+        }
     }

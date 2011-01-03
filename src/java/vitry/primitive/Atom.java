@@ -6,14 +6,6 @@ package vitry.primitive;
  */
 abstract public class Atom implements Value, Pattern
     {
-        public Pattern head() {
-            return this;
-        }
-
-        public Seq<Pattern> tail() {
-            return null;
-        }
-
         public boolean match(Object o) {
             return this.equals(o);
 //            return o.equals(this) || this.equals(o);
@@ -31,7 +23,9 @@ abstract public class Atom implements Value, Pattern
             return false;
         }
 
-        public boolean match(Intersection p) {
+        public boolean match(Intersection a) {
+            for (Pattern x : a)
+                if (x.matchFor(this)) return true;
             return false;
         }
 

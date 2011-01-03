@@ -12,7 +12,8 @@ I = Util.intersection;
 
 s = Symbol.intern;
 u = Unit.getInstance();
-
+_ = Empty.getInstance();
+q = Wildcard.getInstance();
 
 a = s("a");
 b = s("b");
@@ -78,29 +79,34 @@ test = function() {
   printMatches(a, I(a, a));
   printMatches(a, I(a, U(a, b)));
   printMatches(c, U(a, U(b, c)));
-  // printMatches(c, U(a, wildcard));
+   printMatches(c, U(a, q));
   printMatches(a, S(a, b));
   printMatches(b, S(a, b));
   printMatches(a, S(a, S(b, c)));
-  // printEquals(S, S);
-  // printEquals(S(S), S(S));
+   printEquals(_, _);
+   printEquals(S(_), S(_));
   printMatches(a, U(a, P(b, S(c, d))))
   printMatches(P(b, d), U(a, P(b, S(c, d))))
   printMatches(P(a, b, c), P(a, S(a, b), U(b, U(c, d))))
   printMatches(P(a, b, c), P(a, S(a, b), U(b, S(c, d))))
-  // printEquals(wildcard, wildcard);
-  // printMatches(a, wildcard);
-  // printMatches(P(a, b), P(wildcard, wildcard));
-  // printMatches(P(a, P(a, a)), P(wildcard, P(wildcard, wildcard)));
+   printEquals(q, q);
+   printMatches(a, q);
+   printMatches(P(a, b), P(q, q));
+   printMatches(P(a, P(a, a)), P(q, P(q, q)));
   printMatches(U(a, b), U(a, b));
   printMatches(S(a, b), S(a, b));
   printMatches(U(a, b), U(a, U(b, c)));
   printMatches(U(a, b), U(a, U(b, c)));
-  printMatches(a, I(a, U(a, b)));
+  
+  printMatches(I(a, b), I(a, b));
   printMatches(I(a, a), I(a, U(a, b)));
   printMatches(I(a, b), I(a, U(a, b)));
   printMatches(I(a, b, c), I(a, b));
   printMatches(I(a, I(b, c)), I(a, b));
+  printMatches(I(S(a),S(b),S(c)), I(S(a),S(b)));
+  printMatches(I(S(a),I(S(b),S(c))), I(S(a),S(b)));
+  
+  printMatches(a, I(a, U(a, b)));
 
   // printMatches(F(a,F(b,c)), F(a,U(F(b,c), F(b,a))));
 

@@ -22,6 +22,12 @@ abstract class AbstractIntersection extends AbstractCompoundPattern implements I
             return true;
         }
         
+        public boolean match(Intersection a) {
+            for (Pattern x : this)
+                if (!x.match(a)) return false;
+            return true;
+        }
+        
         public boolean matchFor(Pattern p) {
             return p.match(this);
         }

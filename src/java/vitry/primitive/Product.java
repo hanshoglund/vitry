@@ -40,7 +40,9 @@ abstract class AbstractProduct extends AbstractPattern implements Product
             return false;
         }
 
-        public boolean match(Intersection p) {
+        public boolean match(Intersection a) {
+            for (Pattern x : a)
+                if (x.matchFor(this)) return true;
             return false;
         }
 
