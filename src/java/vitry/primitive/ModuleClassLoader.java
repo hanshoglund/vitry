@@ -26,7 +26,6 @@ import java.util.Map;
  *   
  */
 @SuppressWarnings("rawtypes")
-
 public class ModuleClassLoader extends ClassLoader
     {
 
@@ -52,43 +51,31 @@ public class ModuleClassLoader extends ClassLoader
         public synchronized Class<?> loadClass(String name, boolean resolve)
                 throws ClassNotFoundException {
 
-            boolean delegateEagerly   = moduleLoaderShouldDelegate(name);
+            boolean delegateEagerly = moduleLoaderShouldDelegate(name);
             ClassNotFoundException ex = null;
-            
-            Class<?> klass            = findLoadedClass(name);
+            Class<?> c = findLoadedClass(name);
 
-            if (klass == null)
-                klass = classes.get(name);
-            
-            if (klass == null && delegateEagerly)
+            if (c == null) c = classes.get(name);
+            if (c == null && delegateEagerly) {
                 try {
-                    klass = this.getParent().loadClass(name);
+                    c = this.getParent().loadClass(name);
                 } catch (ClassNotFoundException e) {
                     ex = e;
                 }
-            
-                if (klass == null)
+            }
+            if (c == null) {
                 try {
-                    klass = new DefiningClassLoader(getPathsArray()).loadClass(name, this);
+                    c = new DefiningClassLoader(getPathsArray()).loadClass(name, this);
                 } catch (ClassNotFoundException e) {
-                    // klass is null on failure
                 }
-                
-            if (klass == null)
-                if (delegateEagerly) {
-                    throw ex; 
-                }
-                else {
-                    klass = this.getParent().loadClass(name);
-                    // klass is non-null or an exception is thrown
-                }
-            assert 
-                (klass != null);
-            
-            if (resolve) 
-                resolveClass(klass);
-            
-            return klass;
+            }
+            if (c == null) {
+                if (delegateEagerly) throw ex;
+                else
+                    c = this.getParent().loadClass(name);
+            }
+            if (resolve) resolveClass(c);
+            return c;
         }
 
         public synchronized ModuleClassLoader unloadClass(String name) {
@@ -132,26 +119,26 @@ public class ModuleClassLoader extends ClassLoader
 
                 public Class<?> loadClass(String name) throws ClassNotFoundException {
 
-                    Class<?> klass = findLoadedClass(name);
+                    Class<?> c = findLoadedClass(name);
 
-                    if (klass == null) {
-                        if (definingLoaderShouldDelegate(name)) {
-                            klass = tempParent.loadClass(name);
-                        } else {
-                            klass = super.findClass(name);
-                        }
+                    if (c == null) {
+                        if (definingLoaderShouldDelegate(name)) 
+                            c = tempParent.loadClass(name);
+                        else
+                            c = super.findClass(name);
                     }
-                    return klass;
+                    return c;
                 }
 
                 public Class<?> loadClass(String name, ModuleClassLoader parent)
                         throws ClassNotFoundException {
-                    // Store parent temporarily for recursive invocations by the JVM
-                    // We must set it to null before return, to allow outdated instances 
-                    // of ModuleClassLoader to be recycled.
+                    // Store parent temporarily for recursive invocations by the JVM                    
                     tempParent = parent;
                     Class<?> c = loadClass(name);
                     tempParent.classes.put(name, c);
+
+                    // Set it to null before return, to allow outdated instances 
+                    // of ModuleClassLoader to be reclaimed.
                     tempParent = null;
                     return c;
                 }
@@ -175,15 +162,14 @@ public class ModuleClassLoader extends ClassLoader
             return false;
         }
 
-        
+
         static final String[]  MODULE_DELEGATES   = { "java.", "javax." };
 
         static final String[]  DEFINING_DELEGATES = { "java.", "javax.", "vitry." };
 
 
-        
         static final List<URL> JAVA_CLASS_PATH    = new LinkedList<URL>();
-        
+
         static {
             String cpStr = System.getProperty("java.class.path");
 
@@ -193,7 +179,7 @@ public class ModuleClassLoader extends ClassLoader
                 try {
                     JAVA_CLASS_PATH.add(new File(pathStr).toURI().toURL());
                 } catch (MalformedURLException e) {
-                    ; // Ignore invalid paths
+                    // Ignore invalid paths
                 }
             }
         }
