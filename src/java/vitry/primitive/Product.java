@@ -11,7 +11,7 @@ import java.util.Iterator;
  *     (we can not guarantee equality to be reflexive in this case)
  * 
  */
-public interface Product extends Value, Pattern, Seq<Pattern>
+public interface Product extends Pattern, Seq<Pattern>
     {
     }
 

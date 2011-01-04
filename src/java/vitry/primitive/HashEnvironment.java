@@ -2,10 +2,11 @@ package vitry.primitive;
 
 import java.util.HashMap;
 
+
 public class HashEnvironment<K, V> extends AbstractEnvironment<K, V>
     {
         public HashEnvironment() {
-            this.parent = AbstractEnvironment.<K,V>getEmptyEnv();
+            this.parent = AbstractEnvironment.<K, V> getEmptyEnv();
         }
 
         public HashEnvironment(Environment<K, V> parent) {
@@ -24,9 +25,9 @@ public class HashEnvironment<K, V> extends AbstractEnvironment<K, V>
             return bindings.get(key);
         }
 
-        private Environment<K, V>         parent;
+        private final Environment<K, V> parent;
 
-        private HashMap<K, V>     bindings         = new HashMap<K, V>();
+        private final HashMap<K, V>     bindings         = new HashMap<K, V>();
 
-        private static final long serialVersionUID = -6896184961023443064L;
+        private static final long       serialVersionUID = -6896184961023443064L;
     }

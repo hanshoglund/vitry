@@ -6,7 +6,7 @@ package vitry.primitive;
  *   - (opt) override match
  *   - (opt) provide constructors (Pattern...) and (Seq<Pattern>)
  */
-public abstract class AbstractPattern implements Value, Pattern
+public abstract class AbstractPattern implements Pattern
     {
         public boolean eq(Atom o) {
             return false;
@@ -29,6 +29,10 @@ public abstract class AbstractPattern implements Value, Pattern
         }
 
         public boolean eq(Type o) {
+            return false;
+        }
+
+        public boolean eq(Tagged o) {
             return false;
         }
 
@@ -57,6 +61,10 @@ public abstract class AbstractPattern implements Value, Pattern
         }
 
         public boolean match(Type p) {
+            return false;
+        }
+
+        public boolean match(Tagged p) {
             return false;
         }
 

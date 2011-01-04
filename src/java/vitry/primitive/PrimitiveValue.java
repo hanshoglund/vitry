@@ -5,7 +5,7 @@ package vitry.primitive;
  */
 public class PrimitiveValue extends Atom
     {
-        private Object obj;
+        final Object obj;
 
         private PrimitiveValue(Object obj) {
             this.obj = obj;
@@ -14,7 +14,7 @@ public class PrimitiveValue extends Atom
         public boolean equals(Object o) {
             if (o instanceof PrimitiveValue)
                 return obj.equals(((PrimitiveValue) o).obj);
-            return obj.equals(o);
+            return false;
         }
 
         public int hashCode() {

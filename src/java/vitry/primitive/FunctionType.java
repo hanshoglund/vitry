@@ -1,9 +1,6 @@
 package vitry.primitive;
 
-/**
- * The -> type.
- */
-public interface FunctionType extends Value, Pattern
+public interface FunctionType extends Pattern
     {
         Pattern codomain();
 
@@ -14,9 +11,9 @@ public interface FunctionType extends Value, Pattern
 class FunctionTypeImpl extends AbstractPattern implements FunctionType
     {
 
-        private Pattern codomain;
+        private final Pattern codomain;
 
-        private Pattern domain;
+        private final Pattern domain;
 
         public FunctionTypeImpl(Pattern codomain, Pattern domain) {
             this.codomain = codomain;
@@ -37,6 +34,7 @@ class FunctionTypeImpl extends AbstractPattern implements FunctionType
         }
 
         public boolean match(FunctionType p) {
+            // TODO actually match corresponding functions
             return p.codomain().matchFor(this.codomain)
                 && p.domain().matchFor(this.domain);
         }

@@ -10,6 +10,7 @@ S = Util.set;
 U = Util.union;
 I = Util.intersection;
 F = (function(a,b) new FunctionTypeImpl(a,b));
+T = Util.type;
 
 s = Symbol.intern;
 u = Unit.getInstance();

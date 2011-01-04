@@ -7,7 +7,7 @@ public class Empty extends AbstractCompoundPattern implements Value, Set
     {
         private Empty() {}
 
-        private static Empty instance = new Empty();
+        private static final Empty instance = new Empty();
 
         public static Empty getInstance() {
             return instance;

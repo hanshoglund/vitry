@@ -15,5 +15,5 @@ abstract public class Callable extends Atom
             this.env = env;
         }
 
-        Environment<Symbol, Object> env;
+        final Environment<Symbol, Object> env;
     }

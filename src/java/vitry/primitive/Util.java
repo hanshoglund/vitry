@@ -43,5 +43,9 @@ public class Util
         public static Intersection intersection(Object... objs) {
             return new SimpleIntersection(objs);
         }
+        
+        public static Type type(Pattern pattern, Object tag) {
+            return new TypeImpl(pattern, tag);
+        }
 
     }

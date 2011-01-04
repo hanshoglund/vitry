@@ -7,8 +7,9 @@
 
     
 - Type system
-    - Implement ->, ? and {} in Java
     - Special types to match nat, int etc.
+    - We will need some kind of distributive rewriting on Products/FunctionTypes vs. Unions
+      for the implementation of method overloading
 
     - We define the equational logic of Vitry in terms of the following domains and functions:
         
@@ -124,11 +125,6 @@
                     
             - Product and Union must have lazy counterparts (to support lazy lists)
                 - Solution: define a Sequence interface that extends Iterable : first() and rest()
-            
-        E.g.
-        LinkedPattern
-            matches(PatternMatcher v) <-dispatch right (pattern/matcher)
-                v.match(this)         <-overload left (matching)
             
             
         - OVERVIEW:

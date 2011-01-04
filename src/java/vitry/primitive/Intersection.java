@@ -3,7 +3,7 @@ package vitry.primitive;
 /**
  * The & type.
  */
-public interface Intersection extends Value, CompoundPattern
+public interface Intersection extends CompoundPattern
     {
     }
 

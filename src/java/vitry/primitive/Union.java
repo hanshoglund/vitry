@@ -3,7 +3,7 @@ package vitry.primitive;
 /**
  * The | type.
  */
-public interface Union extends Value, CompoundPattern
+public interface Union extends CompoundPattern
     {
     }
 

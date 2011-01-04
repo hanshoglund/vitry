@@ -5,19 +5,23 @@ package vitry.primitive;
  */
 public interface Value
     {
-        public boolean eq(Atom o);
+        boolean eq(Atom o);
 
-        public boolean eq(Product o);
+        boolean eq(Product o);
         
-        public boolean eq(Union o);
+        boolean eq(Union o);
 
-        public boolean eq(Set o);
+        boolean eq(Set o);
 
-        public boolean eq(Intersection o);
+        boolean eq(Intersection o);
 
-        public boolean eq(Type o);
+        boolean eq(Type o);
+        
+        boolean eq(Tagged o);
 
-        public boolean eq(FunctionType o);
+        boolean eq(FunctionType o);
 
-        public boolean eqFor(Value o);
+        boolean eqFor(Value o);
+        
+        boolean matchFor(Pattern p);
     }

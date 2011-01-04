@@ -3,7 +3,7 @@ package vitry.primitive;
 /**
  * The {} type.
  */
-public interface Set extends Value, CompoundPattern
+public interface Set extends CompoundPattern
     {
     }
 

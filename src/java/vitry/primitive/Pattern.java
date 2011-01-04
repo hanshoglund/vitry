@@ -9,7 +9,7 @@ package vitry.primitive;
 public interface Pattern extends Value
     {
         boolean match(Atom o);
-        
+
         boolean match(Product p);
 
         boolean match(Union p);
@@ -20,7 +20,7 @@ public interface Pattern extends Value
 
         boolean match(Type p);
 
+        boolean match(Tagged o);
+
         boolean match(FunctionType p);
-        
-        boolean matchFor(Pattern p);
     }

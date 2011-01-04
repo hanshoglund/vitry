@@ -619,13 +619,13 @@ class PartialApplication extends Function
             assert (newArity > 0);
         }
         
-        private int          newArity;
+        private final int          newArity;
 
-        private FunctionType newType;
+        private final FunctionType newType;
 
-        private Function     original;
+        private final Function     original;
 
-        private Object[]     args;
+        private final Object[]     args;
 
         public int arity() {
             return this.newArity;

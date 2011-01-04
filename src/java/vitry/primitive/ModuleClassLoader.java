@@ -38,7 +38,7 @@ public class ModuleClassLoader extends ClassLoader
             this.classes = classes;
         }
 
-        private List<URL>          paths;
+        private final List<URL>          paths;
 
         {
             paths = new LinkedList<URL>();
@@ -46,7 +46,7 @@ public class ModuleClassLoader extends ClassLoader
         }
 
 
-        private Map<String, Class> classes;
+        private final Map<String, Class> classes;
 
 
         public synchronized Class<?> loadClass(String name, boolean resolve)
