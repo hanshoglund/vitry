@@ -2,6 +2,9 @@ package vitry.primitive;
 
 import java.util.Iterator;
 
+/**
+ * The () value.
+ */
 public class Unit extends Atom implements Product
     {
         private Unit() {}
@@ -10,6 +13,10 @@ public class Unit extends Atom implements Product
 
         public static Unit getInstance() {
             return instance;
+        }
+
+        public boolean eq(Atom o) {
+            return o == this;
         }
 
         public String toString() {

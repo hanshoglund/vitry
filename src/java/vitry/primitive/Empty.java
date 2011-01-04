@@ -1,6 +1,8 @@
 package vitry.primitive;
 
-
+/**
+ * The {} value.
+ */
 public class Empty extends AbstractCompoundPattern implements Value, Set
     {
         private Empty() {}
@@ -11,11 +13,16 @@ public class Empty extends AbstractCompoundPattern implements Value, Set
             return instance;
         }
         
-        public boolean eqFor(Value o) {
+        public boolean eq(Set o) {
             return o == this;
+        }
+        
+        public boolean eqFor(Value o) {
+            return o.eq(this);
         }
 
         public boolean matchFor(Pattern p) {
+            // FIXME What if someone calls match passing this value directly
             return true;
         }
 

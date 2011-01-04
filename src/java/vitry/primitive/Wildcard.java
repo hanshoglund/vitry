@@ -1,5 +1,8 @@
 package vitry.primitive;
 
+/**
+ * The ? type.
+ */
 public class Wildcard extends Atom
     {
         private Wildcard() {

@@ -9,6 +9,7 @@ P = Util.product;
 S = Util.set;
 U = Util.union;
 I = Util.intersection;
+F = (function(a,b) new FunctionTypeImpl(a,b));
 
 s = Symbol.intern;
 u = Unit.getInstance();
@@ -24,16 +25,22 @@ d = s("d");
 // Tests
 printEquals = function(x, y) {
   var result = x.equals(y);
-  if (result) succeeded++; else failed++;
+  if (result)
+    succeeded++;
+  else
+    failed++;
   if (result && !y.equals(x))
     throw Error("Equality is not symmetric on " + x + " and " + y);
-  print(pad("" + x + " = " + y, 35) + "=> " + result);
+  print(pad("" + x + " = " + y, 45) + "=> " + result);
 }
 // Note argument order, mimicks the : expression
 printMatches = function(x, y) {
   var result = x.matchFor(y);
-  if (result) succeeded++; else failed++;
-  print(pad("" + x + " : " + y, 35) + "=> " + result);
+  if (result)
+    succeeded++;
+  else
+    failed++;
+  print(pad("" + x + " : " + y, 45) + "=> " + result);
 }
 
 function pad(str, len) {
@@ -53,10 +60,9 @@ function pad(str, len) {
 pads = [];
 
 
-
 test = function() {
-  failed = 0, succeeded = 0;  
-  
+  failed = 0, succeeded = 0;
+
   print("true:");
   printEquals(a, a);
   printEquals(u, u);
@@ -80,59 +86,83 @@ test = function() {
   printMatches(a, I(a, a));
   printMatches(a, I(a, U(a, b)));
   printMatches(c, U(a, U(b, c)));
-   printMatches(c, U(a, q));
+  printMatches(c, U(a, q));
   printMatches(a, S(a, b));
   printMatches(b, S(a, b));
   printMatches(a, S(a, S(b, c)));
-   printEquals(_, _);
-   printEquals(S(_), S(_));
+  printEquals(_, _);
+  printEquals(S(_), S(_));
   printMatches(a, U(a, P(b, S(c, d))))
   printMatches(P(b, d), U(a, P(b, S(c, d))))
   printMatches(P(a, b, c), P(a, S(a, b), U(b, U(c, d))))
   printMatches(P(a, b, c), P(a, S(a, b), U(b, S(c, d))))
-   printEquals(q, q);
-   printMatches(a, q);
-   printMatches(P(a, b), P(q, q));
-   printMatches(P(a, P(a, a)), P(q, P(q, q)));
+  printEquals(q, q);
+  printMatches(a, q);
+  printMatches(P(a, b), P(q, q));
+  printMatches(P(a, P(a, a)), P(q, P(q, q)));
   printMatches(U(a, b), U(a, b));
   printMatches(S(a, b), S(a, b));
   printMatches(U(a, b), U(a, U(b, c)));
   printMatches(U(a, b), U(a, U(b, c)));
   
+  printMatches(F(a,b), F(a,q));
+  printMatches(F(a,P(a,b)), F(a,U(P(a,b),P(c,d))));
+
   printMatches(I(a, b), I(a, b));
   printMatches(I(a, a), I(a, U(a, b)));
   printMatches(I(a, b), I(a, U(a, b)));
   printMatches(I(a, b, c), I(a, b));
   printMatches(I(a, I(b, c)), I(a, b));
-  printMatches(I(S(a),S(b),S(c)), I(S(a),S(b)));
-  printMatches(I(S(a),I(S(b),S(c))), I(S(a),S(b)));
-  
+  printMatches(I(S(a), S(b), S(c)), I(S(a), S(b)));
+  printMatches(I(S(a), I(S(b), S(c))), I(S(a), S(b)));
   printMatches(a, I(a, U(a, b)));
 
+
+
+  
   print();
   print("true with rewriting semantics:");
-  printMatches(U(P(a,a),P(a,b)), P(a,U(a,b)));
-  printMatches(P(a,U(a,b)), U(P(a,a),P(a,b)));
-
-  // printMatches(F(a,F(b,c)), F(a,U(F(b,c), F(b,a))));
+  printMatches(U(P(a, a), P(a, b)), P(a, U(a, b)));
+  printMatches(P(a, U(a, b)), U(P(a, a), P(a, b)));
+  printMatches(F(a,F(b,c)), F(a,U(F(b,c), F(b,a))));
 
 
   print();
   print("false:");
 
   printMatches(a, b);
-  printMatches(a, new P(a, b));
-  printEquals(new P(a, b), new P(b, a));
-  // printEquals(new S, new S(new S));
-  printEquals(new S(a, new S(b, c)), new S(new S(a, b), c));
-  printMatches(a, new I(a, b));
-  printMatches(new S(b, c), new S(a, new S(b, c)));
-  printMatches(new S(a, b, c), new S(a, new S(b, c)));
-  printMatches(new P(a, b, c), new P(a, new S(a, b), new S(b, new U(c, d))))
-  printMatches(new I(a, b), new I(a, b, c));
+  printMatches(a, P(a, b));
+  printEquals(P(a, b), P(b, a));
+  printEquals(_, S(_));
+  printEquals(S(a, S(b, c)), S(S(a, b), c));
+  printMatches(a, I(a, b));
+  printMatches(S(b, c), S(a, S(b, c)));
+  printMatches(S(a, b, c), S(a, S(b, c)));
+  printMatches(P(a, b, c), P(a, S(a, b), S(b, U(c, d))))
+  printMatches(I(a, b), I(a, b, c));
 
   print();
   print("" + failed + " failed, " + succeeded + " succeeded");
 }
 
+testSpecials = function(){
+  print();
+  print("special values:");
+
+  printEquals(u,u);
+  printEquals(_,_);
+  printEquals(q,q);
+  
+  printMatches(u,u);
+  printMatches(_,u);
+  printMatches(q,u);
+  printMatches(u,_);
+  printMatches(_,_);
+  printMatches(q,_);
+  printMatches(u,q);
+  printMatches(_,q);
+  printMatches(q,q);
+}
+
 test();
+testSpecials();

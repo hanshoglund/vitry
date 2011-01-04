@@ -30,14 +30,15 @@ class FunctionTypeImpl extends AbstractPattern implements FunctionType
         public Pattern domain() {
             return this.domain;
         }
-        
+
         public boolean eq(FunctionType o) {
-            return false;
-            // TODO Auto-generated method stub
+            return o.codomain().eqFor(this.codomain)
+                && o.domain().eqFor(this.domain);
         }
 
         public boolean match(FunctionType p) {
-            return false;
+            return p.codomain().matchFor(this.codomain)
+                && p.domain().matchFor(this.domain);
         }
 
         public boolean matchFor(Pattern p) {
@@ -46,5 +47,9 @@ class FunctionTypeImpl extends AbstractPattern implements FunctionType
 
         public boolean eqFor(Value o) {
             return o.eq(this);
+        }
+        
+        public String toString() {
+            return ("" + codomain + " -> " + domain);
         }
     }
