@@ -3,7 +3,7 @@ package vitry.primitive;
 /**
  * The {} value.
  */
-public class Empty extends AbstractCompoundPattern implements Value, Set
+public class Empty extends AbstractCompoundPattern implements Set
     {
         private Empty() {}
 

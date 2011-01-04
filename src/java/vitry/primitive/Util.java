@@ -28,6 +28,27 @@ public class Util
             return strb.toString();
         }
 
+//        public static Product list(Pattern... elem) {
+//            return list(elem, 0);
+//        }
+//
+//        public static Product list(final Pattern[] elem, final int offset) {
+//            if (offset >= elem.length) 
+//                return Unit.getInstance();
+//            else
+//                return new AbstractProduct()
+//                    {
+//                        public Pattern head() {
+//                            return elem[offset];
+//                        }
+//
+//                        public Seq<Pattern> tail() {
+//                            return list(elem, offset + 1);
+//                        }
+//                    };
+//        }
+
+
         public static Product product(Object... objs) {
             return new SimpleProduct(objs);
         }
@@ -43,7 +64,7 @@ public class Util
         public static Intersection intersection(Object... objs) {
             return new SimpleIntersection(objs);
         }
-        
+
         public static Type type(Pattern pattern, Object tag) {
             return new TypeImpl(pattern, tag);
         }

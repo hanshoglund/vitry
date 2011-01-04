@@ -13,6 +13,7 @@ F = (function(a,b) new FunctionTypeImpl(a,b));
 T = Util.type;
 
 s = Symbol.intern;
+l = (function(a) new ListType(a));
 u = Unit.getInstance();
 _ = Empty.getInstance();
 q = Wildcard.getInstance();
@@ -106,6 +107,12 @@ test = function() {
   printMatches(U(a, b), U(a, U(b, c)));
   printMatches(U(a, b), U(a, U(b, c)));
   
+  printMatches(u, l(a));
+  printMatches((P(a,P(a,u))), l(a));
+  printMatches((P(a,P(a,P(b,u)))), l(U(a,b)));
+  
+  
+  print();
   printMatches(F(a,b), F(a,q));
   printMatches(F(a,P(a,b)), F(a,U(P(a,b),P(c,d))));
 

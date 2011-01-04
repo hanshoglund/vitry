@@ -23,12 +23,6 @@ abstract public class Function extends Callable
 
         /** (inclusive) */
         public static int MAX_ARITY = 0xf;
-
-        public Function() {
-            // Cache these
-            this.arity = arity();
-            this.type = type();
-        }
         
         public Function(int arity, FunctionType type) {
             this.arity = arity;
@@ -599,11 +593,6 @@ abstract public class Function extends Callable
                     throw new IllegalArgumentException();
             }
         }
-
-        public abstract int arity();
-
-        public abstract FunctionType type();
-
     }
 
 
@@ -611,32 +600,20 @@ class PartialApplication extends Function
     {
 
         PartialApplication(Function original, Object... args) {
-            this.newArity = original.arity() - args.length;
-            this.newType = null;
+            super(original.arity - args.length, 
+                  null);
             this.original = original;
             this.args = args;
 
-            assert (newArity > 0);
+            assert (this.arity > 0);
         }
         
-        private final int          newArity;
+        final Function     original;
 
-        private final FunctionType newType;
-
-        private final Function     original;
-
-        private final Object[]     args;
-
-        public int arity() {
-            return this.newArity;
-        }
-
-        public FunctionType type() {
-            return this.newType;
-        }
+        final Object[]     args;
 
         public Object apply(Object a0) throws Exception {
-            switch (newArity) {
+            switch (arity) {
                 case 1:
                     return original.applyVariadic(Util.concat(args, a0));
                 default:
@@ -646,7 +623,7 @@ class PartialApplication extends Function
 
         public Object apply(Object a0, Object a1) throws Exception {
 
-            switch (newArity) {
+            switch (arity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1);
                 case 2:
@@ -658,7 +635,7 @@ class PartialApplication extends Function
 
         public Object apply(Object a0, Object a1, Object a2) throws Exception {
 
-            switch (newArity) {
+            switch (arity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2);
                 case 2:
@@ -672,7 +649,7 @@ class PartialApplication extends Function
 
         public Object apply(Object a0, Object a1, Object a2, Object a3) throws Exception {
 
-            switch (newArity) {
+            switch (arity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3);
                 case 2:
@@ -689,7 +666,7 @@ class PartialApplication extends Function
         public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4)
                 throws Exception {
 
-            switch (newArity) {
+            switch (arity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3, a4);
                 case 2:
@@ -708,7 +685,7 @@ class PartialApplication extends Function
         public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5)
                 throws Exception {
 
-            switch (newArity) {
+            switch (arity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3, a4, a5);
                 case 2:
@@ -729,7 +706,7 @@ class PartialApplication extends Function
         public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
                 Object a6) throws Exception {
 
-            switch (newArity) {
+            switch (arity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6);
                 case 2:
@@ -753,7 +730,7 @@ class PartialApplication extends Function
         public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
                 Object a6, Object a7) throws Exception {
 
-            switch (newArity) {
+            switch (arity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7);
                 case 2:
@@ -780,7 +757,7 @@ class PartialApplication extends Function
         public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
                 Object a6, Object a7, Object a8) throws Exception {
 
-            switch (newArity) {
+            switch (arity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8);
                 case 2:
@@ -808,7 +785,7 @@ class PartialApplication extends Function
         public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
                 Object a6, Object a7, Object a8, Object a9) throws Exception {
 
-            switch (newArity) {
+            switch (arity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8,
                             a9);
@@ -847,7 +824,7 @@ class PartialApplication extends Function
         public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
                 Object a6, Object a7, Object a8, Object a9, Object a10) throws Exception {
 
-            switch (newArity) {
+            switch (arity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10);
@@ -891,7 +868,7 @@ class PartialApplication extends Function
                 Object a6, Object a7, Object a8, Object a9, Object a10, Object a11)
                 throws Exception {
 
-            switch (newArity) {
+            switch (arity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10, a11);
@@ -938,7 +915,7 @@ class PartialApplication extends Function
                 Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12)
                 throws Exception {
 
-            switch (newArity) {
+            switch (arity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10, a11, a12);
@@ -988,7 +965,7 @@ class PartialApplication extends Function
                 Object a6, Object a7, Object a8, Object a9, Object a10, Object a11,
                 Object a12, Object a13) throws Exception {
 
-            switch (newArity) {
+            switch (arity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10, a11, a12, a13);
@@ -1041,7 +1018,7 @@ class PartialApplication extends Function
                 Object a6, Object a7, Object a8, Object a9, Object a10, Object a11,
                 Object a12, Object a13, Object a14) throws Exception {
 
-            switch (newArity) {
+            switch (arity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10, a11, a12, a13, a14);
@@ -1098,7 +1075,7 @@ class PartialApplication extends Function
                 Object a6, Object a7, Object a8, Object a9, Object a10, Object a11,
                 Object a12, Object a13, Object a14, Object a15) throws Exception {
 
-            switch (newArity) {
+            switch (arity) {
                 case 1:
                     return ((Function) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8,
                             a9, a10, a11, a12, a13, a14, a15);

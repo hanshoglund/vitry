@@ -31,6 +31,15 @@ abstract public class RestArgFunction extends Function
 
         // No need to override apply(Object)
 
+        /**
+     * @param arity
+     * @param type
+     */
+    public RestArgFunction(int arity, FunctionType type) {
+        super(arity, type);
+        // TODO Auto-generated constructor stub
+    }
+
         public Object apply(Object a0, Object a1) throws Exception {
 
             switch (arity) {
