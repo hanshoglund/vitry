@@ -37,18 +37,14 @@ public class Symbol extends Atom
 
         @Override
         public int hashCode() {
-            if (!hasCachedHashCode) {
+            if (cachedHashCode == 0)
                 cachedHashCode = this.name.hashCode();
-                hasCachedHashCode = true;
-            }
             return cachedHashCode;
         }
 
         private final String               name;
-
-        private boolean                    hasCachedHashCode = false;
-
         private int                        cachedHashCode;
+
 
         private static Map<String, Symbol> table             = new HashMap<String, Symbol>();
 

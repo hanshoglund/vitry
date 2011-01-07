@@ -1,5 +1,7 @@
 package vitry.primitive;
 
+import java.util.Iterator;
+
 
 public class SimpleIntersection extends AbstractIntersection
     {
@@ -20,6 +22,10 @@ public class SimpleIntersection extends AbstractIntersection
             this.offset = offset;
         }
         
+        public Iterator<Pattern> iterator() {
+            return new ArrayIterator<Pattern>(elements);
+        }
+
         public Pattern head() {
             return elements[offset];
         }

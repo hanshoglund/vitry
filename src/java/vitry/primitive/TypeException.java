@@ -1,6 +1,6 @@
 package vitry.primitive;
 
-public class TypeException extends RuntimeException
+public class TypeException extends Exception
     {
 
         public TypeException(Object tag, Value v) {

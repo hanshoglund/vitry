@@ -12,14 +12,6 @@ public class Tagged extends AbstractPattern
             this.tag = tag;
         }
 
-        //        public Value val() {
-        //            return val;
-        //        }
-        //
-        //        public Object tag() {
-        //            return tag;
-        //        }
-
         public boolean eq(Tagged o) {
             return (this == o) || (val.eqFor(o.val) && tag.equals(o.tag));
         }
@@ -39,4 +31,19 @@ public class Tagged extends AbstractPattern
         public String toString() {
             return val.toString();
         }
+        
+        
+        // Java stuff
+        
+        public boolean equals(Object o) {
+            if (o instanceof Tagged) return ((Tagged) o).eq(this);
+            return false;
+        }
+
+        public int hashCode() {
+            int hash = 0;
+            hash = Util.hash(hash, val);
+            hash = Util.hash(hash, tag);
+            return hash;
+        }        
     }

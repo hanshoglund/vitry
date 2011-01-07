@@ -28,45 +28,42 @@ public class Util
             return strb.toString();
         }
 
-//        public static Product list(Pattern... elem) {
-//            return list(elem, 0);
-//        }
-//
-//        public static Product list(final Pattern[] elem, final int offset) {
-//            if (offset >= elem.length) 
-//                return Unit.getInstance();
-//            else
-//                return new AbstractProduct()
-//                    {
-//                        public Pattern head() {
-//                            return elem[offset];
-//                        }
-//
-//                        public Seq<Pattern> tail() {
-//                            return list(elem, offset + 1);
-//                        }
-//                    };
-//        }
 
-
-        public static Product product(Object... objs) {
-            return new SimpleProduct(objs);
+        public static Product product(Object... elem) {
+            return new SimpleProduct(elem);
         }
 
-        public static Set set(Object... objs) {
-            return new SimpleSet(objs);
+        public static Set set(Object... elem) {
+            return new SimpleSet(elem);
         }
 
-        public static Union union(Object... objs) {
-            return new SimpleUnion(objs);
+        public static Union union(Object... elem) {
+            return new SimpleUnion(elem);
         }
 
-        public static Intersection intersection(Object... objs) {
-            return new SimpleIntersection(objs);
+        public static Intersection intersection(Object... elem) {
+            return new SimpleIntersection(elem);
         }
 
         public static Type type(Pattern pattern, Object tag) {
             return new TypeImpl(pattern, tag);
         }
+
+
+        public static int hash(int seed, int val) {
+            return (seed * 65050 + val) % 2044508069;
+        }
+
+        public static int hash(int seed, Object val) {
+            return hash(seed, val.hashCode());
+        }
+
+        public static int hash(int seed, Iterable<?> vals) {
+            int hash = seed;
+            for (Object v : vals)
+                hash = hash(hash, v);
+            return hash;
+        }
+
 
     }

@@ -5,18 +5,19 @@ package vitry.primitive;
  */
 public class Empty extends AbstractCompoundPattern implements Set
     {
-        private Empty() {}
+        private Empty() {
+        }
 
         private static final Empty instance = new Empty();
 
         public static Empty getInstance() {
             return instance;
         }
-        
+
         public boolean eq(Set o) {
             return o == this;
         }
-        
+
         public boolean eqFor(Value o) {
             return o.eq(this);
         }
@@ -38,5 +39,9 @@ public class Empty extends AbstractCompoundPattern implements Set
         public Seq<Pattern> tail() {
             return null;
             // TODO Auto-generated method stub
+        }
+
+        public int hashCode() {
+            return -1;
         }
     }

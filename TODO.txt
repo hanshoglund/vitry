@@ -102,66 +102,31 @@
             Float       <=> float
             Double      <=> double
 
-        - Other values implement the Pattern interface
-            - Pattern.matches represent : on types
-            - The compiler inserts a check to represent : on other objects
-              PROBLEM: What about types matching primitives (i.e. nat)
-                
-        - ISSUES:
-            - The Product/Set/Union/Intersection implementations of eq/matches are orthogonal to the problem
-              of tree representation (linked, fibbonaci heap, hashed, tries)
-                - Double dispatch on eq/matches.
-                - Goals: 
-                    - Allow for various implementations of eq/matches
-                    - Allow for various implementations of traversal
-                    - No call overhead for iteration
-                - Solution: 
-                    - Value :> (P|S|U|I) is an interface hierarchy
-                    - Implementations of PSUI derive from AbstractSeq (allowing for various
-                      sequencable representations).
-                    - equals is implemented on AbstractPattern
-                    - Pattern is implemented by a visitor, where the visitor is right side of 
-                      the : expression and the acceptor is the left (reverse?)
-                    
-            - Product and Union must have lazy counterparts (to support lazy lists)
-                - Solution: define a Sequence interface that extends Iterable : first() and rest()
-            
-            
-        - OVERVIEW:
-            interface Env (define, lookup, fetch)
-                class AbstractEnv
-        
-            interface Pattern (matches/accept)
-            interface Value
-                interface Atom
-                    abstract Callable
-                        class Function
-                interface Product <: Pattern
-                interface Set <: Pattern
-                interface Union <: Pattern
-                interface Intersection <: Pattern
-                interface Type <: Pattern
-                interface FunctionType <: Pattern
-                class Wildcard <: Pattern
-                class Reference
-            interface Seq (head, tail)
-                abstract AbstractPattern (equals, accept)
-                    abstract LinkedPattern
-                        class LinkedProduct <: Product
-                        class LinkedSet <: Product
-                        class LinkedUnion <: Union
-                        class LinkedIntersection <: Intersection
-                    abstract FibheapPattern
-                        [...]
-            PatternMatcher  (matchAtom, matchProduct, matchUnion...)
-                class ProductMatcher
-                class UnionVisitor
-                class IntersectionVisitor
-                class TypeVisitor
-                class FunctionTypeVisitor  
+
 
     
+- AST
 
+    expr   = module | fn |
+             Let | where | assign | left |
+             apply | type | if | match | loop | recur
+    
+    module = (name:str, exports:[str], imports:[str], members:[assign])
+    fn     = (params:[left], body:expr)
+    
+    let    = (assigns:[assign], body:expr)
+    where  = (assigns:[assign], body:expr)
+    assign = (left:left, right:expr)            -- the = sign
+    left   = expr
+    quote  = expr                               -- the ` sign
+    
+    apply  = (fn:expr, args:[expr])
+    type   = (value:expr, type:expr)            -- the : sign
+    if     = (cond:expr, alt1:expr, alt2:expr)
+    match  = (cond:[left], case:[expr], val:expr)
+    loop   = ([assign], body:expr)
+    recur  = (args:[expr])
+    do     = (assigns:[assign], [expr])
 
 
 - Compiler

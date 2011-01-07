@@ -1,5 +1,7 @@
 package vitry.primitive;
 
+import java.util.Iterator;
+
 
 public class SimpleSet extends AbstractSet
     {
@@ -18,6 +20,10 @@ public class SimpleSet extends AbstractSet
             if (offset >= elements.length) throw new IllegalArgumentException();
             this.elements = elements;
             this.offset = offset;
+        }
+        
+        public Iterator<Pattern> iterator() {
+            return new ArrayIterator<Pattern>(elements);
         }
         
         public Pattern head() {

@@ -50,12 +50,10 @@ abstract class AbstractProduct extends AbstractPattern implements Product
 
         public boolean match(Type p) {
             return false;
-            // TODO
         }
 
         public boolean match(FunctionType p) {
             return false;
-            // TODO
         }
 
         public boolean eqFor(Value p) {
@@ -74,8 +72,11 @@ abstract class AbstractProduct extends AbstractPattern implements Product
             if (o instanceof Product) return eq((Product) o);
             return false;
         }
+        
+        public int hashCode() {
+            return Util.hash(this.getClass().hashCode(), this);
+        }
 
-        // TODO hashCode
 
         public Iterator<Pattern> iterator() {
             return new SeqIterator<Pattern>(this);

@@ -10,8 +10,7 @@ public class Vitry
         public static final Function eq = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
-                    if (a instanceof Value) 
-                        return ((Value) a).eqFor((Pattern) b);
+                    if (a instanceof Value) return ((Value) a).eqFor((Pattern) b);
                     else
                         return PrimitiveValue.wrap(a).eqFor(PrimitiveValue.wrap(b));
                 }
@@ -94,14 +93,6 @@ public class Vitry
                         {
                             public Object apply(Object b) {
                                 return a;
-                            }
-
-                            public int arity() {
-                                return 1;
-                            }
-
-                            public FunctionType type() {
-                                return null;
                             }
                         };
                 }

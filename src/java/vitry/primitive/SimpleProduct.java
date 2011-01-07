@@ -1,5 +1,7 @@
 package vitry.primitive;
 
+import java.util.Iterator;
+
 
 public class SimpleProduct extends AbstractProduct
     {
@@ -19,7 +21,11 @@ public class SimpleProduct extends AbstractProduct
             this.elements = elements;
             this.offset = offset;
         }
-        
+
+        public Iterator<Pattern> iterator() {
+            return new ArrayIterator<Pattern>(elements);
+        }
+
         public Pattern head() {
             return elements[offset];
         }

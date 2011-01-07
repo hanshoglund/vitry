@@ -6,7 +6,7 @@ public interface Type extends Pattern
 
         Object tag();
         
-        Tagged applyTag(Value v);
+        Tagged applyTag(Value v) throws TypeException;
     }
 
 
@@ -28,7 +28,7 @@ class TypeImpl extends AbstractPattern implements Type
             return tag;
         }
 
-        public Tagged applyTag(Value v) {
+        public Tagged applyTag(Value v) throws TypeException {
             if (v.matchFor(pattern))
                 return new Tagged(v, tag);
             else 
@@ -58,4 +58,12 @@ class TypeImpl extends AbstractPattern implements Type
         public String toString() {
             return tag.toString();
         }
+
+        public int hashCode() {
+            int hash = this.getClass().hashCode();
+            hash = Util.hash(hash, pattern);
+            hash = Util.hash(hash, tag);
+            return hash;
+        }
+
     }

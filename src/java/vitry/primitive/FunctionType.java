@@ -29,14 +29,17 @@ class FunctionTypeImpl extends AbstractPattern implements FunctionType
         }
 
         public boolean eq(FunctionType o) {
-            return o.codomain().eqFor(this.codomain)
+            return (o == this) || o.codomain().eqFor(this.codomain)
                 && o.domain().eqFor(this.domain);
         }
 
+        public boolean match(Atom o) {
+            return (o instanceof Function) && ((Function) o).type.eq(this);
+        }
+
         public boolean match(FunctionType p) {
-            // TODO actually match corresponding functions
-            return p.codomain().matchFor(this.codomain)
-                && p.domain().matchFor(this.domain);
+            return (p == this) || (p.codomain().matchFor(this.codomain) 
+                        && p.domain().matchFor(this.domain));
         }
 
         public boolean matchFor(Pattern p) {
@@ -49,5 +52,12 @@ class FunctionTypeImpl extends AbstractPattern implements FunctionType
         
         public String toString() {
             return ("" + codomain + " -> " + domain);
+        }
+        
+        public int hashCode() {
+            int hash = this.getClass().hashCode();
+            hash = Util.hash(hash, codomain);
+            hash = Util.hash(hash, domain);
+            return hash;
         }
     }

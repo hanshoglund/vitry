@@ -36,16 +36,6 @@ public abstract class AbstractCompoundPattern extends AbstractPattern implements
             return false;
         }
 
-        public boolean match(Type p) {
-            return false;
-            // TODO
-        }
-
-        public boolean match(FunctionType p) {
-            return false;
-            // TODO
-        }
-
         public boolean equals(Object o) {
             if (o == this) return true;
 
@@ -55,7 +45,9 @@ public abstract class AbstractCompoundPattern extends AbstractPattern implements
             return false;
         }
 
-        // TODO hashCode
+        public int hashCode() {
+            return Util.hash(this.getClass().hashCode(), this);
+        }
 
         public Iterator<Pattern> iterator() {
             return new SeqIterator<Pattern>(this);
