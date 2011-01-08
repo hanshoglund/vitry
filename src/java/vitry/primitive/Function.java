@@ -1,10 +1,31 @@
+/*
+ * Vitry, copyright (C) Hans Hoglund 2011
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * See COPYING.txt for details.
+ */
 package vitry.primitive;
 
 /**
+ * Provides partial and extended application, subclasses override one of the
+ * apply methods.
+ * 
+ * 
  * Invariants:
  * 
- *   Whenever a Function f is called with N arguments:
- *   
+ *     Whenever a Function f is called with N arguments:
  *           if  N   < f.arity,  then a partial application is returned
  *           if  N   = f.arity,  then f(a1,a2..a[N]) is returned
  *           if  N+1 = f.arity,  then f(a1,a2..a[N-1]) f[N] is returned
@@ -17,7 +38,7 @@ package vitry.primitive;
  * 
  * @author hans
  */
-abstract public class Function extends Callable implements Applicable
+abstract public class Function extends Callable implements Apply
     {
 
         public static int MIN_ARITY = 1;
@@ -62,7 +83,7 @@ abstract public class Function extends Callable implements Applicable
             switch (arity) {
                 case 1:
                     // XXX catch ClassCastExceptions and try something else?
-                    return ((Applicable) this.apply(a0)).apply(a1);
+                    return ((Apply) this.apply(a0)).apply(a1);
                 case 2:
                     throw new NoImplementationException();
                 default:
@@ -74,9 +95,9 @@ abstract public class Function extends Callable implements Applicable
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2);
+                    return ((Apply) this.apply(a0)).apply(a1, a2);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2);
+                    return ((Apply) this.apply(a0, a1)).apply(a2);
                 case 3:
                     throw new NoImplementationException();
                 default:
@@ -88,11 +109,11 @@ abstract public class Function extends Callable implements Applicable
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3);
                 case 4:
                     throw new NoImplementationException();
                 default:
@@ -104,13 +125,13 @@ abstract public class Function extends Callable implements Applicable
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3, a4);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3, a4);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3, a4);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3, a4);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3, a4);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3, a4);
                 case 4:
-                    return ((Applicable) this.apply(a0, a1, a2, a3)).apply(a4);
+                    return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4);
                 case 5:
                     throw new NoImplementationException();
                 default:
@@ -122,15 +143,15 @@ abstract public class Function extends Callable implements Applicable
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3, a4, a5);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3, a4, a5);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3, a4, a5);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3, a4, a5);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3, a4, a5);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3, a4, a5);
                 case 4:
-                    return ((Applicable) this.apply(a0, a1, a2, a3)).apply(a4, a5);
+                    return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4, a5);
                 case 5:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4)).apply(a5);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4)).apply(a5);
                 case 6:
                     throw new NoImplementationException();
                 default:
@@ -142,17 +163,17 @@ abstract public class Function extends Callable implements Applicable
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6);
                 case 4:
-                    return ((Applicable) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6);
+                    return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6);
                 case 5:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6);
                 case 6:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6);
                 case 7:
                     throw new NoImplementationException();
                 default:
@@ -164,19 +185,19 @@ abstract public class Function extends Callable implements Applicable
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7);
                 case 4:
-                    return ((Applicable) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7);
+                    return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7);
                 case 5:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7);
                 case 6:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7);
                 case 7:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7);
                 case 8:
                     throw new NoImplementationException();
                 default:
@@ -188,21 +209,21 @@ abstract public class Function extends Callable implements Applicable
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8);
                 case 4:
-                    return ((Applicable) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8);
+                    return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8);
                 case 5:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8);
                 case 6:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8);
                 case 7:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8);
                 case 8:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8);
                 case 9:
                     throw new NoImplementationException();
                 default:
@@ -214,23 +235,23 @@ abstract public class Function extends Callable implements Applicable
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9);
                 case 4:
-                    return ((Applicable) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9);
+                    return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9);
                 case 5:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9);
                 case 6:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9);
                 case 7:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9);
                 case 8:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9);
                 case 9:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9);
                 case 10:
                     throw new NoImplementationException();
                 default:
@@ -242,25 +263,25 @@ abstract public class Function extends Callable implements Applicable
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9, a10);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9, a10);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9, a10);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9, a10);
                 case 4:
-                    return ((Applicable) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9, a10);
+                    return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9, a10);
                 case 5:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9, a10);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9, a10);
                 case 6:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9, a10);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9, a10);
                 case 7:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9, a10);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9, a10);
                 case 8:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9, a10);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9, a10);
                 case 9:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9, a10);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9, a10);
                 case 10:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10);
                 case 11:
                     throw new NoImplementationException();
                 default:
@@ -272,27 +293,27 @@ abstract public class Function extends Callable implements Applicable
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9, a10, a11);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9, a10, a11);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9, a10, a11);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9, a10, a11);
                 case 4:
-                    return ((Applicable) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9, a10, a11);
+                    return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9, a10, a11);
                 case 5:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9, a10, a11);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9, a10, a11);
                 case 6:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9, a10, a11);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9, a10, a11);
                 case 7:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9, a10, a11);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9, a10, a11);
                 case 8:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9, a10, a11);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9, a10, a11);
                 case 9:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9, a10, a11);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9, a10, a11);
                 case 10:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10, a11);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10, a11);
                 case 11:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)).apply(a11);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)).apply(a11);
                 case 12:
                     throw new NoImplementationException();
                 default:
@@ -304,29 +325,29 @@ abstract public class Function extends Callable implements Applicable
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9, a10, a11, a12);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9, a10, a11, a12);
                 case 4:
-                    return ((Applicable) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9, a10, a11, a12);
+                    return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9, a10, a11, a12);
                 case 5:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9, a10, a11, a12);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9, a10, a11, a12);
                 case 6:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9, a10, a11, a12);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9, a10, a11, a12);
                 case 7:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9, a10, a11, a12);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9, a10, a11, a12);
                 case 8:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9, a10, a11, a12);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9, a10, a11, a12);
                 case 9:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9, a10, a11, a12);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9, a10, a11, a12);
                 case 10:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10, a11, a12);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10, a11, a12);
                 case 11:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)).apply(a11, a12);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)).apply(a11, a12);
                 case 12:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)).apply(a12);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)).apply(a12);
                 case 13:
                     throw new NoImplementationException();
                 default:
@@ -338,31 +359,31 @@ abstract public class Function extends Callable implements Applicable
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9, a10, a12, a13);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9, a10, a12, a13);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13);
                 case 4:
-                    return ((Applicable) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9, a10, a11, a12, a13);
+                    return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9, a10, a11, a12, a13);
                 case 5:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9, a10, a11, a12, a13);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9, a10, a11, a12, a13);
                 case 6:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9, a10, a11, a12, a13);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9, a10, a11, a12, a13);
                 case 7:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9, a10, a11, a12, a13);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9, a10, a11, a12, a13);
                 case 8:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9, a10, a11, a12, a13);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9, a10, a11, a12, a13);
                 case 9:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9, a10, a11, a12, a13);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9, a10, a11, a12, a13);
                 case 10:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10, a11, a12, a13);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10, a11, a12, a13);
                 case 11:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)).apply(a11, a12, a13);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)).apply(a11, a12, a13);
                 case 12:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)).apply(a12, a13);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)).apply(a12, a13);
                 case 13:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)).apply(a13);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)).apply(a13);
                 case 14:
                     throw new NoImplementationException();
                 default:
@@ -374,33 +395,33 @@ abstract public class Function extends Callable implements Applicable
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
                 case 4:
-                    return ((Applicable) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
+                    return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
                 case 5:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
                 case 6:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9, a10, a11, a12, a13, a14);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9, a10, a11, a12, a13, a14);
                 case 7:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9, a10, a11, a12, a13, a14);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9, a10, a11, a12, a13, a14);
                 case 8:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9, a10, a11, a12, a13, a14);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9, a10, a11, a12, a13, a14);
                 case 9:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9, a10, a11, a12, a13, a14);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9, a10, a11, a12, a13, a14);
                 case 10:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10, a11, a12, a13, a14);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10, a11, a12, a13, a14);
                 case 11:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)).apply(a11, a12, a13, a14);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)).apply(a11, a12, a13, a14);
                 case 12:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)).apply(a12, a13, a14);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)).apply(a12, a13, a14);
                 case 13:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)).apply(a13, a14);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)).apply(a13, a14);
                 case 14:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13)).apply(a14);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13)).apply(a14);
 
                 case 15:
                     throw new NoImplementationException();
@@ -413,35 +434,35 @@ abstract public class Function extends Callable implements Applicable
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
                 case 4:
-                    return ((Applicable) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
+                    return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
                 case 5:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
                 case 6:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
                 case 7:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9, a10, a11, a12, a13, a14, a15);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9, a10, a11, a12, a13, a14, a15);
                 case 8:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9, a10, a11, a12, a13, a14, a15);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9, a10, a11, a12, a13, a14, a15);
                 case 9:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9, a10, a11, a12, a13, a14, a15);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9, a10, a11, a12, a13, a14, a15);
                 case 10:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10, a11, a12, a13, a14, a15);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10, a11, a12, a13, a14, a15);
                 case 11:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)).apply(a11, a12, a13, a14, a15);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)).apply(a11, a12, a13, a14, a15);
                 case 12:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)).apply(a12, a13, a14, a15);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)).apply(a12, a13, a14, a15);
                 case 13:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)).apply(a13, a14, a15);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)).apply(a13, a14, a15);
                 case 14:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13)).apply(a14, a15);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13)).apply(a14, a15);
                 case 15:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14)).apply(a15);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14)).apply(a15);
                 case 16:
                     throw new NoImplementationException();
                 default:
@@ -502,7 +523,7 @@ class PartialApplication extends Function
             assert (this.arity > 0);
         }
 
-        private final Applicable original;
+        private final Apply original;
 
         private final Object[] args;
 
@@ -519,7 +540,7 @@ class PartialApplication extends Function
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1);
+                    return ((Apply) this.apply(a0)).apply(a1);
                 case 2:
                     return original.applyVariadic(Util.concat(args, a0, a1));
                 default:
@@ -531,9 +552,9 @@ class PartialApplication extends Function
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2);
+                    return ((Apply) this.apply(a0)).apply(a1, a2);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2);
+                    return ((Apply) this.apply(a0, a1)).apply(a2);
                 case 3:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2));
                 default:
@@ -545,11 +566,11 @@ class PartialApplication extends Function
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3);
                 case 4:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2, a3));
                 default:
@@ -561,13 +582,13 @@ class PartialApplication extends Function
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3, a4);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3, a4);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3, a4);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3, a4);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3, a4);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3, a4);
                 case 4:
-                    return ((Applicable) this.apply(a0, a1, a2, a3)).apply(a4);
+                    return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4);
                 case 5:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2, a3, a4));
                 default:
@@ -579,15 +600,15 @@ class PartialApplication extends Function
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3, a4, a5);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3, a4, a5);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3, a4, a5);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3, a4, a5);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3, a4, a5);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3, a4, a5);
                 case 4:
-                    return ((Applicable) this.apply(a0, a1, a2, a3)).apply(a4, a5);
+                    return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4, a5);
                 case 5:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4)).apply(a5);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4)).apply(a5);
                 case 6:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2, a3, a4, a5));
                 default:
@@ -599,17 +620,17 @@ class PartialApplication extends Function
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6);
                 case 4:
-                    return ((Applicable) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6);
+                    return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6);
                 case 5:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6);
                 case 6:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6);
                 case 7:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2, a3, a4, a5, a6));
                 default:
@@ -621,19 +642,19 @@ class PartialApplication extends Function
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7);
                 case 4:
-                    return ((Applicable) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7);
+                    return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7);
                 case 5:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7);
                 case 6:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7);
                 case 7:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7);
                 case 8:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2, a3, a4, a5, a6, a7));
 
@@ -646,21 +667,21 @@ class PartialApplication extends Function
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8);
                 case 4:
-                    return ((Applicable) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8);
+                    return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8);
                 case 5:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8);
                 case 6:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8);
                 case 7:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8);
                 case 8:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8);
                 case 9:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8));
                 default:
@@ -672,23 +693,23 @@ class PartialApplication extends Function
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9);
                 case 4:
-                    return ((Applicable) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9);
+                    return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9);
                 case 5:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9);
                 case 6:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9);
                 case 7:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9);
                 case 8:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9);
                 case 9:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9);
                 case 10:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9));
                 default:
@@ -700,25 +721,25 @@ class PartialApplication extends Function
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9, a10);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9, a10);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9, a10);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9, a10);
                 case 4:
-                    return ((Applicable) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9, a10);
+                    return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9, a10);
                 case 5:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9, a10);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9, a10);
                 case 6:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9, a10);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9, a10);
                 case 7:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9, a10);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9, a10);
                 case 8:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9, a10);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9, a10);
                 case 9:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9, a10);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9, a10);
                 case 10:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10);
                 case 11:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10));
                 default:
@@ -730,27 +751,27 @@ class PartialApplication extends Function
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9, a10, a11);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9, a10, a11);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9, a10, a11);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9, a10, a11);
                 case 4:
-                    return ((Applicable) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9, a10, a11);
+                    return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9, a10, a11);
                 case 5:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9, a10, a11);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9, a10, a11);
                 case 6:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9, a10, a11);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9, a10, a11);
                 case 7:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9, a10, a11);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9, a10, a11);
                 case 8:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9, a10, a11);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9, a10, a11);
                 case 9:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9, a10, a11);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9, a10, a11);
                 case 10:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10, a11);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10, a11);
                 case 11:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)).apply(a11);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)).apply(a11);
                 case 12:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11));
                 default:
@@ -762,29 +783,29 @@ class PartialApplication extends Function
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9, a10, a11, a12);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9, a10, a11, a12);
                 case 4:
-                    return ((Applicable) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9, a10, a11, a12);
+                    return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9, a10, a11, a12);
                 case 5:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9, a10, a11, a12);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9, a10, a11, a12);
                 case 6:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9, a10, a11, a12);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9, a10, a11, a12);
                 case 7:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9, a10, a11, a12);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9, a10, a11, a12);
                 case 8:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9, a10, a11, a12);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9, a10, a11, a12);
                 case 9:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9, a10, a11, a12);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9, a10, a11, a12);
                 case 10:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10, a11, a12);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10, a11, a12);
                 case 11:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)).apply(a11, a12);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)).apply(a11, a12);
                 case 12:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)).apply(a12);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)).apply(a12);
                 case 13:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12));
                 default:
@@ -796,31 +817,31 @@ class PartialApplication extends Function
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9, a10, a12, a13);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9, a10, a12, a13);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13);
                 case 4:
-                    return ((Applicable) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9, a10, a11, a12, a13);
+                    return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9, a10, a11, a12, a13);
                 case 5:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9, a10, a11, a12, a13);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9, a10, a11, a12, a13);
                 case 6:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9, a10, a11, a12, a13);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9, a10, a11, a12, a13);
                 case 7:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9, a10, a11, a12, a13);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9, a10, a11, a12, a13);
                 case 8:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9, a10, a11, a12, a13);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9, a10, a11, a12, a13);
                 case 9:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9, a10, a11, a12, a13);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9, a10, a11, a12, a13);
                 case 10:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10, a11, a12, a13);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10, a11, a12, a13);
                 case 11:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)).apply(a11, a12, a13);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)).apply(a11, a12, a13);
                 case 12:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)).apply(a12, a13);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)).apply(a12, a13);
                 case 13:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)).apply(a13);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)).apply(a13);
                 case 14:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13));
                 default:
@@ -832,33 +853,33 @@ class PartialApplication extends Function
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
                 case 4:
-                    return ((Applicable) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
+                    return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
                 case 5:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
                 case 6:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9, a10, a11, a12, a13, a14);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9, a10, a11, a12, a13, a14);
                 case 7:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9, a10, a11, a12, a13, a14);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9, a10, a11, a12, a13, a14);
                 case 8:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9, a10, a11, a12, a13, a14);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9, a10, a11, a12, a13, a14);
                 case 9:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9, a10, a11, a12, a13, a14);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9, a10, a11, a12, a13, a14);
                 case 10:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10, a11, a12, a13, a14);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10, a11, a12, a13, a14);
                 case 11:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)).apply(a11, a12, a13, a14);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)).apply(a11, a12, a13, a14);
                 case 12:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)).apply(a12, a13, a14);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)).apply(a12, a13, a14);
                 case 13:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)).apply(a13, a14);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)).apply(a13, a14);
                 case 14:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13)).apply(a14);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13)).apply(a14);
 
                 case 15:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14));
@@ -871,35 +892,35 @@ class PartialApplication extends Function
 
             switch (arity) {
                 case 1:
-                    return ((Applicable) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
+                    return ((Apply) this.apply(a0)).apply(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
                 case 2:
-                    return ((Applicable) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
+                    return ((Apply) this.apply(a0, a1)).apply(a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
                 case 3:
-                    return ((Applicable) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
+                    return ((Apply) this.apply(a0, a1, a2)).apply(a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
                 case 4:
-                    return ((Applicable) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
+                    return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
                 case 5:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4)).apply(a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
                 case 6:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
                 case 7:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9, a10, a11, a12, a13, a14, a15);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7, a8, a9, a10, a11, a12, a13, a14, a15);
                 case 8:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9, a10, a11, a12, a13, a14, a15);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8, a9, a10, a11, a12, a13, a14, a15);
                 case 9:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9, a10, a11, a12, a13, a14, a15);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9, a10, a11, a12, a13, a14, a15);
                 case 10:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10, a11, a12, a13, a14, a15);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10, a11, a12, a13, a14, a15);
                 case 11:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)).apply(a11, a12, a13, a14, a15);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)).apply(a11, a12, a13, a14, a15);
                 case 12:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)).apply(a12, a13, a14, a15);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)).apply(a12, a13, a14, a15);
                 case 13:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)).apply(a13, a14, a15);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)).apply(a13, a14, a15);
                 case 14:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13)).apply(a14, a15);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13)).apply(a14, a15);
                 case 15:
-                    return ((Applicable) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14)).apply(a15);
+                    return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14)).apply(a15);
                 case 16:
                     return original.applyVariadic(Util.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15));
                 default:

@@ -15,6 +15,30 @@
 	<target name="dirs">
 		<mkdir dir="bin"/>
 	</target>
+	
+    <!-- =============================================================== -->
+    <target name="javadoc" description="Generate API documentation">
+
+        <mkdir dir="doc" />
+
+        <javadoc
+            access="protected"
+            author="true"
+            doctitle="StrictJava"
+            use="true"
+            version="true"
+            destdir="doc"
+
+            classpath="../Vitry/bin"
+            packagenames="vitry.primitive"
+            sourcepath="src/java">
+
+            <doclet name="com.visural.doclets.markdown.standard.Standard" path="${user.home}/Library/Java/MarkdownDoclet-3.0.jar"/>
+
+            <link href="http://hanshoglund.github.com/StrictJava/doc/api/index.html" />
+            <link href="http://java.sun.com/javase/6/docs/api/" />
+        </javadoc>
+    </target>
 
 	<!-- =============================================================== -->
 	<target name="jsc" description="">

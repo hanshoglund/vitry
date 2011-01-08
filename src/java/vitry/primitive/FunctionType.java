@@ -1,10 +1,28 @@
+/*
+ * Vitry, copyright (C) Hans Hoglund 2011
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * See COPYING.txt for details.
+ */
 package vitry.primitive;
 
 public interface FunctionType extends Pattern
     {
-        Pattern codomain();
+        Pattern co();
 
-        Pattern domain();
+        Pattern dom();
     }
 
 
@@ -20,17 +38,17 @@ class FunctionTypeImpl extends BasePattern implements FunctionType
             this.domain = domain;
         }
 
-        public Pattern codomain() {
+        public Pattern co() {
             return this.codomain;
         }
 
-        public Pattern domain() {
+        public Pattern dom() {
             return this.domain;
         }
 
         public boolean eq(FunctionType o) {
-            return (o == this) || o.codomain().eqFor(this.codomain)
-                && o.domain().eqFor(this.domain);
+            return (o == this) || o.co().eqFor(this.codomain)
+                && o.dom().eqFor(this.domain);
         }
 
         public boolean match(Atom o) {
@@ -39,8 +57,8 @@ class FunctionTypeImpl extends BasePattern implements FunctionType
         }
 
         public boolean match(FunctionType p) {
-            return (p == this) || (p.codomain().matchFor(this.codomain) 
-                        && p.domain().matchFor(this.domain));
+            return (p == this) || (p.co().matchFor(this.codomain) 
+                        && p.dom().matchFor(this.domain));
         }
 
         public boolean matchFor(Pattern p) {

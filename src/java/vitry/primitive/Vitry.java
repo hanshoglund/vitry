@@ -1,3 +1,21 @@
+/*
+ * Vitry, copyright (C) Hans Hoglund 2011
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * See COPYING.txt for details.
+ */
 package vitry.primitive;
 
 /**
@@ -7,7 +25,7 @@ package vitry.primitive;
  */
 public class Vitry
     {
-        public static final Applicable eq = new Function(2, null)
+        public static final Apply eq = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
                     if (a instanceof Value) return ((Value) a).eqFor((Pattern) b);
@@ -16,7 +34,7 @@ public class Vitry
                 }
             };
 
-        public static final Applicable match = new Function(2, null)
+        public static final Apply match = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
                     return ((Value) a).matchFor((Pattern) b);
@@ -68,7 +86,7 @@ public class Vitry
         // 
         // ; Functions
         // arity     : (->) -> nat
-        public static final Applicable arity = new Function(1, null)
+        public static final Apply arity = new Function(1, null)
             {
                 public Object apply(Object a) {
                     return ((Function) a).arity;
@@ -77,7 +95,7 @@ public class Vitry
 
         //
         // id        : (a -> a)
-        public static final Applicable id = new Function(1, null)
+        public static final Apply id = new Function(1, null)
             {
                 public Object apply(Object a) {
                     return a;
@@ -86,7 +104,7 @@ public class Vitry
 
 
         // const     : a -> (? -> a)
-        public static final Applicable const_ = new Function(1, null)
+        public static final Apply const_ = new Function(1, null)
             {
                 public Object apply(final Object a) {
                     return new Function(1, null)
@@ -115,7 +133,7 @@ public class Vitry
         //   
         // ; Arithmetic
         // (+)
-        public static final Applicable add = new Function(2, null)
+        public static final Apply add = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
                     return ((Number) a).intValue() + ((Number) b).intValue();
@@ -123,7 +141,7 @@ public class Vitry
             };
 
         // (-)
-        public static final Applicable sub = new Function(2, null)
+        public static final Apply sub = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
                     return ((Number) a).intValue() - ((Number) b).intValue();
@@ -131,7 +149,7 @@ public class Vitry
             };
 
         // (*)
-        public static final Applicable mul = new Function(2, null)
+        public static final Apply mul = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
                     return ((Number) a).intValue() * ((Number) b).intValue();
@@ -140,7 +158,7 @@ public class Vitry
 
 
         // (/)
-        public static final Applicable div = new Function(2, null)
+        public static final Apply div = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
                     return ((Number) a).intValue() / ((Number) b).intValue();
@@ -149,7 +167,7 @@ public class Vitry
 
 
         // (%)
-        public static final Applicable mod = new Function(2, null)
+        public static final Apply mod = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
                     return ((Number) a).intValue() % ((Number) b).intValue();

@@ -18,45 +18,34 @@
  */
 package vitry.primitive;
 
-/**
- * A nondestructible value.
- * 
- * Implement:
- * 
- *   - Value.eq OR Object.equals
- *   - Object.hashCode
- */
-abstract public class Atom extends BasePattern
+import java.util.HashMap;
+
+
+public class HashEnv<K, V> extends AbstractEnv<K, V>
     {
-
-        public boolean eq(Atom o) {
-            return this.equals(o);
+        public HashEnv() {
+            this.parent = AbstractEnv.<K, V> getEmptyEnv();
         }
 
-        public boolean match(Atom o) {
-            return this.eq(o);
+        public HashEnv(Env<K, V> parent) {
+            this.parent = parent;
         }
 
-        public boolean match(Intersection a) {
-            for (Pattern x : a)
-                if (x.matchFor(this)) return true;
-            return false;
+        public Env<K, V> parent() {
+            return parent;
         }
 
-        public boolean eqFor(Value o) {
-            return o.eq(this);
+        protected void store(K key, V val) {
+            bindings.put(key, val);
         }
 
-        public boolean matchFor(Pattern p) {
-            return p.match(this);
+        public V localValue(K key) {
+            return bindings.get(key);
         }
 
+        private final Env<K, V> parent;
 
-        // Java stuff
+        private final HashMap<K, V>     bindings         = new HashMap<K, V>();
 
-        public boolean equals(Object o) {
-            if (o == this) return true;
-            if (o instanceof Atom) return eq((Atom) o);
-            return false;
-        }
+        private static final long       serialVersionUID = -6896184961023443064L;
     }

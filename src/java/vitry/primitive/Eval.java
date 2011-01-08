@@ -19,33 +19,13 @@
 package vitry.primitive;
 
 /**
- * Provides equational semantics. 
- * 
- * Direct implementations can be used at the 
- * left side in equality and match operations, however they can not be used
- * on the right side of a match operation.
- * 
- * Most built-in values will also implement {@link Pattern}.
+ * Visits the eval operation.
  */
-public interface Value
+public interface Eval
     {
-        boolean eq(Atom o);
+        public Value eval(Pattern e) throws Exception;
         
-        boolean eq(Tagged o);
+        public Value eval(Pattern e, Module[] link) throws Exception;
 
-        boolean eq(Product o);
-        
-        boolean eq(Union o);
-
-        boolean eq(Set o);
-
-        boolean eq(Intersection o);
-
-        boolean eq(Type o);
-        
-        boolean eq(FunctionType o);
-
-        boolean eqFor(Value o);
-        
-        boolean matchFor(Pattern p);
+        public Value eval(Pattern e, ClassLoader link) throws Exception;
     }

@@ -1,8 +1,31 @@
+/*
+ * Vitry, copyright (C) Hans Hoglund 2011
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * See COPYING.txt for details.
+ */
 package vitry.primitive;
 
 import java.util.Iterator;
 
-
+/**
+ * Implements list types. This include products on the form (a,(a,...())) where
+ * a is any type.
+ * 
+ * Provides efficient matching on {@link AbstractList} instances.
+ */
 public class ListType extends AbstractUnion
     {
         private final Pattern type;

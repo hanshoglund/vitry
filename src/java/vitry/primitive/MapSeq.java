@@ -1,3 +1,21 @@
+/*
+ * Vitry, copyright (C) Hans Hoglund 2011
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * See COPYING.txt for details.
+ */
 package vitry.primitive;
 
 import java.util.Iterator;
@@ -8,12 +26,12 @@ import java.util.NoSuchElementException;
  */
 public class MapSeq<A,B> implements Seq<B>
     {
-        private final Function fn;
+        private final Apply fn;
         private final Seq<A> input;
 
-        public MapSeq(Function fn, Seq<A> input) {
+        public MapSeq(Apply fn, Seq<A> input) {
             Util.checkNull(fn, input);
-            Util.checkArity(fn, 1);
+//            Util.checkArity(fn, 1);
             this.fn = fn;
             this.input = input;
         }
@@ -42,11 +60,11 @@ public class MapSeq<A,B> implements Seq<B>
 
 class MapIterator<T> implements Iterator<T> {
         
-    private Applicable fn;
+    private Apply fn;
     private Iterator<?> input;
 
-    public MapIterator(Function fn, Iterator<?> input) {
-        Util.checkArity(fn, 1);
+    public MapIterator(Apply fn, Iterator<?> input) {
+//        Util.checkArity(fn, 1);
         this.fn = fn;
         this.input = input;
     }

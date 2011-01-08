@@ -1,3 +1,21 @@
+/*
+ * Vitry, copyright (C) Hans Hoglund 2011
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * See COPYING.txt for details.
+ */
 package vitry.primitive;
 
 import java.io.File;
@@ -11,18 +29,21 @@ import java.util.Map;
 
 
 /**
- * Invariants:
- * - The method loadClass(S) is referentially transparent.
- * - If this class delegates loading of a class C to another loader L,
- *   then for any type T that is referenced by C, this.loadClass == L.loadClass(). 
- *   
- * Operation:
- * - Loads classes from java.class.path and/or any specified path. 
+ * Loads classes from java.class.path and/or any specified path. 
+ *  
+ * 
  *   - Delegates base packages by default
  *   - Delegates other classes if it can not find them
- * - Loads each requested class separately along with its references
- * - unloadClass and reloadClass works like a persistent collection
- *   - Unloaded classes may be GC iff there are no external reference to them
+ *   - Loads each requested class separately along with its references
+ *   - {@link #unloadClass} and {@link #reloadClass} works like a persistent collection
+ *   - Unloaded classes may be reclaimed iff there are no external reference to them
+ * 
+ * Invariants:
+ * 
+ *   - The method loadClass(S) is referentially transparent.
+ *   - If this class delegates loading of a class C to another loader L,
+ *   then for any type T that is referenced by C, this.loadClass == L.loadClass(). 
+ *   
  *   
  */
 public class ModuleClassLoader extends ClassLoader

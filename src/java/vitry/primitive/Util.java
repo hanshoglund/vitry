@@ -1,3 +1,21 @@
+/*
+ * Vitry, copyright (C) Hans Hoglund 2011
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * See COPYING.txt for details.
+ */
 package vitry.primitive;
 
 
@@ -29,31 +47,6 @@ public class Util
         }
 
 
-        public static Product product(Object... elem) {
-            return new SimpleProduct(elem);
-        }
-
-        public static Set set(Object... elem) {
-            return new SimpleSet(elem);
-        }
-
-        public static Union union(Object... elem) {
-            return new SimpleUnion(elem);
-        }
-
-        public static Intersection intersection(Object... elem) {
-            return new SimpleIntersection(elem);
-        }
-
-        public static Type type(Pattern pattern, Object tag) {
-            return new TypeImpl(pattern, tag);
-        }
-
-        public static Type type(Pattern pattern, String symStr) {
-            return new TypeImpl(pattern, Symbol.intern(symStr));
-        }
-
-
         public static int hash(int seed, int val) {
             return (seed * 65050 + val) % 2044508069;
         }
@@ -81,6 +74,30 @@ public class Util
                     throw new IllegalArgumentException(
                             "Excepted non-null argument");
             }
+        }
+
+        public static Product product(Object... elem) {
+            return new SimpleProduct(elem);
+        }
+
+        public static Set set(Object... elem) {
+            return new SimpleSet(elem);
+        }
+
+        public static Union union(Object... elem) {
+            return new SimpleUnion(elem);
+        }
+
+        public static Intersection intersection(Object... elem) {
+            return new SimpleIntersection(elem);
+        }
+
+        public static Type type(Pattern pattern, Object tag) {
+            return new TypeImpl(pattern, tag);
+        }
+
+        public static Type type(Pattern pattern, String symStr) {
+            return new TypeImpl(pattern, Symbol.intern(symStr));
         }
 
     }

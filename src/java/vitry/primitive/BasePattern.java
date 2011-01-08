@@ -18,50 +18,79 @@
  */
 package vitry.primitive;
 
-public final class Wildcard extends Atom
+/**
+ * Base implementation that always return false.
+ * 
+ * Implement:
+ * 
+ *   - provide eqFor
+ *   - provide matchFor
+ *   - (opt) override match
+ *   - (opt) provide constructors (Pattern...) and (Seq<Pattern>)
+ */
+abstract class BasePattern implements Pattern
     {
-        private Wildcard() {
-        }
-
-        private static Wildcard instance = new Wildcard();
-
-        public static Wildcard getInstance() {
-            return instance;
-        }
-
         public boolean eq(Atom o) {
-            return o == this;
+            return false;
+        }
+
+        public boolean eq(Product o) {
+            return false;
+        }
+        
+        public boolean eq(Union o) {
+            return false;
+        }
+
+        public boolean eq(Set o) {
+            return false;
+        }
+
+        public boolean eq(Intersection o) {
+            return false;
+        }
+
+        public boolean eq(Type o) {
+            return false;
+        }
+
+        public boolean eq(Tagged o) {
+            return false;
+        }
+
+        public boolean eq(FunctionType o) {
+            return false;
         }
 
         public boolean match(Atom o) {
-            return true;
+            return false;
         }
 
         public boolean match(Product p) {
-            return true;
+            return false;
         }
 
         public boolean match(Union p) {
-            return true;
+            return false;
         }
 
         public boolean match(Set p) {
-            return true;
+            return false;
         }
 
         public boolean match(Intersection p) {
-            return true;
+            return false;
         }
 
         public boolean match(Type p) {
-            return true;
+            return false;
+        }
+
+        public boolean match(Tagged p) {
+            return false;
         }
 
         public boolean match(FunctionType p) {
-            return true;
-        }
-
-        public String toString() {
-            return "?";
+            return false;
         }
     }
