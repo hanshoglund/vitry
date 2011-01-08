@@ -1,5 +1,6 @@
 package vitry.primitive;
 
+
 /**
  * Wrapper for host objects that need to implement Pattern.
  */
@@ -12,8 +13,7 @@ public class PrimitiveValue extends Atom
         }
 
         public boolean equals(Object o) {
-            if (o instanceof PrimitiveValue)
-                return obj.equals(((PrimitiveValue) o).obj);
+            if (o instanceof PrimitiveValue) return obj.equals( ((PrimitiveValue) o).obj);
             return false;
         }
 
@@ -26,8 +26,7 @@ public class PrimitiveValue extends Atom
         }
 
         public static Pattern wrap(Object o) {
-            if (o instanceof Pattern) 
-                return (Pattern) o;
+            if (o instanceof Pattern) return (Pattern) o;
             else
                 return new PrimitiveValue(o);
         }
@@ -37,5 +36,13 @@ public class PrimitiveValue extends Atom
             for (int i = 0; i < values.length; ++i)
                 values2[i] = wrap(values[i]);
             return values2;
+        }
+
+        public static Seq<Pattern> wrap(Seq<Object> values) {
+            return new MapSeq<Object, Pattern>(new Function(1, null){
+                public Object apply(Object v) throws Exception {
+                    return wrap(v);
+                }
+            }, values);
         }
     }

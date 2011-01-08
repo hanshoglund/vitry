@@ -41,7 +41,7 @@ public class Tagged extends AbstractPattern
         }
 
         public int hashCode() {
-            int hash = 0;
+            int hash = this.getClass().hashCode();
             hash = Util.hash(hash, val);
             hash = Util.hash(hash, tag);
             return hash;

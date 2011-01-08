@@ -5,33 +5,55 @@ import java.util.Iterator;
 
 public class SimpleUnion extends AbstractUnion
     {
-        private Pattern[] elements;
-        private int offset;
+        Seq<Pattern> elements;
 
         public SimpleUnion(Object... elements) {
-            this(PrimitiveValue.wrap(elements));
-        }        
-        
+            this.elements = PrimitiveValue.wrap(new ArraySeq<Object>(elements));
+        }
+
         public SimpleUnion(Pattern... elements) {
-            this(elements, 0);
+            this.elements = new ArraySeq<Pattern>(elements);
         }
-        
-        private SimpleUnion(Pattern[] elements, int offset) {
-            if (offset >= elements.length) throw new IllegalArgumentException();
-            this.elements = elements;
-            this.offset = offset;
-        }
-        
+
         public Iterator<Pattern> iterator() {
-            return new ArrayIterator<Pattern>(elements);
+            return elements.iterator();
         }
-        
+
         public Pattern head() {
-            return elements[offset];
+            return elements.head();
         }
 
         public Seq<Pattern> tail() {
-            if (offset + 1 >= elements.length) return null;
-            return new SimpleUnion(elements, offset + 1);
+            return elements.tail();
         }
+
+        //        private Pattern[] elements;
+        //        private int offset;
+        //
+        //        public SimpleUnion(Object... elements) {
+        //            this(PrimitiveValue.wrap(elements));
+        //        }        
+        //        
+        //        public SimpleUnion(Pattern... elements) {
+        //            this(elements, 0);
+        //        }
+        //        
+        //        private SimpleUnion(Pattern[] elements, int offset) {
+        //            if (offset >= elements.length) throw new IllegalArgumentException();
+        //            this.elements = elements;
+        //            this.offset = offset;
+        //        }
+        //        
+        //        public Iterator<Pattern> iterator() {
+        //            return new ArrayIterator<Pattern>(elements);
+        //        }
+        //        
+        //        public Pattern head() {
+        //            return elements[offset];
+        //        }
+        //
+        //        public Seq<Pattern> tail() {
+        //            if (offset + 1 >= elements.length) return null;
+        //            return new SimpleUnion(elements, offset + 1);
+        //        }
     }

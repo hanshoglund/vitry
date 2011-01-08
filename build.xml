@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project name="Vitry" basedir="." default="debug">
+<project name="Vitry" basedir="." default="debug-js">
 
 	<property name="javascriptVersion" value="180"/>
 	<property name="src.js"            value="src/js"/>
@@ -9,6 +9,7 @@
 	<target name="clean" description="">
 		<delete dir="bin" failonerror="false" />
 	</target>
+	
 
 	<!-- =============================================================== -->
 	<target name="dirs">
@@ -76,6 +77,10 @@
 	<!-- =============================================================== -->
 	<target name="debug" depends="clean, dirs, javac, jsc" description="">
 	</target>
+
+	<!-- =============================================================== -->
+    <target name="debug-js" depends="jsc" description="">
+    </target>
 
 	<!-- =============================================================== -->
 	<target name="usage" description="">

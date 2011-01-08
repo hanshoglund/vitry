@@ -23,24 +23,22 @@ public class Empty extends AbstractCompoundPattern implements Set
         }
 
         public boolean matchFor(Pattern p) {
-            // FIXME What if someone calls match passing this value directly
-            return true;
+            if (p == this) return true;
+            return p.matchFor(this);
+        }
+
+        public Pattern head() {
+            throw new UnsupportedOperationException("{} has no members.");
+        }
+
+        public Seq<Pattern> tail() {
+            throw new UnsupportedOperationException("{} has no members.");
         }
 
         public String toString() {
             return "{}";
         }
-
-        public Pattern head() {
-            return null;
-            // TODO Auto-generated method stub
-        }
-
-        public Seq<Pattern> tail() {
-            return null;
-            // TODO Auto-generated method stub
-        }
-
+        
         public int hashCode() {
             return -1;
         }

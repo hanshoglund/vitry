@@ -25,7 +25,7 @@ public class ArrayIterator<T> implements Iterator<T>
 
         public T next() {
             try {
-                return array[next++];                
+                return array[next++];
             } catch (IndexOutOfBoundsException e) {
                 throw new NoSuchElementException();
             }

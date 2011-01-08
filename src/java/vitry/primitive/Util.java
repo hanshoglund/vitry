@@ -49,6 +49,10 @@ public class Util
             return new TypeImpl(pattern, tag);
         }
 
+        public static Type type(Pattern pattern, String symStr) {
+            return new TypeImpl(pattern, Symbol.intern(symStr));
+        }
+
 
         public static int hash(int seed, int val) {
             return (seed * 65050 + val) % 2044508069;
@@ -65,5 +69,18 @@ public class Util
             return hash;
         }
 
+        public static void checkArity(Function fn, int arity) {
+            if (fn.arity != arity)
+                throw new IllegalArgumentException(
+                            "Function must have arity " + arity);
+        }
+
+        public static void checkNull(Object... args) {
+            for (Object o : args) {
+                if (o == null)
+                    throw new IllegalArgumentException(
+                            "Excepted non-null argument");
+            }
+        }
 
     }
