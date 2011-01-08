@@ -1,16 +1,29 @@
 package vitry.primitive;
 
+
 public class AbstractList extends AbstractProduct
     {
-        public Pattern head() {
-            return null;
-        }
+        public final Pattern type;
         
-        public Pattern listTail() {
+        protected AbstractList(Pattern type) {
+            this.type = type;
+        }
+
+        public Pattern head() {
             return null;
         }
 
         public Seq<Pattern> tail() {
             return null;
+        }
+
+        public Product first() {
+            return null;
+            // TODO Auto-generated method stub
+        }
+
+        public Product second() {
+            return null;
+            // TODO Auto-generated method stub
         }
     }

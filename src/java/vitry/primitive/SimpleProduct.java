@@ -8,7 +8,7 @@ public class SimpleProduct extends AbstractProduct
         Seq<Pattern> elements;
 
         public SimpleProduct(Object... elements) {
-            this.elements = PrimitiveValue.wrap(new ArraySeq<Object>(elements));
+            this.elements = Native.wrap(new ArraySeq<Object>(elements));
         }
 
         public SimpleProduct(Pattern... elements) {

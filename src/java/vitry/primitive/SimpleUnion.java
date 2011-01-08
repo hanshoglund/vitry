@@ -8,7 +8,7 @@ public class SimpleUnion extends AbstractUnion
         Seq<Pattern> elements;
 
         public SimpleUnion(Object... elements) {
-            this.elements = PrimitiveValue.wrap(new ArraySeq<Object>(elements));
+            this.elements = Native.wrap(new ArraySeq<Object>(elements));
         }
 
         public SimpleUnion(Pattern... elements) {

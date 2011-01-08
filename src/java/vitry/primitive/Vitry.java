@@ -7,16 +7,16 @@ package vitry.primitive;
  */
 public class Vitry
     {
-        public static final Function eq = new Function(2, null)
+        public static final Applicable eq = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
                     if (a instanceof Value) return ((Value) a).eqFor((Pattern) b);
                     else
-                        return PrimitiveValue.wrap(a).eqFor(PrimitiveValue.wrap(b));
+                        return Native.wrap(a).eqFor(Native.wrap(b));
                 }
             };
 
-        public static final Function match = new Function(2, null)
+        public static final Applicable match = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
                     return ((Value) a).matchFor((Pattern) b);
@@ -68,7 +68,7 @@ public class Vitry
         // 
         // ; Functions
         // arity     : (->) -> nat
-        public static final Function arity = new Function(1, null)
+        public static final Applicable arity = new Function(1, null)
             {
                 public Object apply(Object a) {
                     return ((Function) a).arity;
@@ -77,7 +77,7 @@ public class Vitry
 
         //
         // id        : (a -> a)
-        public static final Function id = new Function(1, null)
+        public static final Applicable id = new Function(1, null)
             {
                 public Object apply(Object a) {
                     return a;
@@ -86,7 +86,7 @@ public class Vitry
 
 
         // const     : a -> (? -> a)
-        public static final Function const_ = new Function(1, null)
+        public static final Applicable const_ = new Function(1, null)
             {
                 public Object apply(final Object a) {
                     return new Function(1, null)
@@ -115,7 +115,7 @@ public class Vitry
         //   
         // ; Arithmetic
         // (+)
-        public static final Function add = new Function(2, null)
+        public static final Applicable add = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
                     return ((Number) a).intValue() + ((Number) b).intValue();
@@ -123,7 +123,7 @@ public class Vitry
             };
 
         // (-)
-        public static final Function sub = new Function(2, null)
+        public static final Applicable sub = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
                     return ((Number) a).intValue() - ((Number) b).intValue();
@@ -131,7 +131,7 @@ public class Vitry
             };
 
         // (*)
-        public static final Function mul = new Function(2, null)
+        public static final Applicable mul = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
                     return ((Number) a).intValue() * ((Number) b).intValue();
@@ -140,7 +140,7 @@ public class Vitry
 
 
         // (/)
-        public static final Function div = new Function(2, null)
+        public static final Applicable div = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
                     return ((Number) a).intValue() / ((Number) b).intValue();
@@ -149,7 +149,7 @@ public class Vitry
 
 
         // (%)
-        public static final Function mod = new Function(2, null)
+        public static final Applicable mod = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
                     return ((Number) a).intValue() % ((Number) b).intValue();

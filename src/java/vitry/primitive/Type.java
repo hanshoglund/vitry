@@ -10,7 +10,7 @@ public interface Type extends Pattern
     }
 
 
-class TypeImpl extends AbstractPattern implements Type
+class TypeImpl extends BasePattern implements Type
     {
         private final Pattern pattern;
         private final Object tag;

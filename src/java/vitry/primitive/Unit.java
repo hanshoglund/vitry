@@ -23,15 +23,23 @@ public class Unit extends Atom implements Product
             return "()";
         }
         
+        public Product first() {
+            throw new RuntimeException("() has no members");
+        }
+        
+        public Product second() {
+            throw new RuntimeException("() has no members");
+        }
+        
         public Pattern head() {
-            throw new AssertionError("Attempted to read head of ().");
+            throw new RuntimeException("Attempted to read head of ()");
         }
 
         public Seq<Pattern> tail() {
-            throw new AssertionError("Attempted sequencing over ().");
+            throw new RuntimeException("Attempted sequencing over ()");
         }
 
         public Iterator<Pattern> iterator() {
-            return new SeqIterator<Pattern>(this);
+            throw new RuntimeException("Attempted sequencing over ()");
         }
     }

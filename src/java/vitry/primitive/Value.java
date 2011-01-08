@@ -1,11 +1,11 @@
 package vitry.primitive;
 
-/**
- * Eq semantics.
- */
+
 public interface Value
     {
         boolean eq(Atom o);
+        
+        boolean eq(Tagged o);
 
         boolean eq(Product o);
         
@@ -17,8 +17,6 @@ public interface Value
 
         boolean eq(Type o);
         
-        boolean eq(Tagged o);
-
         boolean eq(FunctionType o);
 
         boolean eqFor(Value o);

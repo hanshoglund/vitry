@@ -1,19 +1,19 @@
-//package vitry.primitive;
-//
-///**
-// *
-// * @author hans
-// */
-//public class Interpreter implements Evaluator
-//    {
-//
-//        public Value eval(Expr e) throws Exception {
-//            return null;
-//            // TODO Auto-generated method stub
-//        }
-//
-//        public Value eval(Expr e, ClassLoader linkWith) throws Exception {
-//            return null;
-//            // TODO Auto-generated method stub
-//        }
-//    }
+package vitry.primitive;
+
+public class Interpreter implements Evaluator
+    {
+
+        public Value eval(Pattern e) throws Exception {
+            return null;
+        }
+
+        public Value eval(Pattern e, Module[] link) throws Exception {
+            return null;
+            // TODO Auto-generated method stub
+        }
+
+        public Value eval(Pattern e, ClassLoader link) throws Exception {
+            return null;
+            // TODO Auto-generated method stub
+        }
+    }

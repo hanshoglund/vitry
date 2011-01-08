@@ -25,15 +25,14 @@ import java.util.Map;
  *   - Unloaded classes may be GC iff there are no external reference to them
  *   
  */
-@SuppressWarnings("rawtypes")
 public class ModuleClassLoader extends ClassLoader
     {
 
         public ModuleClassLoader() {
-            this.classes = new HashMap<String, Class>();
+            this.classes = new HashMap<String, Class<?>>();
         }
 
-        private ModuleClassLoader(Map<String, Class> classes) {
+        public ModuleClassLoader(Map<String, Class<?>> classes) {
             this.classes = classes;
         }
 
@@ -45,7 +44,7 @@ public class ModuleClassLoader extends ClassLoader
         }
 
 
-        private final Map<String, Class> classes;
+        private final Map<String, Class<?>> classes;
 
 
         public synchronized Class<?> loadClass(String name, boolean resolve)
@@ -80,7 +79,7 @@ public class ModuleClassLoader extends ClassLoader
 
         public synchronized ModuleClassLoader unloadClass(String name) {
             // TODO use persistent collection
-            Map<String, Class> removed = new HashMap<String, Class>(classes);
+            Map<String, Class<?>> removed = new HashMap<String, Class<?>>(classes);
             removed.remove(name);
             return new ModuleClassLoader(removed);
         }

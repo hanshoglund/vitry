@@ -46,7 +46,7 @@ abstract public class AbstractEnvironment<K, V> implements Environment<K, V>
 
 
         public static boolean isEmptyEnv(Environment<?,?> env) {
-            return env == empty;
+            return env == getEmptyEnv();
         }
 
 

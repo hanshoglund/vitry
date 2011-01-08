@@ -9,6 +9,8 @@ package vitry.primitive;
 public interface Pattern extends Value
     {
         boolean match(Atom o);
+        
+        boolean match(Tagged o);
 
         boolean match(Product p);
 
@@ -19,8 +21,6 @@ public interface Pattern extends Value
         boolean match(Intersection p);
 
         boolean match(Type p);
-
-        boolean match(Tagged o);
 
         boolean match(FunctionType p);
     }

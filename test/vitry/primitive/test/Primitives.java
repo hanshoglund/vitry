@@ -1,8 +1,8 @@
 package vitry.primitive.test;
 
 import vitry.primitive.Pattern;
-import vitry.primitive.PrimitiveType;
-import vitry.primitive.PrimitiveValue;
+import vitry.primitive.NativeType;
+import vitry.primitive.Native;
 import vitry.primitive.Value;
 import static java.lang.System.out;
 
@@ -18,14 +18,14 @@ public class Primitives
          */
         public static void main(String[] args) {
 
-            Pattern num = PrimitiveType.forClass(Number.class);
-            Pattern str = PrimitiveType.forClass(String.class);
-            Pattern bool = PrimitiveType.forClass(Boolean.class);
+            Pattern num = NativeType.forClass(Number.class);
+            Pattern str = NativeType.forClass(String.class);
+            Pattern bool = NativeType.forClass(Boolean.class);
 
-            out.println(PrimitiveValue.wrap("test").matchFor(str));
-            out.println(PrimitiveValue.wrap(2).matchFor(num));
-            out.println(PrimitiveValue.wrap(2.0).matchFor(num));
-            out.println(PrimitiveValue.wrap(true).matchFor(bool));
+            out.println(Native.wrap("test").matchFor(str));
+            out.println(Native.wrap(2).matchFor(num));
+            out.println(Native.wrap(2.0).matchFor(num));
+            out.println(Native.wrap(true).matchFor(bool));
 
         }
 

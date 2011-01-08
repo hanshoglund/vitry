@@ -5,7 +5,7 @@ package vitry.primitive;
  *   - Value.eq OR Object.equals
  *   - Object.hashCode
  */
-abstract public class Atom extends AbstractPattern
+abstract public class Atom extends BasePattern
     {
 
         public boolean eq(Atom o) {

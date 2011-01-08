@@ -6,7 +6,7 @@ import java.util.NoSuchElementException;
 
 public class ArrayIterator<T> implements Iterator<T>
     {
-        private T[] array;
+        private final T[] array;
 
         private int next;
 

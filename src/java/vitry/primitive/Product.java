@@ -13,10 +13,12 @@ import java.util.Iterator;
  */
 public interface Product extends Pattern, Seq<Pattern>
     {
+        public Pattern first();
+        public Pattern second();
     }
 
 
-abstract class AbstractProduct extends AbstractPattern implements Product
+abstract class AbstractProduct extends BasePattern implements Product
     {
         public boolean eq(Product o) {
             Seq<Pattern> left = o;
@@ -48,14 +50,6 @@ abstract class AbstractProduct extends AbstractPattern implements Product
             return false;
         }
 
-        public boolean match(Type p) {
-            return false;
-        }
-
-        public boolean match(FunctionType p) {
-            return false;
-        }
-
         public boolean eqFor(Value p) {
             return p.eq(this);
         }
@@ -63,10 +57,21 @@ abstract class AbstractProduct extends AbstractPattern implements Product
         public boolean matchFor(Pattern p) {
             return p.match(this);
         }
+        
+        public Pattern first() {
+            return this.head();
+        }
+        
+        public Pattern second() {
+            Seq<Pattern> tail = this.tail();
+            return (tail == null ? null : tail.head());
+        }
+        
+        
 
         
         // Java stuff
-        
+
         public boolean equals(Object o) {
             if (o == this) return true;
             if (o instanceof Product) return eq((Product) o);

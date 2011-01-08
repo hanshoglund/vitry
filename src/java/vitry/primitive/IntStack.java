@@ -19,7 +19,7 @@ public class IntStack
             return values[top];
         }
 
-        void ensureCapacity(int size) {
+        private void ensureCapacity(int size) {
             if (values.length < size) {
                 int[] old = values;
                 values = new int[size];
@@ -27,7 +27,7 @@ public class IntStack
             }
         }
 
-        int[] values = new int[24];
+        private int[] values = new int[24];
 
-        int top = -1;
+        private int top = -1;
     }

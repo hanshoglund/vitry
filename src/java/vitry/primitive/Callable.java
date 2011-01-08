@@ -16,4 +16,8 @@ abstract public class Callable extends Atom
         }
 
         final Environment<Symbol, Object> env;
+
+        public Environment<Symbol, Object> getEnvironment() {
+            return env;
+        }
     }

@@ -5,10 +5,15 @@ import java.util.Iterator;
 
 public class ListType extends AbstractUnion
     {
-        final Pattern type;
+        private final Pattern type;
 
         public ListType(Pattern type) {
             this.type = type;
+        }
+
+        public boolean match(Product a) {
+            return (a instanceof AbstractList && ((AbstractList) a).type == this.type)
+                    || super.match(a);
         }
 
         public Pattern head() {
@@ -67,5 +72,15 @@ class Cons extends AbstractProduct
                         return null;
                     }
                 };
+        }
+
+        public Product first() {
+            return null;
+            // TODO Auto-generated method stub
+        }
+
+        public Product second() {
+            return null;
+            // TODO Auto-generated method stub
         }
     }

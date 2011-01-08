@@ -2,8 +2,8 @@ package vitry.primitive.test;
 
 import vitry.primitive.ListType;
 import vitry.primitive.Pattern;
-import vitry.primitive.PrimitiveType;
-import vitry.primitive.PrimitiveValue;
+import vitry.primitive.NativeType;
+import vitry.primitive.Native;
 import vitry.primitive.Symbol;
 import vitry.primitive.Unit;
 import vitry.primitive.Util;

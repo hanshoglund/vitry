@@ -9,7 +9,7 @@ public class SimpleIntersection extends AbstractIntersection
         Seq<Pattern> elements;
         
         public SimpleIntersection(Object... elements) {
-            this.elements = PrimitiveValue.wrap(new ArraySeq<Object>(elements));
+            this.elements = Native.wrap(new ArraySeq<Object>(elements));
         }
 
         public SimpleIntersection(Pattern... elements) {

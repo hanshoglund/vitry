@@ -3,7 +3,7 @@ package vitry.primitive;
 import java.util.Iterator;
 
 
-public abstract class AbstractCompoundPattern extends AbstractPattern implements
+abstract class AbstractCompoundPattern extends BasePattern implements
         CompoundPattern
     {
         public boolean eq(Set o) {

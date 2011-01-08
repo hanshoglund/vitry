@@ -8,7 +8,7 @@ public interface FunctionType extends Pattern
     }
 
 
-class FunctionTypeImpl extends AbstractPattern implements FunctionType
+class FunctionTypeImpl extends BasePattern implements FunctionType
     {
 
         private final Pattern codomain;
@@ -34,6 +34,7 @@ class FunctionTypeImpl extends AbstractPattern implements FunctionType
         }
 
         public boolean match(Atom o) {
+            // We have to cast, as Function is not in the main visitor
             return (o instanceof Function) && ((Function) o).type.eq(this);
         }
 

@@ -8,7 +8,7 @@ public class SimpleSet extends AbstractSet
         Seq<Pattern> elements;
 
         public SimpleSet(Object... elements) {
-            this.elements = PrimitiveValue.wrap(new ArraySeq<Object>(elements));
+            this.elements = Native.wrap(new ArraySeq<Object>(elements));
         }
 
         public SimpleSet(Pattern... elements) {

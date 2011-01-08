@@ -1,11 +1,11 @@
 package vitry.primitive;
 
 
-public class Tagged extends AbstractPattern
+public class Tagged extends BasePattern
     {
-        final Value  val;
+        public final Value  val;
 
-        final Object tag;
+        public final Object tag;
 
         public Tagged(Value val, Object tag) {
             this.val = val;

@@ -42,7 +42,7 @@ public class MapSeq<A,B> implements Seq<B>
 
 class MapIterator<T> implements Iterator<T> {
         
-    private Function fn;
+    private Applicable fn;
     private Iterator<?> input;
 
     public MapIterator(Function fn, Iterator<?> input) {

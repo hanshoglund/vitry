@@ -7,7 +7,7 @@ abstract public class Thunk extends Callable
             super(e);
         }
 
-        public Value get() {
+        public Value get() throws InvocationException {
             throw new InvocationException("Invalid thunk block.");
         }
     }
