@@ -59,7 +59,7 @@ class TypeImpl extends BasePattern implements Type
 
         public Value applyTag(Value v) throws TypeException {
             if (v.matchFor(pattern))
-                return new Tagged(v, tag);
+                return new Tagged<Object>(v, tag);
             else 
                 throw new TypeException(tag, v);
         }
@@ -68,7 +68,7 @@ class TypeImpl extends BasePattern implements Type
             return (this == o) || (pattern.eqFor(o.pattern()) && tag.equals(o.tag()));
         }
         
-        public boolean match(Tagged p) {
+        public boolean match(Tagged<?> p) {
             return p.tag == tag;
         }
 

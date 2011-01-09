@@ -19,24 +19,29 @@
 package vitry.primitive;
 
 /**
- * Implements values with type tags.
+ * Implements tagged values. These are used by the nominative type system,
+ * among other things.
+ * 
+ * Invarants:
+ * 
+ *   - TODO
  */
-public class Tagged extends BasePattern
+public class Tagged<T> extends BasePattern
     {
         public final Value  val;
 
-        public final Object tag;
+        public final T tag;
 
-        public Tagged(Value val, Object tag) {
+        public Tagged(Value val, T tag) {
             this.val = val;
             this.tag = tag;
         }
 
-        public boolean eq(Tagged o) {
+        public boolean eq(Tagged<?> o) {
             return (this == o) || (val.eqFor(o.val) && tag.equals(o.tag));
         }
         
-        public boolean match(Tagged o) {
+        public boolean match(Tagged<?> o) {
             return (this == o) || (val.eqFor(o.val) && tag.equals(o.tag));
         }
 
@@ -56,7 +61,7 @@ public class Tagged extends BasePattern
         // Java stuff
         
         public boolean equals(Object o) {
-            if (o instanceof Tagged) return ((Tagged) o).eq(this);
+            if (o instanceof Tagged) return ((Tagged<?>) o).eq(this);
             return false;
         }
 

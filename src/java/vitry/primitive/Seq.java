@@ -23,13 +23,14 @@ package vitry.primitive;
  * 
  *   - We implement this on all sequential language types, such as products,
  *     compound patterns and lists to support efficient conversions. 
- *   - May be lazy.
  *   - Extends iterable to support efficient traversal of non-linked structures.
- *   - The empty sequence is represented by `null`
+ *   - May be lazy.
+ *   - The empty sequence is represented by `null`. This contrast with lists,
+ *     where the empty object is represented by the unit type.
  * 
  * Implement:
  * 
- *   - head/tail, iterator or both
+ *   - head/tail and iterator
  *   
  */
 public interface Seq<T> extends Iterable<T>

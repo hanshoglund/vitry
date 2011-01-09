@@ -54,7 +54,7 @@ abstract class BasePattern implements Pattern
             return false;
         }
 
-        public boolean eq(Tagged o) {
+        public boolean eq(Tagged<?> o) {
             return false;
         }
 
@@ -86,7 +86,7 @@ abstract class BasePattern implements Pattern
             return false;
         }
 
-        public boolean match(Tagged p) {
+        public boolean match(Tagged<?> p) {
             return false;
         }
 

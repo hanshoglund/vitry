@@ -18,7 +18,17 @@
  */
 package vitry.primitive;
 
-public interface FunctionType extends Pattern
+import java.util.Iterator;
+
+/**
+ * Represents the function type.
+ * 
+ * This is a sequence of eventual nested types, i.e. if `this`
+ * represents `a -> b -> c`, then `this.head() == a` and `this.tail()` is a 
+ * FunctionType representing `b -> c`.
+ * 
+ */
+public interface FunctionType extends Pattern, Seq<Pattern>
     {
         Pattern co();
 
@@ -78,5 +88,20 @@ class FunctionTypeImpl extends BasePattern implements FunctionType
             hash = Util.hash(hash, codomain);
             hash = Util.hash(hash, domain);
             return hash;
+        }
+
+        public Pattern head() {
+            return codomain;
+        }
+
+        public Seq<Pattern> tail() {
+            if (domain instanceof Function)
+                return ((Function) domain).type;
+            else
+                return new SingleSeq<Pattern>(domain);
+        }
+
+        public Iterator<Pattern> iterator() {
+            return new SeqIterator<Pattern>(this);
         }
     }

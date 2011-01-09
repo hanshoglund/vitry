@@ -38,7 +38,7 @@ package vitry.primitive;
  * 
  * @author hans
  */
-abstract public class Function extends Callable implements Apply
+abstract public class Function extends Callable implements Apply, Dynamic
     {
 
         public static int MIN_ARITY = 1;

@@ -24,7 +24,7 @@ import java.util.NoSuchElementException;
 /**
  * Lazy map implementation.
  */
-public class MapSeq<A,B> implements Seq<B>
+public class MapSeq<A,B> implements Seq<B>, Dynamic
     {
         private final Apply fn;
         private final Seq<A> input;

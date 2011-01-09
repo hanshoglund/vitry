@@ -32,7 +32,7 @@ public interface Pattern extends Value
     {
         boolean match(Atom o);
         
-        boolean match(Tagged o);
+        boolean match(Tagged<?> o);
 
         boolean match(Product p);
 

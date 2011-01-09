@@ -40,7 +40,6 @@ public class ArraySeq<T> implements Seq<T>
         }
         
         private ArraySeq(T[] elements, int offset, int dummy) {
-            if (offset >= elements.length) throw new IllegalArgumentException();
             this.elements = elements;
             this.offset = offset;
         }

@@ -6,7 +6,7 @@ import java.util.Stack;
 import java.util.List;
 import java.util.ArrayList;
 
-public class VitryLexer extends Lexer {
+class VitryLexer extends Lexer {
     public static final int TypeDecl=23;
     public static final int Ops=21;
     public static final int MemberDecl=26;

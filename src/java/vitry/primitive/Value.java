@@ -21,8 +21,8 @@ package vitry.primitive;
 /**
  * Provides equational semantics. 
  * 
- * Direct implementations can be used at the 
- * left side in equality and match operations, however they can not be used
+ * Direct implementations can be used at both side in equality operations and
+ * on the left side in match operations, however, they can not be used
  * on the right side of a match operation.
  * 
  * Most built-in values will also implement {@link Pattern}.
@@ -31,7 +31,7 @@ public interface Value
     {
         boolean eq(Atom o);
         
-        boolean eq(Tagged o);
+        boolean eq(Tagged<?> o);
 
         boolean eq(Product o);
         

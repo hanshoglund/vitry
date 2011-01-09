@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 import org.antlr.runtime.tree.*;
 
-public class VitryParser extends Parser {
+class VitryParser extends Parser {
     public static final String[] tokenNames = new String[] {
         "<invalid>", "<EOR>", "<DOWN>", "<UP>", "Par", "Bra", "Ang", "Module", "Fn", "Let", "Where", "Assign", "Left", "Quote", "Apply", "Type", "If", "Match", "Loop", "Recur", "Do", "Ops", "Dummy", "TypeDecl", "ImplicitDecl", "FnDecl", "MemberDecl", "Symbol", "Op", "Natural", "Float", "Complex", "String", "Exponent", "Whitespace", "EscapeSeq", "HexDigit", "UnicodeEsc", "OctalEsc", "':'", "'('", "')'", "'['", "']'", "'{'", "'}'", "'`'", "'fn'", "'let'", "'loop'", "'if'", "'else'", "'match'", "'='", "'recur'", "'module'", "'import'", "'type'", "'impicit'", "'->'", "'.'"
     };
