@@ -2,10 +2,10 @@ package vitry.primitive.test;
 
 import static java.lang.System.out;
 
-import vitry.primitive.Symbol;
-import vitry.primitive.Value;
-import static vitry.primitive.Vitry.*;
-import static vitry.primitive.Util.*;
+import vitry.runtime.Symbol;
+import vitry.runtime.Value;
+import static vitry.runtime.Util.*;
+import static vitry.runtime.Vitry.*;
 
 /**
  *

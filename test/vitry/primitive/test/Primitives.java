@@ -1,9 +1,9 @@
 package vitry.primitive.test;
 
-import vitry.primitive.Pattern;
-import vitry.primitive.NativeType;
-import vitry.primitive.Native;
-import vitry.primitive.Value;
+import vitry.runtime.Native;
+import vitry.runtime.NativeType;
+import vitry.runtime.Pattern;
+import vitry.runtime.Value;
 import static java.lang.System.out;
 
 

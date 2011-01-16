@@ -1,11 +1,11 @@
 package vitry.primitive.test;
 
 import static java.lang.System.out;
-import vitry.primitive.Pattern;
-import vitry.primitive.ArraySeq;
-import vitry.primitive.SimpleUnion;
-import vitry.primitive.Symbol;
-import vitry.primitive.Util;
+import vitry.runtime.ArraySeq;
+import vitry.runtime.Pattern;
+import vitry.runtime.SimpleUnion;
+import vitry.runtime.Symbol;
+import vitry.runtime.Util;
 
 /**
  *
