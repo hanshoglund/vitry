@@ -80,4 +80,9 @@ public class NativeType extends BasePattern implements Set
         public Iterator<Pattern> iterator() {
             throw new UnsupportedOperationException("Can not enumerate a primitive type");
         }
+
+        public Seq<Pattern> cons(Pattern head) {
+            return null;
+            // TODO Auto-generated method stub
+        }
     }

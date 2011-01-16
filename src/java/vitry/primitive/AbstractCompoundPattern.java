@@ -21,8 +21,7 @@ package vitry.primitive;
 import java.util.Iterator;
 
 
-abstract class AbstractCompoundPattern extends BasePattern
-    implements Seq<Pattern>
+abstract class AbstractCompoundPattern extends BasePattern implements Seq<Pattern>
     {
         public boolean eq(Set o) {
             return this.match(o) && this.matchFor(o);
@@ -52,6 +51,10 @@ abstract class AbstractCompoundPattern extends BasePattern
             for (Pattern x : a)
                 if (x.matchFor(this)) return true;
             return false;
+        }
+        
+        public Seq<Pattern> cons(Pattern head) {
+            return new Cons<Pattern>(head, this);
         }
 
         public boolean equals(Object o) {

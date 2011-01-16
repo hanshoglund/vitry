@@ -22,12 +22,17 @@ import java.util.Iterator;
 
 
 /**
- * Compound values.
+ * A compound value, representing tuples as well as product types.
+ * 
+ * We disallow nullary and unary instances, as () and (x)
+ * are represented by the Unit class and the class of x respectively. Thus
+ * instances of this interface represent n-tuples where n < 1.
+ * 
+ * TODO should Unit extend Product?
  * 
  * Invariants:
- * 
- *   - For any product p, p.tail() != null 
- *     (we can not guarantee equality to be reflexive in this case)
+ *   - p.first() != null
+ *   - p.second() != null
  * 
  */
 public interface Product extends Pattern, Seq<Pattern>
@@ -85,7 +90,6 @@ abstract class AbstractProduct extends BasePattern implements Product
             Seq<Pattern> tail = this.tail();
             return (tail == null ? null : tail.head());
         }
-        
         
 
         

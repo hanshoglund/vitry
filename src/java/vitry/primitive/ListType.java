@@ -20,6 +20,8 @@ package vitry.primitive;
 
 import java.util.Iterator;
 
+import vitry.primitive.Vitry.Unit;
+
 /**
  * Implements list types. This include products on the form (a,(a,...())) where
  * a is any type.
@@ -40,11 +42,11 @@ public class ListType extends AbstractUnion
         }
 
         public Pattern head() {
-            return Unit.getInstance();
+            return Vitry.unit;
         }
 
         public Seq<Pattern> tail() {
-            // TODO implement a proper lazy seq
+            // TODO implement a proper lazy pair
             return new Seq<Pattern>()
                 {
 
@@ -53,11 +55,16 @@ public class ListType extends AbstractUnion
                     }
 
                     public Pattern head() {
-                        return new Cons(type);
+                        return new ConsType(type);
                     }
 
                     public Seq<Pattern> tail() {
                         return null;
+                    }
+
+                    public Seq<Pattern> cons(Pattern head) {
+                        return null;
+                        // TODO Auto-generated method stub
                     }
                 };
         }
@@ -65,14 +72,19 @@ public class ListType extends AbstractUnion
         public String toString() {
             return "[" + type + "]";
         }
+
+        public Seq<Pattern> cons(Pattern head) {
+            return null;
+            // TODO Auto-generated method stub
+        }
     }
 
 
-class Cons extends AbstractProduct
+class ConsType extends AbstractProduct
     {
         final Pattern type;
 
-        public Cons(Pattern type) {
+        public ConsType(Pattern type) {
             this.type = type;
         }
 
@@ -94,6 +106,11 @@ class Cons extends AbstractProduct
                     public Seq<Pattern> tail() {
                         return null;
                     }
+
+                    public Seq<Pattern> cons(Pattern head) {
+                        return null;
+                        // TODO Auto-generated method stub
+                    }
                 };
         }
 
@@ -103,6 +120,11 @@ class Cons extends AbstractProduct
         }
 
         public Product second() {
+            return null;
+            // TODO Auto-generated method stub
+        }
+
+        public Seq<Pattern> cons(Pattern head) {
             return null;
             // TODO Auto-generated method stub
         }

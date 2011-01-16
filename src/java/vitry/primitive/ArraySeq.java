@@ -25,7 +25,7 @@ import java.util.Iterator;
  */
 public class ArraySeq<T> implements Seq<T>
     {
-        private final T[] elements;
+        private final T[] array;
 
         private final int offset;
 
@@ -35,27 +35,32 @@ public class ArraySeq<T> implements Seq<T>
 
         public ArraySeq(T[] elements, int offset) {
             if (offset >= elements.length) throw new IllegalArgumentException();
-            this.elements = elements;
+            this.array = elements;
             this.offset = offset;
         }
         
         private ArraySeq(T[] elements, int offset, int dummy) {
-            this.elements = elements;
+            this.array = elements;
             this.offset = offset;
         }
 
         public Iterator<T> iterator() {
-            return new ArrayIterator<T>(elements);
+            return new ArrayIterator<T>(array, offset);
         }
 
         public T head() {
-            return elements[offset];
+            return array[offset];
         }
 
         public Seq<T> tail() {
-            if (offset + 1 >= elements.length) return null;
-            return new ArraySeq<T>(elements, offset + 1, NO_CHECK);
+            if (offset + 1 >= array.length) return null;
+            return new ArraySeq<T>(array, offset + 1, NO_CHECK);
         }
         
         private static final int NO_CHECK = 0;
+
+        public Seq<T> cons(T head) {
+            return null;
+            // TODO Auto-generated method stub
+        }
     }

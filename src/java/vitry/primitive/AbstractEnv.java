@@ -19,31 +19,30 @@
 package vitry.primitive;
 
 /**
- * Base implementation of Envt. Provides the lookup operation.
+ * Base implementation of Environment.
  * 
  * Implement:
- * 
- *   - Provide store/fetch
+ *   - Provide store/fetch/isPersistent
  *   - (opt) Provide empty and (Env parent) constructors
  */
 abstract public class AbstractEnv<K, V> implements Env<K, V>
     {
 
         public Env<K, V> define(K key, V val) throws BindingException {
-            if (localValue(key) != null) throw new BindingException(key, this);
+            if (fetch(key) != null) throw new BindingException(key, this);
             store(key, val);
             return this;
         }
 
         public V lookup(K key) throws UndefinedException {
-            V val = localValue(key);
+            V val = fetch(key);
 
             if (val == null) {
                 Env<K, V> env = this;
                 try {
                     do {
                         env = env.parent();
-                        val = env.localValue(key);
+                        val = env.fetch(key);
                     } while (val == null);
                 } catch (LookupFailedException e) {
                     throw new UndefinedException(key, this);
@@ -52,8 +51,6 @@ abstract public class AbstractEnv<K, V> implements Env<K, V>
             return val;
         }
 
-        abstract public V localValue(K key);
-
         abstract protected void store(K key, V val);
 
 
@@ -61,7 +58,7 @@ abstract public class AbstractEnv<K, V> implements Env<K, V>
         public static <K, V> Env<K, V> getEmptyEnv() {
             if (empty == null) empty = new EmptyEnv();            
             
-            // Safe, as the we never return values
+            // Safe as the we never return values
             return (Env<K, V>) empty;
         }
 
@@ -98,11 +95,15 @@ class EmptyEnv extends AbstractEnv<Object, Object>
             throw new UnsupportedOperationException();
         }
 
-        public Object localValue(Object key) {
+        public Object fetch(Object key) {
             throw new LookupFailedException();
         }
 
         private static final long serialVersionUID = 4460929197701994252L;
+
+        public boolean isPersistent() {
+            return true;
+        }
     }
 
 

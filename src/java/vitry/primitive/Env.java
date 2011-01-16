@@ -22,10 +22,7 @@ import java.io.Serializable;
 
 
 /**
- * A scopable set of bindings. Typically are used to hold non-local variable
- * bindings.
- * 
- * Implementions should specify whether they are persistent or not.
+ * Basic environment.
  * 
  * Invariants:
  * 
@@ -35,6 +32,12 @@ import java.io.Serializable;
 public interface Env<K, V> extends Serializable
     {
         /**
+     * @return The resulting environment.
+     * @throws BindingException If the given value is already defined.
+     */
+    Env<K, V> define(K key, V val) throws BindingException;
+
+        /**
          * Checks parent environments and throws exception as needed,
          * normal return implies a valid binding.
          * @throws UndefinedException
@@ -42,20 +45,14 @@ public interface Env<K, V> extends Serializable
         V lookup(K key) throws UndefinedException;
 
         /**
+         * Returns local binding or null.
+         */
+        V fetch(K key);
+
+        /**
          * Return the parent environment or null.
          */
         Env<K, V> parent();
 
-        /**
-         * Define a key in this environment. Returns a modified environment
-         * which may be this.
-         * @return The resulting environment.
-         * @throws BindingException If the given value is already defined.
-         */
-        Env<K, V> define(K key, V val) throws BindingException;
-
-        /**
-         * Returns local binding or null.
-         */
-        V localValue(K key);
+        boolean isPersistent();
     }

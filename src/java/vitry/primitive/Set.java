@@ -18,8 +18,51 @@
  */
 package vitry.primitive;
 
+/**
+ * Compound entity, matching on membership.
+ */
 public interface Set extends Pattern, Seq<Pattern>
     {
+
+        public static final class Empty extends AbstractCompoundPattern implements Set
+            {
+                private Empty() {
+                }
+
+                public static final Empty instance = new Empty();
+
+                public boolean eq(Set o) {
+                    return o == this;
+                }
+
+                public boolean eqFor(Value o) {
+                    return o.eq(this);
+                }
+
+                public boolean matchFor(Pattern p) {
+                    // The empty set is a match for any compund pattern, including itself
+                    // This case could be handled by the standard logic, this is just an 
+                    // optimization of the special case ({}:{}).
+                    if (p == this) return true;
+                    return p.matchFor(this);
+                }
+
+                public Pattern head() {
+                    throw new UnsupportedOperationException("{} has no members.");
+                }
+
+                public Seq<Pattern> tail() {
+                    throw new UnsupportedOperationException("{} has no members.");
+                }
+
+                public String toString() {
+                    return "{}";
+                }
+
+                public int hashCode() {
+                    return -1;
+                }
+            }
     }
 
 
@@ -40,11 +83,11 @@ abstract class AbstractSet extends AbstractCompoundPattern implements Set
         public boolean eqFor(Value p) {
             return p.eq(this);
         }
-        
+
         public boolean matchFor(Pattern p) {
             return p.match(this);
         }
-        
+
         public String toString() {
             return Util.join(this, "{", ", ", "}");
         }

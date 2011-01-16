@@ -1,14 +1,11 @@
 package vitry.primitive.test;
 
+import static java.lang.System.out;
 import vitry.primitive.ListType;
 import vitry.primitive.Pattern;
-import vitry.primitive.NativeType;
-import vitry.primitive.Native;
 import vitry.primitive.Symbol;
-import vitry.primitive.Unit;
 import vitry.primitive.Util;
-import vitry.primitive.Value;
-import static java.lang.System.out;
+import vitry.primitive.Vitry;
 
 
 /**
@@ -27,8 +24,8 @@ public class Lists
             
             Pattern l = new ListType(a);
             
-            out.println(Unit.getInstance().matchFor(l));
-            out.println(Util.product(a, Unit.getInstance()).matchFor(l));
+            out.println(Vitry.unit.matchFor(l));
+            out.println(Util.product(a, Vitry.unit.matchFor(l)));
           
             
 

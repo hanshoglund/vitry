@@ -19,9 +19,6 @@
 package vitry.primitive;
 
 
-/**
- * Wrapper for host objects that need to implement Pattern.
- */
 public class Native extends Atom
     {
         final Object obj;

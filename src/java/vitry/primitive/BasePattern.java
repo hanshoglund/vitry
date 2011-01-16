@@ -19,7 +19,7 @@
 package vitry.primitive;
 
 /**
- * Base implementation that always return false.
+ * Base implementation of pattern.
  * 
  * Implement:
  * 

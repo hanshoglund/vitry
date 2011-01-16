@@ -18,17 +18,6 @@
  */
 package vitry.primitive;
 
-import java.util.LinkedList;
-
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.Type;
-import org.objectweb.asm.commons.GeneratorAdapter;
-import org.objectweb.asm.commons.Method;
-
-import org.objectweb.asm.Opcodes;
-
-import vitry.primitive.expr.*;
 
 /**
  * Compiles expressions to classes.

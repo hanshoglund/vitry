@@ -20,7 +20,6 @@ package vitry.primitive;
 
 import java.util.HashMap;
 
-
 public class HashEnv<K, V> extends AbstractEnv<K, V>
     {
         public HashEnv() {
@@ -39,7 +38,7 @@ public class HashEnv<K, V> extends AbstractEnv<K, V>
             bindings.put(key, val);
         }
 
-        public V localValue(K key) {
+        public V fetch(K key) {
             return bindings.get(key);
         }
 
@@ -48,4 +47,8 @@ public class HashEnv<K, V> extends AbstractEnv<K, V>
         private final HashMap<K, V>     bindings         = new HashMap<K, V>();
 
         private static final long       serialVersionUID = -6896184961023443064L;
+
+        public boolean isPersistent() {
+            return false;
+        }
     }

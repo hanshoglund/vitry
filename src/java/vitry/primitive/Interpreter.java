@@ -25,7 +25,7 @@ public class Interpreter implements Eval
             return null;
         }
 
-        public Value eval(Pattern e, Module[] link) throws Exception {
+        public Value eval(Pattern e, Seq<Module> link) throws Exception {
             return null;
             // TODO Auto-generated method stub
         }

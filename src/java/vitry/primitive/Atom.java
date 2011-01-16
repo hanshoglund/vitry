@@ -19,7 +19,7 @@
 package vitry.primitive;
 
 /**
- * A nondestructible value.
+ * A value with equality semantics.
  * 
  * Implement:
  * 

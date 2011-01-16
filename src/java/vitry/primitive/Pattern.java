@@ -19,7 +19,7 @@
 package vitry.primitive;
 
 /**
- * Provides type semantics.
+ * Provides matching semantics.
  * 
  * Implementations may be used on the right side of a match operation.
  *

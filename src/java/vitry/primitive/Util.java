@@ -68,7 +68,7 @@ public class Util
                             "Function must have arity " + arity);
         }
 
-        public static void checkNull(Object... args) {
+        public static void checkNotNull(Object... args) {
             for (Object o : args) {
                 if (o == null)
                     throw new IllegalArgumentException(
@@ -93,11 +93,11 @@ public class Util
         }
 
         public static Type type(Pattern pattern, Object tag) {
-            return new TypeImpl(pattern, tag);
+            return new SimpleType(pattern, tag);
         }
 
         public static Type type(Pattern pattern, String symStr) {
-            return new TypeImpl(pattern, Symbol.intern(symStr));
+            return new SimpleType(pattern, Symbol.intern(symStr));
         }
 
     }

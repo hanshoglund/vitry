@@ -41,4 +41,9 @@ public class ListSeq implements Seq<Pattern>
             // TODO Auto-generated method stub
         }
 
+        public Seq<Pattern> cons(Pattern head) {
+            return null;
+            // TODO Auto-generated method stub
+        }
+
     }

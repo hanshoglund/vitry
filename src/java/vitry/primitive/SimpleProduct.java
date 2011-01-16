@@ -44,4 +44,8 @@ public class SimpleProduct extends AbstractProduct
         public Seq<Pattern> tail() {
             return elements.tail();
         }
+        
+        public Seq<Pattern> cons(Pattern head) {
+            return new Cons<Pattern>(head, elements);
+        }
     }

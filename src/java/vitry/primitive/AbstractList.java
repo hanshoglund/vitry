@@ -44,4 +44,9 @@ public class AbstractList extends AbstractProduct
             return null;
             // TODO Auto-generated method stub
         }
+
+        public Seq<Pattern> cons(Pattern head) {
+            return null;
+            // TODO Auto-generated method stub
+        }
     }

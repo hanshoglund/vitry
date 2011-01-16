@@ -18,45 +18,157 @@
  */
 package vitry.primitive;
 
+import java.math.BigInteger;
+import java.util.Iterator;
+
+import vitry.primitive.Set.Empty;
+
+
 /**
  * The core runtime environment.
+ * 
+ * The native types we use are:
+ * 
+ *     BigInteger   <=> nat
+ *     BigInteger   <=> int
+ *     BigRational  <=> rat
+ *     Float        <=> float
+ *     Double       <=> double
+ *     String       <=> str
+ *     
+ * Implemented in vitry.runtime:
+ * 
+ *     Product      <=> ,
+ *     Set          <=> {,}
+ *     Union        <=> |
+ *     Intersection <=> &
+ * 
  * 
  * @author hans
  */
 public class Vitry
     {
-        public static final Apply eq = new Function(2, null)
+        /**
+         * Standard operator bindings.
+         */
+        public static class Ops
+            {
+                // !
+                public static final Apply _21 = not;
+                // #
+                public static final Apply _23 = null;
+                // $
+                public static final Apply _24 = null;
+                // %
+                public static final Apply _25 = mod;
+                // &
+                public static final Apply _26 = intersection;
+                // '
+                public static final Apply _27 = add;
+                // *
+                public static final Apply _2A = mul;
+                // +
+                public static final Apply _2B = add;
+                // ,
+                public static final Apply _2C = product;
+                // -
+                public static final Apply _2D = sub;
+                // /
+                public static final Apply _2F = div;
+                
+                // ;
+                public static final Apply _3B = null;
+                // <
+                public static final Apply _3C = lessThan;
+                // >
+                public static final Apply _3E = greaterThan;
+                // ?
+                public static final Wildcard _3F = wildcard;
+                // @
+                public static final Apply _40 = null;
+                
+                // ^
+                public static final Apply _5E = null;
+                // _
+                public static final Apply _5F = null;
+                
+                // |
+                public static final Apply _7C = null;
+                // ~
+                public static final Apply _7F = null;
+
+                
+                // ==
+                public static final Apply _3D_3D = eq;
+                // []
+                public static final Apply _5B_5D = list;
+                // {}
+                public static final Apply _7B_7D = set;
+                
+                // TODO precedence rules
+            }
+        
+        
+        // Special forms
+
+        // These are done in the interpreter
+        //     ` fn if let do match loop recur
+
+        // ()
+        public static final Unit     unit = new Unit();
+
+        // ?
+        public static final Wildcard wildcard = new Wildcard();
+
+        // {}
+        public static final Empty    emptySet = Empty.instance;
+
+        
+        
+        // ==
+        public static final Apply eq = new Function(
+                2, 
+                fnType(wildcard, wildcard))
             {
                 public Object apply(Object a, Object b) {
-                    if (a instanceof Value) return ((Value) a).eqFor((Pattern) b);
-                    else
-                        return Native.wrap(a).eqFor(Native.wrap(b));
+                    return null; // TODO
                 }
             };
 
-        public static final Apply match = new Function(2, null)
+
+        // type name pattern
+        public static final Apply type = new Function(
+                2, 
+                null)
             {
-                public Object apply(Object a, Object b) {
-                    return ((Value) a).matchFor((Pattern) b);
+                public Object apply(Object name, Object pattern) {
+                    return symType((String) name, (Pattern) pattern);
                 }
             };
+            
+            
 
-
-        // ; Special forms
-        // () [] {} = : `
-        // fn if let do match delay force loop recur
-        //
-        // ; Basic types
+        // Basic types
+        
+        // type bool = `true | `false
+        public static final Symbol _true   = Symbol.intern("true");
+        public static final Symbol _false  = Symbol.intern("false");
+        public static final Type   bool    = symType("bool", new SimpleUnion(_true, _false));
+        
         // type 
-        //   bool
-        //   nat     = [bool]
-        //   int     = bool, nat
-        //   rat     = int, int
-        //   float   = [bool]
-        //   double  = [bool]
-        //   complex = double, double
-        //   char    = nat
-        //   string  = [char]
+        //   nat    = ...
+        //   int    = ...
+        //   rat    = ...
+        //   float  = ...
+        //   double = ...
+        //   str    = ...
+        public static final Set    nat     = NativeType.forClass(BigInteger.class);
+        public static final Set    _int    = NativeType.forClass(BigInteger.class);
+        public static final Set    rat     = NativeType.forClass(BigRational.class);
+        public static final Set    _float  = NativeType.forClass(Float.class);
+        public static final Set    _double = NativeType.forClass(Double.class);
+        public static final Set    str     = NativeType.forClass(String.class);
+
         //
         // implicit
         //   bool  -> nat
@@ -82,11 +194,12 @@ public class Vitry
         // not
         // true
         // false
-        // 
-        // 
+
         // ; Functions
-        // arity     : (->) -> nat
-        public static final Apply arity = new Function(1, null)
+        // arity     : ? -> nat
+        public static final Apply arity = new Function(
+                1, 
+                fnType(wildcard, nat))
             {
                 public Object apply(Object a) {
                     return ((Function) a).arity;
@@ -104,7 +217,7 @@ public class Vitry
 
 
         // const     : a -> (? -> a)
-        public static final Apply const_ = new Function(1, null)
+        public static final Apply _const = new Function(1, null)
             {
                 public Object apply(final Object a) {
                     return new Function(1, null)
@@ -129,58 +242,98 @@ public class Vitry
         //   curry
         //   uncurry
         //   const
-        //   
-        //   
-        // ; Arithmetic
-        // (+)
+
+            
+            
+        // Arithmetic
+            
+        public static final Apply neg = new Function(1, null)
+            {
+                public Object apply(Object a) {
+                    if (a instanceof BigRational) return ((BigRational) a).negate();
+                    if (a instanceof BigInteger)  return ((BigInteger) a).negate();
+                    if (a instanceof Number)      return ((Number) a).floatValue() * -1;
+                    throw new RuntimeException("Expected number type.");
+                }
+            };
+            
+        // + 
         public static final Apply add = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
-                    return ((Number) a).intValue() + ((Number) b).intValue();
+                    
+                    if (a instanceof BigRational) {
+                        if (b instanceof BigRational)
+                            return ((BigRational) a).add((BigRational) b);
+                        
+                        else if (b instanceof Long)
+                            return ((BigRational) a).add((Long) b);
+                        
+                        else if (b instanceof Number)
+                            return ((BigRational) a).add(((Number) b).longValue());
+                        
+                        throw new RuntimeException("Expected number type.");
+                    }
+                    
+                    if (a instanceof BigInteger)  {
+                        if (b instanceof BigInteger)
+                            return ((BigInteger) a).add((BigInteger) b);
+
+                        // TODO 
+
+                        throw new RuntimeException("Expected number type.");
+                    }
+                    if (a instanceof Double)      {
+                        // TODO
+                    }
+                    if (a instanceof Float)      {
+                        // TODO
+                    }
+                    throw new RuntimeException("Expected number type.");
+
                 }
             };
 
-        // (-)
+            
+        // -
         public static final Apply sub = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
-                    return ((Number) a).intValue() - ((Number) b).intValue();
                 }
             };
 
-        // (*)
+        // *
         public static final Apply mul = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
-                    return ((Number) a).intValue() * ((Number) b).intValue();
                 }
             };
 
 
-        // (/)
+        // /
         public static final Apply div = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
-                    return ((Number) a).intValue() / ((Number) b).intValue();
                 }
             };
 
 
-        // (%)
+        // %
         public static final Apply mod = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
-                    return ((Number) a).intValue() % ((Number) b).intValue();
                 }
             };
 
+
         // (%%)
+        public static final Apply modp = new Function(2, null)
+            {
+                public Object apply(Object a, Object b) {
+                }
+            };
+            
         // (^)
-        // add
-        // sub
-        // mul
-        // div
-        // mod
         // modp
         // exp
         // log
@@ -202,7 +355,9 @@ public class Vitry
         // odd
         // even
         // prime
-        //           
+
+            
+            
         // ; Standard notion of bounds and enumerable seqs (Haskell-like?)
         // 
         // ; Well-known sequences (lazy seqs)
@@ -269,7 +424,7 @@ public class Vitry
         // rest        : [a] -> [a]
         // last        : [a] -> a
         // init        : [a] -> [a]
-        // conj        : a, [a] -> a
+        // cons        : a, [a] -> a
         // 
         // length      : [a] -> nat
         // rank        : [a] -> nat
@@ -342,6 +497,96 @@ public class Vitry
         //odule seq.stack
         // push
         // pop
-        //                             
+        //   
+            
+
+        public static FunctionType fnType(Pattern co, Pattern dom) {
+            return new SimpleFunctionType(co, dom);
+        }
+            
+        public static Type symType(String name, Pattern pattern) {
+            return new SimpleType(pattern, Symbol.intern(name));
+        }
+
+
+        public static final class Unit extends Atom implements Product
+            {
+                private Unit() {
+                }
+
+                public boolean eq(Atom o) {
+                    return o == this;
+                }
+
+                public String toString() {
+                    return "()";
+                }
+
+                public Product first() {
+                    throw new RuntimeException("() has no members");
+                }
+
+                public Product second() {
+                    throw new RuntimeException("() has no members");
+                }
+
+                public Pattern head() {
+                    throw new RuntimeException("() has no members");
+                }
+
+                public Seq<Pattern> tail() {
+                    throw new RuntimeException("Attempted sequencing over ()");
+                }
+
+                public Iterator<Pattern> iterator() {
+                    throw new RuntimeException("Attempted sequencing over ()");
+                }
+
+                public Seq<Pattern> cons(Pattern head) {
+                    return new Cons<Pattern>(head, this);
+                }
+            }
+
+        public static final class Wildcard extends Atom
+            {
+                private Wildcard() {
+                }
+
+                public boolean eq(Atom o) {
+                    return o == this;
+                }
+
+                public boolean match(Atom o) {
+                    return true;
+                }
+
+                public boolean match(Product p) {
+                    return true;
+                }
+
+                public boolean match(Union p) {
+                    return true;
+                }
+
+                public boolean match(Set p) {
+                    return true;
+                }
+
+                public boolean match(Intersection p) {
+                    return true;
+                }
+
+                public boolean match(Type p) {
+                    return true;
+                }
+
+                public boolean match(FunctionType p) {
+                    return true;
+                }
+
+                public String toString() {
+                    return "?";
+                }
+            }
 
     }

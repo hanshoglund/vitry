@@ -19,9 +19,30 @@
 package vitry.primitive;
 
 /**
- * @depracated
+ * TODO a faster implementation
  */
-public class Expr
+public class Rational extends Number
     {
 
+        public double doubleValue() {
+            return 0;
+            // TODO Auto-generated method stub
+        }
+
+        public float floatValue() {
+            return 0;
+            // TODO Auto-generated method stub
+        }
+
+        public int intValue() {
+            return 0;
+            // TODO Auto-generated method stub
+        }
+
+        public long longValue() {
+            return 0;
+            // TODO Auto-generated method stub
+        }
+
+        private static final long serialVersionUID = 7067144865429656661L;
     }

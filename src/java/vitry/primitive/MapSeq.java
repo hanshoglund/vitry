@@ -21,16 +21,14 @@ package vitry.primitive;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-/**
- * Lazy map implementation.
- */
+
 public class MapSeq<A,B> implements Seq<B>, Dynamic
     {
         private final Apply fn;
         private final Seq<A> input;
 
         public MapSeq(Apply fn, Seq<A> input) {
-            Util.checkNull(fn, input);
+            Util.checkNotNull(fn, input);
 //            Util.checkArity(fn, 1);
             this.fn = fn;
             this.input = input;
@@ -40,6 +38,7 @@ public class MapSeq<A,B> implements Seq<B>, Dynamic
             return new MapIterator<B>(fn, input.iterator());
         }
 
+        @SuppressWarnings("unchecked")
         public B head() {
             A head = input.head();
             if (head == null) return null;
@@ -55,6 +54,11 @@ public class MapSeq<A,B> implements Seq<B>, Dynamic
         public Seq<B> tail() {
             Seq<A> tail = input.tail();
             return (tail == null) ? null : new MapSeq<A, B>(fn, tail);
+        }
+
+        public Seq<B> cons(B head) {
+            return null;
+            // TODO Auto-generated method stub
         }
     }
 
@@ -73,6 +77,7 @@ class MapIterator<T> implements Iterator<T> {
         return input.hasNext();
     }
 
+    @SuppressWarnings("unchecked")
     public T next() {
         Object next = input.next();
         try {

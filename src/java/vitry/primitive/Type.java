@@ -39,12 +39,12 @@ public interface Type extends Pattern
     }
 
 
-class TypeImpl extends BasePattern implements Type
+class SimpleType extends BasePattern implements Type
     {
         private final Pattern pattern;
         private final Object tag;
         
-        public TypeImpl(Pattern pattern, Object tag) {
+        public SimpleType(Pattern pattern, Object tag) {
             this.pattern = pattern;
             this.tag = tag;
         }

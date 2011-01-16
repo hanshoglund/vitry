@@ -18,6 +18,7 @@
  */
 package vitry.primitive;
 
+
 /**
  * Provides partial and extended application, subclasses override one of the
  * apply methods.
@@ -52,9 +53,9 @@ abstract public class Function extends Callable implements Apply, Dynamic
 
 
         
-        public Function() {
-            this.arity = 0;
-            this.type = new FunctionTypeImpl(Wildcard.getInstance(), Wildcard.getInstance());;
+        Function() {
+            this.arity = 1;
+            this.type = new SimpleFunctionType(Vitry.wildcard, Vitry.wildcard);;
         }
 
         public Function(FunctionType type) {

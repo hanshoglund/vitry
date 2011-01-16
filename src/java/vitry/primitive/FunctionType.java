@@ -21,11 +21,11 @@ package vitry.primitive;
 import java.util.Iterator;
 
 /**
- * Represents the function type.
+ * The function type constructor.
  * 
- * This is a sequence of eventual nested types, i.e. if `this`
- * represents `a -> b -> c`, then `this.head() == a` and `this.tail()` is a 
- * FunctionType representing `b -> c`.
+ * Function types are sequencable over nested types, 
+ *   i.e. if `this` represents `a -> b -> c`, 
+ *   then `this.head() == a` and `this.tail()` represents `b -> c`.
  * 
  */
 public interface FunctionType extends Pattern, Seq<Pattern>
@@ -36,14 +36,14 @@ public interface FunctionType extends Pattern, Seq<Pattern>
     }
 
 
-class FunctionTypeImpl extends BasePattern implements FunctionType
+class SimpleFunctionType extends BasePattern implements FunctionType
     {
 
         private final Pattern codomain;
 
         private final Pattern domain;
 
-        public FunctionTypeImpl(Pattern codomain, Pattern domain) {
+        public SimpleFunctionType(Pattern codomain, Pattern domain) {
             this.codomain = codomain;
             this.domain = domain;
         }
@@ -103,5 +103,10 @@ class FunctionTypeImpl extends BasePattern implements FunctionType
 
         public Iterator<Pattern> iterator() {
             return new SeqIterator<Pattern>(this);
+        }
+
+        public Seq<Pattern> cons(Pattern head) {
+            return null;
+            // TODO Auto-generated method stub
         }
     }
