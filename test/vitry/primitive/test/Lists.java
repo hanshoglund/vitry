@@ -4,8 +4,8 @@ import static java.lang.System.out;
 import vitry.runtime.ListType;
 import vitry.runtime.Pattern;
 import vitry.runtime.Symbol;
-import vitry.runtime.Util;
 import vitry.runtime.Vitry;
+import vitry.runtime.util.MiscUtil;
 
 
 /**
@@ -25,7 +25,7 @@ public class Lists
             Pattern l = new ListType(a);
             
             out.println(Vitry.unit.matchFor(l));
-            out.println(Util.product(a, Vitry.unit.matchFor(l)));
+            out.println(MiscUtil.product(a, Vitry.unit.matchFor(l)));
           
             
 

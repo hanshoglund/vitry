@@ -18,6 +18,8 @@
  */
 package vitry.runtime;
 
+import vitry.runtime.util.MiscUtil;
+
 public interface Union extends Pattern, Seq<Pattern>
     {
     }
@@ -46,7 +48,7 @@ abstract class AbstractUnion extends AbstractCompoundPattern implements Union
         }
         
         public String toString() {
-            return Util.join(this, "(", " | ", ")");
+            return MiscUtil.join(this, "(", " | ", ")");
 //            return Util.join(this, "", " | ", "");
         }
     }

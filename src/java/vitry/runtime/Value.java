@@ -29,6 +29,8 @@ package vitry.runtime;
  */
 public interface Value
     {
+        boolean eq(Object o);
+
         boolean eq(Atom o);
         
         boolean eq(Tagged<?> o);

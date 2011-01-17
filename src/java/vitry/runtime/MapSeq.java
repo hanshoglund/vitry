@@ -21,6 +21,8 @@ package vitry.runtime;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import vitry.runtime.util.Checks;
+
 
 public class MapSeq<A,B> implements Seq<B>, Dynamic
     {
@@ -28,7 +30,7 @@ public class MapSeq<A,B> implements Seq<B>, Dynamic
         private final Seq<A> input;
 
         public MapSeq(Apply fn, Seq<A> input) {
-            Util.checkNotNull(fn, input);
+            Checks.checkNotNull(fn, input);
 //            Util.checkArity(fn, 1);
             this.fn = fn;
             this.input = input;

@@ -40,12 +40,19 @@ public class Native extends Atom
             return obj.toString();
         }
 
+        /**
+         * Returns the given object iff it is a pattern, or a Native instance
+         * wrapping it otherwise.
+         */
         public static Pattern wrap(Object o) {
             if (o instanceof Pattern) return (Pattern) o;
             else
                 return new Native(o);
         }
 
+        /**
+         * Applies {@link #wrap(Object)} to the given values.
+         */
         public static Pattern[] wrap(Object... values) {
             Pattern[] values2 = new Pattern[values.length];
             for (int i = 0; i < values.length; ++i)
@@ -53,6 +60,9 @@ public class Native extends Atom
             return values2;
         }
 
+        /**
+         * Applies {@link #wrap(Object)} lazily to the given seq.
+         */
         public static Seq<Pattern> wrap(Seq<Object> values) {
             return new MapSeq<Object, Pattern>(new Function(1, null){
                 public Object apply(Object v) throws Exception {

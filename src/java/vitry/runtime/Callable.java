@@ -19,7 +19,7 @@
 package vitry.runtime;
 
 /**
- * 
+ * Base class for callable entities. This includes:
  * 
  * - Functions, lambda expressions with partial application semantics.
  * - Thunks, used to delay evalutation.

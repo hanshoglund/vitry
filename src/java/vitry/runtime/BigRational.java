@@ -20,11 +20,9 @@ import java.math.BigInteger;
 
 
 /**
-* <STRONG>
-* BigRational implements
+* Implements
 * dynamically sized arbitrary precision immutable
 * rational numbers.
-* </STRONG>
 *
 * <P>
 * Dynamically sized means that (provided enough memory) the BigRational

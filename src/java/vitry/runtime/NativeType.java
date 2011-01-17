@@ -67,7 +67,7 @@ public class NativeType extends BasePattern implements Set
         }
 
         // Throw on enumeration
-        // TODO implement this?
+        // TODO implement this using an interface EnumerableNativeType + registration?
 
         public Pattern head() {
             throw new UnsupportedOperationException("Can not enumerate a primitive type");

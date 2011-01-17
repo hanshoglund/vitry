@@ -19,13 +19,11 @@
 package vitry.runtime;
 
 /**
- * Base implementation of Environment.
- * 
  * Implement:
  *   - Provide store/fetch/isPersistent
  *   - (opt) Provide empty and (Env parent) constructors
  */
-abstract public class AbstractEnv<K, V> implements Env<K, V>
+abstract class AbstractEnv<K, V> implements Env<K, V>
     {
 
         public Env<K, V> define(K key, V val) throws BindingException {

@@ -21,11 +21,11 @@ package vitry.runtime;
 import java.math.BigInteger;
 import java.util.Iterator;
 
-import vitry.runtime.Set.Empty;
-
-
 /**
- * The core runtime environment.
+ * This class encapsulates an entire runtime system. That is, a set of system
+ * properties, a set of loaded modules and possibly an interpreter.
+ * 
+ * Implements functions and types needed to bootstrap `Vitry.Prelude`.
  * 
  * The native types we use are:
  * 
@@ -48,10 +48,24 @@ import vitry.runtime.Set.Empty;
  */
 public class Vitry
     {
+        public static Apply not;
+
+        public static Apply intersection;
+
+        public static Apply product;
+
+        public static Apply lessThan;
+
+        public static Apply greaterThan;
+
+        public static Apply list;
+
+        public static Apply set;
+
         /**
          * Standard operator bindings.
          */
-        public static class Ops
+        static class Ops
             {
                 // !
                 public static final Apply _21 = not;
@@ -121,7 +135,7 @@ public class Vitry
         public static final Wildcard wildcard = new Wildcard();
 
         // {}
-        public static final Empty    emptySet = Empty.instance;
+        public static final Set.Empty    emptySet = Set.Empty.instance;
 
         
         
@@ -247,6 +261,10 @@ public class Vitry
             
         // Arithmetic
             
+        // As overloaded functions, the arithmetic operators could technically
+        // be handled by the matching logic. Here we do explicit checks to speed
+        // things up a bit.
+            
         public static final Apply neg = new Function(1, null)
             {
                 public Object apply(Object a) {
@@ -261,36 +279,25 @@ public class Vitry
         public static final Apply add = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
-                    
                     if (a instanceof BigRational) {
-                        if (b instanceof BigRational)
-                            return ((BigRational) a).add((BigRational) b);
-                        
-                        else if (b instanceof Long)
-                            return ((BigRational) a).add((Long) b);
-                        
-                        else if (b instanceof Number)
-                            return ((BigRational) a).add(((Number) b).longValue());
-                        
+                        if (b instanceof BigRational) return ((BigRational) a).add((BigRational) b);
+                        else if (b instanceof Number) return ((BigRational) a).add(((Number) b).longValue());
                         throw new RuntimeException("Expected number type.");
                     }
-                    
                     if (a instanceof BigInteger)  {
-                        if (b instanceof BigInteger)
-                            return ((BigInteger) a).add((BigInteger) b);
-
-                        // TODO 
-
+                        if (b instanceof BigInteger)  return ((BigInteger) a).add((BigInteger) b);
+                        // TODO
                         throw new RuntimeException("Expected number type.");
                     }
                     if (a instanceof Double)      {
-                        // TODO
+                        if (b instanceof Number)      return ((Double) a) + ((Number) b).doubleValue();
+                        throw new RuntimeException("Expected number type.");
                     }
                     if (a instanceof Float)      {
-                        // TODO
+                        if (b instanceof Number)      return ((Float) a) + ((Number) b).floatValue();
+                        throw new RuntimeException("Expected number type.");
                     }
                     throw new RuntimeException("Expected number type.");
-
                 }
             };
 
@@ -299,6 +306,24 @@ public class Vitry
         public static final Apply sub = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
+                    if (a instanceof BigRational) {
+                        if (b instanceof BigRational) return ((BigRational) a).subtract((BigRational) b);
+                        else if (b instanceof Number) return ((BigRational) a).subtract(((Number) b).longValue());
+                        throw new RuntimeException("Expected number type.");
+                    }
+                    if (a instanceof BigInteger)  {
+                        if (b instanceof BigInteger)  return ((BigInteger) a).subtract((BigInteger) b);
+                        throw new RuntimeException("Expected number type.");
+                    }
+                    if (a instanceof Double)      {
+                        if (b instanceof Number)      return ((Double) a) - ((Number) b).doubleValue();
+                        throw new RuntimeException("Expected number type.");
+                    }
+                    if (a instanceof Float)      {
+                        if (b instanceof Number)      return ((Float) a) - ((Number) b).floatValue();
+                        throw new RuntimeException("Expected number type.");
+                    }
+                    throw new RuntimeException("Expected number type.");
                 }
             };
 
@@ -306,6 +331,24 @@ public class Vitry
         public static final Apply mul = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
+                    if (a instanceof BigRational) {
+                        if (b instanceof BigRational) return ((BigRational) a).multiply((BigRational) b);
+                        else if (b instanceof Number) return ((BigRational) a).multiply(((Number) b).longValue());
+                        throw new RuntimeException("Expected number type.");
+                    }
+                    if (a instanceof BigInteger)  {
+                        if (b instanceof BigInteger)  return ((BigInteger) a).multiply((BigInteger) b);
+                        throw new RuntimeException("Expected number type.");
+                    }
+                    if (a instanceof Double)      {
+                        if (b instanceof Number)      return ((Double) a) * ((Number) b).doubleValue();
+                        throw new RuntimeException("Expected number type.");
+                    }
+                    if (a instanceof Float)      {
+                        if (b instanceof Number)      return ((Float) a) * ((Number) b).floatValue();
+                        throw new RuntimeException("Expected number type.");
+                    }
+                    throw new RuntimeException("Expected number type.");
                 }
             };
 
@@ -314,6 +357,7 @@ public class Vitry
         public static final Apply div = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
+                    return null; // TODO
                 }
             };
 
@@ -322,6 +366,7 @@ public class Vitry
         public static final Apply mod = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
+                    return null; // TODO
                 }
             };
 
@@ -330,12 +375,25 @@ public class Vitry
         public static final Apply modp = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
+                    return null; // TODO
                 }
             };
             
         // (^)
         // modp
-        // exp
+            
+            
+        // pow
+        public static final Apply pow = new Function(2, null)
+        {
+            public Object apply(Object a, Object b) {
+                if (a instanceof BigRational) return ((BigRational) a).pow(((Number) b).intValue());
+                if (a instanceof BigInteger)  return ((BigInteger) a).pow(((Number) b).intValue());
+                if (a instanceof Number)      return Math.pow(((Number) a).doubleValue(), ((Number) b).doubleValue());
+                throw new RuntimeException("Expected number type.");
+            }
+        };
+            
         // log
         // ln
         // sin
@@ -487,19 +545,29 @@ public class Vitry
         // error       : string ->
         // now         : int
         // version     : [nat]
-        // versionStr  : string                         
+        // versionStr  : string               
         // 
         // show        : ? ->
         // read        : -> ?
         // help        : ->
-        // quit        : ->
-        // 
-        //odule seq.stack
-        // push
-        // pop
-        //   
             
-
+        // quit        : ->
+        public static final Apply quit = new Function(
+                0, 
+                fnType(wildcard, wildcard)){
+            
+            public Object apply(Object a) throws Exception {
+                if (a instanceof Number)
+                    System.exit(((Number) a).intValue());
+                else
+                    System.exit(-1);
+                
+                // Never reached
+                return null;
+            }
+            
+        };
+        
         public static FunctionType fnType(Pattern co, Pattern dom) {
             return new SimpleFunctionType(co, dom);
         }

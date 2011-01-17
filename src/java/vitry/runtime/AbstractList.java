@@ -19,7 +19,7 @@
 package vitry.runtime;
 
 
-public class AbstractList extends AbstractProduct
+class AbstractList extends AbstractProduct
     {
         public final Pattern type;
         

@@ -18,6 +18,8 @@
  */
 package vitry.runtime;
 
+import vitry.runtime.util.MiscUtil;
+
 public interface Intersection extends Pattern, Seq<Pattern>
     {
     }
@@ -52,6 +54,6 @@ abstract class AbstractIntersection extends AbstractCompoundPattern implements I
         }
         
         public String toString() {
-            return Util.join(this, "(", " & ", ")");
+            return MiscUtil.join(this, "(", " & ", ")");
         }
     }

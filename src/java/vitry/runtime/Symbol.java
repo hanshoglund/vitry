@@ -22,17 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Named, unique entities.
- * 
- * Invariants:
- * 
- *   - Symbol.generate(S) = Symbol.generate(S) where S is any string
- * 
- * TODO
- * 
- *   - Change impl to use interned strings!
- * 
- * @author hans
+ * Standard symbols. No namespaces as in Lisp, we use nested environments
+ * for everything.
  */
 public class Symbol extends Atom
     {

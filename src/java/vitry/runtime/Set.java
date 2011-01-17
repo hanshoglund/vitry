@@ -18,6 +18,8 @@
  */
 package vitry.runtime;
 
+import vitry.runtime.util.MiscUtil;
+
 /**
  * Compound entity, matching on membership.
  */
@@ -89,6 +91,6 @@ abstract class AbstractSet extends AbstractCompoundPattern implements Set
         }
 
         public String toString() {
-            return Util.join(this, "{", ", ", "}");
+            return MiscUtil.join(this, "{", ", ", "}");
         }
     }

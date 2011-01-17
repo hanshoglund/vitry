@@ -30,6 +30,13 @@ package vitry.runtime;
  */
 abstract class BasePattern implements Pattern
     {
+        public boolean eq(Object o) {
+            // Language values should dispatch to a type in the main visitors,
+            // not fall back on object. This method is for host objects only.
+            assert !(o instanceof Value);
+            return false;
+        }
+
         public boolean eq(Atom o) {
             return false;
         }
@@ -37,7 +44,7 @@ abstract class BasePattern implements Pattern
         public boolean eq(Product o) {
             return false;
         }
-        
+
         public boolean eq(Union o) {
             return false;
         }
@@ -59,6 +66,13 @@ abstract class BasePattern implements Pattern
         }
 
         public boolean eq(FunctionType o) {
+            return false;
+        }
+
+        public boolean match(Object o) {
+            // Language values should dispatch to a type in the main visitors,
+            // not fall back on object. This method is for host objects only.
+            assert !(o instanceof Value);
             return false;
         }
 

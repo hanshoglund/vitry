@@ -18,6 +18,8 @@
  */
 package vitry.runtime;
 
+import vitry.runtime.util.HashUtil;
+
 /**
  * Implements tagged values. These are used by the nominative type system,
  * among other things.
@@ -28,13 +30,21 @@ package vitry.runtime;
  */
 public class Tagged<T> extends BasePattern
     {
-        public final Value  val;
+        private final Value  val;
 
-        public final T tag;
+        private final T tag;
 
         public Tagged(Value val, T tag) {
             this.val = val;
             this.tag = tag;
+        }
+
+        public Value getVal() {
+            return val;
+        }
+
+        public T getTag() {
+            return tag;
         }
 
         public boolean eq(Tagged<?> o) {
@@ -67,8 +77,8 @@ public class Tagged<T> extends BasePattern
 
         public int hashCode() {
             int hash = this.getClass().hashCode();
-            hash = Util.hash(hash, val);
-            hash = Util.hash(hash, tag);
+            hash = HashUtil.hash(hash, val);
+            hash = HashUtil.hash(hash, tag);
             return hash;
         }        
     }

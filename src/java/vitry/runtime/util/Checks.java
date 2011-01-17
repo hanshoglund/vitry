@@ -16,36 +16,25 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
+package vitry.runtime.util;
+
+import vitry.runtime.Function;
 
 
-public class IntStack
+public class Checks
     {
-        public int push(int v) {
-            ensureCapacity(v * 2);
-            values[++top] = v;
-            return v;
+        private Checks() {
         }
 
-        public int pop() {
-            if (top < 0) throw new IndexOutOfBoundsException();
-            return values[top--];
+        public static void checkArity(Function fn, int arity) {
+            if (fn.getArity() != arity)
+                throw new IllegalArgumentException("Function must have arity " + arity);
         }
 
-        public int peek() {
-            if (top < 0) throw new IndexOutOfBoundsException();
-            return values[top];
-        }
-
-        private void ensureCapacity(int size) {
-            if (values.length < size) {
-                int[] old = values;
-                values = new int[size];
-                System.arraycopy(old, 0, values, 0, old.length);
+        public static void checkNotNull(Object... args) {
+            for (Object o : args) {
+                if (o == null)
+                    throw new IllegalArgumentException("Excepted non-null argument");
             }
         }
-
-        private int[] values = new int[24];
-
-        private int top = -1;
     }

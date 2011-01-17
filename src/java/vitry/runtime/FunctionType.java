@@ -20,6 +20,8 @@ package vitry.runtime;
 
 import java.util.Iterator;
 
+import vitry.runtime.util.HashUtil;
+
 /**
  * The function type constructor.
  * 
@@ -85,8 +87,8 @@ class SimpleFunctionType extends BasePattern implements FunctionType
         
         public int hashCode() {
             int hash = this.getClass().hashCode();
-            hash = Util.hash(hash, codomain);
-            hash = Util.hash(hash, domain);
+            hash = HashUtil.hash(hash, codomain);
+            hash = HashUtil.hash(hash, domain);
             return hash;
         }
 

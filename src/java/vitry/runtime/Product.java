@@ -20,6 +20,9 @@ package vitry.runtime;
 
 import java.util.Iterator;
 
+import vitry.runtime.util.HashUtil;
+import vitry.runtime.util.MiscUtil;
+
 
 /**
  * A compound value, representing tuples as well as product types.
@@ -102,7 +105,7 @@ abstract class AbstractProduct extends BasePattern implements Product
         }
         
         public int hashCode() {
-            return Util.hash(this.getClass().hashCode(), this);
+            return HashUtil.hash(this.getClass().hashCode(), this);
         }
 
 
@@ -111,6 +114,6 @@ abstract class AbstractProduct extends BasePattern implements Product
         }
 
         public String toString() {
-            return Util.join(this, "(", ", ", ")");
+            return MiscUtil.join(this, "(", ", ", ")");
         }
     }

@@ -18,6 +18,8 @@
  */
 package vitry.runtime;
 
+import vitry.runtime.util.HashUtil;
+
 /**
  * This interface implements the nominative type system.
  * 
@@ -69,7 +71,7 @@ class SimpleType extends BasePattern implements Type
         }
         
         public boolean match(Tagged<?> p) {
-            return p.tag == tag;
+            return p.getTag() == tag;
         }
 
         public boolean match(Type o) {
@@ -90,8 +92,8 @@ class SimpleType extends BasePattern implements Type
 
         public int hashCode() {
             int hash = this.getClass().hashCode();
-            hash = Util.hash(hash, pattern);
-            hash = Util.hash(hash, tag);
+            hash = HashUtil.hash(hash, pattern);
+            hash = HashUtil.hash(hash, tag);
             return hash;
         }
 

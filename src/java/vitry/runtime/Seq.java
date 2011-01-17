@@ -19,13 +19,12 @@
 package vitry.runtime;
 
 /**
- * Basic sequence abstraction.
+ * A basic sequence abstraction.
  * 
  *   - We implement this on all sequential language types, such as products,
  *     compound patterns and lists to support efficient conversions. 
  *   - The empty sequence is represented by `null`. This contrast with lists,
- *     which use `()`.
- *   - Extends iterable to support efficient traversal of non-linked structures.
+ *     which use `()`. ListSeq and SeqList adapts.
  *   - May be lazy.
  * 
  * Implement:
@@ -36,6 +35,8 @@ package vitry.runtime;
 public interface Seq<T> extends Iterable<T>
     {
         T head();
+
         Seq<T> tail();
+
         Seq<T> cons(T head);
     }

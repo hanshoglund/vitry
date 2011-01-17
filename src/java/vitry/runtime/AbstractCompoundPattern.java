@@ -20,6 +20,8 @@ package vitry.runtime;
 
 import java.util.Iterator;
 
+import vitry.runtime.util.HashUtil;
+
 
 abstract class AbstractCompoundPattern extends BasePattern implements Seq<Pattern>
     {
@@ -67,7 +69,7 @@ abstract class AbstractCompoundPattern extends BasePattern implements Seq<Patter
         }
 
         public int hashCode() {
-            return Util.hash(this.getClass().hashCode(), this);
+            return HashUtil.hash(this.getClass().hashCode(), this);
         }
 
         public Iterator<Pattern> iterator() {

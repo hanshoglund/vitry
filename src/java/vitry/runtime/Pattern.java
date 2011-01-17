@@ -30,6 +30,8 @@ package vitry.runtime;
  */
 public interface Pattern extends Value
     {
+        boolean match(Object o);
+        
         boolean match(Atom o);
         
         boolean match(Tagged<?> o);

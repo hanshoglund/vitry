@@ -27,7 +27,7 @@ public class Module extends Callable
         public Value get() {
             return null; // TODO give empty module?
         }
-        
+
         // TODO implicit decls
         // TODO infix decls
     }

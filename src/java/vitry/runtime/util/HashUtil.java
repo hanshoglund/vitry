@@ -16,15 +16,24 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
+package vitry.runtime.util;
 
-public interface Traversable<T>
+public class HashUtil
     {
-        Traversable<T> parent();
 
-        Seq<Traversable<T>> children();
+        public static int hash(int seed, int val) {
+            return (seed * 65050 + val) % 2044508069;
+        }
 
-        boolean hasParentLink();
+        public static int hash(int seed, Object val) {
+            return hash(seed, val.hashCode());
+        }
 
-        boolean classHasParentLink();
+        public static int hash(int seed, Iterable<?> vals) {
+            int hash = seed;
+            for (Object v : vals)
+                hash = hash(hash, v);
+            return hash;
+        }
+
     }

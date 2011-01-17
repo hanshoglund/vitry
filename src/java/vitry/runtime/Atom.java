@@ -23,7 +23,7 @@ package vitry.runtime;
  * 
  * Implement:
  * 
- *   - Value.eq OR Object.equals
+ *   - Value.eq *or* Object.equals
  *   - Object.hashCode
  */
 abstract public class Atom extends BasePattern

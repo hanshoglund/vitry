@@ -5,7 +5,7 @@ import vitry.runtime.ArraySeq;
 import vitry.runtime.Pattern;
 import vitry.runtime.SimpleUnion;
 import vitry.runtime.Symbol;
-import vitry.runtime.Util;
+import vitry.runtime.util.MiscUtil;
 
 /**
  *
@@ -30,7 +30,7 @@ public class TestEqLogic
             Pattern b = Symbol.intern("b");
             
             out.println(a.matchFor(new SimpleUnion(a)));
-            out.println(a.matchFor(Util.union(a)));
+            out.println(a.matchFor(MiscUtil.union(a)));
         }
         
 

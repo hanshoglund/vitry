@@ -24,13 +24,13 @@
         <javadoc
             access="protected"
             author="true"
-            doctitle="StrictJava"
+            doctitle="Vitry"
             use="true"
             version="true"
             destdir="doc"
 
             classpath="../Vitry/bin"
-            packagenames="vitry.primitive"
+            packagenames="vitry.runtime, vitry.runtime.util"
             sourcepath="src/java">
 
             <doclet name="com.visural.doclets.markdown.standard.Standard" path="${user.home}/Library/Java/MarkdownDoclet-3.0.jar"/>
