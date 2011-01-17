@@ -21,7 +21,7 @@ package vitry.runtime;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import vitry.runtime.util.Checks;
+import vitry.runtime.misc.Checks;
 
 
 public class MapSeq<A,B> implements Seq<B>, Dynamic

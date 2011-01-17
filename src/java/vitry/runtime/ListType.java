@@ -23,10 +23,9 @@ import java.util.Iterator;
 import vitry.runtime.Vitry.Unit;
 
 /**
- * Implements list types. This include products on the form (a,(a,...())) where
- * a is any type.
+ * Implements list types. This include products on the form `(a,(a,...()))`.
  * 
- * Provides efficient matching on {@link AbstractList} instances.
+ * Provides efficient matching on {@link AbstractList} subclasses.
  */
 public class ListType extends AbstractUnion
     {

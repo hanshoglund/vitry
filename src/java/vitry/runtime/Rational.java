@@ -19,7 +19,7 @@
 package vitry.runtime;
 
 /**
- * TODO a faster implementation
+ * This should be a faster implementation of rationals.
  */
 public class Rational extends Number
     {

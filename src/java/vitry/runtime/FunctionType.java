@@ -20,7 +20,7 @@ package vitry.runtime;
 
 import java.util.Iterator;
 
-import vitry.runtime.util.HashUtil;
+import vitry.runtime.misc.HashUtil;
 
 /**
  * The function type constructor.

@@ -19,14 +19,12 @@
 package vitry.runtime;
 
 /**
- * Provides matching semantics.
+ * A value with matching semantics.
  * 
- * Implementations may be used on the right side of a match operation.
+ * Implementations may be used on the right side of a match operation, as in:
  *
- * Invariants:
- * 
- *   - this.match(x)    <=> x : this
- *   - this.matchFor(x) <=> this : x
+ *     this.match(x)    <=> x : this
+ *     this.matchFor(x) <=> this : x
  */
 public interface Pattern extends Value
     {

@@ -18,7 +18,7 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.util.HashUtil;
+import vitry.runtime.misc.HashUtil;
 
 /**
  * This interface implements the nominative type system.

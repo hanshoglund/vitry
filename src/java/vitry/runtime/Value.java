@@ -19,7 +19,7 @@
 package vitry.runtime;
 
 /**
- * Provides equational semantics. 
+ * A value with equality semantics. 
  * 
  * Direct implementations can be used at both side in equality operations and
  * on the left side in match operations, however, they can not be used

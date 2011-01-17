@@ -18,7 +18,7 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.util.HashUtil;
+import vitry.runtime.misc.HashUtil;
 
 /**
  * Implements tagged values. These are used by the nominative type system,

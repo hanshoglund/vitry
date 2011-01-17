@@ -19,7 +19,7 @@
 package vitry.runtime;
 
 /**
- * A value with equality semantics.
+ * A nondestructible value with trivial matching semantics.
  * 
  * Implement:
  * 

@@ -27,5 +27,5 @@ public interface Eval
         
         public Value eval(Pattern e, Seq<Module> link) throws Exception;
 
-        public Value eval(Pattern e, ClassLoader link) throws Exception;
+        public Value eval(Pattern e, ClassLoader cl, Seq<Module> link) throws Exception;
     }

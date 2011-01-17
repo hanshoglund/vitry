@@ -55,7 +55,7 @@ abstract public class RestArgFunction extends Function
             super(arity, type);
         }
         
-        // No need to override apply(Object)
+        // No need to override apply(Object) ?
 
         public Object apply(Object a0, Object a1) throws Exception {
 

@@ -20,8 +20,8 @@ package vitry.runtime;
 
 import java.util.Iterator;
 
-import vitry.runtime.util.HashUtil;
-import vitry.runtime.util.MiscUtil;
+import vitry.runtime.misc.HashUtil;
+import vitry.runtime.misc.MiscUtil;
 
 
 /**

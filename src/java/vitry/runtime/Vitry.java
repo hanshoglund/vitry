@@ -50,17 +50,11 @@ public class Vitry
     {
         public static Apply not;
 
-        public static Apply intersection;
-
-        public static Apply product;
-
         public static Apply lessThan;
 
         public static Apply greaterThan;
 
         public static Apply list;
-
-        public static Apply set;
 
         /**
          * Standard operator bindings.
@@ -68,7 +62,7 @@ public class Vitry
         static class Ops
             {
                 // !
-                public static final Apply _21 = not;
+                public static final Apply _21 = null;
                 // #
                 public static final Apply _23 = null;
                 // $
@@ -107,9 +101,9 @@ public class Vitry
                 public static final Apply _5F = null;
                 
                 // |
-                public static final Apply _7C = null;
+                public static final Apply _7C = union;
                 // ~
-                public static final Apply _7F = null;
+                public static final Apply _7F = not;
 
                 
                 // ==
@@ -129,13 +123,13 @@ public class Vitry
         //     ` fn if let do match loop recur
 
         // ()
-        public static final Unit     unit = new Unit();
+        public static final Unit        unit = new Unit();
 
         // ?
-        public static final Wildcard wildcard = new Wildcard();
+        public static final Wildcard    wildcard = new Wildcard();
 
         // {}
-        public static final Set.Empty    emptySet = Set.Empty.instance;
+        public static final Set.Empty   emptySet = Set.Empty.instance;
 
         
         
@@ -264,6 +258,11 @@ public class Vitry
         // As overloaded functions, the arithmetic operators could technically
         // be handled by the matching logic. Here we do explicit checks to speed
         // things up a bit.
+            
+        static class ArithmeticFunction extends Function {
+                // TODO factor out instance checks to here
+                // Try to avoid call overhead
+        }
             
         public static final Apply neg = new Function(1, null)
             {
@@ -414,71 +413,49 @@ public class Vitry
         // even
         // prime
 
-            
-            
-        // ; Standard notion of bounds and enumerable seqs (Haskell-like?)
-        // 
-        // ; Well-known sequences (lazy seqs)
-        // fibbonaci : [nat]
-        // harmonic  : [nat]
-        // prime     : [nat]
-        //
-        // 
-        //
-        // ; Sets
+
+        
+        
+        // Sets
+                
         // union         : {a} -> {a}
-        // public static final Function union = new Function(){
-        //     public Object apply(Object a, Object b) {
-        //         return Util.union(a, b);
-        //     }
-        //     public int arity() {
-        //         return 2;
-        //     }
-        //     public FunctionType type() {
-        //         throw new UnsupportedOperationException();
-        //     }
-        // };
+         public static final Function union = new RestArgFunction(
+                 2, 
+                 null) {
+             public Object apply(Object elem) {
+                 if (elem instanceof Object[])
+                     return new SimpleUnion((Object[]) elem);
+                 else
+                     return new SimpleUnion(elem);
+             }
+         };
 
-        // intersect     : {a} -> {a}
-        // public static final Function intersection = new Function(){
-        //     public Object apply(Object a, Object b) {
-        //         return Util.intersection(a, b);
-        //     }
-        //     public int arity() {
-        //         return 2;
-        //     }
-        //     public FunctionType type() {
-        //         throw new UnsupportedOperationException();
-        //     }
-        // };
+        // intersection  : {a} -> {a}
+         public static final Function intersection = new Function(
+                 2, 
+                 null) {
+             public Object apply(Object elem) {
+                 if (elem instanceof Object[])
+                     return new SimpleIntersection((Object[]) elem);
+                 else
+                     return new SimpleIntersection(elem);
+             }
+         };
+         
+         
+         // symdif        : {a} -> {a}
+         // powerset      : {a} -> {a}
+         // subset        : {a}, {a} -> bool
+         // propsubset    : {a}, {a} -> bool
+         // superset      : {a}, {a} -> bool
+         // propsuperset  : {a}, {a} -> bool
+          
 
-        // symdif        : {a} -> {a}
-        // powerset      : {a} -> {a}
-        // subset        : {a} -> {a}
-        // propsubset    : {a} -> {a}
-        // superset      : {a} -> {a}
-        // propsuperset  : {a} -> {a}
+        
+         // Products and lists
+
         // 
-        // ; Randomness                 
-        // rand : [int]
-        // 
-        // ; TODO overloads with ability to select seed and distribution
-        // ; pink, brown, low, high, middle, gauss, exp, beta, gamma, cauchy, poisson                                             
-        //
-        // ; Each take a random sequence or use default (rand with no args, meaning 
-        // ; random seed).
-        // pick        : [a]         -> a
-        // pick        : [a], [int]  -> a
-        // pick        : [int], [a]  -> a
-        // shuffle     : [a]         -> [a]
-        // shuffle     : [a], [int]  -> [a]
-        // shuffle     : [int], [a]  -> [a]
-        //
-        // 
-        //   
-        // ; Sequences
-        // 
-        // fist        : [a] -> a
+        // first       : [a] -> a
         // rest        : [a] -> [a]
         // last        : [a] -> a
         // init        : [a] -> [a]
@@ -524,8 +501,34 @@ public class Vitry
         //
         // some        : [a], (a -> bool) -> ([a] -> bool) 
         // every       : [a], (a -> bool) -> ([a] -> bool)
-        // 
-        // 
+         
+         
+         
+         // ; Standard notion of bounds and enumerable seqs (Haskell-like?)
+         // 
+         // ; Well-known sequences (lazy lists)
+         // fibbonaci : [nat]
+         // harmonic  : [nat]
+         // prime     : [nat]
+        
+          
+         // ; Randomness                 
+         // rand : [int]
+         // 
+         // ; TODO overloads with ability to select seed and distribution
+         // ; pink, brown, low, high, middle, gauss, exp, beta, gamma, cauchy, poisson                                             
+         //
+         // ; Each take a random sequence or use default (rand with no args, meaning 
+         // ; random seed).
+         // pick        : [a]         -> a
+         // pick        : [a], [int]  -> a
+         // pick        : [int], [a]  -> a
+         // shuffle     : [a]         -> [a]
+         // shuffle     : [a], [int]  -> [a]
+         // shuffle     : [int], [a]  -> [a]
+         
+         
+         
         // ; "Pdef"-style lazy sequences
         // interleave  : [a] -> [a]                          
         // cycle
