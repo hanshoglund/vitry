@@ -23,7 +23,7 @@ import java.util.HashMap;
 public class HashEnv<K, V> extends AbstractEnv<K, V>
     {
         public HashEnv() {
-            this.parent = AbstractEnv.<K, V> getEmptyEnv();
+            this.parent = AbstractEnv.<K, V> getEmpty();
         }
 
         public HashEnv(Env<K, V> parent) {
@@ -34,11 +34,12 @@ public class HashEnv<K, V> extends AbstractEnv<K, V>
             return parent;
         }
 
-        protected void store(K key, V val) {
+        protected Env<K, V> put(K key, V val) {
             bindings.put(key, val);
+            return this;
         }
 
-        public V fetch(K key) {
+        public V get(K key) {
             return bindings.get(key);
         }
 

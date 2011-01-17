@@ -27,20 +27,19 @@ abstract class AbstractEnv<K, V> implements Env<K, V>
     {
 
         public Env<K, V> define(K key, V val) throws BindingException {
-            if (fetch(key) != null) throw new BindingException(key, this);
-            store(key, val);
-            return this;
+            if (get(key) != null) throw new BindingException(key, this);
+            return put(key, val);
         }
 
         public V lookup(K key) throws UndefinedException {
-            V val = fetch(key);
+            V val = get(key);
 
             if (val == null) {
                 Env<K, V> env = this;
                 try {
                     do {
                         env = env.parent();
-                        val = env.fetch(key);
+                        val = env.get(key);
                     } while (val == null);
                 } catch (LookupFailedException e) {
                     throw new UndefinedException(key, this);
@@ -49,24 +48,23 @@ abstract class AbstractEnv<K, V> implements Env<K, V>
             return val;
         }
 
-        abstract protected void store(K key, V val);
+        abstract protected Env<K, V> put(K key, V val);
 
 
-        @SuppressWarnings("unchecked") 
-        public static <K, V> Env<K, V> getEmptyEnv() {
-            if (empty == null) empty = new EmptyEnv();            
-            
-            // Safe as the we never return values
+        @SuppressWarnings("unchecked")
+        // Safe as the we never return values
+        public static <K, V> Env<K, V> getEmpty() {
+            if (empty == null) empty = new EmptyEnv();
             return (Env<K, V>) empty;
         }
 
 
-        public static boolean isEmptyEnv(Env<?,?> env) {
-            return env == getEmptyEnv();
+        public static boolean isEmpty(Env<?, ?> env) {
+            return env == getEmpty();
         }
 
 
-        private static Env<?, ?>  empty;
+        private static Env<?, ?> empty;
 
         private static final long serialVersionUID = 8402893922379900923L;
     }
@@ -85,7 +83,7 @@ class EmptyEnv extends AbstractEnv<Object, Object>
             throw new UnsupportedOperationException();
         }
 
-        protected void store(Object key, Object val) {
+        protected Env<Object, Object> put(Object key, Object val) {
             throw new UnsupportedOperationException();
         }
 
@@ -93,7 +91,7 @@ class EmptyEnv extends AbstractEnv<Object, Object>
             throw new UnsupportedOperationException();
         }
 
-        public Object fetch(Object key) {
+        public Object get(Object key) {
             throw new LookupFailedException();
         }
 
