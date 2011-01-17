@@ -16,40 +16,41 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
+package vitry.runtime.seq;
 
-import java.util.Iterator;
-
-import vitry.runtime.seq.ArraySeq;
-import vitry.runtime.seq.Cons;
-import vitry.runtime.seq.Seq;
+import vitry.runtime.AbstractProduct;
+import vitry.runtime.Pattern;
+import vitry.runtime.Product;
 
 
-public class SimpleProduct extends AbstractProduct
+public class AbstractList extends AbstractProduct
     {
-        Seq<Pattern> elements;
-
-        public SimpleProduct(Object... elements) {
-            this.elements = Native.wrap(new ArraySeq<Object>(elements));
-        }
-
-        public SimpleProduct(Pattern... elements) {
-            this.elements = new ArraySeq<Pattern>(elements);
-        }
-
-        public Iterator<Pattern> iterator() {
-            return elements.iterator();
+        public final Pattern type;
+        
+        protected AbstractList(Pattern type) {
+            this.type = type;
         }
 
         public Pattern head() {
-            return elements.head();
+            return null;
         }
 
         public Seq<Pattern> tail() {
-            return elements.tail();
+            return null;
         }
-        
+
+        public Product first() {
+            return null;
+            // TODO Auto-generated method stub
+        }
+
+        public Product second() {
+            return null;
+            // TODO Auto-generated method stub
+        }
+
         public Seq<Pattern> cons(Pattern head) {
-            return new Cons<Pattern>(head, elements);
+            return null;
+            // TODO Auto-generated method stub
         }
     }

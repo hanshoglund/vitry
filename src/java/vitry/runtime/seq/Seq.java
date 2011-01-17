@@ -16,20 +16,27 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
+package vitry.runtime.seq;
 
 /**
- * Adapts a seq as a list.
+ * A basic sequence abstraction.
+ * 
+ *   - We implement this on all sequential language types, such as products,
+ *     compound patterns and lists to support efficient conversions. 
+ *   - The empty sequence is represented by `null`. This contrast with lists,
+ *     which use `()`. ListSeq and SeqList adapts.
+ *   - May be lazy.
+ * 
+ * Implement:
+ * 
+ *   - head/tail and iterator
+ *   
  */
-public class SeqList extends AbstractList
+public interface Seq<T> extends Iterable<T>
     {
+        T head();
 
-        /**
-         * @param type
-         */
-        protected SeqList(Pattern type) {
-            super(type);
-            // TODO Auto-generated constructor stub
-        }
+        Seq<T> tail();
 
+        Seq<T> cons(T head);
     }

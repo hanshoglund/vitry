@@ -21,6 +21,8 @@ package vitry.runtime;
 import java.util.Iterator;
 
 import vitry.runtime.Vitry.Unit;
+import vitry.runtime.seq.AbstractList;
+import vitry.runtime.seq.Seq;
 
 /**
  * Implements list types. This include products on the form `(a,(a,...()))`.

@@ -18,6 +18,8 @@
  */
 package vitry.runtime;
 
+import vitry.runtime.seq.Seq;
+
 public class Interpreter implements Eval
     {
 
@@ -31,6 +33,11 @@ public class Interpreter implements Eval
         }
 
         public Value eval(Pattern e, ClassLoader link) throws Exception {
+            return null;
+            // TODO Auto-generated method stub
+        }
+
+        public Value eval(Pattern e, ClassLoader cl, Seq<Module> link) throws Exception {
             return null;
             // TODO Auto-generated method stub
         }

@@ -16,34 +16,52 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
+package vitry.runtime.seq;
 
 import java.util.Iterator;
 
 
-public class Cons<T> implements Seq<T>
-    {        
-        private T head;
-        private Seq<T> tail;
+/**
+ * Adapts arrays as Seqs.
+ */
+public class ArraySeq<T> implements Seq<T>
+    {
+        private final T[] array;
 
-        public Cons(T head, Seq<T> tail) {
-            this.head = head;
-            this.tail = tail;
+        private final int offset;
+
+        public ArraySeq(T... elements) {
+            this(elements, 0);
+        }
+
+        public ArraySeq(T[] elements, int offset) {
+            if (offset >= elements.length) throw new IllegalArgumentException();
+            this.array = elements;
+            this.offset = offset;
+        }
+        
+        private ArraySeq(T[] elements, int offset, int dummy) {
+            this.array = elements;
+            this.offset = offset;
         }
 
         public Iterator<T> iterator() {
-            return new SeqIterator<T>(this);
+            return new ArrayIterator<T>(array, offset);
         }
 
         public T head() {
-            return head;
+            return array[offset];
         }
 
         public Seq<T> tail() {
-            return tail;
+            if (offset + 1 >= array.length) return null;
+            return new ArraySeq<T>(array, offset + 1, NO_CHECK);
         }
+        
+        private static final int NO_CHECK = 0;
 
         public Seq<T> cons(T head) {
-            return new Cons<T>(head, this);
+            return null;
+            // TODO Auto-generated method stub
         }
     }

@@ -16,62 +16,35 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
+package vitry.runtime.seq;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
-/**
- * A seq containing a single value.
- */
-public class SingleSeq<T> implements Seq<T>
-    {
-        
-        private final T obj;
-        
-        public SingleSeq(T obj) {
-            this.obj = obj;
+
+
+public class Cons<T> implements Seq<T>
+    {        
+        private T head;
+        private Seq<T> tail;
+
+        public Cons(T head, Seq<T> tail) {
+            this.head = head;
+            this.tail = tail;
         }
 
         public Iterator<T> iterator() {
-            return new SingleIterator<T>(obj);
+            return new SeqIterator<T>(this);
         }
 
         public T head() {
-            return obj;
+            return head;
         }
 
         public Seq<T> tail() {
-            return null;
+            return tail;
         }
-        
+
         public Seq<T> cons(T head) {
             return new Cons<T>(head, this);
         }
     }
-
-class SingleIterator<T> implements Iterator<T> {
-        
-    private final T obj;
-    private boolean called = false;
-
-    public SingleIterator(T obj) {
-        this.obj = obj;
-    }
-
-    public boolean hasNext() {
-        return !called;
-    }
-
-    public T next() {
-        if (called) throw new NoSuchElementException();
-        else {
-            called = true;
-            return obj;            
-        }
-    }
-
-    public void remove() {
-        throw new UnsupportedOperationException();
-    }        
-}

@@ -16,34 +16,16 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
+package vitry.runtime.seq;
 
-import java.util.Iterator;
 
-/**
- * Adapts a list as a seq.
- */
-public class ListSeq implements Seq<Pattern>
+public interface Traversable<T>
     {
+        Traversable<T> parent();
 
-        public Iterator<Pattern> iterator() {
-            return null;
-            // TODO Auto-generated method stub
-        }
+        Seq<Traversable<T>> children();
 
-        public Pattern head() {
-            return null;
-            // TODO Auto-generated method stub
-        }
+        boolean hasParentLink();
 
-        public Seq<Pattern> tail() {
-            return null;
-            // TODO Auto-generated method stub
-        }
-
-        public Seq<Pattern> cons(Pattern head) {
-            return null;
-            // TODO Auto-generated method stub
-        }
-
+        boolean classHasParentLink();
     }

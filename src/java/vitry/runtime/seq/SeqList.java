@@ -16,19 +16,22 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
+package vitry.runtime.seq;
+
+import vitry.runtime.Pattern;
 
 /**
- * A sequence abstaction for parallell computation. In the style of 
- * Guy Steele's conc lists.
+ * Adapts a seq as a list.
  */
-public interface ParSeq<T> extends Traversable<T>
+public class SeqList extends AbstractList
     {
-        T get();
 
-        ParSeq<T> left();
+        /**
+         * @param type
+         */
+        protected SeqList(Pattern type) {
+            super(type);
+            // TODO Auto-generated constructor stub
+        }
 
-        ParSeq<T> right();
-
-        ParSeq<T> conc(ParSeq<T> rest);
     }

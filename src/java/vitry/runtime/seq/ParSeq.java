@@ -16,33 +16,20 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
-
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+package vitry.runtime.seq;
 
 
-public class SeqIterator<T> implements Iterator<T>
+/**
+ * A sequence abstaction for parallell computation. In the style of 
+ * Guy Steele's conc lists.
+ */
+public interface ParSeq<T> extends Traversable<T>
     {
-        private Seq<T> seq;
+        T get();
 
-        public SeqIterator(Seq<T> seq) {
-            this.seq = seq;
-        }
+        ParSeq<T> left();
 
-        public boolean hasNext() {
-            return (seq != null) && (seq.head() != null);
-        }
+        ParSeq<T> right();
 
-        public T next() {
-            if (seq == null || seq.head() == null) throw new NoSuchElementException();
-
-            T head = seq.head();
-            seq = seq.tail();
-            return head;
-        }
-
-        public void remove() {
-            throw new UnsupportedOperationException("Can not modify a Seq");
-        }
+        ParSeq<T> conc(ParSeq<T> rest);
     }

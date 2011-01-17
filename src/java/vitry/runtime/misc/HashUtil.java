@@ -16,34 +16,24 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
+package vitry.runtime.misc;
 
-import java.util.Iterator;
-
-import vitry.runtime.misc.HashUtil;
-import vitry.runtime.misc.MiscUtil;
-import vitry.runtime.seq.Seq;
-import vitry.runtime.seq.SeqIterator;
-
-
-/**
- * A compound value, representing tuples as well as product types.
- * 
- * We disallow nullary and unary instances, as () and (x)
- * are represented by the Unit class and the class of x respectively. Thus
- * instances of this interface represent n-tuples where n < 1.
- * 
- * TODO should Unit extend Product?
- * 
- * Invariants:
- *   - p.first() != null
- *   - p.second() != null
- * 
- */
-public interface Product extends Pattern, Seq<Pattern>
+public class HashUtil
     {
-        public Pattern first();
-        public Pattern second();
+
+        public static int hash(int seed, int val) {
+            return (seed * 65050 + val) % 2044508069;
+        }
+
+        public static int hash(int seed, Object val) {
+            return hash(seed, val.hashCode());
+        }
+
+        public static int hash(int seed, Iterable<?> vals) {
+            int hash = seed;
+            for (Object v : vals)
+                hash = hash(hash, v);
+            return hash;
+        }
+
     }
-
-

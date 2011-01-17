@@ -16,27 +16,33 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
+package vitry.runtime.seq;
 
-/**
- * A basic sequence abstraction.
- * 
- *   - We implement this on all sequential language types, such as products,
- *     compound patterns and lists to support efficient conversions. 
- *   - The empty sequence is represented by `null`. This contrast with lists,
- *     which use `()`. ListSeq and SeqList adapts.
- *   - May be lazy.
- * 
- * Implement:
- * 
- *   - head/tail and iterator
- *   
- */
-public interface Seq<T> extends Iterable<T>
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+
+public class SeqIterator<T> implements Iterator<T>
     {
-        T head();
+        private Seq<T> seq;
 
-        Seq<T> tail();
+        public SeqIterator(Seq<T> seq) {
+            this.seq = seq;
+        }
 
-        Seq<T> cons(T head);
+        public boolean hasNext() {
+            return (seq != null) && (seq.head() != null);
+        }
+
+        public T next() {
+            if (seq == null || seq.head() == null) throw new NoSuchElementException();
+
+            T head = seq.head();
+            seq = seq.tail();
+            return head;
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException("Can not modify a Seq");
+        }
     }

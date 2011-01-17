@@ -19,6 +19,7 @@
 package vitry.runtime;
 
 import vitry.runtime.misc.MiscUtil;
+import vitry.runtime.seq.Seq;
 
 public interface Union extends Pattern, Seq<Pattern>
     {

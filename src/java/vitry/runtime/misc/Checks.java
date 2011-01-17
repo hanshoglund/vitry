@@ -16,15 +16,25 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
+package vitry.runtime.misc;
 
-public interface Traversable<T>
+import vitry.runtime.Function;
+
+
+public class Checks
     {
-        Traversable<T> parent();
+        private Checks() {
+        }
 
-        Seq<Traversable<T>> children();
+        public static void checkArity(Function fn, int arity) {
+            if (fn.getArity() != arity)
+                throw new IllegalArgumentException("Function must have arity " + arity);
+        }
 
-        boolean hasParentLink();
-
-        boolean classHasParentLink();
+        public static void checkNotNull(Object... args) {
+            for (Object o : args) {
+                if (o == null)
+                    throw new IllegalArgumentException("Excepted non-null argument");
+            }
+        }
     }

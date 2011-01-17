@@ -16,31 +16,29 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
+package vitry.runtime.seq;
 
+import java.util.Iterator;
 
-class AbstractList extends AbstractProduct
+import vitry.runtime.Pattern;
+
+/**
+ * Adapts a list as a seq.
+ */
+public class ListSeq implements Seq<Pattern>
     {
-        public final Pattern type;
-        
-        protected AbstractList(Pattern type) {
-            this.type = type;
-        }
 
-        public Pattern head() {
-            return null;
-        }
-
-        public Seq<Pattern> tail() {
-            return null;
-        }
-
-        public Product first() {
+        public Iterator<Pattern> iterator() {
             return null;
             // TODO Auto-generated method stub
         }
 
-        public Product second() {
+        public Pattern head() {
+            return null;
+            // TODO Auto-generated method stub
+        }
+
+        public Seq<Pattern> tail() {
             return null;
             // TODO Auto-generated method stub
         }
@@ -49,4 +47,5 @@ class AbstractList extends AbstractProduct
             return null;
             // TODO Auto-generated method stub
         }
+
     }

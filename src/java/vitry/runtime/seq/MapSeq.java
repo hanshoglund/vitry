@@ -16,11 +16,13 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
+package vitry.runtime.seq;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import vitry.runtime.Apply;
+import vitry.runtime.Dynamic;
 import vitry.runtime.misc.Checks;
 
 

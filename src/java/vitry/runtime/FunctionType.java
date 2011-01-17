@@ -21,6 +21,9 @@ package vitry.runtime;
 import java.util.Iterator;
 
 import vitry.runtime.misc.HashUtil;
+import vitry.runtime.seq.Seq;
+import vitry.runtime.seq.SeqIterator;
+import vitry.runtime.seq.SingleSeq;
 
 /**
  * The function type constructor.

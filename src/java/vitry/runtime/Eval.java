@@ -18,6 +18,8 @@
  */
 package vitry.runtime;
 
+import vitry.runtime.seq.Seq;
+
 /**
  * Visits the eval operation.
  */

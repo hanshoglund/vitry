@@ -16,51 +16,63 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
+package vitry.runtime.seq;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 
 /**
- * Adapts arrays as Seqs.
+ * A seq containing a single value.
  */
-public class ArraySeq<T> implements Seq<T>
+public class SingleSeq<T> implements Seq<T>
     {
-        private final T[] array;
-
-        private final int offset;
-
-        public ArraySeq(T... elements) {
-            this(elements, 0);
-        }
-
-        public ArraySeq(T[] elements, int offset) {
-            if (offset >= elements.length) throw new IllegalArgumentException();
-            this.array = elements;
-            this.offset = offset;
-        }
         
-        private ArraySeq(T[] elements, int offset, int dummy) {
-            this.array = elements;
-            this.offset = offset;
+        private final T obj;
+        
+        public SingleSeq(T obj) {
+            this.obj = obj;
         }
 
         public Iterator<T> iterator() {
-            return new ArrayIterator<T>(array, offset);
+            return new SingleIterator<T>(obj);
         }
 
         public T head() {
-            return array[offset];
+            return obj;
         }
 
         public Seq<T> tail() {
-            if (offset + 1 >= array.length) return null;
-            return new ArraySeq<T>(array, offset + 1, NO_CHECK);
+            return null;
         }
         
-        private static final int NO_CHECK = 0;
-
         public Seq<T> cons(T head) {
-            return null;
-            // TODO Auto-generated method stub
+            return new Cons<T>(head, this);
         }
     }
+
+class SingleIterator<T> implements Iterator<T> {
+        
+    private final T obj;
+    private boolean called = false;
+
+    public SingleIterator(T obj) {
+        this.obj = obj;
+    }
+
+    public boolean hasNext() {
+        return !called;
+    }
+
+    public T next() {
+        if (called) throw new NoSuchElementException();
+        else {
+            called = true;
+            return obj;            
+        }
+    }
+
+    public void remove() {
+        throw new UnsupportedOperationException();
+    }        
+}

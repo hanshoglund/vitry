@@ -30,7 +30,7 @@
             destdir="doc"
 
             classpath="../Vitry/bin"
-            packagenames="vitry.runtime, vitry.runtime.misc, vitry.runtime.parse"
+            packagenames="vitry.runtime, vitry.runtime.misc, vitry.runtime.seq, vitry.runtime.parse"
             sourcepath="src/java">
 
             <doclet name="com.visural.doclets.markdown.standard.Standard" path="${user.home}/Library/Java/MarkdownDoclet-3.0.jar"/>

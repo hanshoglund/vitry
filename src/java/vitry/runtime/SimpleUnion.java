@@ -20,6 +20,9 @@ package vitry.runtime;
 
 import java.util.Iterator;
 
+import vitry.runtime.seq.ArraySeq;
+import vitry.runtime.seq.Seq;
+
 
 public class SimpleUnion extends AbstractUnion
     {

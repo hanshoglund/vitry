@@ -22,6 +22,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import vitry.runtime.seq.Seq;
+
 
 public class NativeType extends BasePattern implements Set
     {

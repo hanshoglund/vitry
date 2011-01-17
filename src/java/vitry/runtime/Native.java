@@ -18,6 +18,9 @@
  */
 package vitry.runtime;
 
+import vitry.runtime.seq.MapSeq;
+import vitry.runtime.seq.Seq;
+
 
 public class Native extends Atom
     {

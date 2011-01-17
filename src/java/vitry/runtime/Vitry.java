@@ -21,6 +21,9 @@ package vitry.runtime;
 import java.math.BigInteger;
 import java.util.Iterator;
 
+import vitry.runtime.seq.Cons;
+import vitry.runtime.seq.Seq;
+
 /**
  * This class encapsulates an entire runtime system. That is, a set of system
  * properties, a set of loaded modules and possibly an interpreter.
@@ -48,6 +51,8 @@ import java.util.Iterator;
  */
 public class Vitry
     {
+        
+        // TODO move down
         public static Apply not;
 
         public static Apply lessThan;
@@ -55,6 +60,10 @@ public class Vitry
         public static Apply greaterThan;
 
         public static Apply list;
+
+        public static Apply set;
+
+        public static Apply product;
 
         /**
          * Standard operator bindings.

@@ -31,27 +31,12 @@ import java.io.Serializable;
  */
 public interface Env<K, V> extends Serializable
     {
-        /**
-         * @return The resulting environment.
-         * @throws BindingException If the given value is already defined.
-         */
         Env<K, V> define(K key, V val) throws BindingException;
 
-        /**
-         * Checks parent environments and throws exception as needed,
-         * normal return implies a valid binding.
-         * @throws UndefinedException
-         */
         V lookup(K key) throws UndefinedException;
 
-        /**
-         * Returns local binding or null.
-         */
         V get(K key);
 
-        /**
-         * Return the parent environment or null.
-         */
         Env<K, V> parent();
 
         boolean isPersistent();
