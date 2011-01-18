@@ -27,11 +27,10 @@ import vitry.runtime.seq.Seq;
 /**
  * This class encapsulates an entire runtime system. That is, a set of system
  * properties, a set of loaded modules and possibly an interpreter.
- * 
- * Implements functions and types needed to bootstrap `Vitry.Prelude`.
+ * Implements functions and types needed to bootstrap <code>Vitry.Prelude</code>.
  * 
  * The native types we use are:
- * 
+ * <pre><code>
  *     BigInteger   <=> nat
  *     BigInteger   <=> int
  *     BigRational  <=> rat
@@ -45,9 +44,9 @@ import vitry.runtime.seq.Seq;
  *     Set          <=> {,}
  *     Union        <=> |
  *     Intersection <=> &
+ * </code></pre>
  * 
- * 
- * @author hans
+ * @author Hans Höglund
  */
 public class Vitry
     {

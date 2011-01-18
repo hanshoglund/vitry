@@ -26,7 +26,7 @@ import vitry.runtime.seq.Seq;
 import vitry.runtime.seq.SeqIterator;
 
 
-abstract class AbstractCompoundPattern extends BasePattern implements Seq<Pattern>
+abstract class CompoundPattern extends BasePattern implements Seq<Pattern>
     {
         public boolean eq(Set o) {
             return this.match(o) && this.matchFor(o);

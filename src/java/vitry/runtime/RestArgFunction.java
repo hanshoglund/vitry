@@ -19,11 +19,11 @@
 package vitry.runtime;
 
 /**
- * Function that gather extra args instead of reapplying.
+ * A Function that gather extra args instead of reapplying.
  * 
  * Invariants:
  * 
- *     Whenever a RestArgFunction f is called with N arguments:
+ * Whenever a RestArgFunction f is called with N arguments:
  *           if  N < f.arity,  then a partial application is returned
  *           if  N = f.arity,  then f(a1,a2..a[N]) is returned
  *           if  N > f.arity,  then f(a1,a2..a[f.arity], rest) is returned, 

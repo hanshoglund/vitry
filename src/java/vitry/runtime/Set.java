@@ -23,11 +23,22 @@ import vitry.runtime.seq.Seq;
 
 /**
  * Compound entity, matching on membership.
+ * 
+ * Equality and matching semantics:
+ * 
+ * <pre>
+ * a = b, a ∈ CompoundType, b ∈ CompoundType, a : b ∪ b : a
+ *
+ * a : b, a ∈ (Atom ∪ Product), b ∈ Set <=> ∃x (x ∈ b,   a = x)
+ * a : b, a ∈ Set, b ∈ Set              <=> ∀x (x ∈ a -> x : b) 
+ * a : b, a ∈ Union, b ∈ Set            <=> ∀x (x ∈ a -> x : b) 
+ * a : b, a ∈ Intersection, b ∈ Set     <=> ∃x (x ∈ a,   x : b)
+ * </pre>
  */
 public interface Set extends Pattern, Seq<Pattern>
     {
 
-        public static final class Empty extends AbstractCompoundPattern implements Set
+        public static final class Empty extends CompoundPattern implements Set
             {
                 private Empty() {
                 }
@@ -69,7 +80,7 @@ public interface Set extends Pattern, Seq<Pattern>
     }
 
 
-abstract class AbstractSet extends AbstractCompoundPattern implements Set
+abstract class AbstractSet extends CompoundPattern implements Set
     {
         public boolean match(Atom a) {
             for (Pattern x : this)

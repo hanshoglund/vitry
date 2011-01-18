@@ -18,6 +18,9 @@
  */
 package vitry.runtime;
 
+/**
+ * Thrown to indicate a problem related to a binding operation.
+ */
 public class BindingException extends RuntimeException
     {
         private Object key;

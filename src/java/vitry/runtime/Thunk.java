@@ -18,6 +18,9 @@
  */
 package vitry.runtime;
 
+/**
+ * Represents the delayed results of some computation.
+ */
 abstract public class Thunk extends Callable
     {
 
@@ -25,6 +28,9 @@ abstract public class Thunk extends Callable
             super(e);
         }
 
+        /**
+         * Force evaluation of this thunk, returning its value.
+         */
         public Value get() throws InvocationException {
             throw new InvocationException("Invalid thunk block.");
         }

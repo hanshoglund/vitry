@@ -21,14 +21,20 @@ package vitry.runtime;
 /**
  * A value with equality semantics. 
  * 
- * Direct implementations can be used at both side in equality operations and
- * on the left side in match operations, however, they can not be used
- * on the right side of a match operation.
- * 
- * Most built-in values will also implement {@link Pattern}.
+ * Direct implementations can be used at both sides of equality operations and
+ * on the left side of match operations, however, they can not be used
+ * on the right side of a match operation. Most built-in values will also 
+ * implement {@link Pattern}.
  */
 public interface Value
     {
+        
+        /**
+         * Returns the result of comparing the given object against this.
+         * {@link Value} instances should not call this method, but a
+         * method for visiting the appropriate subclass.
+         * Passing a value will result in an {@link AssertionError} being thrown.
+         */
         boolean eq(Object o);
 
         boolean eq(Atom o);

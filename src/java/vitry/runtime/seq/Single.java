@@ -25,12 +25,12 @@ import java.util.NoSuchElementException;
 /**
  * A seq containing a single value.
  */
-public class SingleSeq<T> implements Seq<T>
+public class Single<T> implements Seq<T>
     {
         
         private final T obj;
         
-        public SingleSeq(T obj) {
+        public Single(T obj) {
             this.obj = obj;
         }
 
@@ -51,6 +51,9 @@ public class SingleSeq<T> implements Seq<T>
         }
     }
 
+/**
+ * Iterates over a single value.
+ */
 class SingleIterator<T> implements Iterator<T> {
         
     private final T obj;

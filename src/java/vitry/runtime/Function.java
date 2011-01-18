@@ -27,18 +27,15 @@ import vitry.runtime.misc.MiscUtil;
  * 
  * Invariants:
  * 
- *     Whenever a Function f is called with N arguments:
- *           if  N   < f.arity,  then a partial application is returned
- *           if  N   = f.arity,  then f(a1,a2..a[N]) is returned
- *           if  N+1 = f.arity,  then f(a1,a2..a[N-1]) f[N] is returned
- *           if  N+2 = f.arity,  then f(a1,a2..a[N-2]) f[N-1] f[N] is returned
- *           etc.
- *           
- * See "Making a Fast Curry: Push/Enter vs Eval/Apply for Higher-order 
- * Languages" by Marlow and Jones
+ * Whenever a Function f is called with n arguments:
+ * <br/>&nbsp;&nbsp;   if  <em>n</em>     < f.arity,  then a partial application is returned
+ * <br/>&nbsp;&nbsp;   if  <em>n</em>     = f.arity,  then f(a1,a2..a[N]) is returned
+ * <br/>&nbsp;&nbsp;   if  <em>n</em> + 1 = f.arity,  then f(a1,a2..a[N-1]) f[N] is returned
+ * <br/>&nbsp;&nbsp;   if  <em>n</em> + 2 = f.arity,  then f(a1,a2..a[N-2]) f[N-1] f[N] is returned
+ * <br/>&nbsp;&nbsp;   etc.
  * 
- * 
- * @author hans
+ * See <em>Making a Fast Curry: Push/Enter vs Eval/Apply for Higher-order 
+ * Languages</em> by Marlow and Jones
  */
 abstract public class Function extends Callable implements Apply, Dynamic
     {

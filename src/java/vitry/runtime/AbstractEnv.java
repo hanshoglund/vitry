@@ -18,7 +18,9 @@
  */
 package vitry.runtime;
 
-/**
+/**         
+ * Base implementation.
+ *
  * Implement:
  *   - Provide store/fetch/isPersistent
  *   - (opt) Provide empty and (Env parent) constructors

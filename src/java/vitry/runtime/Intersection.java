@@ -21,12 +21,26 @@ package vitry.runtime;
 import vitry.runtime.misc.MiscUtil;
 import vitry.runtime.seq.Seq;
 
+/**
+ * The intersection of sets.
+ * 
+ * Equality and matching semantics:
+ * 
+ * <pre>
+ * a = b, a ∈ CompoundType, b ∈ CompoundType, a : b ∪ b : a
+ *
+ * a : b, a ∈ (Atom ∪ Product), b ∈ Intersection <=> ∀x (x ∈ b -> a : x)
+ * a : b, a ∈ Set, b ∈ Intersection              <=> ∀x (x ∈ a -> x : b) 
+ * a : b, a ∈ Union, b ∈ Intersection            <=> ∀x (x ∈ a -> x : b) 
+ * a : b, a ∈ Intersection, b ∈ Intersection     <=> ∃x (x ∈ a,   x : b)
+ * </pre>
+ */
 public interface Intersection extends Pattern, Seq<Pattern>
     {
     }
 
 
-abstract class AbstractIntersection extends AbstractCompoundPattern implements Intersection
+abstract class AbstractIntersection extends CompoundPattern implements Intersection
     {
         public boolean match(Atom a) {
             for (Pattern x : this)

@@ -27,7 +27,7 @@ import vitry.runtime.seq.Seq;
 /**
  * Implements list types. This include products on the form `(a,(a,...()))`.
  * 
- * Provides efficient matching on {@link AbstractList} subclasses.
+ * Provides efficient matching on {@link List} instances.
  */
 public class ListType extends AbstractUnion
     {
@@ -38,7 +38,7 @@ public class ListType extends AbstractUnion
         }
 
         public boolean match(Product a) {
-            return (a instanceof AbstractList && ((AbstractList) a).type == this.type)
+            return (a instanceof List && ((List) a).type() == this.type)
                     || super.match(a);
         }
 

@@ -19,14 +19,9 @@
 package vitry.runtime;
 
 /**
- * Thrown to indicate a type error.
+ * Implemented by native lists.
  */
-public class TypeException extends Exception
+public interface List
     {
-
-        public TypeException(Object tag, Value v) {
-            super("Can not apply tag " + tag + " to " + v);
-        }
-
-        private static final long serialVersionUID = 3634069213260367204L;
+        Pattern type();
     }

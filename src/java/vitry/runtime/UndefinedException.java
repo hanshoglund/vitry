@@ -18,6 +18,9 @@
  */
 package vitry.runtime;
 
+/**
+ * Thrown to indicate failed lookup of some binding.
+ */
 public class UndefinedException extends BindingException
     {
         private Object key;

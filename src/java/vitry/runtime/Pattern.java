@@ -21,17 +21,27 @@ package vitry.runtime;
 /**
  * A value with matching semantics.
  * 
- * Implementations may be used on the right side of a match operation, as in:
- *
- *     this.match(x)    <=> x : this
- *     this.matchFor(x) <=> this : x
+ * Implementations may be used on the right side of a match operation. The semantics are:
+ *  
+ * <pre><code> 
+ * this.match(x)    <=> x : this
+ * this.matchFor(x) <=> this : x
+ * </code></pre>
+ * 
  */
 public interface Pattern extends Value
     {
+
+        /**
+         * Returns the result of matching the given object against this.
+         * {@link Value} instances should not call this method, but a
+         * method for visiting the appropriate subclass.
+         * Passing a value will result in an {@link AssertionError} being thrown.
+         */
         boolean match(Object o);
-        
+
         boolean match(Atom o);
-        
+
         boolean match(Tagged<?> o);
 
         boolean match(Product p);

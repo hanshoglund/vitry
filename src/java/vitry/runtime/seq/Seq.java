@@ -19,13 +19,13 @@
 package vitry.runtime.seq;
 
 /**
- * A basic sequence abstraction.
+ * Sequence abstraction. The idea is to have a common interface for
+ * the type system (sets, products, function types) as well as on derived 
+ * constructs such as lists. To implement this scheme, we need to have separate
+ * terminators for seqs and lists. We use <code>null</code> for empty seq, 
+ * and <code>()</code> for empty lists. ListSeq and SeqList adapts.
  * 
- *   - We implement this on all sequential language types, such as products,
- *     compound patterns and lists to support efficient conversions. 
- *   - The empty sequence is represented by `null`. This contrast with lists,
- *     which use `()`. ListSeq and SeqList adapts.
- *   - May be lazy.
+ * May be lazy.
  * 
  * Implement:
  * 

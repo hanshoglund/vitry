@@ -21,12 +21,26 @@ package vitry.runtime;
 import vitry.runtime.misc.MiscUtil;
 import vitry.runtime.seq.Seq;
 
+/**
+ * The union of sets.
+ * 
+ * Equality and matching semantics:
+ * 
+ * <pre>
+ * a = b, a ∈ CompoundType, b ∈ CompoundType, a : b ∪ b : a
+ *
+ * a : b, a ∈ (Atom ∪ Product), b ∈ Union <=> ∃x (x ∈ b,   a : x)
+ * a : b, a ∈ Set, b ∈ Union              <=> ∀x (x ∈ a -> x : b) 
+ * a : b, a ∈ Union, b ∈ Union            <=> ∀x (x ∈ a -> x : b) 
+ * a : b, a ∈ Intersection, b ∈ Union     <=> ∃x (x ∈ a,   x : b)
+ * </pre>
+ */
 public interface Union extends Pattern, Seq<Pattern>
     {
     }
 
 
-abstract class AbstractUnion extends AbstractCompoundPattern implements Union
+abstract class AbstractUnion extends CompoundPattern implements Union
     {
         public boolean match(Atom a) {
             for (Pattern x : this)

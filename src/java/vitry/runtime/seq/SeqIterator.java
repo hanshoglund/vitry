@@ -21,7 +21,11 @@ package vitry.runtime.seq;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-
+/**
+ * An iterator over generic sequences. This iterator is typically returned by
+ * abstract classes or in other cases where the internals of a sequence
+ * representation is no known.
+ */
 public class SeqIterator<T> implements Iterator<T>
     {
         private Seq<T> seq;

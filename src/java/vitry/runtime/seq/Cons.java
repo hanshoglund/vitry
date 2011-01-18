@@ -20,8 +20,9 @@ package vitry.runtime.seq;
 
 import java.util.Iterator;
 
-
-
+/**
+ * Lisp-style cons pair.
+ */
 public class Cons<T> implements Seq<T>
     {        
         private T head;

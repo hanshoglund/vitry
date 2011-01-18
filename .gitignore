@@ -3,6 +3,8 @@
 .externalToolBuilders
 .project
 .settings
+Doxyfile
+doxygen/
 main.js
 vitry.jar
 doc/

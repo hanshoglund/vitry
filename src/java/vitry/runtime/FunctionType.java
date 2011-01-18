@@ -23,7 +23,7 @@ import java.util.Iterator;
 import vitry.runtime.misc.HashUtil;
 import vitry.runtime.seq.Seq;
 import vitry.runtime.seq.SeqIterator;
-import vitry.runtime.seq.SingleSeq;
+import vitry.runtime.seq.Single;
 
 /**
  * The function type constructor.
@@ -103,7 +103,7 @@ class SimpleFunctionType extends BasePattern implements FunctionType
             if (domain instanceof Function)
                 return ((Function) domain).type;
             else
-                return new SingleSeq<Pattern>(domain);
+                return new Single<Pattern>(domain);
         }
 
         public Iterator<Pattern> iterator() {

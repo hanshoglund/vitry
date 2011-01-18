@@ -19,16 +19,21 @@
 package vitry.runtime.seq;
 
 import vitry.runtime.AbstractProduct;
+import vitry.runtime.List;
 import vitry.runtime.Pattern;
 import vitry.runtime.Product;
 
 
-public class AbstractList extends AbstractProduct
+public class AbstractList extends AbstractProduct implements List
     {
         public final Pattern type;
         
         protected AbstractList(Pattern type) {
             this.type = type;
+        }
+
+        public Pattern type() {
+            return type;
         }
 
         public Pattern head() {

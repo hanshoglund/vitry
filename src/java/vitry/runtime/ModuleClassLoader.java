@@ -74,27 +74,32 @@ public class ModuleClassLoader extends ClassLoader
             boolean delegateEagerly = moduleLoaderShouldDelegate(name);
             ClassNotFoundException ex = null;
             Class<?> c = findLoadedClass(name);
-
-            if (c == null) c = classes.get(name);
-            if (c == null && delegateEagerly) {
+            
+            if (c == null) 
+                c = classes.get(name);
+            if (c == null && delegateEagerly)
                 try {
                     c = this.getParent().loadClass(name);
                 } catch (ClassNotFoundException e) {
                     ex = e;
                 }
-            }
-            if (c == null) {
+            if (c == null)
                 try {
                     c = new DefiningClassLoader(getPathsArray()).loadClass(name, this);
                 } catch (ClassNotFoundException e) {
                 }
-            }
             if (c == null) {
-                if (delegateEagerly) throw ex;
-                else
-                    c = this.getParent().loadClass(name);
+                if (delegateEagerly) {
+                    // Only reached if delegation failed
+                    assert (ex != null);
+                    throw ex;
+                } else {
+                    c = this.getParent().loadClass(name);                    
+                }
             }
-            if (resolve) resolveClass(c);
+            
+            if (resolve) 
+                resolveClass(c);
             return c;
         }
 
