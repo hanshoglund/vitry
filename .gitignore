@@ -3,6 +3,7 @@
 .externalToolBuilders
 .project
 .settings
+debug.txt
 Doxyfile
 doxygen/
 main.js
