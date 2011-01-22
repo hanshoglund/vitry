@@ -22,11 +22,7 @@ import vitry.runtime.misc.HashUtil;
 
 /**
  * This interface implements the nominative type system.
- * 
- * Type instances are associated with a *tag* and a *pattern*. A tagged value
- * is a non-type value with an associated tag. Type overrides its match operation
- * to simple tag comparison.
- * 
+
  * TODO
  * We need tagged values to retain other properties such as deconstructability,
  * i.e. we need to have an applyTag visitor.

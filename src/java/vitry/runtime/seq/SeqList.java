@@ -18,6 +18,7 @@
  */
 package vitry.runtime.seq;
 
+import vitry.runtime.AbstractList;
 import vitry.runtime.Pattern;
 
 /**

@@ -26,7 +26,7 @@ import vitry.runtime.Dynamic;
 import vitry.runtime.misc.Checks;
 
 
-public class MapSeq<A,B> implements Seq<B>, Dynamic
+public class MapSeq<A,B> implements Dynamic, Seq<B>
     {
         private final Apply fn;
         private final Seq<A> input;
@@ -61,9 +61,13 @@ public class MapSeq<A,B> implements Seq<B>, Dynamic
         }
 
         public Seq<B> cons(B head) {
-            return null;
-            // TODO Auto-generated method stub
+            return new Cons<B>(head, this);
         }
+
+        public <C> Seq<C> map(Apply fn) {
+            return new MapSeq<B,C>(fn, this);
+        }
+
     }
 
 class MapIterator<T> implements Iterator<T> {

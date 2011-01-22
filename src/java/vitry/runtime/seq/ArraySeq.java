@@ -20,6 +20,8 @@ package vitry.runtime.seq;
 
 import java.util.Iterator;
 
+import vitry.runtime.Apply;
+
 
 /**
  * Adapts arrays as Seqs.
@@ -61,7 +63,12 @@ public class ArraySeq<T> implements Seq<T>
         private static final int NO_CHECK = 0;
 
         public Seq<T> cons(T head) {
-            return null;
-            // TODO Auto-generated method stub
+            return new Cons<T>(head, this);
         }
+
+        public <U> MapSeq<T, U> map(Apply fn) {
+            return new MapSeq<T,U>(fn, this);
+        }
+
+
     }

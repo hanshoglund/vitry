@@ -21,6 +21,8 @@ package vitry.runtime;
 import java.util.Iterator;
 
 import vitry.runtime.misc.HashUtil;
+import vitry.runtime.seq.Cons;
+import vitry.runtime.seq.MapSeq;
 import vitry.runtime.seq.Seq;
 import vitry.runtime.seq.SeqIterator;
 import vitry.runtime.seq.Single;
@@ -29,8 +31,8 @@ import vitry.runtime.seq.Single;
  * The function type constructor.
  * 
  * Function types are sequencable over nested types, 
- *   i.e. if `this` represents `a -> b -> c`, 
- *   then `this.head() == a` and `this.tail()` represents `b -> c`.
+ *   i.e. if <code>this</code> represents <code>a -> b -> c</code>, 
+ *   then <code>this.head() == a</code> and <code>this.tail()</code> represents <code>b -> c</code>.
  * 
  */
 public interface FunctionType extends Pattern, Seq<Pattern>
@@ -44,36 +46,36 @@ public interface FunctionType extends Pattern, Seq<Pattern>
 class SimpleFunctionType extends BasePattern implements FunctionType
     {
 
-        private final Pattern codomain;
+        private final Pattern co;
 
-        private final Pattern domain;
+        private final Pattern dom;
 
         public SimpleFunctionType(Pattern codomain, Pattern domain) {
-            this.codomain = codomain;
-            this.domain = domain;
+            this.co = codomain;
+            this.dom = domain;
         }
 
         public Pattern co() {
-            return this.codomain;
+            return this.co;
         }
 
         public Pattern dom() {
-            return this.domain;
+            return this.dom;
         }
 
         public boolean eq(FunctionType o) {
-            return (o == this) || o.co().eqFor(this.codomain)
-                && o.dom().eqFor(this.domain);
+            return (o == this) || o.co().eqFor(this.co)
+                && o.dom().eqFor(this.dom);
         }
 
         public boolean match(Atom o) {
             // We have to cast, as Function is not in the main visitor
-            return (o instanceof Function) && ((Function) o).type.eq(this);
+            return (o instanceof Function) && ((Function) o).type().eq(this);
         }
 
         public boolean match(FunctionType p) {
-            return (p == this) || (p.co().matchFor(this.codomain) 
-                        && p.dom().matchFor(this.domain));
+            return (p == this) 
+                   || (p.co().matchFor(this.co) && p.dom().matchFor(this.dom));
         }
 
         public boolean matchFor(Pattern p) {
@@ -85,25 +87,25 @@ class SimpleFunctionType extends BasePattern implements FunctionType
         }
         
         public String toString() {
-            return ("" + codomain + " -> " + domain);
+            return ("" + co + " -> " + dom);
         }
         
         public int hashCode() {
             int hash = this.getClass().hashCode();
-            hash = HashUtil.hash(hash, codomain);
-            hash = HashUtil.hash(hash, domain);
+            hash = HashUtil.hash(hash, co);
+            hash = HashUtil.hash(hash, dom);
             return hash;
         }
 
         public Pattern head() {
-            return codomain;
+            return co;
         }
 
         public Seq<Pattern> tail() {
-            if (domain instanceof Function)
-                return ((Function) domain).type;
+            if (dom instanceof Function)
+                return ((Function) dom).type();
             else
-                return new Single<Pattern>(domain);
+                return new Single<Pattern>(dom);
         }
 
         public Iterator<Pattern> iterator() {
@@ -111,7 +113,11 @@ class SimpleFunctionType extends BasePattern implements FunctionType
         }
 
         public Seq<Pattern> cons(Pattern head) {
-            return null;
-            // TODO Auto-generated method stub
+            return new Cons<Pattern>(head, this);
         }
+
+        public <U> MapSeq<Pattern, U> map(Apply fn) {
+            return new MapSeq<Pattern,U>(fn, this);
+        }
+
     }

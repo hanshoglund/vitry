@@ -27,7 +27,7 @@ public class Checks
         }
 
         public static void checkArity(Function fn, int arity) {
-            if (fn.getArity() != arity)
+            if (fn.arity() != arity)
                 throw new IllegalArgumentException("Function must have arity " + arity);
         }
 

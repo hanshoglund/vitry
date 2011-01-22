@@ -33,7 +33,7 @@ public interface Value
          * Returns the result of comparing the given object against this.
          * {@link Value} instances should not call this method, but a
          * method for visiting the appropriate subclass.
-         * Passing a value will result in an {@link AssertionError} being thrown.
+         * Passing a value will result in an {@link IllegalArgumentException} being thrown.
          */
         boolean eq(Object o);
 

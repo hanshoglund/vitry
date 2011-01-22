@@ -2,26 +2,28 @@
 load("~/macbook/Vitry/test/js/equationalLogicJava.js");
  */
 
-importPackage(Packages.vitry.primitive);
+importPackage(Packages.vitry.runtime);
 
 
-P = Util.product;
-S = Util.set;
-U = Util.union;
-I = Util.intersection;
+
+P = Packages.vitry.primitive.misc.Types.product;
+S = Packages.vitry.primitive.misc.Types.set;
+U = Packages.vitry.primitive.misc.Types.union;
+I = Packages.vitry.primitive.misc.Types.intersection;
+//T = Packages.vitry.primitive.test.Types.type;
 F = (function(a,b) new FunctionTypeImpl(a,b));
-T = Util.type;
 
 s = Symbol.intern;
 l = (function(a) new ListType(a));
-u = Unit.getInstance();
-_ = Empty.getInstance();
-q = Wildcard.getInstance();
+u = Vitry.unit;
+_ = Vitry.emptySet;
+q = Vitry.wildcard;
 
 a = s("a");
 b = s("b");
 c = s("c");
 d = s("d");
+
 
 
 // Tests
@@ -174,3 +176,4 @@ testSpecials = function(){
 
 test();
 testSpecials();
+

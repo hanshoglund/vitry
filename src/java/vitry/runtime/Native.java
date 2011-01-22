@@ -23,9 +23,13 @@ import vitry.runtime.seq.Seq;
 
 /**
  * Wrapper for host objects. As vitry code can hold direct references to java 
- * Objects it is generally not necessary to wrap objects to expose them to 
- * the Vitry language, however, this class may be used to view a native object
- * as an Atom (and thus a Pattern).
+ * objects it is generally not necessary to wrap native objects to simpy expose
+ * them; however, this class may be used to view a native object as an Atom
+ * (and thus a Pattern), which is necessary to use it in a match expression.
+ *
+ * Note that values have to be referentially transparent on {@link equals()}
+ * and {@link hashCode()}.
+ *
  */
 public final class Native extends Atom
     {

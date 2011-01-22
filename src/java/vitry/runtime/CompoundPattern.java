@@ -22,6 +22,7 @@ import java.util.Iterator;
 
 import vitry.runtime.misc.HashUtil;
 import vitry.runtime.seq.Cons;
+import vitry.runtime.seq.MapSeq;
 import vitry.runtime.seq.Seq;
 import vitry.runtime.seq.SeqIterator;
 
@@ -62,6 +63,13 @@ abstract class CompoundPattern extends BasePattern implements Seq<Pattern>
             return new Cons<Pattern>(head, this);
         }
 
+        public <U> MapSeq<Pattern, U> map(Apply fn) {
+            return new MapSeq<Pattern,U>(fn, this);
+        }
+        
+        
+        // Java stuff
+        
         public boolean equals(Object o) {
             if (o == this) return true;
 

@@ -21,6 +21,8 @@ package vitry.runtime.seq;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import vitry.runtime.Apply;
+
 
 /**
  * A seq containing a single value.
@@ -48,6 +50,10 @@ public class Single<T> implements Seq<T>
         
         public Seq<T> cons(T head) {
             return new Cons<T>(head, this);
+        }
+
+        public <U> Seq<U> map(Apply fn) {
+            return new MapSeq<T,U>(fn, this);
         }
     }
 

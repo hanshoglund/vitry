@@ -22,8 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Standard symbols. No namespaces as in Lisp, we use nested environments
- * for everything.
+ * Standard symbols.
  */
 public class Symbol extends Atom
     {

@@ -21,8 +21,8 @@ package vitry.runtime;
 /**
  * Base implementation of pattern.
  * 
- * Implement:
- * 
+ * Implement:     
+ *
  *   - provide eqFor
  *   - provide matchFor
  *   - (opt) override match
@@ -31,9 +31,7 @@ package vitry.runtime;
 abstract class BasePattern implements Pattern
     {
         public boolean eq(Object o) {
-            // Language values should dispatch to a type in the main visitors,
-            // not fall back on object. This method is for host objects only.
-            assert !(o instanceof Value);
+            if (o instanceof Value) throw new IllegalArgumentException();
             return false;
         }
 
@@ -70,9 +68,7 @@ abstract class BasePattern implements Pattern
         }
 
         public boolean match(Object o) {
-            // Language values should dispatch to a type in the main visitors,
-            // not fall back on object. This method is for host objects only.
-            assert !(o instanceof Value);
+            if (o instanceof Value) throw new IllegalArgumentException();
             return false;
         }
 

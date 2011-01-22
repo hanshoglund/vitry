@@ -29,9 +29,7 @@ import java.util.Map;
 
 
 /**
- * Loads classes from java.class.path and/or any specified path. 
- *  
- * 
+ * Loads classes from the java class path and/or any specified path. 
  *   - Delegates base packages by default
  *   - Delegates other classes if it can not find them
  *   - Loads each requested class separately along with its references

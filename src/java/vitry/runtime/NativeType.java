@@ -87,4 +87,9 @@ public class NativeType extends BasePattern implements Set
             return null;
             // TODO Auto-generated method stub
         }
+
+        public <U> Seq<U> map(Apply fn) {
+            return null;
+            // TODO Auto-generated method stub
+        }
     }

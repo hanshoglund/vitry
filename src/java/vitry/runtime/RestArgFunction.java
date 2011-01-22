@@ -20,33 +20,35 @@ package vitry.runtime;
 
 /**
  * A Function that gather extra args instead of reapplying.
- * 
- * Invariants:
- * 
- * Whenever a RestArgFunction f is called with N arguments:
- *           if  N < f.arity,  then a partial application is returned
- *           if  N = f.arity,  then f(a1,a2..a[N]) is returned
- *           if  N > f.arity,  then f(a1,a2..a[f.arity], rest) is returned, 
- *              where rest is an array containing a[f.arity]...a[N]
  *   
  * This class is provided to make it possible to implement top-level
  * function polymorphism as match expressions. We want to rewrite something
  * like
- * 
+ * <pre>
  *    foo x:a      = M
  *    foo x:b, y:z = N
- * 
+ * </pre>
  * into
- * 
+ * <pre>
  *    foo = fn input
  *      match input
  *        (x:a)      (M)
  *        (x:b, y:c) (N)
+ * </pre>
  * 
+ * <h4>Invariants:</h4>
+ * 
+ * Whenever a RestArgFunction f is called with N arguments:
+ * <pre>
+ *           if  N &lt; f.arity,  then a partial application is returned
+ *           if  N = f.arity,  then f(a1,a2..a[N]) is returned
+ *           if  N > f.arity,  then f(a1,a2..a[f.arity], rest) is returned, 
+ *              where rest is an array containing a[f.arity]...a[N]
+ * </pre>
  *              
  * TODO
- *  Add missing cases
- *  Use Vitry seq instead of JVM array?
+ *     - Add missing cases
+ *     - Use Vitry seq instead of JVM array?
  */
 abstract public class RestArgFunction extends Function
     {

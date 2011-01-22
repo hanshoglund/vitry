@@ -1,3 +1,7 @@
+                 
+Move general info to NOTES, gradually move this stuff to tracker.
+
+====================================================================================================
 
 
 - Implement a core language
@@ -11,81 +15,7 @@
     - We will need some kind of distributive rewriting on Products/FunctionTypes vs. Unions
       for the implementation of method overloading
 
-    - We define the equational logic of Vitry in terms of the following domains and functions:
-        
-        Term         := Atom 
-                      | Product
-                      | Union
-                      | Set
-                      | FunctionType
-                      | Type              
-        Atom         := Function
-                      | Value             
-        Product      := Term (, Term)*
-        Set          := Term (, Term)*
-        Union        := Term (, Term)*
-        Intersection := Term (, Term)*
-        Type         := (Term, Tag)
-        FunctionType := (Term, Term)
-        Value        := trivial (numbers, characters etc.)
-        Tag          := trivial (a simple identity generated on-the-fly)
-
-        =        : Term -> Term -> Boolean
-        :        : Term -> Term -> Boolean
-        tag      : Term -> Type -> Term
-        getTag   : Term -> Type
-        enumerate : (Union|Intersection) -> Set
-
-        - The atom and product types form "concrete" values which may be simple or compound (tuples).
-
-        - The = and : relations represent equality and membership.
-          For atoms and sets, the implementation of = is straightforward.
-          The : relations is identical to equality for atoms and to membership (over non-sets)/inclusion (over sets) for sets.
-          Unions and intersections represents the logical and/or relations applied to sets.
-          Products forwards both function to its child elements, to allow recursive structural comparison.
-          
-        - A structural type is obtained by applying a unique tag to an expression. The resulting
-          value can be used to tag any value matching that particular type expression (making
-          type checks fast). The semantics of structural types mimic the newtype keyword
-          in Haskell.
-
-        - Basically, we have a type system based on constructions (atoms, tuples) and membership (sets, types).
-          Intersections and unions may be thought of as lazy sets. There is a function to enumerate (calculate)
-          all proper members of a set. This may be non-terminating as unions and tuples may be recursive
-          (we have a Turing-complete type system).
-        
-        - FunctionTypes are a simply a pair, used to represent to domain and codomain of function
-          instances. Higher-arity functions are represented as curried functions. These can of course be
-          converted to functions operating on tuples and vice versa.
-         
-        - We use the standard recursive representation for sequences, i.e. (a,(b,c,())) etc.        
-                
-        = is an equivalence relation
-        : is a partial ordering
-        
-        Z := S ∪ U ∪ I
-
-        (a = b) iff (a ∈ A, b ∈ A, trivially)
-                  | (a ∈ P, b ∈ P, a =~ b)
-                  | (a ∈ Z, b ∈ Z, a : b ∪ b : a )
-        
-        (a : b) iff (a ∈ A, b ∈ A, a = b)
-                  | (a ∈ P, b ∈ P, a :~ b)
-                  | (a ∈ (A ∪ P), b ∈ S, ∃x (x ∈ b,   a = x)) 
-                  | (a ∈ (A ∪ P), b ∈ U, ∃x (x ∈ b,   a : x)) 
-                  | (a ∈ (A ∪ P), b ∈ I, ∀x (x ∈ b -> a : x)) 
-                  | (a ∈ S, b ∈ Z, ∀x (x ∈ a -> x : b)) 
-                  | (a ∈ U, b ∈ Z, ∀x (x ∈ a -> x : b)) 
-                  | (a ∈ I, b ∈ Z, ∃x (x ∈ a,   x : b))
-           
-        
-        - Should a non-type match isomorphic types?
-            - For example 
-                if age = Type(nat), does Contains(nat, (2 : age)) hold?
-                
-            - Subtyping.
-            - Problem: generic functions (i.e. add, map) should preserve type integrity.
-            - Intuitively, it seems better to simulate covariants as sets/subsets.  
+    -   
                                     
         - Retagging: OK if the old type includes the new ("narrowing conversion")
         - See test/js for test scases
@@ -104,31 +34,6 @@
 
 
 
-    
-- AST
-
-    expr   = module | fn |
-             Let | where | assign | left |
-             apply | type | if | match | loop | recur
-    
-    module = (name:str, exports:[str], imports:[str], members:[assign])
-    fn     = (params:[left], body:expr)
-    
-    let    = (assigns:[assign], body:expr)
-    where  = (assigns:[assign], body:expr)
-    assign = (left:left, right:expr)            -- the = sign
-    left   = expr
-    quote  = expr                               -- the ` sign
-    
-    apply  = (fn:expr, args:[expr])
-    type   = (value:expr, type:expr)            -- the : sign
-    if     = (cond:expr, alt1:expr, alt2:expr)
-    match  = (cond:[left], case:[expr], val:expr)
-    loop   = ([assign], body:expr)
-    recur  = (args:[expr])
-    do     = (assigns:[assign], [expr])
-
-
 - Compiler
     - Current implementation too ugly
     - New strategy: 
@@ -140,7 +45,6 @@
                 - Branch node
                 - Standard snode
             - Convert to bytecode
-            
 
 
 - Runtime                                  
@@ -195,16 +99,6 @@
     important:
     - VitrySystem must not use *any* static state as this would be visible
       from concurrently running systems.
-
-
-    
-    
-
-- Parser and Lexer (already in ANTLR proj)    
-
-
-                
-
 
     
 - Functions
@@ -261,7 +155,7 @@
       the value is looked up
 
 
-==================================================
+====================================================================================================
 Future (i.e. much later) work: 
 
 - Simple database routine (via JDBC) for configuratione etc.

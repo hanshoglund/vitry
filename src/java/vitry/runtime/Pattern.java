@@ -36,7 +36,7 @@ public interface Pattern extends Value
          * Returns the result of matching the given object against this.
          * {@link Value} instances should not call this method, but a
          * method for visiting the appropriate subclass.
-         * Passing a value will result in an {@link AssertionError} being thrown.
+         * Passing a value will result in an {@link IllegalArgumentException} being thrown.
          */
         boolean match(Object o);
 

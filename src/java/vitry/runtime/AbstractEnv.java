@@ -21,8 +21,9 @@ package vitry.runtime;
 /**         
  * Base implementation.
  *
- * Implement:
- *   - Provide store/fetch/isPersistent
+ * Implement:          
+ *
+ *   - Provide put/get/isPersistent
  *   - (opt) Provide empty and (Env parent) constructors
  */
 abstract class AbstractEnv<K, V> implements Env<K, V>

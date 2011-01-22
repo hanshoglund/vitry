@@ -22,22 +22,41 @@ import java.io.Serializable;
 
 
 /**
- * Used to hold bindings.
+ * A standard environment, defined as a set of bindings along with a reference to an parent 
+ * environment.
  * 
- * Invariants:
- * 
- *   - {@link #lookup} and {@link #parent}parent are referentially transparent
- *  
+ * Invariants:    
+ *
+ *   - {@link #parent} is referentially transparent
+ *   - if this {@link #isPersistent}, then {@link #lookup} is referentially transparent
  */
 public interface Env<K, V> extends Serializable
     {
-        Env<K, V> define(K key, V val) throws BindingException;
-
+        
+        /**
+         * Lookup the given binding in this environment.
+         * @throws UndefinedException
+         */
         V lookup(K key) throws UndefinedException;
 
-        V get(K key);
-
+        /**
+         * Return the parent environment or <code>null</code>.
+         * @return
+         */
         Env<K, V> parent();
-
-        boolean isPersistent();
+                        
+        /**
+         * Return whether this environment is persistent or not.
+         */
+        boolean isPersistent();                   
+                                                                
+        /**
+         * Make a new definition in this environment.
+         */
+        Env<K, V> define(K key, V val) throws BindingException;
+        
+        /**
+         * Returns current local binding (optional).
+         */
+        V get(K key);
     }

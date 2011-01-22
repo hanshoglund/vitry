@@ -21,12 +21,9 @@ package vitry.runtime;
 import vitry.runtime.misc.HashUtil;
 
 /**
- * Implements tagged values. These are used by the nominative type system,
- * among other things.
+ * Implements tagged values.
  * 
- * Invarants:
- * 
- *   - TODO
+ * TODO rewrite to allow multiple tags and sequencing over these
  */
 public class Tagged<T> extends BasePattern
     {

@@ -20,6 +20,7 @@ package vitry.runtime.seq;
 
 import java.util.Iterator;
 
+import vitry.runtime.Apply;
 import vitry.runtime.Pattern;
 
 /**
@@ -44,6 +45,11 @@ public class ListSeq implements Seq<Pattern>
         }
 
         public Seq<Pattern> cons(Pattern head) {
+            return null;
+            // TODO Auto-generated method stub
+        }
+
+        public <U> Seq<U> map(Apply fn) {
             return null;
             // TODO Auto-generated method stub
         }

@@ -20,8 +20,10 @@ package vitry.runtime.seq;
 
 import java.util.Iterator;
 
+import vitry.runtime.Apply;
+
 /**
- * Lisp-style cons pair.
+ * A cons of two seqs.
  */
 public class Cons<T> implements Seq<T>
     {        
@@ -47,5 +49,9 @@ public class Cons<T> implements Seq<T>
 
         public Seq<T> cons(T head) {
             return new Cons<T>(head, this);
+        }
+
+        public <U> Seq<U> map(Apply fn) {
+            return new MapSeq<T,U>(fn, this);
         }
     }

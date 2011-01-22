@@ -22,17 +22,24 @@ import vitry.runtime.misc.MiscUtil;
 
 
 /**
- * Provides partial and extended application. Subclasses override one of the
- * apply methods and provide arity and type.
+ * Provides partial and extended application.
+ *
+ * Subclasses should override one of the apply methods and provide arity and type.
  * 
- * Invariants:
+ * Conceptually, all functionas are unary. However, functions of arity <em>n</em> is
+ * used to represent the curried form <em>t1 -> t2 ... tN</em> effetively. Such
+ * a function has type <em>T</em> where <em>T</em> is a sequence and <code>T.head</code> 
+ * represents <em>t1</em>, <code>T.head().head()</code> represents t2 and so on.
  * 
- * Whenever a Function f is called with n arguments:
- * <br/>&nbsp;&nbsp;   if  <em>n</em>     < f.arity,  then a partial application is returned
- * <br/>&nbsp;&nbsp;   if  <em>n</em>     = f.arity,  then f(a1,a2..a[N]) is returned
- * <br/>&nbsp;&nbsp;   if  <em>n</em> + 1 = f.arity,  then f(a1,a2..a[N-1]) f[N] is returned
- * <br/>&nbsp;&nbsp;   if  <em>n</em> + 2 = f.arity,  then f(a1,a2..a[N-2]) f[N-1] f[N] is returned
- * <br/>&nbsp;&nbsp;   etc.
+ * <h4>Invariants:</h4>
+ * 
+ * Whenever a Function f is called with n arguments:                      
+ * <pre>
+ *     if  n     &lt; f.arity,  then a partial application is returned
+ *     if  n     = f.arity,  then f(a1,a2..a[N]) is returned
+ *     if  n + 1 = f.arity,  then f(a1,a2..a[N-1]) f[N] is returned
+ *     if  n + 2 = f.arity,  then f(a1,a2..a[N-2]) f[N-1] f[N] is returned</pre>
+ * etc.
  * 
  * See <em>Making a Fast Curry: Push/Enter vs Eval/Apply for Higher-order 
  * Languages</em> by Marlow and Jones
@@ -67,11 +74,11 @@ abstract public class Function extends Callable implements Apply, Dynamic
             this.type = type;
         }
 
-        public int getArity() {
+        public int arity() {
             return arity;
         }
 
-        public FunctionType getType() {
+        public FunctionType type() {
             return type;
         }
         

@@ -22,6 +22,7 @@ import java.util.Iterator;
 
 import vitry.runtime.seq.ArraySeq;
 import vitry.runtime.seq.Cons;
+import vitry.runtime.seq.MapSeq;
 import vitry.runtime.seq.Seq;
 
 
@@ -52,4 +53,9 @@ public class SimpleProduct extends AbstractProduct
         public Seq<Pattern> cons(Pattern head) {
             return new Cons<Pattern>(head, elements);
         }
+
+        public <U> MapSeq<Pattern, U> map(Apply fn) {
+            return new MapSeq<Pattern,U>(fn, elements);
+        }
+
     }

@@ -21,13 +21,11 @@ package vitry.runtime;
 import java.util.Iterator;
 
 import vitry.runtime.Vitry.Unit;
-import vitry.runtime.seq.AbstractList;
 import vitry.runtime.seq.Seq;
 
 /**
- * Implements list types. This include products on the form `(a,(a,...()))`.
- * 
- * Provides efficient matching on {@link List} instances.
+ * Implements list types. This include products on the form 
+ * <code>(a,(a,...()))</code>. Provides efficient matching on List instances.
  */
 public class ListType extends AbstractUnion
     {
@@ -64,6 +62,11 @@ public class ListType extends AbstractUnion
                     }
 
                     public Seq<Pattern> cons(Pattern head) {
+                        return null;
+                        // TODO Auto-generated method stub
+                    }
+
+                    public <U> Seq<U> map(Apply fn) {
                         return null;
                         // TODO Auto-generated method stub
                     }
@@ -112,6 +115,11 @@ class ConsType extends AbstractProduct
                         return null;
                         // TODO Auto-generated method stub
                     }
+
+                    public <U> Seq<U> map(Apply fn) {
+                        return null;
+                        // TODO Auto-generated method stub
+                    }
                 };
         }
 
@@ -126,6 +134,11 @@ class ConsType extends AbstractProduct
         }
 
         public Seq<Pattern> cons(Pattern head) {
+            return null;
+            // TODO Auto-generated method stub
+        }
+
+        public <U> Seq<U> map(Apply fn) {
             return null;
             // TODO Auto-generated method stub
         }

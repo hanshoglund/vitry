@@ -22,6 +22,7 @@ import java.math.BigInteger;
 import java.util.Iterator;
 
 import vitry.runtime.seq.Cons;
+import vitry.runtime.seq.MapSeq;
 import vitry.runtime.seq.Seq;
 
 /**
@@ -564,7 +565,7 @@ public class Vitry
             
         // quit        : ->
         public static final Apply quit = new Function(
-                0, 
+                1, 
                 fnType(wildcard, wildcard)){
             
             public Object apply(Object a) throws Exception {
@@ -623,6 +624,10 @@ public class Vitry
 
                 public Seq<Pattern> cons(Pattern head) {
                     return new Cons<Pattern>(head, this);
+                }
+
+                public <U> MapSeq<Pattern, U> map(Apply fn) {
+                    return new MapSeq<Pattern,U>(fn, this);
                 }
             }
 

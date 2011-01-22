@@ -18,6 +18,8 @@
  */
 package vitry.runtime.seq;
 
+import vitry.runtime.Apply;
+
 /**
  * Sequence abstraction. The idea is to have a common interface for
  * the type system (sets, products, function types) as well as on derived 
@@ -39,4 +41,6 @@ public interface Seq<T> extends Iterable<T>
         Seq<T> tail();
 
         Seq<T> cons(T head);
+        
+        <U> Seq<U> map(Apply fn);
     }

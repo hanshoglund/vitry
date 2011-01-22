@@ -24,9 +24,9 @@ package vitry.runtime;
 abstract public class InvertibleFunction extends Function    {
 
         /**
-        * @param arity
-        * @param type
-        */
+         * @param arity
+         * @param type
+         */
         public InvertibleFunction(int arity, FunctionType type) {
             super(arity, type);
             // TODO Auto-generated constructor stub

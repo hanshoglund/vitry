@@ -21,8 +21,8 @@ package vitry.runtime;
 /**
  * A nondestructible value with trivial matching semantics.
  * 
- * Implement:
- * 
+ * Implement:         
+ *
  *   - Value.eq <em>or</em> Object.equals
  *   - Object.hashCode
  */
@@ -37,6 +37,8 @@ abstract public class Atom extends BasePattern
             return this.eq(o);
         }
 
+        // FIXME move to BasePattern
+        // It SHOULD hold for FunctionTypes, Types and Tagged<T> as well...
         public boolean match(Intersection a) {
             for (Pattern x : a)
                 if (x.matchFor(this)) return true;
