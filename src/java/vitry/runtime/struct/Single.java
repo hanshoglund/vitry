@@ -57,9 +57,6 @@ public class Single<T> implements Seq<T>
         }
     }
 
-/**
- * Iterates over a single value.
- */
 class SingleIterator<T> implements Iterator<T> {
         
     private final T obj;

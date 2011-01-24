@@ -23,19 +23,23 @@ import java.util.NoSuchElementException;
 
 import vitry.runtime.Apply;
 import vitry.runtime.Dynamic;
+import vitry.runtime.Function;
+import vitry.runtime.InvocationException;
 import vitry.runtime.misc.Checks;
+
 
 /**
  * A seq adapted from another seq by the map operation.
  */
-public class MapSeq<A,B> implements Dynamic, Seq<B>
+public class MapSeq<A, B> implements Dynamic, Seq<B>
     {
         private final Apply fn;
+
         private final Seq<A> input;
 
         public MapSeq(Apply fn, Seq<A> input) {
             Checks.checkNotNull(fn, input);
-//            Util.checkArity(fn, 1);
+            if (fn instanceof Function) Checks.checkArity((Function) fn, 1);
             this.fn = fn;
             this.input = input;
         }
@@ -45,16 +49,21 @@ public class MapSeq<A,B> implements Dynamic, Seq<B>
         }
 
         @SuppressWarnings("unchecked")
+        
         public B head() {
             A head = input.head();
+
             if (head == null) return null;
+
             try {
+                // Either returns or throw an InvocationException
                 return (B) fn.apply(head);
-            } catch (Exception e) {
-            }
-            throw new RuntimeException(
-                    "MapIterator faild to convert value " 
-                    + head + " using " + fn);
+                
+            } catch (InvocationException e) {
+                throw new InvocationException(
+                        "MapIterator faild to convert value " 
+                        + head + " using " + fn, e);
+           }
         }
 
         public Seq<B> tail() {
@@ -67,42 +76,52 @@ public class MapSeq<A,B> implements Dynamic, Seq<B>
         }
 
         public <C> Seq<C> map(Apply fn) {
-            return new MapSeq<B,C>(fn, this);
+            return new MapSeq<B, C>(fn, this);
         }
 
     }
 
-class MapIterator<T> implements Iterator<T> {
-        
-    private Apply fn;
-    private Iterator<?> input;
 
-    public MapIterator(Apply fn, Iterator<?> input) {
-//        Util.checkArity(fn, 1);
-        this.fn = fn;
-        this.input = input;
-    }
+class MapIterator<T> implements Iterator<T>
+    {
 
-    public boolean hasNext() {
-        return input.hasNext();
-    }
+        private Apply fn;
 
-    @SuppressWarnings("unchecked")
-    public T next() {
-        Object next = input.next();
-        try {
-            return (T) fn.apply(next);
-        } catch (NoSuchElementException e) {
-            throw e;
-        } catch (Exception e) {
+        private Iterator<?> input;
+
+        public MapIterator(Apply fn, Iterator<?> input) {
+            if (fn instanceof Function) Checks.checkArity((Function) fn, 1);
+            this.fn = fn;
+            this.input = input;
         }
-        throw new RuntimeException(
-                "MapIterator faild to convert value " 
-                + next + " using " + fn);
-    }
 
-    public void remove() {
-        throw new UnsupportedOperationException("Can not remove from a MapIterator");
-    }
+        public boolean hasNext() {
+            return input.hasNext();
+        }
+
+        @SuppressWarnings("unchecked")
         
-}
+        public T next() {
+            Object next = null;
+            try {
+                // Either next suceeds so that next is set to return value, 
+                // or we catch and rethrow a NoSuchElementException
+                next = input.next();
+
+                // Either returns or throw an InvocationException
+                return (T) fn.apply(next);
+
+            } catch (NoSuchElementException e) {
+                throw e;
+            } catch (InvocationException e) {
+                throw new InvocationException(
+                        "MapIterator faild to convert value " 
+                        + next+ " using " + fn, e);
+            }
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException("Can not remove from a MapIterator");
+        }
+
+    }

@@ -20,48 +20,49 @@ package vitry.runtime;
 
 import vitry.runtime.misc.Utilities;
 
+
 abstract class AbstractSet extends CompoundPattern implements Set
-{
-    public boolean match(Object o) {
-        if (o instanceof Value) throw new IllegalArgumentException();
-        for (Pattern x : this)
-            if (x.eq(o)) return true;
-        return false;
-    }
+    {
+        public boolean match(Object o) {
+            if (o instanceof Value) throw new IllegalArgumentException();
+            for (Pattern x : this)
+                if (x.eq(o)) return true;
+            return false;
+        }
 
-    public boolean match(Atom a) {
-        for (Pattern x : this)
-            if (x.eq(a)) return true;
-        return false;
-    }
+        public boolean match(Atom a) {
+            for (Pattern x : this)
+                if (x.eq(a)) return true;
+            return false;
+        }
 
-    public boolean match(Tagged<?> p) {
-        for (Pattern x : this)
-            if (x.eq(p)) return true;
-        return false;
-    }
+        public boolean match(Tagged<?> p) {
+            for (Pattern x : this)
+                if (x.eq(p)) return true;
+            return false;
+        }
 
-    public boolean match(Product a) {
-        for (Pattern x : this)
-            if (x.eq(a)) return true;
-        return false;
-    }
+        public boolean match(Product a) {
+            for (Pattern x : this)
+                if (x.eq(a)) return true;
+            return false;
+        }
 
-    public boolean match(FunctionType p) {
-        for (Pattern x : this)
-            if (x.eq(p)) return true;
-        return false;
-    }
+        public boolean match(FunctionType p) {
+            for (Pattern x : this)
+                if (x.eq(p)) return true;
+            return false;
+        }
 
-    public boolean eqFor(Value p) {
-        return p.eq(this);
-    }
+        public boolean eqFor(Value p) {
+            return p.eq(this);
+        }
 
-    public boolean matchFor(Pattern p) {
-        return p.match(this);
-    }
+        public boolean matchFor(Pattern p) {
+            return p.match(this);
+        }
 
-    public String toString() {
-        return Utilities.join(this, "{", ", ", "}");
+        public String toString() {
+            return Utilities.join(this, "{", ", ", "}");
+        }
     }
-}

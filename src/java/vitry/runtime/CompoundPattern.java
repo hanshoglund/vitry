@@ -34,15 +34,15 @@ import vitry.runtime.struct.SeqIterator;
 abstract class CompoundPattern extends BasePattern implements Seq<Pattern>
     {
         public boolean eq(Set o) {
-            return this.match(o) && this.matchFor(o);
+            return o == this || this.match(o) && this.matchFor(o);
         }
 
         public boolean eq(Union o) {
-            return this.match(o) && this.matchFor(o);
+            return o == this || this.match(o) && this.matchFor(o);
         }
 
         public boolean eq(Intersection o) {
-            return this.match(o) && this.matchFor(o);
+            return o == this || this.match(o) && this.matchFor(o);
         }
 
         public boolean match(Set a) {

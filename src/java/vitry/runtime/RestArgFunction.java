@@ -59,7 +59,7 @@ abstract public class RestArgFunction extends Function
         
         // No need to override apply(Object) ?
 
-        public Object apply(Object a0, Object a1) throws Exception {
+        public Object apply(Object a0, Object a1) throws InvocationException {
 
             switch (arity) {
                 case 1:
@@ -71,7 +71,7 @@ abstract public class RestArgFunction extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2) throws Exception {
+        public Object apply(Object a0, Object a1, Object a2) throws InvocationException {
 
             switch (arity) {
                 case 1:
@@ -85,7 +85,7 @@ abstract public class RestArgFunction extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3) throws Exception {
+        public Object apply(Object a0, Object a1, Object a2, Object a3) throws InvocationException {
 
             switch (arity) {
 
@@ -96,7 +96,7 @@ abstract public class RestArgFunction extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4) throws Exception {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4) throws InvocationException {
 
             switch (arity) {
 
@@ -107,7 +107,7 @@ abstract public class RestArgFunction extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5) throws Exception {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5) throws InvocationException {
 
             switch (arity) {
 
@@ -118,7 +118,7 @@ abstract public class RestArgFunction extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6) throws Exception {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6) throws InvocationException {
 
             switch (arity) {
 
@@ -130,7 +130,7 @@ abstract public class RestArgFunction extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7) throws Exception {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7) throws InvocationException {
 
             switch (arity) {
 
@@ -143,7 +143,7 @@ abstract public class RestArgFunction extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8) throws Exception {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8) throws InvocationException {
 
             switch (arity) {
 
@@ -155,7 +155,7 @@ abstract public class RestArgFunction extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9) throws Exception {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9) throws InvocationException {
 
             switch (arity) {
 
@@ -168,7 +168,7 @@ abstract public class RestArgFunction extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10) throws Exception {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10) throws InvocationException {
 
             switch (arity) {
 
@@ -180,7 +180,7 @@ abstract public class RestArgFunction extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11) throws Exception {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11) throws InvocationException {
 
             switch (arity) {
 
@@ -192,7 +192,7 @@ abstract public class RestArgFunction extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12) throws Exception {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12) throws InvocationException {
 
             switch (arity) {
 
@@ -204,7 +204,7 @@ abstract public class RestArgFunction extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12, Object a13) throws Exception {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12, Object a13) throws InvocationException {
 
             switch (arity) {
 
@@ -216,7 +216,7 @@ abstract public class RestArgFunction extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12, Object a13, Object a14) throws Exception {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12, Object a13, Object a14) throws InvocationException {
 
             switch (arity) {
 
@@ -228,7 +228,7 @@ abstract public class RestArgFunction extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12, Object a13, Object a14, Object a15) throws Exception {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12, Object a13, Object a14, Object a15) throws InvocationException {
 
             switch (arity) {
                 case 1:

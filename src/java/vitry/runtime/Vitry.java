@@ -568,7 +568,7 @@ public class Vitry
                 1, 
                 fnType(wildcard, wildcard)){
             
-            public Object apply(Object a) throws Exception {
+            public Object apply(Object a) throws InvocationException {
                 if (a instanceof Number)
                     System.exit(((Number) a).intValue());
                 else
