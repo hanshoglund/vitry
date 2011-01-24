@@ -33,7 +33,7 @@ import vitry.runtime.struct.Seq;
  *   - <code>p.snd() != null</code>
  * 
  */
-public interface Product extends Pattern, Seq<Pattern>
+public interface Product extends Pattern, Seq<Pattern>, MaybeDestructible
     {
         public Pattern fst();
 

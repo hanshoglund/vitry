@@ -35,9 +35,9 @@ public interface Env<K, V> extends Serializable
         
         /**
          * Lookup the given binding in this environment.
-         * @throws UndefinedException
+         * @throws UndefinedError
          */
-        V lookup(K key) throws UndefinedException;
+        V lookup(K key) throws UndefinedError;
 
         /**
          * Return the parent environment or <code>null</code>.
@@ -54,5 +54,5 @@ public interface Env<K, V> extends Serializable
          * Make a new definition in this environment and return a
          * modified environment (optional).
          */
-        Env<K, V> define(K key, V val) throws BindingException;
+        Env<K, V> define(K key, V val) throws BindingError;
     }

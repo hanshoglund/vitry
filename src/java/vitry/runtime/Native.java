@@ -77,7 +77,7 @@ public final class Native extends Atom
          */
         public static Seq<Pattern> wrap(Seq<Object> values) {
             return new MapSeq<Object, Pattern>(new Function(1, null){
-                public Object apply(Object v) throws InvocationException {
+                public Object apply(Object v) throws InvocationError {
                     return wrap(v);
                 }
             }, values);

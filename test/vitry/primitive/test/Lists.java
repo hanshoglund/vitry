@@ -24,8 +24,8 @@ public class Lists
             
             Pattern l = new ListType(a);
             
-            out.println(Vitry.unit.matchFor(l));
-            out.println(Utilities.product(a, Vitry.unit.matchFor(l)));
+            out.println(Vitry.nil.matchFor(l));
+            out.println(Utilities.product(a, Vitry.nil.matchFor(l)));
           
             
 

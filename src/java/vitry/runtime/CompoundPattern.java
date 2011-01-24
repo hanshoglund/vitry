@@ -46,7 +46,7 @@ abstract class CompoundPattern extends BasePattern implements Seq<Pattern>
         }
 
         public boolean match(Set a) {
-            if (a == Vitry.emptySet) return true;
+            if (a == Vitry.bottom) return true;
             for (Pattern x : a)
                 if (!x.matchFor(this)) return false;
             return true;

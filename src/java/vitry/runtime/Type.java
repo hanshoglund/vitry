@@ -18,19 +18,83 @@
  */
 package vitry.runtime;
 
+import vitry.runtime.misc.Hashing;
+import vitry.runtime.struct.Seq;
 
 /**
- * This interface implements the nominative type system.
- *
- * TODO
- *     - We need tagged values to retain other properties such as deconstructability,
- *       i.e. we need to have an applyTag visitor.
+ * A type or type operator.
  */
-public interface Type extends Pattern
+public class Type extends BasePattern implements MaybeDestructible
     {
-        Pattern pattern();
-
-        Object tag();
         
-        Value applyTag(Value v) throws TypeException;
+        private final Pattern pattern;
+
+        private final Object tag;
+        
+        // TODO
+        private boolean retained;
+        
+
+        public Type(Pattern pattern, Object tag) {
+            this.pattern = pattern;
+            this.tag = tag;
+        }
+
+        public Pattern pattern() {
+            return pattern;
+        }
+
+        public Object tag() {
+            return tag;
+        }
+
+        public Value applyTag(Value v) throws TypeError {
+            if (v.matchFor(pattern)) return new Tagged<Object>(v, tag);
+            else
+                throw new TypeError(tag, v);
+        }
+
+        public boolean eq(Type o) {
+            return (this == o) || (pattern.eqFor(o.pattern()) && tag.equals(o.tag()));
+        }
+
+        public boolean match(Tagged<?> p) {
+            return p.getTag() == tag;
+        }
+
+        public boolean match(Type o) {
+            return pattern.matchFor(o.pattern()) && tag.equals(o.tag());
+        }
+
+        public boolean matchFor(Pattern p) {
+            return p.match(this);
+        }
+
+        public boolean eqFor(Value o) {
+            return o.eq(this);
+        }
+
+        public boolean isDestructible() {
+            if (pattern instanceof MaybeDestructible)
+                return ((MaybeDestructible) pattern).isDestructible();
+            return false;
+        }
+
+        public Seq<Pattern> destruct() {
+            if (pattern instanceof MaybeDestructible)
+                return ((MaybeDestructible) pattern).destruct();
+            throw new UnsupportedOperationException("Can not destruct " + pattern);
+        }
+
+        public String toString() {
+            return tag.toString();
+        }
+
+        public int hashCode() {
+            int hash = this.getClass().hashCode();
+            hash = Hashing.hash(hash, pattern);
+            hash = Hashing.hash(hash, tag);
+            return hash;
+        }
+
     }

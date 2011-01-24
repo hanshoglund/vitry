@@ -24,7 +24,7 @@ import java.util.NoSuchElementException;
 import vitry.runtime.Apply;
 import vitry.runtime.Dynamic;
 import vitry.runtime.Function;
-import vitry.runtime.InvocationException;
+import vitry.runtime.InvocationError;
 import vitry.runtime.misc.Checks;
 
 
@@ -59,8 +59,8 @@ public class MapSeq<A, B> implements Dynamic, Seq<B>
                 // Either returns or throw an InvocationException
                 return (B) fn.apply(head);
                 
-            } catch (InvocationException e) {
-                throw new InvocationException(
+            } catch (InvocationError e) {
+                throw new InvocationError(
                         "MapIterator faild to convert value " 
                         + head + " using " + fn, e);
            }
@@ -113,8 +113,8 @@ class MapIterator<T> implements Iterator<T>
 
             } catch (NoSuchElementException e) {
                 throw e;
-            } catch (InvocationException e) {
-                throw new InvocationException(
+            } catch (InvocationError e) {
+                throw new InvocationError(
                         "MapIterator faild to convert value " 
                         + next+ " using " + fn, e);
             }

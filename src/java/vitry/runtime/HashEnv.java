@@ -20,7 +20,9 @@ package vitry.runtime;
 
 import java.util.HashMap;
 
-
+/**
+ * A basic non-persistent environment.
+ */
 public class HashEnv<K, V> extends AbstractEnv<K, V>
     {
         protected Env<K, V> put(K key, V val) {

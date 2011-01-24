@@ -52,7 +52,7 @@ public class NativeType extends BasePattern implements Set
 
         public boolean eq(Set o) {
             if (o == this) return true;
-            if (o instanceof NativeType) { return ((NativeType) o).javaClass == this.javaClass; }
+            if (o instanceof NativeType) return ((NativeType) o).javaClass == this.javaClass;
             return false;
         }
 

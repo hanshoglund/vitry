@@ -22,8 +22,8 @@ import vitry.runtime.misc.Hashing;
 
 /**
  * Implements tagged values.
- * 
- * TODO rewrite to allow multiple tags and sequencing over these
+ *
+ * This is required for runtime type information.
  */
 public class Tagged<T> extends BasePattern
     {
@@ -42,6 +42,10 @@ public class Tagged<T> extends BasePattern
 
         public T getTag() {
             return tag;
+        }
+        
+        public Tagged<T> retag(T newTag) {
+            return new Tagged<T>(val, newTag);
         }
 
         public boolean eq(Tagged<?> o) {

@@ -35,6 +35,7 @@ import vitry.runtime.struct.SeqIterator;
  */
 public abstract class AbstractProduct extends BasePattern implements Product
     {
+        
         public boolean eq(Product o) {
             Seq<Pattern> left = o;
             Seq<Pattern> right = this;
@@ -73,8 +74,16 @@ public abstract class AbstractProduct extends BasePattern implements Product
             return p.match(this);
         }
         
-        // Java stuff
+        public boolean isDestructible() {
+            return true;
+        }
 
+        public Seq<Pattern> destruct() {
+            return this;
+        }
+
+        // Java stuff
+        
         public boolean equals(Object o) {
             if (o == this) return true;
             if (o instanceof Product) return eq((Product) o);

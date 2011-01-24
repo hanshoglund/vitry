@@ -41,7 +41,7 @@ public class ListType extends AbstractUnion
         }
 
         public Pattern head() {
-            return Vitry.unit;
+            return Vitry.nil;
         }
 
         public Seq<Pattern> tail() {

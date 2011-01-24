@@ -31,7 +31,7 @@ abstract public class Thunk extends Callable
         /**
          * Force evaluation of this thunk, returning its value.
          */
-        public Value get() throws InvocationException {
-            throw new InvocationException("Invalid thunk block.");
+        public Value get() throws InvocationError {
+            throw new InvocationError("Invalid thunk block.");
         }
     }

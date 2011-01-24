@@ -2,7 +2,7 @@
 
 
 
-The reification system of Vitry provides adresses the subtle problem of structural representation in the core language. Functional programming languages are generally shrinkable to a core language consisting of lambda calculus and typing logic. This is also the case with Vitry, whose core language is a lambda calculus with pattern composition and decomposition. Therefore the underlying representation of patterns is hidden from the user.
+The reification system of provides adresses the subtle problem of structural representation in the core language. Functional programming languages are generally shrinkable to a core language consisting of lambda calculus and typing logic. This is also the case with Vitry, whose core language is a lambda calculus with pattern composition and decomposition. Therefore the underlying representation of patterns is hidden from the user.
                                          
 Reificitation is a facility to reimplement the core data types of Vitry in terms of its own data structures. The system was designed to preserve invariants on core types, thus providing the user with explicit control over performance and memory, while not affecting the semantics.
 

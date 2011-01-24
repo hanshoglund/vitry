@@ -55,9 +55,9 @@ public class Vitry
         // TODO move down
         public static Apply not;
 
-        public static Apply lessThan;
+        public static Apply less;
 
-        public static Apply greaterThan;
+        public static Apply greater;
 
         public static Apply list;
 
@@ -96,11 +96,11 @@ public class Vitry
                 // ;
                 public static final Apply _3B = null;
                 // <
-                public static final Apply _3C = lessThan;
+                public static final Apply _3C = less;
                 // >
-                public static final Apply _3E = greaterThan;
+                public static final Apply _3E = greater;
                 // ?
-                public static final Wildcard _3F = wildcard;
+                public static final Any _3F = any;
                 // @
                 public static final Apply _40 = null;
                 
@@ -132,20 +132,20 @@ public class Vitry
         //     ` fn if let do match loop recur
 
         // ()
-        public static final Unit        unit = new Unit();
+        public static final Nil        nil = new Nil();
 
         // ?
-        public static final Wildcard    wildcard = new Wildcard();
+        public static final Any    any = new Any();
 
         // {}
-        public static final Set.Empty   emptySet = Set.Empty.instance;
+        public static final Set.Empty   bottom = Set.Empty.instance;
 
         
         
         // ==
         public static final Apply eq = new Function(
                 2, 
-                fnType(wildcard, wildcard))
+                fnType(any, any))
             {
                 public Object apply(Object a, Object b) {
                     return null; // TODO
@@ -168,9 +168,9 @@ public class Vitry
         // Basic types
         
         // type bool = `true | `false
-        public static final Symbol _true   = Symbol.intern("true");
-        public static final Symbol _false  = Symbol.intern("false");
-        public static final Type   bool    = symType("bool", new SimpleUnion(_true, _false));
+        public static final Symbol true_   = Symbol.intern("true");
+        public static final Symbol false_  = Symbol.intern("false");
+        public static final Type   bool    = symType("bool", new SimpleUnion(true_, false_));
         
         // type 
         //   nat    = ...
@@ -180,10 +180,10 @@ public class Vitry
         //   double = ...
         //   str    = ...
         public static final Set    nat     = NativeType.forClass(BigInteger.class);
-        public static final Set    _int    = NativeType.forClass(BigInteger.class);
+        public static final Set    int_    = NativeType.forClass(BigInteger.class);
         public static final Set    rat     = NativeType.forClass(BigRational.class);
-        public static final Set    _float  = NativeType.forClass(Float.class);
-        public static final Set    _double = NativeType.forClass(Double.class);
+        public static final Set    float_  = NativeType.forClass(Float.class);
+        public static final Set    double_ = NativeType.forClass(Double.class);
         public static final Set    str     = NativeType.forClass(String.class);
 
         //
@@ -216,7 +216,7 @@ public class Vitry
         // arity     : ? -> nat
         public static final Apply arity = new Function(
                 1, 
-                fnType(wildcard, nat))
+                fnType(any, nat))
             {
                 public Object apply(Object a) {
                     return ((Function) a).arity;
@@ -234,7 +234,7 @@ public class Vitry
 
 
         // const     : a -> (? -> a)
-        public static final Apply _const = new Function(1, null)
+        public static final Apply const_ = new Function(1, null)
             {
                 public Object apply(final Object a) {
                     return new Function(1, null)
@@ -566,9 +566,9 @@ public class Vitry
         // quit        : ->
         public static final Apply quit = new Function(
                 1, 
-                fnType(wildcard, wildcard)){
+                fnType(any, any)){
             
-            public Object apply(Object a) throws InvocationException {
+            public Object apply(Object a) throws InvocationError {
                 if (a instanceof Number)
                     System.exit(((Number) a).intValue());
                 else
@@ -581,17 +581,19 @@ public class Vitry
         };
         
         public static FunctionType fnType(Pattern co, Pattern dom) {
-            return new SimpleFunctionType(co, dom);
+            return new FunctionType(co, dom);
         }
             
         public static Type symType(String name, Pattern pattern) {
-            return new SimpleType(pattern, Symbol.intern(name));
+            return new Type(pattern, Symbol.intern(name));
         }
 
-
-        public static final class Unit extends Atom implements Product
+        /**
+         * The nil type, written as <code>()</code>.
+         */
+        public static final class Nil extends Atom implements Product
             {
-                private Unit() {
+                private Nil() {
                 }
                 
                 public boolean eq(Atom o) {
@@ -610,7 +612,11 @@ public class Vitry
                     return new MapSeq<Pattern,U>(fn, this);
                 }
                 
-                // Rest of interfaces unsupported, pretty uninteresting...
+                public boolean isDestructible() {
+                    return false;
+                }
+                
+                // Rest of interface unsupported, pretty uninteresting...
 
                 public Product fst() {
                     return throwUnsupported();
@@ -629,6 +635,10 @@ public class Vitry
                 }
 
                 public Iterator<Pattern> iterator() {
+                    return throwUnsupported();
+                }
+
+                public Seq<Pattern> destruct() {
                     return throwUnsupported();
                 }
 
@@ -673,9 +683,12 @@ public class Vitry
                 }
             }
 
-        public static final class Wildcard extends Atom
+        /**
+         * The top type, written as <code>_</code>.
+         */
+        public static final class Any extends Atom
             {
-                private Wildcard() {
+                private Any() {
                 }
 
                 public boolean eq(Atom o) {
@@ -711,7 +724,7 @@ public class Vitry
                 }
 
                 public String toString() {
-                    return "?";
+                    return "_";
                 }
             }
 

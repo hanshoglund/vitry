@@ -57,7 +57,7 @@ abstract public class Function extends Callable implements Apply, Dynamic
         
         Function() {
             this.arity = 1;
-            this.type = new SimpleFunctionType(Vitry.wildcard, Vitry.wildcard);;
+            this.type = new FunctionType(Vitry.any, Vitry.any);;
         }
 
         public Function(FunctionType type) {
@@ -84,7 +84,7 @@ abstract public class Function extends Callable implements Apply, Dynamic
         
         
 
-        public Object apply(Object a0) throws InvocationException {
+        public Object apply(Object a0) throws InvocationError {
             switch (arity) {
                 case 1:
                     throw new NoImplementationException();
@@ -93,7 +93,7 @@ abstract public class Function extends Callable implements Apply, Dynamic
             }
         }
 
-        public Object apply(Object a0, Object a1) throws InvocationException {
+        public Object apply(Object a0, Object a1) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -105,7 +105,7 @@ abstract public class Function extends Callable implements Apply, Dynamic
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -119,7 +119,7 @@ abstract public class Function extends Callable implements Apply, Dynamic
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -135,7 +135,7 @@ abstract public class Function extends Callable implements Apply, Dynamic
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -153,7 +153,7 @@ abstract public class Function extends Callable implements Apply, Dynamic
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -173,7 +173,7 @@ abstract public class Function extends Callable implements Apply, Dynamic
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -195,7 +195,7 @@ abstract public class Function extends Callable implements Apply, Dynamic
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -219,7 +219,7 @@ abstract public class Function extends Callable implements Apply, Dynamic
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -245,7 +245,7 @@ abstract public class Function extends Callable implements Apply, Dynamic
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -273,7 +273,7 @@ abstract public class Function extends Callable implements Apply, Dynamic
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -303,7 +303,7 @@ abstract public class Function extends Callable implements Apply, Dynamic
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -335,7 +335,7 @@ abstract public class Function extends Callable implements Apply, Dynamic
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -369,7 +369,7 @@ abstract public class Function extends Callable implements Apply, Dynamic
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12, Object a13) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12, Object a13) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -405,7 +405,7 @@ abstract public class Function extends Callable implements Apply, Dynamic
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12, Object a13, Object a14) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12, Object a13, Object a14) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -444,7 +444,7 @@ abstract public class Function extends Callable implements Apply, Dynamic
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12, Object a13, Object a14, Object a15) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12, Object a13, Object a14, Object a15) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -485,7 +485,7 @@ abstract public class Function extends Callable implements Apply, Dynamic
             }
         }
 
-        public Object applyVariadic(Object... args) throws InvocationException {
+        public Object applyVariadic(Object... args) throws InvocationError {
             switch (args.length) {
                 case 1:
                     return apply(args[0]);
@@ -541,7 +541,7 @@ class PartialApplication extends Function
 
         private final Object[] args;
 
-        public Object apply(Object a0) throws InvocationException {
+        public Object apply(Object a0) throws InvocationError {
             switch (arity) {
                 case 1:
                     return original.applyVariadic(Utilities.concat(args, a0));
@@ -550,7 +550,7 @@ class PartialApplication extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1) throws InvocationException {
+        public Object apply(Object a0, Object a1) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -562,7 +562,7 @@ class PartialApplication extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -576,7 +576,7 @@ class PartialApplication extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -592,7 +592,7 @@ class PartialApplication extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -610,7 +610,7 @@ class PartialApplication extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -630,7 +630,7 @@ class PartialApplication extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -652,7 +652,7 @@ class PartialApplication extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -677,7 +677,7 @@ class PartialApplication extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -703,7 +703,7 @@ class PartialApplication extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -731,7 +731,7 @@ class PartialApplication extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -761,7 +761,7 @@ class PartialApplication extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -793,7 +793,7 @@ class PartialApplication extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -827,7 +827,7 @@ class PartialApplication extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12, Object a13) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12, Object a13) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -863,7 +863,7 @@ class PartialApplication extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12, Object a13, Object a14) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12, Object a13, Object a14) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -902,7 +902,7 @@ class PartialApplication extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12, Object a13, Object a14, Object a15) throws InvocationException {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12, Object a13, Object a14, Object a15) throws InvocationError {
 
             switch (arity) {
                 case 1:
@@ -946,5 +946,10 @@ class PartialApplication extends Function
 
 class NoImplementationException extends RuntimeException
     {
+        public NoImplementationException() {
+            // TODO
+            super("No n-ary implementation for X");
+        }
+
         private static final long serialVersionUID = 2787250838481872800L;
     }

@@ -30,11 +30,18 @@ abstract class AbstractEnv<K, V> implements Env<K, V>
     {      
         
         private final Env<K, V> parent;
+        
 
+        /**
+         * Creates a top-level environment.
+         */
         public AbstractEnv() {
             this.parent = AbstractEnv.<K, V> empty();
         }
 
+        /**
+         * Create an environment that is a child of the given environment.
+         */
         public AbstractEnv(Env<K, V> parent) {
             this.parent = parent;
         }
@@ -44,14 +51,14 @@ abstract class AbstractEnv<K, V> implements Env<K, V>
         }
 
 
-        public Env<K, V> define(K key, V val) throws BindingException {
-            if (get(key) != null) { 
-                throw new BindingException(key, this);
+        public Env<K, V> define(K key, V val) throws BindingError {
+            if (contains(key)) { 
+                throw new BindingError(key, this);
             }
             return put(key, val);
         }
 
-        public V lookup(K key) throws UndefinedException {
+        public V lookup(K key) throws UndefinedError {
             V val = get(key);
 
             if (val == null) {
@@ -71,16 +78,20 @@ abstract class AbstractEnv<K, V> implements Env<K, V>
                         }
                     } while (val == null);
 
-                } catch (UndefinedException e) {
-                    throw new UndefinedException(key, this);
+                } catch (UndefinedError e) {
+                    throw new UndefinedError(key, this);
                 }
             }
             return val;
         }
         
-        abstract protected V get(K key);
-
         abstract protected Env<K, V> put(K key, V val);
+        
+        abstract protected V get(K key);
+        
+        protected boolean contains(K key) {
+            return get(key) != null;
+        }
         
         
 
@@ -97,7 +108,7 @@ abstract class AbstractEnv<K, V> implements Env<K, V>
         }
 
         private static Env<?, ?> empty = new Empty();
-
+        
 
         static class Empty extends AbstractEnv<Object, Object>
             {
@@ -120,7 +131,7 @@ abstract class AbstractEnv<K, V> implements Env<K, V>
                 }
 
                 public Object get(Object key) {
-                    throw new UndefinedException(key, this);
+                    throw new UndefinedError(key, this);
                 }
 
                 private <T> T throwUnsupported() {

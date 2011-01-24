@@ -1,12 +1,12 @@
 package vitry.runtime.misc;
 
+import vitry.runtime.FunctionType;
 import vitry.runtime.Pattern;
-import vitry.runtime.SimpleFunctionType;
 import vitry.runtime.SimpleIntersection;
 import vitry.runtime.SimpleProduct;
 import vitry.runtime.SimpleSet;
-import vitry.runtime.SimpleType;
 import vitry.runtime.SimpleUnion;
+import vitry.runtime.Type;
 
 public class StaticFactoryMethods
     {
@@ -27,11 +27,11 @@ public class StaticFactoryMethods
         }
 
         public static Pattern type(Pattern pattern, Object tag) {
-            return new SimpleType(pattern, tag);
+            return new Type(pattern, tag);
         }
 
         public static Pattern functionType(Pattern co, Pattern dom) {
-            return new SimpleFunctionType(co, dom);
+            return new FunctionType(co, dom);
         }
 
     }
