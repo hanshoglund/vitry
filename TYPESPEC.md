@@ -17,10 +17,9 @@ We proceed by extending the core language with patterns, which are first-class v
 
 - Equality is an equivalence relation on values
 - Matching (or inclusion) is a partial order on values
+- It follows that for all *x* and *y*, *x* = *y* → *x* : *y*
 
-For any values *x* and *y*, *x* = *y* → *x* : *y*.
-
-There two forms of compound patterns are *construction patterns* and *inclusion patterns*. The former is used to construct compound values and is represented by the comma.
+There are two forms of compound patterns, namely *construction patterns* and *inclusion patterns*. The former is used to construct compound values and is represented by the comma.
     
     (foo, bar)
     (1, 2, 3) 
@@ -31,7 +30,7 @@ Inclusion patterns are written using set notation `{...,...}`. We can also use t
     numbers = {1, 2, 3}     
     bool    = true | false
     bool    = {true, false}
-    bananas = fruits & yellow
+    edibleFruits = fruits & edible
     
 Constructions patterns match isomorphically while inclusion patterns match on inclusion.
 
@@ -49,7 +48,6 @@ There is also a match operation, similar to Lisp's `cond` or Haskell's `case` ex
     match (v)
         a    -> (a + 1)
         a, b -> (a + 1, b + 1)
-        error    
         
 #### Any, bottom and nil
 
@@ -96,7 +94,7 @@ In contrast to languages like ML and Haskell, types declarations do not define s
     (1, 2) : foo
     (1, 10) : bar
 
-The left-hand version of type declarations is called *restrictions*.
+The left-hand versions of type specifications are called *restrictions*.
 
     match (v)
         n : num   -> n + 1
