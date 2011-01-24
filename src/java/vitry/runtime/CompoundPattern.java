@@ -20,13 +20,17 @@ package vitry.runtime;
 
 import java.util.Iterator;
 
-import vitry.runtime.misc.HashUtil;
-import vitry.runtime.seq.Cons;
-import vitry.runtime.seq.MapSeq;
-import vitry.runtime.seq.Seq;
-import vitry.runtime.seq.SeqIterator;
+import vitry.runtime.misc.Hashing;
+import vitry.runtime.struct.Cons;
+import vitry.runtime.struct.MapSeq;
+import vitry.runtime.struct.Seq;
+import vitry.runtime.struct.SeqIterator;
 
-
+/**
+ * Base implementation, relying on the underlying Seq logic.
+ *
+ * See also AbstractProduct.
+ */
 abstract class CompoundPattern extends BasePattern implements Seq<Pattern>
     {
         public boolean eq(Set o) {
@@ -42,6 +46,7 @@ abstract class CompoundPattern extends BasePattern implements Seq<Pattern>
         }
 
         public boolean match(Set a) {
+            if (a == Vitry.emptySet) return true;
             for (Pattern x : a)
                 if (!x.matchFor(this)) return false;
             return true;
@@ -80,7 +85,7 @@ abstract class CompoundPattern extends BasePattern implements Seq<Pattern>
         }
 
         public int hashCode() {
-            return HashUtil.hash(this.getClass().hashCode(), this);
+            return Hashing.hash(this.getClass().hashCode(), this);
         }
 
         public Iterator<Pattern> iterator() {

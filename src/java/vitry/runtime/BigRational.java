@@ -167,10 +167,14 @@ import java.math.BigInteger;
 *
 */
 // @Immutable
-public class BigRational extends Number implements
-        Cloneable
+public class BigRational extends Number implements Cloneable
 //        , Comparable<Number>
     {
+
+        /**
+        * 
+        */
+        private static final long serialVersionUID = 5520472122793569971L;
 
         /** Numerator.
         * Numerator may be negative.

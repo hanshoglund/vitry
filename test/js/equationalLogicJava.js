@@ -5,13 +5,14 @@ load("~/macbook/Vitry/test/js/equationalLogicJava.js");
 importPackage(Packages.vitry.runtime);
 
 
+let fact = Packages.vitry.runtime.misc.StaticFactoryMethods;
 
-P = Packages.vitry.primitive.misc.Types.product;
-S = Packages.vitry.primitive.misc.Types.set;
-U = Packages.vitry.primitive.misc.Types.union;
-I = Packages.vitry.primitive.misc.Types.intersection;
-//T = Packages.vitry.primitive.test.Types.type;
-F = (function(a,b) new FunctionTypeImpl(a,b));
+P = fact.product;
+S = fact.set;
+U = fact.union;
+I = fact.intersection;
+T = fact.type;
+F = fact.functionType;
 
 s = Symbol.intern;
 l = (function(a) new ListType(a));
@@ -23,6 +24,9 @@ a = s("a");
 b = s("b");
 c = s("c");
 d = s("d");
+
+
+
 
 
 
@@ -126,7 +130,9 @@ test = function() {
   printMatches(I(S(a), S(b), S(c)), I(S(a), S(b)));
   printMatches(I(S(a), I(S(b), S(c))), I(S(a), S(b)));
   printMatches(a, I(a, U(a, b)));
-
+  printMatches(_,S(a,a));
+  printMatches(a, U(a,_));
+  printMatches(_, I(a,_));
 
 
   

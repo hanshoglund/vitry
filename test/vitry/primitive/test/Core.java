@@ -5,7 +5,7 @@ import static java.lang.System.out;
 import vitry.runtime.Symbol;
 import vitry.runtime.Value;
 import static vitry.runtime.Vitry.*;
-import static vitry.runtime.misc.MiscUtil.*;
+import static vitry.runtime.misc.Utilities.*;
 
 /**
  *

@@ -18,7 +18,7 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.seq.Seq;
+import vitry.runtime.struct.Seq;
 
 
 public class AbstractList extends AbstractProduct implements List
@@ -41,12 +41,12 @@ public class AbstractList extends AbstractProduct implements List
             return null;
         }
 
-        public Product first() {
+        public Product fst() {
             return null;
             // TODO Auto-generated method stub
         }
 
-        public Product second() {
+        public Product snd() {
             return null;
             // TODO Auto-generated method stub
         }

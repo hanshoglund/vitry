@@ -11,26 +11,27 @@ Move general info to NOTES, gradually move this stuff to tracker.
 
     
 - Type system
-    - Special types to match nat, int etc.
-    - We will need some kind of distributive rewriting on Products/FunctionTypes vs. Unions
-      for the implementation of method overloading
+    - General strategy:
+        - Patterns are first-class, types are not
+        - A type encapsulates a pattern, values must be tagged explicitly
+            - In the future we may use this to provide non-dynamic versions of Apply,
+              including primitive forms
+        - Declared types, (declared or inferred) function types, and declared implicits are checked at compile time
+        - Dependent types and invariants are checked at runtime                             
+            - This may be replaced by a staged compilation strategy
 
-    -   
-                                    
+        - Special types to match nat, int etc.
+        - We will need some kind of distributive rewriting on Products/FunctionTypes vs. Unions
+          for the implementation of method overloading
+    
+                                        
         - Retagging: OK if the old type includes the new ("narrowing conversion")
         - See test/js for test scases
         
-    java implementation:
-        - We allow any java object for Atoms
-            - Object.equals represent =
-            - Object.toString represent the show function
-        - Basic value classes:
-            BigInteger  <=> nat
-            BigInteger  <=> int
-            String      <=> string
-            v.p.Symbol  <=> symbol
-            Float       <=> float
-            Double      <=> double
+    - Hindley-Milner gives us function types, products, sums and parametric polymorphism
+    - Unions gives us subtyping
+    - Recursive types (implemented as lazy patterns) gives us lists, trees etc.
+        - Provide basic implementations of products and unions, support reification
 
 
 
@@ -109,10 +110,10 @@ Move general info to NOTES, gradually move this stuff to tracker.
     - Implementation-wise, however, the following invariants hold:
         - A function is an object that inherits from vitry.p.Function
         - A function has the following properties
-            - An environment (implicit)
+            - An environment
             - Arity, defined by Function.arity()
             - Type, defined by Function.type()
-            - Body, defined by Function.invoke()                                 
+            - Body, defined by Apply.apply()
 
         - Whenever a function f is called with N arguments:
             if not f instanceof RestArgFunction
@@ -128,19 +129,7 @@ Move general info to NOTES, gradually move this stuff to tracker.
                 
     - See the eval/apply method in "Making a Fast Curry"
 
-    - Top level "overloaded" function delcarations such as
-        add a:int b:int
-        add as:[int]
-    are converted to RestArgFunctions of arity 0 containing a *match* expression (or native equivalent).
-
-
-
-- Lists (!)
-    - We should represent lists as functions returning types, i.e.
-        list a = type a, (list a | ())
-        `[] a  = type a, [a] | ()
-        Here assuming that | has higher predecence than ,
-    - We should probably do most of this in java for efficiency           
+       
 
 - Records
     - Straight tuples

@@ -18,14 +18,13 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.misc.HashUtil;
 
 /**
  * This interface implements the nominative type system.
-
+ *
  * TODO
- * We need tagged values to retain other properties such as deconstructability,
- * i.e. we need to have an applyTag visitor.
+ *     - We need tagged values to retain other properties such as deconstructability,
+ *       i.e. we need to have an applyTag visitor.
  */
 public interface Type extends Pattern
     {
@@ -34,63 +33,4 @@ public interface Type extends Pattern
         Object tag();
         
         Value applyTag(Value v) throws TypeException;
-    }
-
-
-class SimpleType extends BasePattern implements Type
-    {
-        private final Pattern pattern;
-        private final Object tag;
-        
-        public SimpleType(Pattern pattern, Object tag) {
-            this.pattern = pattern;
-            this.tag = tag;
-        }
-
-        public Pattern pattern() {
-            return pattern;
-        }
-
-        public Object tag() {
-            return tag;
-        }
-
-        public Value applyTag(Value v) throws TypeException {
-            if (v.matchFor(pattern))
-                return new Tagged<Object>(v, tag);
-            else 
-                throw new TypeException(tag, v);
-        }
-
-        public boolean eq(Type o) {
-            return (this == o) || (pattern.eqFor(o.pattern()) && tag.equals(o.tag()));
-        }
-        
-        public boolean match(Tagged<?> p) {
-            return p.getTag() == tag;
-        }
-
-        public boolean match(Type o) {
-            return pattern.matchFor(o.pattern()) && tag.equals(o.tag());
-        }
-        
-        public boolean matchFor(Pattern p) {
-            return p.match(this);
-        }
-
-        public boolean eqFor(Value o) {
-            return o.eq(this);
-        }
-        
-        public String toString() {
-            return tag.toString();
-        }
-
-        public int hashCode() {
-            int hash = this.getClass().hashCode();
-            hash = HashUtil.hash(hash, pattern);
-            hash = HashUtil.hash(hash, tag);
-            return hash;
-        }
-
     }

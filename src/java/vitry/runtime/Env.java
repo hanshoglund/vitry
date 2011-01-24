@@ -22,8 +22,8 @@ import java.io.Serializable;
 
 
 /**
- * A standard environment, defined as a set of bindings along with a reference to an parent 
- * environment.
+ * A standard environment, defined as a set of bindings along with a reference to another 
+ * parent environment.
  * 
  * Invariants:    
  *
@@ -51,12 +51,8 @@ public interface Env<K, V> extends Serializable
         boolean isPersistent();                   
                                                                 
         /**
-         * Make a new definition in this environment.
+         * Make a new definition in this environment and return a
+         * modified environment (optional).
          */
         Env<K, V> define(K key, V val) throws BindingException;
-        
-        /**
-         * Returns current local binding (optional).
-         */
-        V get(K key);
     }

@@ -23,6 +23,7 @@ import java.util.Map;
 
 /**
  * Standard symbols.
+ * No namespaces, we use disjunct top-level modules instead.
  */
 public class Symbol extends Atom
     {

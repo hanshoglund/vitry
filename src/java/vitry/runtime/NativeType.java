@@ -22,15 +22,19 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import vitry.runtime.seq.Seq;
+import vitry.runtime.struct.Seq;
 
 
+/**
+ * Includes host objects of a particular class, as well as Native instances wrapping
+ * objects of that class. 
+ */
 public class NativeType extends BasePattern implements Set
     {
 
         private static final Map<Class<?>, Set> instanceMap = new WeakHashMap<Class<?>, Set>();
 
-        private final Class<?>                  javaClass;
+        private final Class<?> javaClass;
 
 
         private NativeType(Class<?> javaClass) {
@@ -48,15 +52,17 @@ public class NativeType extends BasePattern implements Set
 
         public boolean eq(Set o) {
             if (o == this) return true;
-            if (o instanceof NativeType) {
-                return ((NativeType) o).javaClass == this.javaClass;
-            }
+            if (o instanceof NativeType) { return ((NativeType) o).javaClass == this.javaClass; }
             return false;
         }
 
+
+        public boolean match(Object o) {
+            return javaClass.isAssignableFrom(o.getClass());
+        }
+
         public boolean match(Atom o) {
-            if (o instanceof Native)
-                return javaClass.isInstance(((Native) o).obj);
+            if (o instanceof Native) return javaClass.isInstance( ((Native) o).obj);
             return false;
         }
 
@@ -72,24 +78,26 @@ public class NativeType extends BasePattern implements Set
         // TODO implement this using an interface EnumerableNativeType + registration?
 
         public Pattern head() {
-            throw new UnsupportedOperationException("Can not enumerate a primitive type");
+            return throwEnumeration();
         }
 
         public Seq<Pattern> tail() {
-            throw new UnsupportedOperationException("Can not enumerate a primitive type");
+            return throwEnumeration();
         }
 
         public Iterator<Pattern> iterator() {
-            throw new UnsupportedOperationException("Can not enumerate a primitive type");
+            return throwEnumeration();
         }
 
         public Seq<Pattern> cons(Pattern head) {
-            return null;
-            // TODO Auto-generated method stub
+            return throwEnumeration();
         }
 
         public <U> Seq<U> map(Apply fn) {
-            return null;
-            // TODO Auto-generated method stub
+            return throwEnumeration();
+        }
+
+        private <T> T throwEnumeration() {
+            throw new UnsupportedOperationException("Can not enumerate a native type");
         }
     }

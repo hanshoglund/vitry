@@ -19,7 +19,7 @@
 package vitry.runtime;
 
 /**         
- * Base implementation.
+ * Base implementation, providing lookup.
  *
  * Implement:          
  *
@@ -27,10 +27,27 @@ package vitry.runtime;
  *   - (opt) Provide empty and (Env parent) constructors
  */
 abstract class AbstractEnv<K, V> implements Env<K, V>
-    {
+    {      
+        
+        private final Env<K, V> parent;
+
+        public AbstractEnv() {
+            this.parent = AbstractEnv.<K, V> empty();
+        }
+
+        public AbstractEnv(Env<K, V> parent) {
+            this.parent = parent;
+        }
+
+        public Env<K, V> parent() {
+            return parent;
+        }
+
 
         public Env<K, V> define(K key, V val) throws BindingException {
-            if (get(key) != null) throw new BindingException(key, this);
+            if (get(key) != null) { 
+                throw new BindingException(key, this);
+            }
             return put(key, val);
         }
 
@@ -38,78 +55,86 @@ abstract class AbstractEnv<K, V> implements Env<K, V>
             V val = get(key);
 
             if (val == null) {
-                Env<K, V> env = this;
+                Env<K, V> checkEnv = this;
+
                 try {
                     do {
-                        env = env.parent();
-                        val = env.get(key);
+                        checkEnv = checkEnv.parent();
+                        if (val instanceof AbstractEnv) {
+                            // In case we have an AbstractEnv, check locally
+                            // Either we succeed, or search is continued in parent
+                            val = ((AbstractEnv<K,V>) checkEnv).get(key);                            
+                        } else {
+                            // Otherwise, eat stack
+                            // Either we succeed, or we exit by exception
+                            val = checkEnv.lookup(key);
+                        }
                     } while (val == null);
-                } catch (LookupFailedException e) {
+
+                } catch (UndefinedException e) {
                     throw new UndefinedException(key, this);
                 }
             }
             return val;
         }
+        
+        abstract protected V get(K key);
 
         abstract protected Env<K, V> put(K key, V val);
+        
+        
 
-
+        
+        // Empty
+        
         @SuppressWarnings("unchecked")
-        // Safe as the we never return values
-        public static <K, V> Env<K, V> getEmpty() {
-            if (empty == null) empty = new EmptyEnv();
+
+        /**
+         * Returns an empty, persistent environment.
+         */
+        public static <K, V> Env<K, V> empty() {
             return (Env<K, V>) empty;
         }
 
-
-        public static boolean isEmpty(Env<?, ?> env) {
-            return env == getEmpty();
-        }
+        private static Env<?, ?> empty = new Empty();
 
 
-        private static Env<?, ?> empty;
+        static class Empty extends AbstractEnv<Object, Object>
+            {
+                Empty() {}
+
+                public Env<Object, Object> define(Object key, Object val) {
+                    return throwUnsupported();
+                }
+
+                public Env<Object, Object> parent() {
+                    return throwUnsupported();
+                }
+
+                protected Env<Object, Object> put(Object key, Object val) {
+                    return throwUnsupported();
+                }
+
+                public Object lookup(Object key) {
+                    return throwUnsupported();
+                }
+
+                public Object get(Object key) {
+                    throw new UndefinedException(key, this);
+                }
+
+                private <T> T throwUnsupported() {
+                    throw new UnsupportedOperationException(
+                            "Not supported for emtpy environment");
+                }
+                
+                public boolean isPersistent() {
+                    return true;
+                }
+
+                private static final long serialVersionUID = 4460929197701994252L;
+            }
 
         private static final long serialVersionUID = 8402893922379900923L;
-    }
 
-
-class EmptyEnv extends AbstractEnv<Object, Object>
-    {
-        EmptyEnv() {
-        }
-
-        public Env<Object, Object> define(Object key, Object val) {
-            throw new UnsupportedOperationException();
-        }
-
-        public Env<Object, Object> parent() {
-            throw new UnsupportedOperationException();
-        }
-
-        protected Env<Object, Object> put(Object key, Object val) {
-            throw new UnsupportedOperationException();
-        }
-
-        public Object lookup(Object key) {
-            throw new UnsupportedOperationException();
-        }
-
-        public Object get(Object key) {
-            throw new LookupFailedException();
-        }
-
-        private static final long serialVersionUID = 4460929197701994252L;
-
-        public boolean isPersistent() {
-            return true;
-        }
-    }
-
-
-/**
- * Thrown by the empty environment to signal failed lookup.
- */
-class LookupFailedException extends RuntimeException
-    {
-        private static final long serialVersionUID = -6163913997642410031L;
     }

@@ -18,7 +18,7 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.seq.Seq;
+import vitry.runtime.struct.Seq;
 
 public class Interpreter implements Eval
     {

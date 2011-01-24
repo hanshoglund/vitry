@@ -20,62 +20,61 @@ package vitry.runtime;
 
 import vitry.runtime.misc.Hashing;
 
-/**
- * Implements tagged values.
- * 
- * TODO rewrite to allow multiple tags and sequencing over these
- */
-public class Tagged<T> extends BasePattern
+
+public class SimpleType extends BasePattern implements Type
     {
-        private final Value  val;
+        private final Pattern pattern;
 
-        private final T tag;
+        private final Object tag;
 
-        public Tagged(Value val, T tag) {
-            this.val = val;
+        public SimpleType(Pattern pattern, Object tag) {
+            this.pattern = pattern;
             this.tag = tag;
         }
 
-        public Value getVal() {
-            return val;
+        public Pattern pattern() {
+            return pattern;
         }
 
-        public T getTag() {
+        public Object tag() {
             return tag;
         }
 
-        public boolean eq(Tagged<?> o) {
-            return (this == o) || (val.eqFor(o.val) && tag.equals(o.tag));
-        }
-        
-        public boolean match(Tagged<?> o) {
-            return (this == o) || (val.eqFor(o.val) && tag.equals(o.tag));
+        public Value applyTag(Value v) throws TypeException {
+            if (v.matchFor(pattern)) return new Tagged<Object>(v, tag);
+            else
+                throw new TypeException(tag, v);
         }
 
-        public boolean eqFor(Value o) {
-            return o.eq(this);
+        public boolean eq(Type o) {
+            return (this == o) || (pattern.eqFor(o.pattern()) && tag.equals(o.tag()));
+        }
+
+        public boolean match(Tagged<?> p) {
+            return p.getTag() == tag;
+        }
+
+        public boolean match(Type o) {
+            return pattern.matchFor(o.pattern()) && tag.equals(o.tag());
         }
 
         public boolean matchFor(Pattern p) {
             return p.match(this);
         }
 
-        public String toString() {
-            return val.toString();
+        public boolean eqFor(Value o) {
+            return o.eq(this);
         }
-        
-        
-        // Java stuff
-        
-        public boolean equals(Object o) {
-            if (o instanceof Tagged) return ((Tagged<?>) o).eq(this);
-            return false;
+
+        public String toString() {
+            return tag.toString();
         }
 
         public int hashCode() {
             int hash = this.getClass().hashCode();
-            hash = Hashing.hash(hash, val);
+            hash = Hashing.hash(hash, pattern);
             hash = Hashing.hash(hash, tag);
             return hash;
-        }        
+        }
+
     }

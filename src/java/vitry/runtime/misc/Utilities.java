@@ -18,22 +18,32 @@
  */
 package vitry.runtime.misc;
 
-public class HashUtil
+
+public class Utilities
     {
-
-        public static int hash(int seed, int val) {
-            return (seed * 65050 + val) % 2044508069;
+        private Utilities() {
         }
 
-        public static int hash(int seed, Object val) {
-            return hash(seed, val.hashCode());
+        public static Object[] concat(Object[] a, Object... b) {
+            Object[] res = new Object[a.length + b.length];
+            System.arraycopy(a, 0, res, 0, a.length);
+            System.arraycopy(b, 0, res, a.length, b.length);
+            return res;
         }
 
-        public static int hash(int seed, Iterable<?> vals) {
-            int hash = seed;
-            for (Object v : vals)
-                hash = hash(hash, v);
-            return hash;
+        public static String join(Iterable<?> elements, String start, String delim, String end) {
+            StringBuilder strb = new StringBuilder();
+            boolean first = true;
+
+            strb.append(start);
+            for (Object e : elements) {
+                if (first) first = false;
+                else
+                    strb.append(delim);
+                strb.append(e);
+            }
+            strb.append(end);
+            return strb.toString();
         }
 
     }

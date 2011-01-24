@@ -18,32 +18,47 @@
  */
 package vitry.runtime;
 
-import java.util.Iterator;
-
-import vitry.runtime.misc.HashUtil;
-import vitry.runtime.misc.MiscUtil;
-import vitry.runtime.seq.Seq;
-import vitry.runtime.seq.SeqIterator;
+import vitry.runtime.struct.Seq;
 
 
 /**
- * A compound value, representing tuples as well as product types.
- * 
- * We disallow nullary and unary instances, as () and (x)
- * are represented by the Unit class and the class of x respectively. Thus
- * instances of this interface represent n-tuples where n < 1.
- * 
- * TODO should Unit extend Product?
+ * A compound value.
+ *
+ * Represents <em>n</em>-ary tuples and <em>n</em>-ary product types where <em>n</em> > 1.
+ * This interface is the backbone of the structural type system, so we provide many several
+ * implementation possibilities, including Seq, Par and generated classes.
  * 
  * Invariants:
- *   - p.first() != null
- *   - p.second() != null
+ *   - <code>p.fst() != null</code>
+ *   - <code>p.snd() != null</code>
  * 
  */
 public interface Product extends Pattern, Seq<Pattern>
     {
-        public Pattern first();
-        public Pattern second();
+        public Pattern fst();
+
+        public Pattern snd();
+        
+        
+        // Auto-generated for use by the reification system
+
+        public Pattern _1();
+
+        public Pattern _2();
+
+        public Pattern _3();
+
+        public Pattern _4();
+
+        public Pattern _5();
+
+        public Pattern _6();
+
+        public Pattern _7();
+
+        public Pattern _8();
+
+        public Pattern _9();
+
+        // TODO generate as needed
     }
-
-

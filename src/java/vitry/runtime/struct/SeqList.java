@@ -16,18 +16,23 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
+package vitry.runtime.struct;
 
-import vitry.runtime.struct.Seq;
+import vitry.runtime.AbstractList;
+import vitry.runtime.Pattern;
 
 /**
- * Visits the eval operation.
+ * Adapts a seq as a list.
  */
-public interface Eval
+public class SeqList extends AbstractList
     {
-        public Value eval(Pattern e) throws Exception;
-        
-        public Value eval(Pattern e, Seq<Module> link) throws Exception;
 
-        public Value eval(Pattern e, ClassLoader cl, Seq<Module> link) throws Exception;
+        /**
+         * @param type
+         */
+        protected SeqList(Pattern type) {
+            super(type);
+            // TODO Auto-generated constructor stub
+        }
+
     }

@@ -20,20 +20,24 @@ package vitry.runtime;
 
 import java.util.Iterator;
 
-import vitry.runtime.seq.ArraySeq;
-import vitry.runtime.seq.Seq;
+import vitry.runtime.struct.ArraySeq;
+import vitry.runtime.struct.Seq;
 
 
 public class SimpleSet extends AbstractSet
     {
         Seq<Pattern> elements;
 
-        public SimpleSet(Object... elements) {
-            this.elements = Native.wrap(new ArraySeq<Object>(elements));
+        public SimpleSet(Seq<Pattern> elements) {
+            this.elements = elements;
         }
 
         public SimpleSet(Pattern... elements) {
             this.elements = new ArraySeq<Pattern>(elements);
+        }
+
+        public SimpleSet(Object... elements) {
+            this.elements = Native.wrap(new ArraySeq<Object>(elements));
         }
 
         public Iterator<Pattern> iterator() {

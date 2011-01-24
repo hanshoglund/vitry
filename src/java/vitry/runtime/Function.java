@@ -18,7 +18,7 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.misc.MiscUtil;
+import vitry.runtime.misc.Utilities;
 
 
 /**
@@ -97,7 +97,6 @@ abstract public class Function extends Callable implements Apply, Dynamic
 
             switch (arity) {
                 case 1:
-                    // XXX catch ClassCastExceptions and try something else?
                     return ((Apply) this.apply(a0)).apply(a1);
                 case 2:
                     throw new NoImplementationException();
@@ -545,7 +544,7 @@ class PartialApplication extends Function
         public Object apply(Object a0) throws Exception {
             switch (arity) {
                 case 1:
-                    return original.applyVariadic(MiscUtil.concat(args, a0));
+                    return original.applyVariadic(Utilities.concat(args, a0));
                 default:
                     return new PartialApplication(this, a0);
             }
@@ -557,7 +556,7 @@ class PartialApplication extends Function
                 case 1:
                     return ((Apply) this.apply(a0)).apply(a1);
                 case 2:
-                    return original.applyVariadic(MiscUtil.concat(args, a0, a1));
+                    return original.applyVariadic(Utilities.concat(args, a0, a1));
                 default:
                     return new PartialApplication(this, a0, a1);
             }
@@ -571,7 +570,7 @@ class PartialApplication extends Function
                 case 2:
                     return ((Apply) this.apply(a0, a1)).apply(a2);
                 case 3:
-                    return original.applyVariadic(MiscUtil.concat(args, a0, a1, a2));
+                    return original.applyVariadic(Utilities.concat(args, a0, a1, a2));
                 default:
                     return new PartialApplication(this, a0, a1, a2);
             }
@@ -587,7 +586,7 @@ class PartialApplication extends Function
                 case 3:
                     return ((Apply) this.apply(a0, a1, a2)).apply(a3);
                 case 4:
-                    return original.applyVariadic(MiscUtil.concat(args, a0, a1, a2, a3));
+                    return original.applyVariadic(Utilities.concat(args, a0, a1, a2, a3));
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3);
             }
@@ -605,7 +604,7 @@ class PartialApplication extends Function
                 case 4:
                     return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4);
                 case 5:
-                    return original.applyVariadic(MiscUtil.concat(args, a0, a1, a2, a3, a4));
+                    return original.applyVariadic(Utilities.concat(args, a0, a1, a2, a3, a4));
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4);
             }
@@ -625,7 +624,7 @@ class PartialApplication extends Function
                 case 5:
                     return ((Apply) this.apply(a0, a1, a2, a3, a4)).apply(a5);
                 case 6:
-                    return original.applyVariadic(MiscUtil.concat(args, a0, a1, a2, a3, a4, a5));
+                    return original.applyVariadic(Utilities.concat(args, a0, a1, a2, a3, a4, a5));
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5);
             }
@@ -647,7 +646,7 @@ class PartialApplication extends Function
                 case 6:
                     return ((Apply) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6);
                 case 7:
-                    return original.applyVariadic(MiscUtil.concat(args, a0, a1, a2, a3, a4, a5, a6));
+                    return original.applyVariadic(Utilities.concat(args, a0, a1, a2, a3, a4, a5, a6));
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6);
             }
@@ -671,7 +670,7 @@ class PartialApplication extends Function
                 case 7:
                     return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7);
                 case 8:
-                    return original.applyVariadic(MiscUtil.concat(args, a0, a1, a2, a3, a4, a5, a6, a7));
+                    return original.applyVariadic(Utilities.concat(args, a0, a1, a2, a3, a4, a5, a6, a7));
 
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7);
@@ -698,7 +697,7 @@ class PartialApplication extends Function
                 case 8:
                     return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8);
                 case 9:
-                    return original.applyVariadic(MiscUtil.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8));
+                    return original.applyVariadic(Utilities.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8));
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8);
             }
@@ -726,7 +725,7 @@ class PartialApplication extends Function
                 case 9:
                     return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9);
                 case 10:
-                    return original.applyVariadic(MiscUtil.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9));
+                    return original.applyVariadic(Utilities.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9));
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9);
             }
@@ -756,7 +755,7 @@ class PartialApplication extends Function
                 case 10:
                     return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10);
                 case 11:
-                    return original.applyVariadic(MiscUtil.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10));
+                    return original.applyVariadic(Utilities.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10));
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
             }
@@ -788,7 +787,7 @@ class PartialApplication extends Function
                 case 11:
                     return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)).apply(a11);
                 case 12:
-                    return original.applyVariadic(MiscUtil.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11));
+                    return original.applyVariadic(Utilities.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11));
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11);
             }
@@ -822,7 +821,7 @@ class PartialApplication extends Function
                 case 12:
                     return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)).apply(a12);
                 case 13:
-                    return original.applyVariadic(MiscUtil.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12));
+                    return original.applyVariadic(Utilities.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12));
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12);
             }
@@ -858,7 +857,7 @@ class PartialApplication extends Function
                 case 13:
                     return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)).apply(a13);
                 case 14:
-                    return original.applyVariadic(MiscUtil.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13));
+                    return original.applyVariadic(Utilities.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13));
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13);
             }
@@ -897,7 +896,7 @@ class PartialApplication extends Function
                     return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13)).apply(a14);
 
                 case 15:
-                    return original.applyVariadic(MiscUtil.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14));
+                    return original.applyVariadic(Utilities.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14));
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
             }
@@ -937,7 +936,7 @@ class PartialApplication extends Function
                 case 15:
                     return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14)).apply(a15);
                 case 16:
-                    return original.applyVariadic(MiscUtil.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15));
+                    return original.applyVariadic(Utilities.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15));
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
             }

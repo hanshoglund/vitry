@@ -18,14 +18,8 @@
  */
 package vitry.runtime;
 
-import java.util.Iterator;
 
-import vitry.runtime.misc.HashUtil;
-import vitry.runtime.seq.Cons;
-import vitry.runtime.seq.MapSeq;
-import vitry.runtime.seq.Seq;
-import vitry.runtime.seq.SeqIterator;
-import vitry.runtime.seq.Single;
+import vitry.runtime.struct.Seq;
 
 /**
  * The function type constructor.
@@ -40,84 +34,4 @@ public interface FunctionType extends Pattern, Seq<Pattern>
         Pattern co();
 
         Pattern dom();
-    }
-
-
-class SimpleFunctionType extends BasePattern implements FunctionType
-    {
-
-        private final Pattern co;
-
-        private final Pattern dom;
-
-        public SimpleFunctionType(Pattern codomain, Pattern domain) {
-            this.co = codomain;
-            this.dom = domain;
-        }
-
-        public Pattern co() {
-            return this.co;
-        }
-
-        public Pattern dom() {
-            return this.dom;
-        }
-
-        public boolean eq(FunctionType o) {
-            return (o == this) || o.co().eqFor(this.co)
-                && o.dom().eqFor(this.dom);
-        }
-
-        public boolean match(Atom o) {
-            // We have to cast, as Function is not in the main visitor
-            return (o instanceof Function) && ((Function) o).type().eq(this);
-        }
-
-        public boolean match(FunctionType p) {
-            return (p == this) 
-                   || (p.co().matchFor(this.co) && p.dom().matchFor(this.dom));
-        }
-
-        public boolean matchFor(Pattern p) {
-            return p.match(this);
-        }
-
-        public boolean eqFor(Value o) {
-            return o.eq(this);
-        }
-        
-        public String toString() {
-            return ("" + co + " -> " + dom);
-        }
-        
-        public int hashCode() {
-            int hash = this.getClass().hashCode();
-            hash = HashUtil.hash(hash, co);
-            hash = HashUtil.hash(hash, dom);
-            return hash;
-        }
-
-        public Pattern head() {
-            return co;
-        }
-
-        public Seq<Pattern> tail() {
-            if (dom instanceof Function)
-                return ((Function) dom).type();
-            else
-                return new Single<Pattern>(dom);
-        }
-
-        public Iterator<Pattern> iterator() {
-            return new SeqIterator<Pattern>(this);
-        }
-
-        public Seq<Pattern> cons(Pattern head) {
-            return new Cons<Pattern>(head, this);
-        }
-
-        public <U> MapSeq<Pattern, U> map(Apply fn) {
-            return new MapSeq<Pattern,U>(fn, this);
-        }
-
     }

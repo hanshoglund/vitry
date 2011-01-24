@@ -16,31 +16,42 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime.seq;
+package vitry.runtime.struct;
+
+import java.util.Iterator;
 
 import vitry.runtime.Apply;
 
 /**
- * Sequence abstraction. The idea is to have a common interface for
- * the type system (sets, products, function types) as well as on derived 
- * constructs such as lists. To implement this scheme, we need to have separate
- * terminators for seqs and lists. We use <code>null</code> for empty seq, 
- * and <code>()</code> for empty lists. ListSeq and SeqList adapts.
- * 
- * May be lazy.
- * 
- * Implement:
- * 
- *   - head/tail and iterator
- *   
+ * A cons of two seqs.
  */
-public interface Seq<T> extends Iterable<T>
-    {
-        T head();
+public class Cons<T> implements Seq<T>
+    {        
+        private T head;
+        private Seq<T> tail;
 
-        Seq<T> tail();
+        public Cons(T head, Seq<T> tail) {
+            this.head = head;
+            this.tail = tail;
+        }
 
-        Seq<T> cons(T head);
-        
-        <U> Seq<U> map(Apply fn);
+        public Iterator<T> iterator() {
+            return new SeqIterator<T>(this);
+        }
+
+        public T head() {
+            return head;
+        }
+
+        public Seq<T> tail() {
+            return tail;
+        }
+
+        public Seq<T> cons(T head) {
+            return new Cons<T>(head, this);
+        }
+
+        public <U> Seq<U> map(Apply fn) {
+            return new MapSeq<T,U>(fn, this);
+        }
     }

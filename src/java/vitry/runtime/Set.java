@@ -18,27 +18,16 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.seq.Seq;
+import vitry.runtime.struct.Seq;
 
 /**
  * Compound entity, matching on membership.
- * 
- * Equality and matching semantics:
- * 
- * <pre>
- * a = b, a ∈ CompoundType, b ∈ CompoundType, a : b ∪ b : a
- *
- * a : b, a ∈ (Atom ∪ Product), b ∈ Set <=> ∃x (x ∈ b,   a = x)
- * a : b, a ∈ Set, b ∈ Set              <=> ∀x (x ∈ a -> x : b) 
- * a : b, a ∈ Union, b ∈ Set            <=> ∀x (x ∈ a -> x : b) 
- * a : b, a ∈ Intersection, b ∈ Set     <=> ∃x (x ∈ a,   x : b)
- * </pre>
  */
 public interface Set extends Pattern, Seq<Pattern>
     {
 
         /**
-         * Implements the empty set, which is a member of all sets..s
+         * Implements the empty set.
          */
         public static final class Empty extends CompoundPattern implements Set
             {
@@ -57,10 +46,9 @@ public interface Set extends Pattern, Seq<Pattern>
 
                 public boolean matchFor(Pattern p) {
                     // The empty set is a match for any compund pattern, including itself
-                    // This case could be handled by the standard logic, this is just an 
-                    // optimization of the special case ({}:{}).
+                    // The ({}:{}) case could be handled by the standard logic, this is just an optimization.
                     if (p == this) return true;
-                    return p.matchFor(this);
+                    return p.match(this);
                 }
 
                 public Pattern head() {

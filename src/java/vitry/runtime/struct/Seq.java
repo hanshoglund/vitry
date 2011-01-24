@@ -16,20 +16,33 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime.seq;
+package vitry.runtime.struct;
+
+import vitry.runtime.Apply;
 
 
 /**
- * A sequence abstaction for parallell computation. In the style of 
- * Guy Steele's conc lists.
+ * Sequence abstraction. The idea is to have a common interface for
+ * the type system (sets, products, function types) as well as on derived 
+ * constructs such as lists. To implement this, we need to have separate
+ * terminators for seqs and lists. We use <code>null</code> for empty seq, 
+ * and <code>()</code> for empty lists. ListSeq and SeqList adapts. May be lazy.
+ * 
+ * See also:
+ *   - {@link Par}
+ * 
+ * Implement:
+ * 
+ *   - head/tail and iterator
+ *   
  */
-public interface Par<T> extends Traversable<T>
+public interface Seq<T> extends Iterable<T>
     {
-        T get();
+        T head();
 
-        Par<T> left();
+        Seq<T> tail();
 
-        Par<T> right();
+        Seq<T> cons(T head);
 
-        Par<T> conc(Par<T> rest);
+        <U> Seq<U> map(Apply fn);
     }

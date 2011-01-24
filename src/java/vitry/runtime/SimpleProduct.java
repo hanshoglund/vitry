@@ -20,22 +20,26 @@ package vitry.runtime;
 
 import java.util.Iterator;
 
-import vitry.runtime.seq.ArraySeq;
-import vitry.runtime.seq.Cons;
-import vitry.runtime.seq.MapSeq;
-import vitry.runtime.seq.Seq;
+import vitry.runtime.struct.ArraySeq;
+import vitry.runtime.struct.Cons;
+import vitry.runtime.struct.MapSeq;
+import vitry.runtime.struct.Seq;
 
 
 public class SimpleProduct extends AbstractProduct
     {
         Seq<Pattern> elements;
-
-        public SimpleProduct(Object... elements) {
-            this.elements = Native.wrap(new ArraySeq<Object>(elements));
+        
+        public SimpleProduct(Seq<Pattern> elements) {
+            this.elements = elements;
         }
 
         public SimpleProduct(Pattern... elements) {
             this.elements = new ArraySeq<Pattern>(elements);
+        }
+
+        public SimpleProduct(Object... elements) {
+            this.elements = Native.wrap(new ArraySeq<Object>(elements));
         }
 
         public Iterator<Pattern> iterator() {

@@ -16,16 +16,24 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime.seq;
+package vitry.runtime.struct;
+
+import vitry.runtime.Apply;
 
 
-public interface Traversable<T>
+/**
+ * A sequence abstaction for parallel computation. Based on the conc lists 
+ * proposed by Guy Steele in <em>Organizing functional code for parallel execution</em>.
+ */
+public interface Par<T>
     {
-        Traversable<T> parent();
+        T item();
 
-        Seq<Traversable<T>> children();
+        Par<T> node(T value);
 
-        boolean hasParentLink();
+        <U> U split(Apply fn);
 
-        boolean classHasParentLink();
+        Par<T> conc(Par<T> rest);
+
+        boolean isSingleton();
     }

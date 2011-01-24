@@ -20,8 +20,8 @@ package vitry.runtime;
 
 import java.util.Iterator;
 
-import vitry.runtime.Vitry.Unit;
-import vitry.runtime.seq.Seq;
+import vitry.runtime.struct.Cons;
+import vitry.runtime.struct.Seq;
 
 /**
  * Implements list types. This include products on the form 
@@ -78,8 +78,7 @@ public class ListType extends AbstractUnion
         }
 
         public Seq<Pattern> cons(Pattern head) {
-            return null;
-            // TODO Auto-generated method stub
+            return new Cons<Pattern>(head, this);
         }
     }
 
@@ -123,12 +122,12 @@ class ConsType extends AbstractProduct
                 };
         }
 
-        public Product first() {
+        public Product fst() {
             return null;
             // TODO Auto-generated method stub
         }
 
-        public Product second() {
+        public Product snd() {
             return null;
             // TODO Auto-generated method stub
         }

@@ -20,22 +20,26 @@ package vitry.runtime;
 
 import java.util.Iterator;
 
-import vitry.runtime.seq.ArraySeq;
-import vitry.runtime.seq.Seq;
+import vitry.runtime.struct.ArraySeq;
+import vitry.runtime.struct.Seq;
 
 
 public class SimpleUnion extends AbstractUnion
     {
         Seq<Pattern> elements;
 
-        public SimpleUnion(Object... elements) {
-            this.elements = Native.wrap(new ArraySeq<Object>(elements));
+        public SimpleUnion(Seq<Pattern> elements) {
+            this.elements = elements;
         }
 
         public SimpleUnion(Pattern... elements) {
             this.elements = new ArraySeq<Pattern>(elements);
         }
 
+        public SimpleUnion(Object... elements) {
+            this.elements = Native.wrap(new ArraySeq<Object>(elements));
+        }
+        
         public Iterator<Pattern> iterator() {
             return elements.iterator();
         }

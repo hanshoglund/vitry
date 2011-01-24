@@ -16,7 +16,7 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime.seq;
+package vitry.runtime.struct;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -25,7 +25,9 @@ import vitry.runtime.Apply;
 import vitry.runtime.Dynamic;
 import vitry.runtime.misc.Checks;
 
-
+/**
+ * A seq adapted from another seq by the map operation.
+ */
 public class MapSeq<A,B> implements Dynamic, Seq<B>
     {
         private final Apply fn;

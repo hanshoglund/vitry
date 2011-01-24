@@ -75,16 +75,13 @@ We define the equational logic of Vitry in terms of the following domains and fu
               | (a ∈ I, b ∈ (A ∪ P), ∃x (x ∈ a,   x : b))
        
     
-    - Should a non-type match isomorphic types?
-        - For example 
-            if age = Type(nat), does Contains(nat, (2 : age)) hold?
-            
-        - Subtyping.
-        - Problem: generic functions (i.e. add, map) should preserve type integrity.
-        - Intuitively, it seems better to simulate covariants as sets/subsets.
-        
-        
-        
+    - Should a pattern match isomorphic types?
+        - For example is this legal?
+            type age = nat
+            match (2 : age) 
+              nat ()
+              else error
+
         
         
 
@@ -120,7 +117,7 @@ We define the equational logic of Vitry in terms of the following domains and fu
 
 Internal reification API:
 
--- Variadic types such as ConcList n and Tree n are really dependent. We should have some magic to generate
+-- ariadic types such as ConcList n and Tree n are really dependent. We should have some magic to generate
 -- actual java classes here.
 
 type [a]          = list a                        

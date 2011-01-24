@@ -21,7 +21,7 @@ package vitry.runtime;
 /**
  * A value with matching semantics.
  * 
- * Implementations may be used on the right side of a match operation. The semantics are:
+ * Implementations may be used on the right side of a match operation, specifically:
  *  
  * <pre><code> 
  * this.match(x)    <=> x : this

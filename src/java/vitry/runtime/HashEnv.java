@@ -20,20 +20,9 @@ package vitry.runtime;
 
 import java.util.HashMap;
 
+
 public class HashEnv<K, V> extends AbstractEnv<K, V>
     {
-        public HashEnv() {
-            this.parent = AbstractEnv.<K, V> getEmpty();
-        }
-
-        public HashEnv(Env<K, V> parent) {
-            this.parent = parent;
-        }
-
-        public Env<K, V> parent() {
-            return parent;
-        }
-
         protected Env<K, V> put(K key, V val) {
             bindings.put(key, val);
             return this;
@@ -43,13 +32,12 @@ public class HashEnv<K, V> extends AbstractEnv<K, V>
             return bindings.get(key);
         }
 
-        private final Env<K, V> parent;
-
-        private final HashMap<K, V>     bindings         = new HashMap<K, V>();
-
-        private static final long       serialVersionUID = -6896184961023443064L;
+        private final HashMap<K, V> bindings = new HashMap<K, V>();
 
         public boolean isPersistent() {
             return false;
         }
+
+        private static final long serialVersionUID = -6896184961023443064L;
+
     }

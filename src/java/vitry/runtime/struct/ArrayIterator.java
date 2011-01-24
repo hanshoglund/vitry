@@ -16,42 +16,40 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime.seq;
+package vitry.runtime.struct;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
-import vitry.runtime.Apply;
 
-/**
- * A cons of two seqs.
- */
-public class Cons<T> implements Seq<T>
-    {        
-        private T head;
-        private Seq<T> tail;
+public class ArrayIterator<T> implements Iterator<T>
+    {
+        private final T[] array;
 
-        public Cons(T head, Seq<T> tail) {
-            this.head = head;
-            this.tail = tail;
+        private int next;
+
+        public ArrayIterator(T[] array) {
+            this(array, 0);
         }
 
-        public Iterator<T> iterator() {
-            return new SeqIterator<T>(this);
+        public ArrayIterator(T[] array, int offset) {
+            this.array = array;
+            this.next = offset;
         }
 
-        public T head() {
-            return head;
+        public boolean hasNext() {
+            return next < array.length;
         }
 
-        public Seq<T> tail() {
-            return tail;
+        public T next() {
+            try {
+                return array[next++];
+            } catch (IndexOutOfBoundsException e) {
+                throw new NoSuchElementException();
+            }
         }
 
-        public Seq<T> cons(T head) {
-            return new Cons<T>(head, this);
-        }
-
-        public <U> Seq<U> map(Apply fn) {
-            return new MapSeq<T,U>(fn, this);
+        public void remove() {
+            throw new UnsupportedOperationException("Can not remove from an ArrayIterator");
         }
     }

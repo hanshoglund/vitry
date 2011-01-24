@@ -18,21 +18,10 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.seq.Seq;
+import vitry.runtime.struct.Seq;
 
 /**
  * The union of sets.
- * 
- * Equality and matching semantics:
- * 
- * <pre>
- * a = b, a ∈ CompoundType, b ∈ CompoundType, a : b ∪ b : a
- *
- * a : b, a ∈ (Atom ∪ Product), b ∈ Union <=> ∃x (x ∈ b,   a : x)
- * a : b, a ∈ Set, b ∈ Union              <=> ∀x (x ∈ a -> x : b) 
- * a : b, a ∈ Union, b ∈ Union            <=> ∀x (x ∈ a -> x : b) 
- * a : b, a ∈ Intersection, b ∈ Union     <=> ∃x (x ∈ a,   x : b)
- * </pre>
  */
 public interface Union extends Pattern, Seq<Pattern>
     {

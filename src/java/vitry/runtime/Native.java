@@ -18,8 +18,8 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.seq.MapSeq;
-import vitry.runtime.seq.Seq;
+import vitry.runtime.struct.MapSeq;
+import vitry.runtime.struct.Seq;
 
 /**
  * Wrapper for host objects. As vitry code can hold direct references to java 

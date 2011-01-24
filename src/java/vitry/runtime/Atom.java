@@ -37,14 +37,6 @@ abstract public class Atom extends BasePattern
             return this.eq(o);
         }
 
-        // FIXME move to BasePattern
-        // It SHOULD hold for FunctionTypes, Types and Tagged<T> as well...
-        public boolean match(Intersection a) {
-            for (Pattern x : a)
-                if (x.matchFor(this)) return true;
-            return false;
-        }
-
         public boolean eqFor(Value o) {
             return o.eq(this);
         }
@@ -52,7 +44,6 @@ abstract public class Atom extends BasePattern
         public boolean matchFor(Pattern p) {
             return p.match(this);
         }
-
 
         // Java stuff
 

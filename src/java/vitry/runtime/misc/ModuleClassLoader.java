@@ -16,7 +16,7 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
+package vitry.runtime.misc;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -29,7 +29,8 @@ import java.util.Map;
 
 
 /**
- * Loads classes from the java class path and/or any specified path. 
+ * Loads classes from the java class path and/or any specified path.
+ *  
  *   - Delegates base packages by default
  *   - Delegates other classes if it can not find them
  *   - Loads each requested class separately along with its references
@@ -40,7 +41,7 @@ import java.util.Map;
  * 
  *   - The method loadClass(S) is referentially transparent.
  *   - If this class delegates loading of a class C to another loader L,
- *   then for any type T that is referenced by C, this.loadClass == L.loadClass(). 
+ *     then for any type T that is referenced by C, this.loadClass == L.loadClass(). 
  *   
  *   
  */
@@ -55,7 +56,7 @@ public class ModuleClassLoader extends ClassLoader
             this.classes = classes;
         }
 
-        private final List<URL>          paths;
+        private final List<URL> paths;
 
         {
             paths = new LinkedList<URL>();
@@ -72,32 +73,30 @@ public class ModuleClassLoader extends ClassLoader
             boolean delegateEagerly = moduleLoaderShouldDelegate(name);
             ClassNotFoundException ex = null;
             Class<?> c = findLoadedClass(name);
-            
-            if (c == null) 
-                c = classes.get(name);
-            if (c == null && delegateEagerly)
+
+            if (c == null) c = classes.get(name);
+            if (c == null && delegateEagerly) 
                 try {
                     c = this.getParent().loadClass(name);
                 } catch (ClassNotFoundException e) {
                     ex = e;
                 }
-            if (c == null)
+            if (c == null) 
                 try {
                     c = new DefiningClassLoader(getPathsArray()).loadClass(name, this);
                 } catch (ClassNotFoundException e) {
-                }
+            }
             if (c == null) {
                 if (delegateEagerly) {
                     // Only reached if delegation failed
                     assert (ex != null);
                     throw ex;
                 } else {
-                    c = this.getParent().loadClass(name);                    
+                    c = this.getParent().loadClass(name);
                 }
             }
-            
-            if (resolve) 
-                resolveClass(c);
+
+            if (resolve) resolveClass(c);
             return c;
         }
 
@@ -145,8 +144,7 @@ public class ModuleClassLoader extends ClassLoader
                     Class<?> c = findLoadedClass(name);
 
                     if (c == null) {
-                        if (definingLoaderShouldDelegate(name)) 
-                            c = tempParent.loadClass(name);
+                        if (definingLoaderShouldDelegate(name)) c = tempParent.loadClass(name);
                         else
                             c = super.findClass(name);
                     }
@@ -186,12 +184,12 @@ public class ModuleClassLoader extends ClassLoader
         }
 
 
-        static final String[]  MODULE_DELEGATES   = { "java.", "javax." };
+        static final String[] MODULE_DELEGATES = { "java.", "javax." };
 
-        static final String[]  DEFINING_DELEGATES = { "java.", "javax.", "vitry." };
+        static final String[] DEFINING_DELEGATES = { "java.", "javax.", "vitry." };
 
 
-        static final List<URL> JAVA_CLASS_PATH    = new LinkedList<URL>();
+        static final List<URL> JAVA_CLASS_PATH = new LinkedList<URL>();
 
         static {
             String cpStr = System.getProperty("java.class.path");

@@ -16,23 +16,24 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime.seq;
+package vitry.runtime.misc;
 
-import vitry.runtime.AbstractList;
-import vitry.runtime.Pattern;
-
-/**
- * Adapts a seq as a list.
- */
-public class SeqList extends AbstractList
+public class Hashing
     {
 
-        /**
-         * @param type
-         */
-        protected SeqList(Pattern type) {
-            super(type);
-            // TODO Auto-generated constructor stub
+        public static int hash(int seed, int val) {
+            return (seed * 65050 + val) % 2044508069;
+        }
+
+        public static int hash(int seed, Object val) {
+            return hash(seed, val.hashCode());
+        }
+
+        public static int hash(int seed, Iterable<?> vals) {
+            int hash = seed;
+            for (Object v : vals)
+                hash = hash(hash, v);
+            return hash;
         }
 
     }

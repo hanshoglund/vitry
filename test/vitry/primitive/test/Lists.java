@@ -5,7 +5,7 @@ import vitry.runtime.ListType;
 import vitry.runtime.Pattern;
 import vitry.runtime.Symbol;
 import vitry.runtime.Vitry;
-import vitry.runtime.misc.MiscUtil;
+import vitry.runtime.misc.Utilities;
 
 
 /**
@@ -25,7 +25,7 @@ public class Lists
             Pattern l = new ListType(a);
             
             out.println(Vitry.unit.matchFor(l));
-            out.println(MiscUtil.product(a, Vitry.unit.matchFor(l)));
+            out.println(Utilities.product(a, Vitry.unit.matchFor(l)));
           
             
 

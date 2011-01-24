@@ -21,9 +21,9 @@ package vitry.runtime;
 import java.math.BigInteger;
 import java.util.Iterator;
 
-import vitry.runtime.seq.Cons;
-import vitry.runtime.seq.MapSeq;
-import vitry.runtime.seq.Seq;
+import vitry.runtime.struct.Cons;
+import vitry.runtime.struct.MapSeq;
+import vitry.runtime.struct.Seq;
 
 /**
  * This class encapsulates an entire runtime system. That is, a set of system
@@ -593,7 +593,7 @@ public class Vitry
             {
                 private Unit() {
                 }
-
+                
                 public boolean eq(Atom o) {
                     return o == this;
                 }
@@ -602,32 +602,74 @@ public class Vitry
                     return "()";
                 }
 
-                public Product first() {
-                    throw new RuntimeException("() has no members");
-                }
-
-                public Product second() {
-                    throw new RuntimeException("() has no members");
-                }
-
-                public Pattern head() {
-                    throw new RuntimeException("() has no members");
-                }
-
-                public Seq<Pattern> tail() {
-                    throw new RuntimeException("Attempted sequencing over ()");
-                }
-
-                public Iterator<Pattern> iterator() {
-                    throw new RuntimeException("Attempted sequencing over ()");
-                }
-
                 public Seq<Pattern> cons(Pattern head) {
                     return new Cons<Pattern>(head, this);
                 }
 
                 public <U> MapSeq<Pattern, U> map(Apply fn) {
                     return new MapSeq<Pattern,U>(fn, this);
+                }
+                
+                // Rest of interfaces unsupported, pretty uninteresting...
+
+                public Product fst() {
+                    return throwUnsupported();
+                }
+
+                public Product snd() {
+                    return throwUnsupported();
+                }
+
+                public Pattern head() {
+                    return throwUnsupported();
+                }
+
+                public Seq<Pattern> tail() {
+                    return throwUnsupported();
+                }
+
+                public Iterator<Pattern> iterator() {
+                    return throwUnsupported();
+                }
+
+                public Pattern _1() {
+                    return throwUnsupported();
+                }
+
+                public Pattern _2() {
+                    return throwUnsupported();
+                }
+
+                public Pattern _3() {
+                    return throwUnsupported();
+                }
+
+                public Pattern _4() {
+                    return throwUnsupported();
+                }
+
+                public Pattern _5() {
+                    return throwUnsupported();
+                }
+
+                public Pattern _6() {
+                    return throwUnsupported();
+                }
+
+                public Pattern _7() {
+                    return throwUnsupported();
+                }
+
+                public Pattern _8() {
+                    return throwUnsupported();
+                }
+
+                public Pattern _9() {
+                    return throwUnsupported();
+                }
+                
+                private <T> T throwUnsupported() {
+                    throw new UnsupportedOperationException("() has no members.");
                 }
             }
 

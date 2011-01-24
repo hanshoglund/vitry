@@ -20,7 +20,11 @@ package vitry.runtime.misc;
 
 import vitry.runtime.Function;
 
-
+/**
+ * Static methods to check function arguments.
+ * 
+ * All throw IllegalArgumentException upon failure.
+ */
 public class Checks
     {
         private Checks() {
