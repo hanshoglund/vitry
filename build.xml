@@ -69,7 +69,7 @@
 	<target name="compile-js" description="">
 		<java fork="true"
 		    classpath="lib/js.jar:lib/jline.jar:bin"
-		    classname="org.mozilla.javascript.tools.compile-js.Main"
+		    classname="org.mozilla.javascript.tools.jsc.Main"
 		    failonerror="true">
 			<arg value="-d"/>
 			<arg value="bin"/>

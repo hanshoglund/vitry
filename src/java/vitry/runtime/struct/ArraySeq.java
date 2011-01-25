@@ -26,7 +26,7 @@ import vitry.runtime.Apply;
 /**
  * Adapts arrays as Seqs.
  */
-public class ArraySeq<T> implements Seq<T>
+public class ArraySeq<T> extends AbstractSeq<T>
     {
         private final T[] array;
 
@@ -61,14 +61,4 @@ public class ArraySeq<T> implements Seq<T>
         }
         
         private static final int NO_CHECK = 0;
-
-        public Seq<T> cons(T head) {
-            return new Cons<T>(head, this);
-        }
-
-        public <U> MapSeq<T, U> map(Apply fn) {
-            return new MapSeq<T,U>(fn, this);
-        }
-
-
     }

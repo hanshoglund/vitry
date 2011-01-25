@@ -31,7 +31,7 @@ import vitry.runtime.misc.Checks;
 /**
  * A seq adapted from another seq by the map operation.
  */
-public class MapSeq<A, B> implements Dynamic, Seq<B>
+public class MapSeq<A, B> extends AbstractSeq<B> implements Dynamic
     {
         private final Apply fn;
 
@@ -70,15 +70,6 @@ public class MapSeq<A, B> implements Dynamic, Seq<B>
             Seq<A> tail = input.tail();
             return (tail == null) ? null : new MapSeq<A, B>(fn, tail);
         }
-
-        public Seq<B> cons(B head) {
-            return new Cons<B>(head, this);
-        }
-
-        public <C> Seq<C> map(Apply fn) {
-            return new MapSeq<B, C>(fn, this);
-        }
-
     }
 
 

@@ -26,7 +26,7 @@ import vitry.runtime.Pattern;
 /**
  * Adapts a list as a seq.
  */
-public class ListSeq implements Seq<Pattern>
+public class ListSeq extends AbstractSeq<Pattern>
     {
 
         public Iterator<Pattern> iterator() {
@@ -44,14 +44,5 @@ public class ListSeq implements Seq<Pattern>
             // TODO Auto-generated method stub
         }
 
-        public Seq<Pattern> cons(Pattern head) {
-            return null;
-            // TODO Auto-generated method stub
-        }
-
-        public <U> Seq<U> map(Apply fn) {
-            return null;
-            // TODO Auto-generated method stub
-        }
 
     }

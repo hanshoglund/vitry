@@ -22,6 +22,8 @@ import java.util.Iterator;
 
 import vitry.runtime.misc.Hashing;
 import vitry.runtime.misc.Utilities;
+import vitry.runtime.struct.Cons;
+import vitry.runtime.struct.MapSeq;
 import vitry.runtime.struct.Seq;
 import vitry.runtime.struct.SeqIterator;
 
@@ -81,6 +83,16 @@ public abstract class AbstractProduct extends BasePattern implements Product
         public Seq<Pattern> destruct() {
             return this;
         }
+        
+
+        public Seq<Pattern> cons(Pattern head) {
+            return new Cons<Pattern>(head, this);
+        }
+
+        public <U> Seq<U> map(Apply fn) {
+            return new MapSeq<Pattern, U>(fn, this);
+        }
+        
 
         // Java stuff
         
