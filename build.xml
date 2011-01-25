@@ -1,75 +1,44 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project name="Vitry" basedir="." default="debug-js">
+<project name="Vitry" basedir="." default="usage">
 
-	<property name="javascriptVersion" value="180"/>
-	<property name="src.js"            value="src/js"/>
+	<property name="js.version" value="180"/>
+	<property name="js.src"     value="src/js"/>
+
 
 
 	<!-- =============================================================== -->
 	<target name="clean" description="">
 		<delete dir="bin" failonerror="false" />
 	</target>
-	
+
 
 	<!-- =============================================================== -->
 	<target name="dirs">
 		<mkdir dir="bin"/>
 	</target>
 	
-    <!-- =============================================================== -->
-    <target name="javadoc" description="Generate API documentation">
-
-        <mkdir dir="doc" />
-
-        <javadoc
-            access="protected"
-            author="true"
-            doctitle="Vitry"
-            use="true"
-            version="true"
-            destdir="doc"
-
-            classpath="../Vitry/bin"
-            packagenames="vitry.runtime, vitry.runtime.misc, vitry.runtime.struct, vitry.runtime.parse"
-            sourcepath="src/java">
-
-            <doclet name="com.visural.doclets.markdown.standard.Standard" path="${user.home}/Library/Java/MarkdownDoclet-3.0.jar"/>
-
-            <link href="http://hanshoglund.github.com/StrictJava/doc/api/index.html" />
-            <link href="http://java.sun.com/javase/6/docs/api/" />
-        </javadoc>
-    </target>
-
+	
 	<!-- =============================================================== -->
-	<target name="jsc" description="">
-		<!-- TODO use some fancy property operation to factor
-		out common code -->
-
+    <target name="antlr-gen" description="">
 		<java fork="true"
-		    classpath="lib/js.jar:lib/jline.jar:bin"
-		    classname="org.mozilla.javascript.tools.jsc.Main"
-		    failonerror="true">
-			<arg value="-d"/>
-			<arg value="bin"/>
-			<arg value="-nosource"/>
-			<arg value="-opt"/>
-			<arg value="0"/>
-			<arg value="-version"/>
-			<arg value="${javascriptVersion}"/>
-			<arg value="-package"/>
-			<arg value="vitry"/>
-
-			<arg value="${src.js}/vitry/core.js"/>
-			<arg value="${src.js}/vitry/header.js"/>
-			<arg value="${src.js}/vitry/main.js"/>
-		</java>
-	</target>
-
+		    classpath="lib/antlr.jar:bin"
+		    classname="org.antlr.Tool"
+		    failonerror="true">            
+		    
+		    <arg value="-fo"/>
+		    <arg value="src/java/vitry/runtime/parse/"/>
+		    <arg value="-verbose"/>
+		    <arg value="src/grammar/Vitry.g"/>
+        </java>
+    </target>
+    
+    
 	<!-- =============================================================== -->
-	<target name="javac" description="">
+	<target name="compile-src" description="">
 		<javac srcdir="src" destdir="bin" extdirs="">
 			<classpath>
 				<pathelement location="lib/js.jar" />
+                <pathelement location="lib/junit.jar" />
 				<pathelement location="lib/jline.jar" />
 				<pathelement location="lib/antlr.jar" />
 				<pathelement location="lib/asm-3.3.jar" />
@@ -77,9 +46,15 @@
 				<pathelement location="lib/asm-util-3.3.jar" />
 			</classpath>
 		</javac>
+	</target>
+	
+
+	<!-- =============================================================== -->
+	<target name="compile-test" description="">
         <javac srcdir="test" destdir="bin" extdirs="">
             <classpath>
                 <pathelement location="lib/js.jar" />
+                <pathelement location="lib/junit.jar" />
                 <pathelement location="lib/jline.jar" />
                 <pathelement location="lib/antlr.jar" />
                 <pathelement location="lib/asm-3.3.jar" />
@@ -88,6 +63,50 @@
             </classpath>
         </javac>
 	</target>
+	
+	
+	<!-- =============================================================== -->
+	<target name="compile-js" description="">
+		<java fork="true"
+		    classpath="lib/js.jar:lib/jline.jar:bin"
+		    classname="org.mozilla.javascript.tools.compile-js.Main"
+		    failonerror="true">
+			<arg value="-d"/>
+			<arg value="bin"/>
+			<arg value="-nosource"/>
+			<arg value="-opt"/>
+			<arg value="0"/>
+			<arg value="-version"/>
+			<arg value="${js.version}"/>
+			<arg value="-package"/>
+			<arg value="vitry"/>
+
+			<arg value="${js.src}/vitry/core.js"/>
+			<arg value="${js.src}/vitry/header.js"/>
+			<arg value="${js.src}/vitry/main.js"/>
+		</java>
+	</target>
+	
+	
+    <!-- =============================================================== -->
+    <target name="javadoc" description="">
+        <mkdir dir="doc" />
+        <javadoc
+            access="protected" 
+            doctitle="Vitry" 
+            version="true" 
+            destdir="doc" 
+            classpath="../Vitry/bin"
+            sourcepath="src/java"
+            packagenames="vitry.runtime, vitry.runtime.misc, vitry.runtime.struct, vitry.runtime.parse"
+            >
+
+            <doclet name="com.visural.doclets.markdown.standard.Standard" path="${user.home}/Library/Java/MarkdownDoclet-3.0.jar"/>
+            
+            <link href="http://java.sun.com/javase/6/docs/api/" />
+        </javadoc>
+    </target>
+
 
 	<!-- =============================================================== -->
 	<target name="jar">
@@ -97,20 +116,26 @@
 			</fileset>
 		</jar>
 	</target>
+	
+
 
 	<!-- =============================================================== -->
-	<target name="debug" depends="clean, dirs, javac, jsc" description="">
-	</target>
+	<target name="debug" depends="clean, dirs, compile-src, compile-js" description="">
+	</target>    
+	
 
 	<!-- =============================================================== -->
-    <target name="debug-js" depends="jsc" description="">
+    <target name="debug-js" depends="compile-js" description="">
     </target>
+    
 
 	<!-- =============================================================== -->
 	<target name="usage" description="">
-		<echo>Usage: ant release</echo>
-		<echo>       ant debug</echo>
-		<echo>       ant -p for help</echo>
+		<echo>Usage:                                                 </echo>
+		<echo>       ant release                                     </echo>
+		<echo>       ant debug                                       </echo>
+		<echo>For details:                                           </echo>
+		<echo>       ant -p                                          </echo>
 	</target>
 
 </project>

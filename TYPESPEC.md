@@ -58,9 +58,9 @@ The *nil* pattern, written as `(),` is a special construction pattern representi
 
 The *bottom* pattern, or empty set, is written as `{}`. The bottom type has no  members, but it matches itself because of the inclusion semantics. It has the common semantics of the empty set.
 
-    { } = { }
-    { } = { } & a
-     a  = { } | a
+    {} = {}
+    {} = {} & a
+     a = {} | a
      
 The *wildcard* pattern, written as `_`, matches any value. It is primarily used in match expressions.
 

@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 src/grammar/Vitry.g 2011-01-25 01:12:09
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 src/grammar/Vitry.g 2011-01-25 00:55:12
 package vitry.runtime.parse;
 
 import org.antlr.runtime.*;
@@ -277,7 +277,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: delim, expr
+                    // elements: expr, delim
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1184,7 +1184,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: apply, Op
+                    // elements: Op, apply
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1306,7 +1306,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: e, f, Op
+                    // elements: f, e, Op
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1859,7 +1859,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: expr, assign
+                    // elements: assign, expr
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -2038,7 +2038,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: l, r, v
+                    // elements: r, l, v
                     // token labels: 
                     // rule labels: v, retval
                     // token list labels: 
@@ -2060,7 +2060,7 @@ public class VitryParser extends Parser {
 
                         adaptor.addChild(root_1, stream_v.nextTree());
                         // src/grammar/Vitry.g:79:66: ( ^( $l $r) )*
-                        while ( stream_l.hasNext()||stream_r.hasNext() ) {
+                        while ( stream_r.hasNext()||stream_l.hasNext() ) {
                             // src/grammar/Vitry.g:79:66: ^( $l $r)
                             {
                             Object root_2 = (Object)adaptor.nil();
@@ -2072,8 +2072,8 @@ public class VitryParser extends Parser {
                             }
 
                         }
-                        stream_l.reset();
                         stream_r.reset();
+                        stream_l.reset();
 
                         adaptor.addChild(root_0, root_1);
                         }
@@ -2753,7 +2753,7 @@ public class VitryParser extends Parser {
 
 
             // AST REWRITE
-            // elements: moduleName, exports, declarations, imports
+            // elements: declarations, moduleName, exports, imports
             // token labels: 
             // rule labels: retval
             // token list labels: exports
@@ -3171,7 +3171,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: left, inline, Symbol
+                    // elements: left, Symbol, inline
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
