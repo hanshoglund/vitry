@@ -24,10 +24,6 @@ package vitry.runtime;
 abstract public class Thunk extends Callable
     {
 
-        public Thunk(Env<Symbol, Object> e) {
-            super(e);
-        }
-
         /**
          * Force evaluation of this thunk, returning its value.
          */

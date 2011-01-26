@@ -20,9 +20,7 @@ package vitry.runtime;
 
 public class Module extends Callable
     {
-        public Module(Env<Symbol, Object> parent) {
-            super(parent);
-        }
+        
 
         public Value get() {
             return null; // TODO give empty module?

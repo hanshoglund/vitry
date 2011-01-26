@@ -28,12 +28,17 @@ import vitry.runtime.struct.Seq;
 import vitry.runtime.struct.SeqIterator;
 
 /**
- * Base implementation, relying on the underlying Seq logic.
+ * Base implementation, relying on the underlying seq logic.
  * 
- * Does not support the <em>n</em>-accessors.
+ * Does not support <em>n</em>-accessors where n > 2.
  * 
  * For the reified block types, we have to override the Seq methods to adapt
  * traversal to accessors instead of the other way around.
+ * 
+ * Implement:
+ * 
+ *   - head/tail/iterator
+ *   - (optional) n-accessors
  */
 public abstract class AbstractProduct extends BasePattern implements Product
     {

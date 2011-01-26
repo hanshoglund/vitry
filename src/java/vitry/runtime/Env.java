@@ -22,13 +22,13 @@ import java.io.Serializable;
 
 
 /**
- * A standard environment, defined as a set of bindings along with a reference to another 
- * parent environment.
+ * Standard environment. That is a set of bindings referencing an enclosing 
+ * <em>parent environment</em>.
  * 
  * Invariants:    
  *
- *   - {@link #parent} is referentially transparent
- *   - if this {@link #isPersistent}, then {@link #lookup} is referentially transparent
+ *   - parent is referentially transparent
+ *   - if isPersistent holds, then lookup is referentially transparent
  */
 public interface Env<K, V> extends Serializable
     {
@@ -40,8 +40,7 @@ public interface Env<K, V> extends Serializable
         V lookup(K key) throws UndefinedError;
 
         /**
-         * Return the parent environment or <code>null</code>.
-         * @return
+         * Return the parent environment or null.
          */
         Env<K, V> parent();
                         
@@ -51,8 +50,8 @@ public interface Env<K, V> extends Serializable
         boolean isPersistent();                   
                                                                 
         /**
-         * Make a new definition in this environment and return a
-         * modified environment (optional).
+         * Make a new definition in this env, optionally returning
+         * a modified environment.
          */
         Env<K, V> define(K key, V val) throws BindingError;
     }

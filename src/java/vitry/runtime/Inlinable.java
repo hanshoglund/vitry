@@ -19,7 +19,7 @@
 package vitry.runtime;
 
 /**
- * Implemented by functions with an inlined representation.
+ * Implemented by applicable objects that may be inlined.
  */
 public interface Inlinable extends Apply
     {

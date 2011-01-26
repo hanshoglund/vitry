@@ -1,8 +1,22 @@
 
-## Vitry type system
+*Rough draft...*
 
-Vitry was designed for representation and manipulation of complex data structures. Its type system unifies the generality of a dynamic language with the precision of a statically typed language. It adopts the functional programing ideom to simplify reasoning about structure and equality independently of execution.
-                              
+
+
+## Vitry
+
+Vitry is a functional, structurally typed programming language. It was designed to simplify construction and analysis of large and possibly complex data structures, typically encountered in modeling and creative programming. It is a general purpose language, but was designed with music and computer-assisted composition in mind.
+
+The language relies heavily on construction, destruction and rewriting, using the pattern matching ideom found in other functional languages. Procedures, patterns and types are first-class entities that can be stored and passed around freely. Patterns can also be used as data generators in a combinatorical fashion.
+
+The language has a simple syntax with infix expressions. Most parts of the syntax is overloadable, including operators, parentheses and comments/meta-expressions.
+
+The core language is based on the lambda calculus, with standard forms like recursive let binding, conditional expressions and structure traversal. As a strict superset of the applicative core is a small declarative language providing modules with variable imports and exports, type, function and constant declarations and implicit conversions.
+
+###
+
+
+
 
 ### Core language
   

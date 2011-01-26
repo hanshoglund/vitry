@@ -8,5 +8,6 @@ import vitry.runtime.struct.Seq;
 public interface MaybeDestructible
     {
         boolean isDestructible();
+
         Seq<Pattern> destruct();
     }

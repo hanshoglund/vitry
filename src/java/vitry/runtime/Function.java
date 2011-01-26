@@ -22,7 +22,7 @@ import vitry.runtime.misc.Utilities;
 
 
 /**
- * Provides partial and extended application.
+ * Applicable object with partial and extended application.
  *
  * Subclasses should override one of the apply methods and provide arity and type.
  * 

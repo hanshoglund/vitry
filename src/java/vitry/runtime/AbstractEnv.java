@@ -19,7 +19,7 @@
 package vitry.runtime;
 
 /**         
- * Base implementation, providing lookup.
+ * Base environment.
  *
  * Implement:          
  *
@@ -85,10 +85,20 @@ abstract class AbstractEnv<K, V> implements Env<K, V>
             return val;
         }
         
+        /**
+         * Bind the given key to the given value in this env. 
+         */
         abstract protected Env<K, V> put(K key, V val);
-        
+                                                                 
+        /**
+         * Returns the value bound to the given key in this env or 
+         * null if no such binding exists. 
+         */
         abstract protected V get(K key);
-        
+                      
+        /**
+         * Returns whether this env contains the given key or not.
+         */
         protected boolean contains(K key) {
             return get(key) != null;
         }

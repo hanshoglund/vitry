@@ -23,10 +23,9 @@ package vitry.runtime;
  * 
  * Implement:     
  *
- *   - provide eqFor
- *   - provide matchFor
- *   - (opt) override match
- *   - (opt) provide constructors (Pattern...) and (Seq<Pattern>)
+ *   - eqFor
+ *   - matchFor
+ *   - override eq and match where appropriate
  */
 abstract class BasePattern implements Pattern
     {

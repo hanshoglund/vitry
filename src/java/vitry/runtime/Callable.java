@@ -23,21 +23,24 @@ package vitry.runtime;
  */
 abstract public class Callable extends Atom
     {
+        /**
+         * Creates a top-level callable entity (a module or a compiled
+         * function).
+         */
         public Callable() {
             this.env = new HashEnv<Symbol, Object>();
         }
 
-        public Callable(Callable encl) {
-            this(encl.env);
-        }
-
-        public Callable(Env<Symbol, Object> env) {
-            this.env = env;
+        /**
+         * Creates a nested callable entity.
+         */
+        public Callable(Callable parent) {
+            this.env = new HashEnv<Symbol, Object>(parent.env());
         }
 
         final Env<Symbol, Object> env;
 
-        public Env<Symbol, Object> environment() {
+        public Env<Symbol, Object> env() {
             return env;
         }
     }

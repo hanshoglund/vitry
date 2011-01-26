@@ -19,17 +19,15 @@
 package vitry.runtime;
 
 /**
- * Used for destructuring etc.
+ * Extends function with an invert operation, making it usable on the
+ * left hand-side of an assignment or match expression.
+ *
+ * This is mainly used for structors.
  */
 abstract public class InvertibleFunction extends Function    {
 
-        /**
-         * @param arity
-         * @param type
-         */
         public InvertibleFunction(int arity, FunctionType type) {
             super(arity, type);
-            // TODO Auto-generated constructor stub
         }
 
         abstract public InvertibleFunction inverse();
