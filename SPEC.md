@@ -5,13 +5,13 @@
 
 ## Vitry
 
-Vitry is a functional, structurally typed programming language. It was designed to simplify construction and analysis of large and possibly complex data structures, typically encountered in modeling and creative programming. It is a general purpose language, but was designed with music and computer-assisted composition in mind.
+Vitry is a functional, structurally typed programming language. It was designed to simplify construction and analysis of large and possibly complex data structures. It is a general purpose language, but was designed with music and computer-assisted composition in mind.
 
-The language relies heavily on construction, destruction and rewriting, using the pattern matching ideom found in other functional languages. Procedures, patterns and types are first-class entities that can be stored and passed around freely. Patterns can also be used as data generators in a combinatorical fashion.
+The language relies heavily on construction, destruction and rewriting, using the pattern matching ideom often found in other functional languages. Procedures, patterns and types are first-class entities that can be stored and passed around freely. Patterns can also be used as data generators in a combinatorical fashion.
 
 The language has a simple syntax with infix expressions. Most parts of the syntax is overloadable, including operators, parentheses and comments/meta-expressions.
 
-The core language is based on the lambda calculus, with standard forms like recursive let binding, conditional expressions and structure traversal. As a strict superset of the applicative core is a small declarative language providing modules with variable imports and exports, type, function and constant declarations and implicit conversions.
+The core language is based on the lambda calculus, with standard forms like recursive let, if-then-else and a case expression. As a strict superset of the applicative core, we define a small declarative language, including a module system and implicit conversions.
 
 ###
 
@@ -31,7 +31,7 @@ We proceed by extending the core language with patterns, which are first-class v
 
 - Equality is an equivalence relation on values
 - Matching (or inclusion) is a partial order on values
-- It follows that for all *x* and *y*, *x* = *y* → *x* : *y*
+- For all *x* and *y*, *x* = *y* → *x* : *y*
 
 There are two forms of compound patterns, namely *construction patterns* and *inclusion patterns*. The former is used to construct compound values and is represented by the comma.
     

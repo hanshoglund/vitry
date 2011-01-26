@@ -27,9 +27,9 @@ public interface Set extends Pattern, Seq<Pattern>
     {
 
         /**
-         * Implements the empty set.
+         * Implements the empty set, written as <code>{}</code>.
          */
-        public static final class Empty extends CompoundPattern implements Set
+        public static final class Empty extends InclusionPattern implements Set
             {
                 private Empty() {
                 }

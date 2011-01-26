@@ -23,10 +23,8 @@ package vitry.runtime;
  * 
  * Implementations may be used on the right side of a match operation, specifically:
  *  
- * <pre><code> 
- * this.match(x)    <=> x : this
- * this.matchFor(x) <=> this : x
- * </code></pre>
+ * <code>this.match(x)</code> ↔ <em>x : this</em><br/>
+ * <code>this.matchFor(x)</code> ↔ <em>this : x</em>
  * 
  */
 public interface Pattern extends Value
@@ -42,7 +40,7 @@ public interface Pattern extends Value
 
         boolean match(Atom o);
 
-        boolean match(Tagged<?> o);
+        boolean match(Tagged o);
 
         boolean match(Product p);
 

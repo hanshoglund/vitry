@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 src/grammar/Vitry.g 2011-01-25 01:12:09
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 src/grammar/Vitry.g 2011-01-26 05:10:02
 package vitry.runtime.parse;
 
 import org.antlr.runtime.*;
@@ -2845,7 +2845,7 @@ public class VitryParser extends Parser {
     };
 
     // $ANTLR start "moduleDecl"
-    // src/grammar/Vitry.g:106:1: moduleDecl : ( 'type' '(' ( assign )* ')' -> ^( TypeDecl ( assign )* ) | 'impicit' '(' ( expr expr )* ')' -> ^( ImplicitDecl ( ^( expr expr ) )* ) | 'fn' Symbol '(' ( left )* ')' '=' inline[true] -> ^( FnDecl Symbol ( left )+ inline ) | left '=' expr -> ^( MemberDecl left expr ) );
+    // src/grammar/Vitry.g:106:1: moduleDecl : ( 'type' '(' ( assign )* ')' -> ^( TypeDecl ( assign )* ) | 'impicit' '(' ( expr expr )* ')' -> ^( ImplicitDecl ( ^( expr expr ) )* ) | Symbol '(' ( left )* ')' '=' inline[true] -> ^( FnDecl Symbol ( left )+ inline ) | left '=' expr -> ^( MemberDecl left expr ) );
     public final VitryParser.moduleDecl_return moduleDecl() throws RecognitionException {
         VitryParser.moduleDecl_return retval = new VitryParser.moduleDecl_return();
         retval.start = input.LT(1);
@@ -2858,25 +2858,24 @@ public class VitryParser extends Parser {
         Token string_literal74=null;
         Token char_literal75=null;
         Token char_literal78=null;
-        Token string_literal79=null;
-        Token Symbol80=null;
-        Token char_literal81=null;
+        Token Symbol79=null;
+        Token char_literal80=null;
+        Token char_literal82=null;
         Token char_literal83=null;
-        Token char_literal84=null;
-        Token char_literal87=null;
+        Token char_literal86=null;
         VitryParser.assign_return assign72 = null;
 
         VitryParser.expr_return expr76 = null;
 
         VitryParser.expr_return expr77 = null;
 
-        VitryParser.left_return left82 = null;
+        VitryParser.left_return left81 = null;
 
-        VitryParser.inline_return inline85 = null;
+        VitryParser.inline_return inline84 = null;
 
-        VitryParser.left_return left86 = null;
+        VitryParser.left_return left85 = null;
 
-        VitryParser.expr_return expr88 = null;
+        VitryParser.expr_return expr87 = null;
 
 
         Object string_literal70_tree=null;
@@ -2885,15 +2884,13 @@ public class VitryParser extends Parser {
         Object string_literal74_tree=null;
         Object char_literal75_tree=null;
         Object char_literal78_tree=null;
-        Object string_literal79_tree=null;
-        Object Symbol80_tree=null;
-        Object char_literal81_tree=null;
+        Object Symbol79_tree=null;
+        Object char_literal80_tree=null;
+        Object char_literal82_tree=null;
         Object char_literal83_tree=null;
-        Object char_literal84_tree=null;
-        Object char_literal87_tree=null;
+        Object char_literal86_tree=null;
         RewriteRuleTokenStream stream_59=new RewriteRuleTokenStream(adaptor,"token 59");
         RewriteRuleTokenStream stream_58=new RewriteRuleTokenStream(adaptor,"token 58");
-        RewriteRuleTokenStream stream_47=new RewriteRuleTokenStream(adaptor,"token 47");
         RewriteRuleTokenStream stream_Symbol=new RewriteRuleTokenStream(adaptor,"token Symbol");
         RewriteRuleTokenStream stream_41=new RewriteRuleTokenStream(adaptor,"token 41");
         RewriteRuleTokenStream stream_55=new RewriteRuleTokenStream(adaptor,"token 55");
@@ -2903,7 +2900,7 @@ public class VitryParser extends Parser {
         RewriteRuleSubtreeStream stream_left=new RewriteRuleSubtreeStream(adaptor,"rule left");
         RewriteRuleSubtreeStream stream_expr=new RewriteRuleSubtreeStream(adaptor,"rule expr");
         try {
-            // src/grammar/Vitry.g:107:5: ( 'type' '(' ( assign )* ')' -> ^( TypeDecl ( assign )* ) | 'impicit' '(' ( expr expr )* ')' -> ^( ImplicitDecl ( ^( expr expr ) )* ) | 'fn' Symbol '(' ( left )* ')' '=' inline[true] -> ^( FnDecl Symbol ( left )+ inline ) | left '=' expr -> ^( MemberDecl left expr ) )
+            // src/grammar/Vitry.g:107:5: ( 'type' '(' ( assign )* ')' -> ^( TypeDecl ( assign )* ) | 'impicit' '(' ( expr expr )* ')' -> ^( ImplicitDecl ( ^( expr expr ) )* ) | Symbol '(' ( left )* ')' '=' inline[true] -> ^( FnDecl Symbol ( left )+ inline ) | left '=' expr -> ^( MemberDecl left expr ) )
             int alt31=4;
             switch ( input.LA(1) ) {
             case 58:
@@ -2916,12 +2913,25 @@ public class VitryParser extends Parser {
                 alt31=2;
                 }
                 break;
-            case 47:
+            case Symbol:
                 {
-                alt31=3;
+                int LA31_3 = input.LA(2);
+
+                if ( (LA31_3==40) ) {
+                    alt31=3;
+                }
+                else if ( (LA31_3==39||LA31_3==55) ) {
+                    alt31=4;
+                }
+                else {
+                    if (state.backtracking>0) {state.failed=true; return retval;}
+                    NoViableAltException nvae =
+                        new NoViableAltException("", 31, 3, input);
+
+                    throw nvae;
+                }
                 }
                 break;
-            case Symbol:
             case Natural:
             case Float:
             case Complex:
@@ -2949,10 +2959,10 @@ public class VitryParser extends Parser {
                     string_literal70=(Token)match(input,58,FOLLOW_58_in_moduleDecl1334); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_58.add(string_literal70);
 
-                    char_literal71=(Token)match(input,40,FOLLOW_40_in_moduleDecl1341); if (state.failed) return retval; 
+                    char_literal71=(Token)match(input,40,FOLLOW_40_in_moduleDecl1339); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_40.add(char_literal71);
 
-                    // src/grammar/Vitry.g:107:23: ( assign )*
+                    // src/grammar/Vitry.g:107:21: ( assign )*
                     loop28:
                     do {
                         int alt28=2;
@@ -2965,9 +2975,9 @@ public class VitryParser extends Parser {
 
                         switch (alt28) {
                     	case 1 :
-                    	    // src/grammar/Vitry.g:107:23: assign
+                    	    // src/grammar/Vitry.g:107:21: assign
                     	    {
-                    	    pushFollow(FOLLOW_assign_in_moduleDecl1343);
+                    	    pushFollow(FOLLOW_assign_in_moduleDecl1341);
                     	    assign72=assign();
 
                     	    state._fsp--;
@@ -2982,7 +2992,7 @@ public class VitryParser extends Parser {
                         }
                     } while (true);
 
-                    char_literal73=(Token)match(input,41,FOLLOW_41_in_moduleDecl1346); if (state.failed) return retval; 
+                    char_literal73=(Token)match(input,41,FOLLOW_41_in_moduleDecl1344); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_41.add(char_literal73);
 
 
@@ -2999,14 +3009,14 @@ public class VitryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 107:50: -> ^( TypeDecl ( assign )* )
+                    // 107:48: -> ^( TypeDecl ( assign )* )
                     {
-                        // src/grammar/Vitry.g:107:53: ^( TypeDecl ( assign )* )
+                        // src/grammar/Vitry.g:107:51: ^( TypeDecl ( assign )* )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(TypeDecl, "TypeDecl"), root_1);
 
-                        // src/grammar/Vitry.g:107:64: ( assign )*
+                        // src/grammar/Vitry.g:107:62: ( assign )*
                         while ( stream_assign.hasNext() ) {
                             adaptor.addChild(root_1, stream_assign.nextTree());
 
@@ -3024,13 +3034,13 @@ public class VitryParser extends Parser {
                 case 2 :
                     // src/grammar/Vitry.g:108:7: 'impicit' '(' ( expr expr )* ')'
                     {
-                    string_literal74=(Token)match(input,59,FOLLOW_59_in_moduleDecl1378); if (state.failed) return retval; 
+                    string_literal74=(Token)match(input,59,FOLLOW_59_in_moduleDecl1376); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_59.add(string_literal74);
 
-                    char_literal75=(Token)match(input,40,FOLLOW_40_in_moduleDecl1382); if (state.failed) return retval; 
+                    char_literal75=(Token)match(input,40,FOLLOW_40_in_moduleDecl1378); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_40.add(char_literal75);
 
-                    // src/grammar/Vitry.g:108:23: ( expr expr )*
+                    // src/grammar/Vitry.g:108:21: ( expr expr )*
                     loop29:
                     do {
                         int alt29=2;
@@ -3043,15 +3053,15 @@ public class VitryParser extends Parser {
 
                         switch (alt29) {
                     	case 1 :
-                    	    // src/grammar/Vitry.g:108:24: expr expr
+                    	    // src/grammar/Vitry.g:108:22: expr expr
                     	    {
-                    	    pushFollow(FOLLOW_expr_in_moduleDecl1385);
+                    	    pushFollow(FOLLOW_expr_in_moduleDecl1381);
                     	    expr76=expr();
 
                     	    state._fsp--;
                     	    if (state.failed) return retval;
                     	    if ( state.backtracking==0 ) stream_expr.add(expr76.getTree());
-                    	    pushFollow(FOLLOW_expr_in_moduleDecl1387);
+                    	    pushFollow(FOLLOW_expr_in_moduleDecl1383);
                     	    expr77=expr();
 
                     	    state._fsp--;
@@ -3066,7 +3076,7 @@ public class VitryParser extends Parser {
                         }
                     } while (true);
 
-                    char_literal78=(Token)match(input,41,FOLLOW_41_in_moduleDecl1391); if (state.failed) return retval; 
+                    char_literal78=(Token)match(input,41,FOLLOW_41_in_moduleDecl1387); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_41.add(char_literal78);
 
 
@@ -3083,16 +3093,16 @@ public class VitryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 108:50: -> ^( ImplicitDecl ( ^( expr expr ) )* )
+                    // 108:48: -> ^( ImplicitDecl ( ^( expr expr ) )* )
                     {
-                        // src/grammar/Vitry.g:108:53: ^( ImplicitDecl ( ^( expr expr ) )* )
+                        // src/grammar/Vitry.g:108:51: ^( ImplicitDecl ( ^( expr expr ) )* )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(ImplicitDecl, "ImplicitDecl"), root_1);
 
-                        // src/grammar/Vitry.g:108:68: ( ^( expr expr ) )*
+                        // src/grammar/Vitry.g:108:66: ( ^( expr expr ) )*
                         while ( stream_expr.hasNext()||stream_expr.hasNext() ) {
-                            // src/grammar/Vitry.g:108:68: ^( expr expr )
+                            // src/grammar/Vitry.g:108:66: ^( expr expr )
                             {
                             Object root_2 = (Object)adaptor.nil();
                             root_2 = (Object)adaptor.becomeRoot(stream_expr.nextNode(), root_2);
@@ -3115,18 +3125,15 @@ public class VitryParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // src/grammar/Vitry.g:109:7: 'fn' Symbol '(' ( left )* ')' '=' inline[true]
+                    // src/grammar/Vitry.g:109:7: Symbol '(' ( left )* ')' '=' inline[true]
                     {
-                    string_literal79=(Token)match(input,47,FOLLOW_47_in_moduleDecl1422); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_47.add(string_literal79);
+                    Symbol79=(Token)match(input,Symbol,FOLLOW_Symbol_in_moduleDecl1418); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_Symbol.add(Symbol79);
 
-                    Symbol80=(Token)match(input,Symbol,FOLLOW_Symbol_in_moduleDecl1424); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_Symbol.add(Symbol80);
+                    char_literal80=(Token)match(input,40,FOLLOW_40_in_moduleDecl1423); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_40.add(char_literal80);
 
-                    char_literal81=(Token)match(input,40,FOLLOW_40_in_moduleDecl1426); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_40.add(char_literal81);
-
-                    // src/grammar/Vitry.g:109:23: ( left )*
+                    // src/grammar/Vitry.g:109:21: ( left )*
                     loop30:
                     do {
                         int alt30=2;
@@ -3139,14 +3146,14 @@ public class VitryParser extends Parser {
 
                         switch (alt30) {
                     	case 1 :
-                    	    // src/grammar/Vitry.g:109:23: left
+                    	    // src/grammar/Vitry.g:109:21: left
                     	    {
-                    	    pushFollow(FOLLOW_left_in_moduleDecl1428);
-                    	    left82=left();
+                    	    pushFollow(FOLLOW_left_in_moduleDecl1425);
+                    	    left81=left();
 
                     	    state._fsp--;
                     	    if (state.failed) return retval;
-                    	    if ( state.backtracking==0 ) stream_left.add(left82.getTree());
+                    	    if ( state.backtracking==0 ) stream_left.add(left81.getTree());
 
                     	    }
                     	    break;
@@ -3156,18 +3163,18 @@ public class VitryParser extends Parser {
                         }
                     } while (true);
 
-                    char_literal83=(Token)match(input,41,FOLLOW_41_in_moduleDecl1431); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_41.add(char_literal83);
+                    char_literal82=(Token)match(input,41,FOLLOW_41_in_moduleDecl1428); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_41.add(char_literal82);
 
-                    char_literal84=(Token)match(input,55,FOLLOW_55_in_moduleDecl1433); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_55.add(char_literal84);
+                    char_literal83=(Token)match(input,55,FOLLOW_55_in_moduleDecl1430); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_55.add(char_literal83);
 
-                    pushFollow(FOLLOW_inline_in_moduleDecl1435);
-                    inline85=inline(true);
+                    pushFollow(FOLLOW_inline_in_moduleDecl1432);
+                    inline84=inline(true);
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_inline.add(inline85.getTree());
+                    if ( state.backtracking==0 ) stream_inline.add(inline84.getTree());
 
 
                     // AST REWRITE
@@ -3182,9 +3189,9 @@ public class VitryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 109:50: -> ^( FnDecl Symbol ( left )+ inline )
+                    // 109:48: -> ^( FnDecl Symbol ( left )+ inline )
                     {
-                        // src/grammar/Vitry.g:109:53: ^( FnDecl Symbol ( left )+ inline )
+                        // src/grammar/Vitry.g:109:51: ^( FnDecl Symbol ( left )+ inline )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FnDecl, "FnDecl"), root_1);
@@ -3211,21 +3218,21 @@ public class VitryParser extends Parser {
                 case 4 :
                     // src/grammar/Vitry.g:110:7: left '=' expr
                     {
-                    pushFollow(FOLLOW_left_in_moduleDecl1457);
-                    left86=left();
+                    pushFollow(FOLLOW_left_in_moduleDecl1454);
+                    left85=left();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_left.add(left86.getTree());
-                    char_literal87=(Token)match(input,55,FOLLOW_55_in_moduleDecl1459); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_55.add(char_literal87);
+                    if ( state.backtracking==0 ) stream_left.add(left85.getTree());
+                    char_literal86=(Token)match(input,55,FOLLOW_55_in_moduleDecl1456); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_55.add(char_literal86);
 
-                    pushFollow(FOLLOW_expr_in_moduleDecl1461);
-                    expr88=expr();
+                    pushFollow(FOLLOW_expr_in_moduleDecl1458);
+                    expr87=expr();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_expr.add(expr88.getTree());
+                    if ( state.backtracking==0 ) stream_expr.add(expr87.getTree());
 
 
                     // AST REWRITE
@@ -3293,13 +3300,13 @@ public class VitryParser extends Parser {
 
         Object root_0 = null;
 
-        Token Symbol89=null;
-        Token char_literal90=null;
-        Token Symbol91=null;
+        Token Symbol88=null;
+        Token char_literal89=null;
+        Token Symbol90=null;
 
-        Object Symbol89_tree=null;
-        Object char_literal90_tree=null;
-        Object Symbol91_tree=null;
+        Object Symbol88_tree=null;
+        Object char_literal89_tree=null;
+        Object Symbol90_tree=null;
         RewriteRuleTokenStream stream_Symbol=new RewriteRuleTokenStream(adaptor,"token Symbol");
         RewriteRuleTokenStream stream_60=new RewriteRuleTokenStream(adaptor,"token 60");
 
@@ -3307,8 +3314,8 @@ public class VitryParser extends Parser {
             // src/grammar/Vitry.g:113:12: ( Symbol ( '.' Symbol )* -> ^( Symbol ( Symbol )+ ) )
             // src/grammar/Vitry.g:114:5: Symbol ( '.' Symbol )*
             {
-            Symbol89=(Token)match(input,Symbol,FOLLOW_Symbol_in_moduleName1521); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_Symbol.add(Symbol89);
+            Symbol88=(Token)match(input,Symbol,FOLLOW_Symbol_in_moduleName1518); if (state.failed) return retval; 
+            if ( state.backtracking==0 ) stream_Symbol.add(Symbol88);
 
             // src/grammar/Vitry.g:114:12: ( '.' Symbol )*
             loop32:
@@ -3325,11 +3332,11 @@ public class VitryParser extends Parser {
             	case 1 :
             	    // src/grammar/Vitry.g:114:13: '.' Symbol
             	    {
-            	    char_literal90=(Token)match(input,60,FOLLOW_60_in_moduleName1524); if (state.failed) return retval; 
-            	    if ( state.backtracking==0 ) stream_60.add(char_literal90);
+            	    char_literal89=(Token)match(input,60,FOLLOW_60_in_moduleName1521); if (state.failed) return retval; 
+            	    if ( state.backtracking==0 ) stream_60.add(char_literal89);
 
-            	    Symbol91=(Token)match(input,Symbol,FOLLOW_Symbol_in_moduleName1526); if (state.failed) return retval; 
-            	    if ( state.backtracking==0 ) stream_Symbol.add(Symbol91);
+            	    Symbol90=(Token)match(input,Symbol,FOLLOW_Symbol_in_moduleName1523); if (state.failed) return retval; 
+            	    if ( state.backtracking==0 ) stream_Symbol.add(Symbol90);
 
 
             	    }
@@ -3770,31 +3777,30 @@ public class VitryParser extends Parser {
     public static final BitSet FOLLOW_41_in_module1246 = new BitSet(new long[]{0x0200010000000002L});
     public static final BitSet FOLLOW_57_in_module1257 = new BitSet(new long[]{0x0200010008000002L});
     public static final BitSet FOLLOW_moduleName_in_module1261 = new BitSet(new long[]{0x0200010008000002L});
-    public static final BitSet FOLLOW_40_in_module1274 = new BitSet(new long[]{0x0C00D500F8000000L});
+    public static final BitSet FOLLOW_40_in_module1274 = new BitSet(new long[]{0x0C005500F8000000L});
     public static final BitSet FOLLOW_moduleDecl_in_module1278 = new BitSet(new long[]{0x0000020000000000L});
     public static final BitSet FOLLOW_41_in_module1280 = new BitSet(new long[]{0x0000010000000002L});
     public static final BitSet FOLLOW_58_in_moduleDecl1334 = new BitSet(new long[]{0x0000010000000000L});
-    public static final BitSet FOLLOW_40_in_moduleDecl1341 = new BitSet(new long[]{0x00005700F8000000L});
-    public static final BitSet FOLLOW_assign_in_moduleDecl1343 = new BitSet(new long[]{0x00005700F8000000L});
-    public static final BitSet FOLLOW_41_in_moduleDecl1346 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_59_in_moduleDecl1378 = new BitSet(new long[]{0x0000010000000000L});
-    public static final BitSet FOLLOW_40_in_moduleDecl1382 = new BitSet(new long[]{0x00005700F8000000L});
-    public static final BitSet FOLLOW_expr_in_moduleDecl1385 = new BitSet(new long[]{0x00005500F8000000L});
-    public static final BitSet FOLLOW_expr_in_moduleDecl1387 = new BitSet(new long[]{0x00005700F8000000L});
-    public static final BitSet FOLLOW_41_in_moduleDecl1391 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_47_in_moduleDecl1422 = new BitSet(new long[]{0x0000000008000000L});
-    public static final BitSet FOLLOW_Symbol_in_moduleDecl1424 = new BitSet(new long[]{0x0000010000000000L});
-    public static final BitSet FOLLOW_40_in_moduleDecl1426 = new BitSet(new long[]{0x00005700F8000000L});
-    public static final BitSet FOLLOW_left_in_moduleDecl1428 = new BitSet(new long[]{0x00005700F8000000L});
-    public static final BitSet FOLLOW_41_in_moduleDecl1431 = new BitSet(new long[]{0x0080000000000000L});
-    public static final BitSet FOLLOW_55_in_moduleDecl1433 = new BitSet(new long[]{0x006FD501F8000000L});
-    public static final BitSet FOLLOW_inline_in_moduleDecl1435 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_left_in_moduleDecl1457 = new BitSet(new long[]{0x0080000000000000L});
-    public static final BitSet FOLLOW_55_in_moduleDecl1459 = new BitSet(new long[]{0x00005500F8000000L});
-    public static final BitSet FOLLOW_expr_in_moduleDecl1461 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_Symbol_in_moduleName1521 = new BitSet(new long[]{0x1000000000000002L});
-    public static final BitSet FOLLOW_60_in_moduleName1524 = new BitSet(new long[]{0x0000000008000000L});
-    public static final BitSet FOLLOW_Symbol_in_moduleName1526 = new BitSet(new long[]{0x1000000000000002L});
+    public static final BitSet FOLLOW_40_in_moduleDecl1339 = new BitSet(new long[]{0x00005700F8000000L});
+    public static final BitSet FOLLOW_assign_in_moduleDecl1341 = new BitSet(new long[]{0x00005700F8000000L});
+    public static final BitSet FOLLOW_41_in_moduleDecl1344 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_59_in_moduleDecl1376 = new BitSet(new long[]{0x0000010000000000L});
+    public static final BitSet FOLLOW_40_in_moduleDecl1378 = new BitSet(new long[]{0x00005700F8000000L});
+    public static final BitSet FOLLOW_expr_in_moduleDecl1381 = new BitSet(new long[]{0x00005500F8000000L});
+    public static final BitSet FOLLOW_expr_in_moduleDecl1383 = new BitSet(new long[]{0x00005700F8000000L});
+    public static final BitSet FOLLOW_41_in_moduleDecl1387 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_Symbol_in_moduleDecl1418 = new BitSet(new long[]{0x0000010000000000L});
+    public static final BitSet FOLLOW_40_in_moduleDecl1423 = new BitSet(new long[]{0x00005700F8000000L});
+    public static final BitSet FOLLOW_left_in_moduleDecl1425 = new BitSet(new long[]{0x00005700F8000000L});
+    public static final BitSet FOLLOW_41_in_moduleDecl1428 = new BitSet(new long[]{0x0080000000000000L});
+    public static final BitSet FOLLOW_55_in_moduleDecl1430 = new BitSet(new long[]{0x006FD501F8000000L});
+    public static final BitSet FOLLOW_inline_in_moduleDecl1432 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_left_in_moduleDecl1454 = new BitSet(new long[]{0x0080000000000000L});
+    public static final BitSet FOLLOW_55_in_moduleDecl1456 = new BitSet(new long[]{0x00005500F8000000L});
+    public static final BitSet FOLLOW_expr_in_moduleDecl1458 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_Symbol_in_moduleName1518 = new BitSet(new long[]{0x1000000000000002L});
+    public static final BitSet FOLLOW_60_in_moduleName1521 = new BitSet(new long[]{0x0000000008000000L});
+    public static final BitSet FOLLOW_Symbol_in_moduleName1523 = new BitSet(new long[]{0x1000000000000002L});
     public static final BitSet FOLLOW_delim_in_synpred1_Vitry192 = new BitSet(new long[]{0x0000008000000000L});
     public static final BitSet FOLLOW_39_in_synpred1_Vitry195 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_delim_in_synpred2_Vitry251 = new BitSet(new long[]{0x0000008000000000L});

@@ -32,7 +32,13 @@ import java.io.Serializable;
  */
 public interface Env<K, V> extends Serializable
     {
-        
+
+        /**
+         * Make a new definition in this env, optionally returning
+         * a modified environment.
+         */
+        Env<K, V> define(K key, V val) throws BindingError;
+
         /**
          * Lookup the given binding in this environment.
          * @throws UndefinedError
@@ -43,15 +49,9 @@ public interface Env<K, V> extends Serializable
          * Return the parent environment or null.
          */
         Env<K, V> parent();
-                        
+
         /**
          * Return whether this environment is persistent or not.
          */
-        boolean isPersistent();                   
-                                                                
-        /**
-         * Make a new definition in this env, optionally returning
-         * a modified environment.
-         */
-        Env<K, V> define(K key, V val) throws BindingError;
+        boolean isPersistent();
     }

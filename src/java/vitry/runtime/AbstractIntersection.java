@@ -21,7 +21,7 @@ package vitry.runtime;
 import vitry.runtime.misc.Utilities;
 
 
-abstract class AbstractIntersection extends CompoundPattern implements Intersection
+abstract class AbstractIntersection extends InclusionPattern implements Intersection
     {
         public boolean match(Object o) {
             if (o instanceof Value) throw new IllegalArgumentException();
@@ -36,7 +36,7 @@ abstract class AbstractIntersection extends CompoundPattern implements Intersect
             return true;
         }
 
-        public boolean match(Tagged<?> p) {
+        public boolean match(Tagged p) {
             for (Pattern x : this)
                 if (!x.match(p)) return false;
             return true;

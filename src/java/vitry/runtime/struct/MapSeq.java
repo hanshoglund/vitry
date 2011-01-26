@@ -34,7 +34,6 @@ import vitry.runtime.misc.Checks;
 public class MapSeq<A, B> extends AbstractSeq<B> implements Dynamic
     {
         private final Apply fn;
-
         private final Seq<A> input;
 
         public MapSeq(Apply fn, Seq<A> input) {
@@ -77,7 +76,6 @@ class MapIterator<T> implements Iterator<T>
     {
 
         private Apply fn;
-
         private Iterator<?> input;
 
         public MapIterator(Apply fn, Iterator<?> input) {

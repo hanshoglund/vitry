@@ -21,7 +21,7 @@ package vitry.runtime;
 import vitry.runtime.misc.Utilities;
 
 
-abstract class AbstractSet extends CompoundPattern implements Set
+abstract class AbstractSet extends InclusionPattern implements Set
     {
         public boolean match(Object o) {
             if (o instanceof Value) throw new IllegalArgumentException();
@@ -36,7 +36,7 @@ abstract class AbstractSet extends CompoundPattern implements Set
             return false;
         }
 
-        public boolean match(Tagged<?> p) {
+        public boolean match(Tagged p) {
             for (Pattern x : this)
                 if (x.eq(p)) return true;
             return false;

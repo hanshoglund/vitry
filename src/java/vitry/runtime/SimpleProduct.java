@@ -21,7 +21,7 @@ package vitry.runtime;
 import java.util.Iterator;
 
 import vitry.runtime.struct.ArraySeq;
-import vitry.runtime.struct.Cons;
+import vitry.runtime.struct.ConsSeq;
 import vitry.runtime.struct.MapSeq;
 import vitry.runtime.struct.Seq;
 
@@ -55,7 +55,7 @@ public class SimpleProduct extends AbstractProduct
         }
         
         public Seq<Pattern> cons(Pattern head) {
-            return new Cons<Pattern>(head, elements);
+            return new ConsSeq<Pattern>(head, elements);
         }
 
         public <U> MapSeq<Pattern, U> map(Apply fn) {

@@ -21,7 +21,7 @@ package vitry.runtime;
 import java.util.Iterator;
 
 import vitry.runtime.misc.Hashing;
-import vitry.runtime.struct.Cons;
+import vitry.runtime.struct.ConsSeq;
 import vitry.runtime.struct.MapSeq;
 import vitry.runtime.struct.Seq;
 import vitry.runtime.struct.SeqIterator;
@@ -31,7 +31,7 @@ import vitry.runtime.struct.SeqIterator;
  *
  * See also AbstractProduct.
  */
-abstract class CompoundPattern extends BasePattern implements Seq<Pattern>
+abstract class InclusionPattern extends BasePattern implements Seq<Pattern>
     {
         public boolean eq(Set o) {
             return o == this || this.match(o) && this.matchFor(o);
@@ -65,7 +65,7 @@ abstract class CompoundPattern extends BasePattern implements Seq<Pattern>
         }
         
         public Seq<Pattern> cons(Pattern head) {
-            return new Cons<Pattern>(head, this);
+            return new ConsSeq<Pattern>(head, this);
         }
 
         public <U> MapSeq<Pattern, U> map(Apply fn) {

@@ -21,7 +21,7 @@ package vitry.runtime;
 import java.math.BigInteger;
 import java.util.Iterator;
 
-import vitry.runtime.struct.Cons;
+import vitry.runtime.struct.ConsSeq;
 import vitry.runtime.struct.MapSeq;
 import vitry.runtime.struct.Seq;
 
@@ -585,11 +585,12 @@ public class Vitry
         }
             
         public static Type symType(String name, Pattern pattern) {
-            return new Type(pattern, Symbol.intern(name));
+            return new Type(pattern, Symbol.intern(name), null);
+            // TODO
         }
 
         /**
-         * The nil type, written as <code>()</code>.
+         * The nil value, written as <code>()</code>.
          */
         public static final class Nil extends Atom implements Product
             {
@@ -605,7 +606,7 @@ public class Vitry
                 }
 
                 public Seq<Pattern> cons(Pattern head) {
-                    return new Cons<Pattern>(head, this);
+                    return new ConsSeq<Pattern>(head, this);
                 }
 
                 public <U> MapSeq<Pattern, U> map(Apply fn) {

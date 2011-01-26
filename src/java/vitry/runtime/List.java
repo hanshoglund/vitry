@@ -18,10 +18,48 @@
  */
 package vitry.runtime;
 
+import vitry.runtime.struct.Seq;
+
 /**
- * Implemented by native lists.
+ * 
  */
-public interface List
+public class List extends AbstractProduct
     {
-        Pattern type();
+        public final Pattern type;
+        
+        protected List(Pattern type) {
+            this.type = type;
+        }
+
+        public Pattern type() {
+            return type;
+        }
+
+        public Pattern head() {
+            return null;
+        }
+
+        public Seq<Pattern> tail() {
+            return null;
+        }
+
+        public Product fst() {
+            return null;
+            // TODO Auto-generated method stub
+        }
+
+        public Product snd() {
+            return null;
+            // TODO Auto-generated method stub
+        }
+
+        public Seq<Pattern> cons(Pattern head) {
+            return null;
+            // TODO Auto-generated method stub
+        }
+
+        public <U> Seq<U> map(Apply fn) {
+            return null;
+            // TODO Auto-generated method stub
+        }
     }

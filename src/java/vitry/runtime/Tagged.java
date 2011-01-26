@@ -25,13 +25,13 @@ import vitry.runtime.misc.Hashing;
  *
  * This is required for runtime type information.
  */
-public class Tagged<T> extends BasePattern
+public class Tagged extends BasePattern
     {
         private final Value  val;
 
-        private final T tag;
+        private final Type tag;
 
-        public Tagged(Value val, T tag) {
+        public Tagged(Value val, Type tag) {
             this.val = val;
             this.tag = tag;
         }
@@ -40,19 +40,19 @@ public class Tagged<T> extends BasePattern
             return val;
         }
 
-        public T getTag() {
+        public Type getTag() {
             return tag;
         }
         
-        public Tagged<T> retag(T newTag) {
-            return new Tagged<T>(val, newTag);
+        public Tagged retag(Type newTag) {
+            return new Tagged(val, newTag);
         }
 
-        public boolean eq(Tagged<?> o) {
+        public boolean eq(Tagged o) {
             return (this == o) || (val.eqFor(o.val) && tag.equals(o.tag));
         }
         
-        public boolean match(Tagged<?> o) {
+        public boolean match(Tagged o) {
             return (this == o) || (val.eqFor(o.val) && tag.equals(o.tag));
         }
 
@@ -72,7 +72,7 @@ public class Tagged<T> extends BasePattern
         // Java stuff
         
         public boolean equals(Object o) {
-            if (o instanceof Tagged) return ((Tagged<?>) o).eq(this);
+            if (o instanceof Tagged) return ((Tagged) o).eq(this);
             return false;
         }
 

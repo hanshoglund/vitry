@@ -20,7 +20,47 @@ package vitry.runtime;
 
 /**
  * Implements type inference.
+ * 
+ * Based on <em>Basic Polymorphic Typechecking</em> by Luca Cardelli
  */
 public class Typing
     {
+
+
+        public TypeExp prune(TypeExp t) {
+            // TODO
+            return null;
+        }
+    }
+
+
+class TypeExp
+    {
+        public final Type type;
+
+        public final TypeVar var;
+
+        public TypeExp(Type type) {
+            this.type = type;
+            this.var = null;
+        }
+
+        public TypeExp(TypeVar var) {
+            this.type = null;
+            this.var = var;
+        }
+
+        public boolean isVar() {
+            return var != null;
+        }
+    }
+
+
+class TypeVar
+    {
+        public boolean isInitiated() {
+            return instance != null;
+        }
+
+        public Type instance = null;
     }

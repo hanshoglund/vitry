@@ -104,9 +104,9 @@ module
     ;
     
 moduleDecl
-    : 'type'      '(' assign* ')'                -> ^(TypeDecl assign*)
-    | 'impicit'   '(' (expr expr)* ')'           -> ^(ImplicitDecl ^(expr expr)*)
-    | 'fn' Symbol '(' left* ')' '=' inline[true] -> ^(FnDecl Symbol left+ inline)
+    : 'type'    '(' assign* ')'                -> ^(TypeDecl assign*)
+    | 'impicit' '(' (expr expr)* ')'           -> ^(ImplicitDecl ^(expr expr)*)
+    | Symbol    '(' left* ')' '=' inline[true] -> ^(FnDecl Symbol left+ inline)
     | left '=' expr                              -> ^(MemberDecl left expr)
     ;
     

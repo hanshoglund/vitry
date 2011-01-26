@@ -23,14 +23,12 @@ import vitry.runtime.Apply;
 
 /**
  * Sequence abstraction. The idea is to have a common interface for
- * the type system (sets, products, function types) as well as on derived 
- * constructs such as lists. To implement this, we need to have separate
- * terminators for seqs and lists. We use <code>null</code> for empty seq, 
- * and <code>()</code> for empty lists. ListSeq and SeqList adapts. May be lazy.
+ * the core pattern language, as well as for the native list implementations.
+ * This means we cane adapt one into the in <em>O(1)</em> time.
  * 
- * See also:
- *   - {@link Par}
- * 
+ * To distinguish, we need to use different terminators; seqs have 
+ * <code>null</code> while lists have <code>()</code>.
+ *
  * Implement:
  * 
  *   - head/tail and iterator

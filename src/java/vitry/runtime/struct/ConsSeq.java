@@ -18,31 +18,25 @@
  */
 package vitry.runtime.struct;
 
-import java.util.Iterator;
-
-import vitry.runtime.Apply;
-import vitry.runtime.Pattern;
 
 /**
- * Adapts a list as a seq.
+ * A cons of two seqs. Not to be confused with Pair.
  */
-public class ListSeq extends AbstractSeq<Pattern>
-    {
+public class ConsSeq<T> extends AbstractSeq<T>
+    {        
+        private T head;
+        private Seq<T> tail;
 
-        public Iterator<Pattern> iterator() {
-            return null;
-            // TODO Auto-generated method stub
+        public ConsSeq(T head, Seq<T> tail) {
+            this.head = head;
+            this.tail = tail;
         }
 
-        public Pattern head() {
-            return null;
-            // TODO Auto-generated method stub
+        public T head() {
+            return head;
         }
 
-        public Seq<Pattern> tail() {
-            return null;
-            // TODO Auto-generated method stub
+        public Seq<T> tail() {
+            return tail;
         }
-
-
     }

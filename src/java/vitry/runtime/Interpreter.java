@@ -18,27 +18,18 @@
  */
 package vitry.runtime;
 
+import java.util.Properties;
+
 import vitry.runtime.struct.Seq;
+
 
 public class Interpreter implements Eval
     {
 
-        public Value eval(Pattern e) throws Exception {
+        public Value eval(Pattern e, ClassLoader cl, Seq<Module> link,
+                Properties systemProperties) throws ParseError, LinkageError {
             return null;
+            // TODO
         }
 
-        public Value eval(Pattern e, Seq<Module> link) throws Exception {
-            return null;
-            // TODO Auto-generated method stub
-        }
-
-        public Value eval(Pattern e, ClassLoader link) throws Exception {
-            return null;
-            // TODO Auto-generated method stub
-        }
-
-        public Value eval(Pattern e, ClassLoader cl, Seq<Module> link) throws Exception {
-            return null;
-            // TODO Auto-generated method stub
-        }
     }

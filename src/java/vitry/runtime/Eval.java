@@ -18,18 +18,29 @@
  */
 package vitry.runtime;
 
+import java.util.Properties;
+
 import vitry.runtime.struct.Seq;
 
+
 /**
- * Visits the eval operation.  
- *
- * TODO
+ * Visits the eval operation.
  */
 public interface Eval
     {
-        public Value eval(Pattern e) throws Exception;
-        
-        public Value eval(Pattern e, Seq<Module> link) throws Exception;
-
-        public Value eval(Pattern e, ClassLoader cl, Seq<Module> link) throws Exception;
+        /**
+         * Evaluate the given pattern.
+         * 
+         * @param e 
+         *      Pattern to evaluate.
+         * @param cl
+         *      ClassLoader from which to obtain dependencies.
+         * @param link
+         *      List of loaded modules.
+         * @param systemProperties
+         * @throws ParseError
+         * @throws LinkageError
+         */
+        public Value eval(Pattern e, ClassLoader cl, Seq<Module> link, Properties systemProperties)
+        throws ParseError, LinkageError;
     }

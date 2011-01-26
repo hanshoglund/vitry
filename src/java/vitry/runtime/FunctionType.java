@@ -21,11 +21,11 @@ package vitry.runtime;
 import java.util.Iterator;
 
 import vitry.runtime.misc.Hashing;
-import vitry.runtime.struct.Cons;
+import vitry.runtime.struct.ConsSeq;
 import vitry.runtime.struct.MapSeq;
 import vitry.runtime.struct.Seq;
 import vitry.runtime.struct.SeqIterator;
-import vitry.runtime.struct.Single;
+import vitry.runtime.struct.SingleSeq;
 
 /**
  * The function type constructor.
@@ -97,7 +97,7 @@ public class FunctionType extends BasePattern implements Seq<Pattern>
         public Seq<Pattern> tail() {
             //        if (dom instanceof Function)
             //            return ((Function) dom).type();
-            return new Single<Pattern>(dom);
+            return new SingleSeq<Pattern>(dom);
         }
 
         public Iterator<Pattern> iterator() {
@@ -105,7 +105,7 @@ public class FunctionType extends BasePattern implements Seq<Pattern>
         }
 
         public Seq<Pattern> cons(Pattern head) {
-            return new Cons<Pattern>(head, this);
+            return new ConsSeq<Pattern>(head, this);
         }
 
         public <U> MapSeq<Pattern, U> map(Apply fn) {

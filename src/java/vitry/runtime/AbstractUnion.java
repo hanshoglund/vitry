@@ -21,7 +21,7 @@ package vitry.runtime;
 import vitry.runtime.misc.Utilities;
 
 
-abstract class AbstractUnion extends CompoundPattern implements Union
+abstract class AbstractUnion extends InclusionPattern implements Union
     {
         public boolean match(Object o) {
             if (o instanceof Value) throw new IllegalArgumentException();
@@ -36,7 +36,7 @@ abstract class AbstractUnion extends CompoundPattern implements Union
             return false;
         }
 
-        public boolean match(Tagged<?> p) {
+        public boolean match(Tagged p) {
             for (Pattern x : this)
                 if (x.match(p)) return true;
             return false;

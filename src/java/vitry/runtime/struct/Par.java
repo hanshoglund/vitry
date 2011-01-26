@@ -24,6 +24,9 @@ import vitry.runtime.Apply;
 /**
  * A sequence abstaction for parallel computation. Based on the conc lists 
  * proposed by Guy Steele in <em>Organizing functional code for parallel execution</em>.
+ * 
+ * Currently not used, may be worked into the standard Pattern implementations in
+ * the future.
  */
 public interface Par<T>
     {

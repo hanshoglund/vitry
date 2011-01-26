@@ -39,7 +39,7 @@ public interface Value
 
         boolean eq(Atom o);
         
-        boolean eq(Tagged<?> o);
+        boolean eq(Tagged o);
 
         boolean eq(Product o);
         

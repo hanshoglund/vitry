@@ -20,7 +20,7 @@ package vitry.runtime;
 
 import java.util.Iterator;
 
-import vitry.runtime.struct.Cons;
+import vitry.runtime.struct.ConsSeq;
 import vitry.runtime.struct.Seq;
 
 /**
@@ -78,7 +78,7 @@ public class ListType extends AbstractUnion
         }
 
         public Seq<Pattern> cons(Pattern head) {
-            return new Cons<Pattern>(head, this);
+            return new ConsSeq<Pattern>(head, this);
         }
     }
 

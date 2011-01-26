@@ -6,6 +6,7 @@ import vitry.runtime.SimpleIntersection;
 import vitry.runtime.SimpleProduct;
 import vitry.runtime.SimpleSet;
 import vitry.runtime.SimpleUnion;
+import vitry.runtime.Symbol;
 import vitry.runtime.Type;
 
 public class StaticFactoryMethods
@@ -26,8 +27,8 @@ public class StaticFactoryMethods
             return new SimpleIntersection(args);
         }
 
-        public static Pattern type(Pattern pattern, Object tag) {
-            return new Type(pattern, tag);
+        public static Pattern type(Pattern pattern, Symbol id) {
+            return new Type(pattern, id, null);
         }
 
         public static Pattern functionType(Pattern co, Pattern dom) {

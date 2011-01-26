@@ -22,17 +22,16 @@ import java.util.Iterator;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.antlr.runtime.tree.Tree;
 
 import vitry.runtime.Apply;
 import vitry.runtime.Atom;
 import vitry.runtime.FunctionType;
 import vitry.runtime.Intersection;
-import vitry.runtime.Native;
 import vitry.runtime.Pattern;
 import vitry.runtime.Product;
 import vitry.runtime.Set;
 import vitry.runtime.SimpleProduct;
+import vitry.runtime.Symbol;
 import vitry.runtime.Tagged;
 import vitry.runtime.Type;
 import vitry.runtime.Union;
@@ -60,15 +59,6 @@ public class PatternTree extends CommonTree implements Product
             super(payload);
         }
         
-        private void generateChildSeq() {
-            if (children != null) {
-                // Assume that ANTLR's list of children only contains
-                // PatternTrees
-                this.childSeq = new IterableSeq<Pattern>(this.children);
-            }
-            generatedChildSeq = true;
-        }
-
         public Pattern head() {
             if (!generatedChildSeq) 
                 generateChildSeq();
@@ -77,7 +67,8 @@ public class PatternTree extends CommonTree implements Product
             if (token == null) {
                 return (childSeq == null) ? null : childSeq.head();
             } else {
-                return Native.wrap(token.getText());
+//                return Symbol.intern(token.getText());
+                return new VitryToken(token);
             }
         }
 
@@ -96,14 +87,23 @@ public class PatternTree extends CommonTree implements Product
         }
         
         
-        
-
-
-        // Delegate rest of implementation
+        private void generateChildSeq() {
+            if (children != null) {
+                // Assume that ANTLR's list of children only contains
+                // PatternTrees
+                this.childSeq = new IterableSeq<Pattern>(this.children);
+            }
+            generatedChildSeq = true;
+        }
         
         public Iterator<Pattern> iterator() {
             return new SeqIterator<Pattern>(this);
         }
+        
+        
+
+
+        // Delegate rest of implementation
 
         public String toString() {
             return delegee.toString();
@@ -149,7 +149,7 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public boolean match(Tagged<?> o) {
+        public boolean match(Tagged o) {
             return delegee.match(o);
         }
 
@@ -174,7 +174,7 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public boolean eq(Tagged<?> o) {
+        public boolean eq(Tagged o) {
             return delegee.eq(o);
         }
 

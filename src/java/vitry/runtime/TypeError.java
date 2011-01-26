@@ -24,7 +24,7 @@ package vitry.runtime;
 public class TypeError extends VitryError
     {
 
-        public TypeError(Object tag, Value v) {
+        public TypeError(Type tag, Value v) {
             super("Can not apply tag " + tag + " to " + v);
         }
 
