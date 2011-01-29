@@ -20,6 +20,8 @@ package vitry.runtime;
 
 import java.util.Properties;
 
+import vitry.runtime.parse.VitryParser;
+import vitry.runtime.parse.VitryToken;
 import vitry.runtime.struct.Seq;
 
 
@@ -33,9 +35,94 @@ public class Interpreter implements Eval
             Properties systemProperties) 
             throws ParseError, LinkageError {
 
+            VitryToken op = null; 
+            Seq<Pattern> args = null; 
 
+            try {
+                op = (VitryToken) ((Product) e).head();
+                args = ((Product) e).tail();
+            } catch (ClassCastException t) {
+                t.printStackTrace();
+                // TODO
+            }
+            
+            switch(op.getType()) {
+                
+                case VitryParser.Par:
+                
+                case VitryParser.Bra:
+                
+                case VitryParser.Ang:
+                
+                case VitryParser.Module:
+                    // TODO typecheck
+                    return new InterpretedModule();
+                
+                case VitryParser.Fn: 
+                    // TODO typecheck
+                    // TODO store expr etc.
+                    return new InterpretedFunction();
+                
+                case VitryParser.Let:
+                
+                case VitryParser.Where:
+                
+                case VitryParser.Assign:
+                
+                case VitryParser.Left:
+                
+                case VitryParser.Quote:
 
+                
+                case VitryParser.Apply:
+                
+                case VitryParser.Type:
+                
+                case VitryParser.If:
+                
+                case VitryParser.Match:
+                
+                case VitryParser.Loop:
+                
+                case VitryParser.Recur:
+                
+                case VitryParser.Do:
+                
+                case VitryParser.Ops:
+                
+                default:
+            }
+            
+            
+            // TODO
             return null;
+        }
+        
+        
+        
+        
+        // TODO Deconstruction, type restrictions
+        public Value match(final Value input, Seq<Pattern> left, Seq<Pattern> right) {
+            while (left != null && right != null) {
+                if (input.matchFor(left.head())) {
+                    return right.head();
+                }
+                left = left.tail();
+                right = right.tail();
+            }
+            throw new MatchingError(input);
         }
 
     }
+
+
+class InterpretedFunction extends Function {
+        
+        
+}
+
+
+class InterpretedModule extends Module {
+        
+
+}

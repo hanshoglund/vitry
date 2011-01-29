@@ -18,38 +18,9 @@
  */
 package vitry.runtime;
 
-import java.util.Iterator;
-
-import vitry.runtime.struct.ConsSeq;
-import vitry.runtime.struct.MapSeq;
-import vitry.runtime.struct.Seq;
 
 
 abstract public class AbstractList extends ConstructionPattern
     {
-
-        public Seq<Pattern> cons(Pattern head) {
-            return new ConsSeq<Pattern>(head, this);
-        }
-
-        public Seq map(Apply fn) {
-            return null;
-//            return new MapSeq<Pattern, Pattern>(fn, this);
-        }
-
-        public Iterator<Pattern> iterator() {
-            return null;
-            // TODO Auto-generated method stub
-        }
-
-        public boolean eqFor(Value o) {
-            return false;
-            // TODO Auto-generated method stub
-        }
-
-        public boolean matchFor(Pattern p) {
-            return false;
-            // TODO Auto-generated method stub
-        }
 
     }

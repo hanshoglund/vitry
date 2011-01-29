@@ -52,9 +52,8 @@ abstract class AbstractEnvironment<K, V> implements Environment<K, V>
 
 
         public Environment<K, V> define(K key, V val) throws BindingError {
-            if (contains(key)) { 
+            if (this.hasBinding(key))
                 throw new BindingError(key, this);
-            }
             return put(key, val);
         }
 
@@ -72,7 +71,6 @@ abstract class AbstractEnvironment<K, V> implements Environment<K, V>
                             // Either we succeed, or search is continued in parent
                             val = ((AbstractEnvironment<K,V>) checkEnv).get(key);                            
                         } else {
-                            // Otherwise, eat stack
                             // Either we succeed, or we exit by exception
                             val = checkEnv.lookup(key);
                         }
@@ -99,7 +97,7 @@ abstract class AbstractEnvironment<K, V> implements Environment<K, V>
         /**
          * Returns whether this env contains the given key or not.
          */
-        protected boolean contains(K key) {
+        protected boolean hasBinding(K key) {
             return get(key) != null;
         }
         

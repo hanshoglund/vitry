@@ -37,18 +37,15 @@ public class Symbol extends Atom
             }
         }
 
-        @Override
         public String toString() {
             return name;
         }
 
-        @Override
         public boolean equals(Object o) {
             // return o == this || o.toString() == this.name;
             return o == this;
         }
 
-        @Override
         public int hashCode() {
             if (cachedHashCode == 0)
                 cachedHashCode = this.name.hashCode();

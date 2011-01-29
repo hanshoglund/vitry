@@ -80,13 +80,7 @@ implements Product
             return p.match(this);
         }
 
-        public Seq<Pattern> cons(Pattern head) {
-            return new ConsSeq<Pattern>(head, this);
-        }
 
-        public <U> Seq<U> map(Apply fn) {
-            return new MapSeq<Pattern, U>(fn, this);
-        }
         
 
         // Java stuff

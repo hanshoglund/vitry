@@ -12,7 +12,7 @@ tokens {
     Apply; Type; If; Match; Loop; Recur; Do;
     Ops; Dummy; 
        
-    Module; TypeDecl; ImplicitDecl; FnDecl; MemberDecl;
+    TypeDecl; ImplicitDecl; FnDecl; MemberDecl;
 }
 @header {package vitry.runtime.parse;}
 @lexer::header {package vitry.runtime.parse;}

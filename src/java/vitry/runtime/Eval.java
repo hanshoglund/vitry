@@ -24,7 +24,11 @@ import vitry.runtime.struct.Seq;
 
 
 /**
- * Visits the eval operation.
+ * Visits the eval operation.        
+ * 
+ * Evaluation prerequisites like linkage classloader, system properties etc. are typically
+ * stored in an instance of the Vitry class. We prefer to pass them explicitly in case we
+ * want to use this operation in other contexts.
  */
 public interface Eval
     {
@@ -38,6 +42,7 @@ public interface Eval
          * @param link
          *      List of loaded modules.
          * @param systemProperties
+         *      System properties, used by some implementations. If null, java.lang.System.getProperties() is used.
          * @throws ParseError
          * @throws LinkageError
          */
