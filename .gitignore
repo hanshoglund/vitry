@@ -5,7 +5,7 @@
 .settings
 debug.txt
 HindleyMilner.scala
-hindley-milner.py
+hm.py
 Doxyfile
 doxygen/
 main.js
