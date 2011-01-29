@@ -5,16 +5,129 @@
 
 ## Vitry
 
-Vitry is a functional, structurally typed programming language. It was designed to simplify construction and analysis of large and possibly complex data structures. It is a general purpose language, but was designed with music and computer-assisted composition in mind.
+Vitry is a functional, structurally typed and highly adaptable programming language. It was designed to simplify construction and analysis of large and possibly complex data structures. It is a general purpose language, but it was concieved to be used in the creative and artistic fields, hence its emphasis on conciseness, flexibility and structure.
 
-The language relies heavily on construction, destruction and rewriting, using the pattern matching ideom often found in other functional languages. Procedures, patterns and types are first-class entities that can be stored and passed around freely. Patterns can also be used as data generators in a combinatorical fashion.
+The language itself is highly modular and allow most parts of its syntax and semantics to be overloaded or extended by the user. This is achieved through a set of well-defined *stages*, that speficies how interpretation or compilation should go about.
 
-The language has a simple syntax with infix expressions. Most parts of the syntax is overloadable, including operators, parentheses and comments/meta-expressions.
+The core syntactic constructs are all overloadable, including operators, keywords and parentheses.
 
-The core language is based on the lambda calculus, with standard forms like recursive let, if-then-else and a case expression. As a strict superset of the applicative core, we define a small declarative language, including a module system and implicit conversions.
+The core language is purely functional with call-by-value evaluation. It has a structural type system which explicitly separates the concepts of patterns, constructors and formal types.
 
-###
+ On top of this there are three standarized *extension languages*, namely:
 
+- The meta language (used for comments)
+- The imperative language (used for controlled side-effects)
+- The module language (used for modules, type declarations and implicit conversion)
+
+
+### Table of Contents
+
+- Lexical properties
+- Parsing
+    - Stages
+    - Pragmas
+    - Token operations
+        - Indentation
+        - Comments and meta-expressions
+    - Syntax tree operations
+        - Operators
+        - Parentheses
+        - Application and fixity
+        - Quoting
+    - Left and right
+- Bindings and scope
+- Functions
+    - Partial application
+- Structors
+    - Construction
+    - Deconstruction
+    - Reconstruction
+- Patterns
+    - Types
+        - Construction patterns
+        - Inclusion patterns
+        - Predicate patterns
+    - Matching
+    - Enumeration
+- Formal types
+    - Specifications
+    - Restrictions    
+- Literate language
+- Module language
+    - Module system    
+    - Top-level value declarations
+    - Type declarations
+    - Implicit declarations
+    - Fixity delcarations
+    - Extensions
+- Imperative language
+    - Do-expressions
+- Evaluation
+    - Stages   
+    - Dependency chain
+    - Import stage
+    - Typing stage
+    - Run stage
+
+
+
+# Lexical properties
+
+Programs are writte using Unicode, typically encoded in UTF-8 text files.
+
+TODO lexer
+
+# Parsing
+## Stages
+## Pragmas
+## Token operations
+### Indentation
+### Comments and meta#expressions
+## Syntax tree operations
+### Operators
+### Parentheses
+### Application and fixity
+### Quoting
+## Left and right
+# Bindings and scope
+# Functions
+## Partial application
+# Structors
+## Construction
+## Deconstruction
+## Reconstruction
+# Patterns
+## Types
+### Construction patterns
+#### Inclusion patterns
+#### Predicate patterns
+### Matching
+### Enumeration
+## Types
+### Specifications
+### Restrictions    
+## Literate sublanguage
+## Declarative sublanguage
+### Module system    
+### Top-level value declarations
+### Type declarations
+### Implicit declarations
+### Fixity delcarations
+### Extensions
+## Imperative sublanguage
+### Do-expressions
+## Evaluation
+### Stages   
+### Dependency chain
+### Import stage
+### Typing stage
+### Run stage  
+
+
+
+
+
+--------------------------------------------------------------------------
 
 
 
