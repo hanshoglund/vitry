@@ -26,32 +26,32 @@ package vitry.runtime;
  *   - Provide put/get/isPersistent
  *   - (opt) Provide empty and (Env parent) constructors
  */
-abstract class AbstractEnv<K, V> implements Env<K, V>
+abstract class AbstractEnvironment<K, V> implements Environment<K, V>
     {      
         
-        private final Env<K, V> parent;
+        private final Environment<K, V> parent;
         
 
         /**
          * Creates a top-level environment.
          */
-        public AbstractEnv() {
-            this.parent = AbstractEnv.<K, V> empty();
+        public AbstractEnvironment() {
+            this.parent = AbstractEnvironment.<K, V> empty();
         }
 
         /**
          * Create an environment that is a child of the given environment.
          */
-        public AbstractEnv(Env<K, V> parent) {
+        public AbstractEnvironment(Environment<K, V> parent) {
             this.parent = parent;
         }
 
-        public Env<K, V> parent() {
+        public Environment<K, V> parent() {
             return parent;
         }
 
 
-        public Env<K, V> define(K key, V val) throws BindingError {
+        public Environment<K, V> define(K key, V val) throws BindingError {
             if (contains(key)) { 
                 throw new BindingError(key, this);
             }
@@ -62,15 +62,15 @@ abstract class AbstractEnv<K, V> implements Env<K, V>
             V val = get(key);
 
             if (val == null) {
-                Env<K, V> checkEnv = this;
+                Environment<K, V> checkEnv = this;
 
                 try {
                     do {
                         checkEnv = checkEnv.parent();
-                        if (val instanceof AbstractEnv) {
+                        if (val instanceof AbstractEnvironment) {
                             // In case we have an AbstractEnv, check locally
                             // Either we succeed, or search is continued in parent
-                            val = ((AbstractEnv<K,V>) checkEnv).get(key);                            
+                            val = ((AbstractEnvironment<K,V>) checkEnv).get(key);                            
                         } else {
                             // Otherwise, eat stack
                             // Either we succeed, or we exit by exception
@@ -88,7 +88,7 @@ abstract class AbstractEnv<K, V> implements Env<K, V>
         /**
          * Bind the given key to the given value in this env. 
          */
-        abstract protected Env<K, V> put(K key, V val);
+        abstract protected Environment<K, V> put(K key, V val);
                                                                  
         /**
          * Returns the value bound to the given key in this env or 
@@ -113,26 +113,26 @@ abstract class AbstractEnv<K, V> implements Env<K, V>
         /**
          * Returns an empty, persistent environment.
          */
-        public static <K, V> Env<K, V> empty() {
-            return (Env<K, V>) empty;
+        public static <K, V> Environment<K, V> empty() {
+            return (Environment<K, V>) empty;
         }
 
-        private static Env<?, ?> empty = new Empty();
+        private static Environment<?, ?> empty = new Empty();
         
 
-        static class Empty extends AbstractEnv<Object, Object>
+        static class Empty extends AbstractEnvironment<Object, Object>
             {
                 Empty() {}
 
-                public Env<Object, Object> define(Object key, Object val) {
+                public Environment<Object, Object> define(Object key, Object val) {
                     return throwUnsupported();
                 }
 
-                public Env<Object, Object> parent() {
+                public Environment<Object, Object> parent() {
                     return throwUnsupported();
                 }
 
-                protected Env<Object, Object> put(Object key, Object val) {
+                protected Environment<Object, Object> put(Object key, Object val) {
                     return throwUnsupported();
                 }
 

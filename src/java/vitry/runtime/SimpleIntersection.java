@@ -52,4 +52,9 @@ public class SimpleIntersection extends AbstractIntersection
         public Seq<Pattern> tail() {
             return elements.tail();
         }
+        
+        public boolean hasTail() {
+            return elements.hasTail();
+        }
+
     }

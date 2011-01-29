@@ -18,36 +18,38 @@
  */
 package vitry.runtime;
 
-import java.util.HashMap;
+import java.util.Iterator;
+
+import vitry.runtime.struct.ConsSeq;
+import vitry.runtime.struct.MapSeq;
+import vitry.runtime.struct.Seq;
 
 
-/**
- * A basic non-persistent environment.
- */
-public class HashEnv<K, V> extends AbstractEnv<K, V>
+abstract public class AbstractList extends ConstructionPattern
     {
-        public HashEnv() {
+
+        public Seq<Pattern> cons(Pattern head) {
+            return new ConsSeq<Pattern>(head, this);
         }
 
-        public HashEnv(Env<K, V> env) {
-            super(env);
+        public Seq map(Apply fn) {
+            return null;
+//            return new MapSeq<Pattern, Pattern>(fn, this);
         }
 
-        protected Env<K, V> put(K key, V val) {
-            bindings.put(key, val);
-            return this;
+        public Iterator<Pattern> iterator() {
+            return null;
+            // TODO Auto-generated method stub
         }
 
-        public V get(K key) {
-            return bindings.get(key);
-        }
-
-        private final HashMap<K, V> bindings = new HashMap<K, V>();
-
-        public boolean isPersistent() {
+        public boolean eqFor(Value o) {
             return false;
+            // TODO Auto-generated method stub
         }
 
-        private static final long serialVersionUID = -6896184961023443064L;
+        public boolean matchFor(Pattern p) {
+            return false;
+            // TODO Auto-generated method stub
+        }
 
     }

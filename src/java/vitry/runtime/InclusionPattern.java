@@ -27,7 +27,7 @@ import vitry.runtime.struct.Seq;
 import vitry.runtime.struct.SeqIterator;
 
 /**
- * Base implementation, relying on the underlying Seq logic.
+ * Base implementation, relying on the underlying Seq structure.
  *
  * See also AbstractProduct.
  */

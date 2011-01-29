@@ -26,10 +26,16 @@ import vitry.runtime.struct.Seq;
 public class Interpreter implements Eval
     {
 
-        public Value eval(Pattern e, ClassLoader cl, Seq<Module> link,
-                Properties systemProperties) throws ParseError, LinkageError {
+        public Value eval(
+            Pattern e, 
+            ClassLoader cl, 
+            Seq<Module> link,
+            Properties systemProperties) 
+            throws ParseError, LinkageError {
+
+
+
             return null;
-            // TODO
         }
 
     }

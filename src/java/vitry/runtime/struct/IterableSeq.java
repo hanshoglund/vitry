@@ -62,4 +62,8 @@ public class IterableSeq<T> extends AbstractSeq<T>
                 return tail;
             }
         }
+
+        public boolean hasTail() {
+            return it.hasNext();
+        }
     }

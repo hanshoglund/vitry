@@ -18,37 +18,29 @@
  */
 package vitry.runtime;
 
-import java.io.Serializable;
-
-
 /**
- * Standard environment. That is a set of bindings referencing an enclosing 
- * <em>parent environment</em>.
- * 
- * Invariants:    
- *
- *   - parent is referentially transparent
- *   - if isPersistent holds, then lookup is referentially transparent
+ * Object carrying a value environment.
  */
-public interface Env<K, V> extends Serializable
+abstract public class Scope extends Atom
     {
+        /**
+         * Creates a top-level callable entity (a module or a compiled
+         * function).
+         */
+        public Scope() {
+            this.env = new HashEnvironment<Symbol, Object>();
+        }
 
         /**
-         * Make a new definition in this env, optionally returning
-         * a modified environment.
+         * Creates a nested callable entity.
          */
-        Env<K, V> define(K key, V val) throws BindingError;
+        public Scope(Scope parent) {
+            this.env = new HashEnvironment<Symbol, Object>(parent.env());
+        }
 
-        /**
-         * Lookup the given binding in this environment.
-         * @throws UndefinedError
-         */
-        V lookup(K key) throws UndefinedError;
+        final Environment<Symbol, Object> env;
 
-        /**
-         * Return the parent environment or null.
-         */
-        Env<K, V> parent();
-
-        boolean isPersistent();
+        public Environment<Symbol, Object> env() {
+            return env;
+        }
     }

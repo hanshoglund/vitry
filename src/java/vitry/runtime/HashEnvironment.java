@@ -18,29 +18,36 @@
  */
 package vitry.runtime;
 
+import java.util.HashMap;
+
+
 /**
- * Base class for callable entities.
+ * A basic non-persistent environment.
  */
-abstract public class Callable extends Atom
+public class HashEnvironment<K, V> extends AbstractEnvironment<K, V>
     {
-        /**
-         * Creates a top-level callable entity (a module or a compiled
-         * function).
-         */
-        public Callable() {
-            this.env = new HashEnv<Symbol, Object>();
+        public HashEnvironment() {
         }
 
-        /**
-         * Creates a nested callable entity.
-         */
-        public Callable(Callable parent) {
-            this.env = new HashEnv<Symbol, Object>(parent.env());
+        public HashEnvironment(Environment<K, V> env) {
+            super(env);
         }
 
-        final Env<Symbol, Object> env;
-
-        public Env<Symbol, Object> env() {
-            return env;
+        protected Environment<K, V> put(K key, V val) {
+            bindings.put(key, val);
+            return this;
         }
+
+        public V get(K key) {
+            return bindings.get(key);
+        }
+
+        private final HashMap<K, V> bindings = new HashMap<K, V>();
+
+        public boolean isPersistent() {
+            return false;
+        }
+
+        private static final long serialVersionUID = -6896184961023443064L;
+
     }

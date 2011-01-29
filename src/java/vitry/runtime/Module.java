@@ -19,12 +19,9 @@
 package vitry.runtime;
          
 /*
- * Standard top-level entity. Modules are decribed in the declarative
- * sublanguage. Except for top-level declarations of functions, types
- * and other values they may also declara imports, exports, implicits
- * and fixity rules.
+ * Implements the module sublanguage.
  */
-public class Module extends Callable
+public class Module extends Scope
     {
         
 
@@ -32,6 +29,6 @@ public class Module extends Callable
             return null; // TODO give empty module?
         }
 
-        // TODO implicit decls
-        // TODO infix decls
+        // TODO implicit env
+        // TODO type env
     }

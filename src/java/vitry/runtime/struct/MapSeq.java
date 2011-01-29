@@ -66,8 +66,15 @@ public class MapSeq<A, B> extends AbstractSeq<B> implements Dynamic
         }
 
         public Seq<B> tail() {
-            Seq<A> tail = input.tail();
-            return (tail == null) ? null : new MapSeq<A, B>(fn, tail);
+            if (input.hasTail()) {
+                return new MapSeq<A, B>(fn, input.tail());
+            } else {
+                return null;
+            }
+        }
+
+        public boolean hasTail() {
+            return input.hasTail();
         }
     }
 

@@ -18,8 +18,6 @@
  */
 package vitry.runtime.struct;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 /**
  * A seq containing a single value.
@@ -33,10 +31,6 @@ public class SingleSeq<T> extends AbstractSeq<T> implements Countable
             this.obj = obj;
         }
 
-        public Iterator<T> iterator() {
-            return new SingleIterator<T>(obj);
-        }
-
         public T head() {
             return obj;
         }
@@ -48,30 +42,8 @@ public class SingleSeq<T> extends AbstractSeq<T> implements Countable
         public int count() {
             return 1;
         }
-    }
 
-class SingleIterator<T> implements Iterator<T> {
-        
-    private final T obj;
-    private boolean called = false;
-
-    public SingleIterator(T obj) {
-        this.obj = obj;
-    }
-
-    public boolean hasNext() {
-        return !called;
-    }
-
-    public T next() {
-        if (called) throw new NoSuchElementException();
-        else {
-            called = true;
-            return obj;            
+        public boolean hasTail() {
+            return false;
         }
     }
-
-    public void remove() {
-        throw new UnsupportedOperationException();
-    }        
-}

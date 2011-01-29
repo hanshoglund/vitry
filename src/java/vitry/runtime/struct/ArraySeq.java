@@ -27,7 +27,7 @@ public class ArraySeq<T> extends AbstractSeq<T>
     {
         private final T[] array;
         private final int offset;
-        private boolean hasTail = false;
+        private boolean tailCached = false;
         private Seq<T> tail;
 
         public ArraySeq(T... elements) {
@@ -40,7 +40,7 @@ public class ArraySeq<T> extends AbstractSeq<T>
             this.offset = offset;
         }
         
-        private ArraySeq(T[] elements, int offset, int dummy) {
+        private ArraySeq(T[] elements, int offset, Object dummy) {
             this.array = elements;
             this.offset = offset;
         }
@@ -54,13 +54,16 @@ public class ArraySeq<T> extends AbstractSeq<T>
         }
 
         public Seq<T> tail() {
-            if (!hasTail) {
-                if (offset + 1 < array.length)
-                    tail = new ArraySeq<T>(array, offset + 1, NO_CHECK);
-                hasTail = true;
+            if (!tailCached) {
+                if (hasTail()) {
+                    tail = new ArraySeq<T>(array, offset + 1, null);                    
+                }
+                tailCached = true;
             }
             return tail;
         }
         
-        private static final int NO_CHECK = 0;
+        public boolean hasTail() {
+            return offset + 1 < array.length;
+        }
     }

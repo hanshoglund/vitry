@@ -44,7 +44,7 @@ import vitry.runtime.misc.Utilities;
  * See <em>Making a Fast Curry: Push/Enter vs Eval/Apply for Higher-order 
  * Languages</em> by Marlow and Jones
  */
-abstract public class Function extends Callable implements Apply, Dynamic
+abstract public class Function extends Scope implements Apply, Dynamic
     {
 
         public static int MIN_ARITY = 1;

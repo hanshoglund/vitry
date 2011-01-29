@@ -39,4 +39,8 @@ public class ConsSeq<T> extends AbstractSeq<T>
         public Seq<T> tail() {
             return tail;
         }
+
+        public boolean hasTail() {
+            return tail != null;
+        }
     }

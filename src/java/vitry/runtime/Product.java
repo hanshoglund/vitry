@@ -38,27 +38,6 @@ public interface Product extends Pattern, Seq<Pattern>, MaybeDestructible
         public Pattern fst();
 
         public Pattern snd();
-        
-        
-        // Auto-generated for use by the reification system
-
-        public Pattern _1();
-
-        public Pattern _2();
-
-        public Pattern _3();
-
-        public Pattern _4();
-
-        public Pattern _5();
-
-        public Pattern _6();
-
-        public Pattern _7();
-
-        public Pattern _8();
-
-        public Pattern _9();
 
         // TODO generate as needed
     }

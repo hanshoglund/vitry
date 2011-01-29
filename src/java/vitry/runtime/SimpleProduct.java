@@ -62,4 +62,8 @@ public class SimpleProduct extends AbstractProduct
             return new MapSeq<Pattern,U>(fn, elements);
         }
 
+        public boolean hasTail() {
+            return elements.hasTail();
+        }
+
     }

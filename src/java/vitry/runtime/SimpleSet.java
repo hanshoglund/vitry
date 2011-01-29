@@ -51,4 +51,8 @@ public class SimpleSet extends AbstractSet
         public Seq<Pattern> tail() {
             return elements.tail();
         }
+        
+        public boolean hasTail() {
+            return elements.hasTail();
+        }
     }

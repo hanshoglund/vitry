@@ -59,30 +59,32 @@ public class PatternTree extends CommonTree implements Product
         }
         
         public Pattern head() {
-            if (!generatedChildSeq) 
-                generateChildSeq();
+            if (!generatedChildSeq) generateChildSeq();
             
-            // Check if we have payload
-            if (token == null) {
-                return (childSeq == null) ? null : childSeq.head();
-            } else {
-//                return Symbol.intern(token.getText());
+            if (hasPayload()) {
                 return new VitryToken(token);
+            } else {
+                return (childSeq == null) ? null : childSeq.head();
             }
         }
 
         public Seq<Pattern> tail() {
-            if (!generatedChildSeq) 
-                generateChildSeq();
-
-            if (childSeq == null) 
-                return null;
+            if (!generatedChildSeq) generateChildSeq();
+            if (!hasTail()) return null;
             
-            if (token == null) {
-                return childSeq.tail();
-            } else {
+            if (hasPayload()) {
                 return childSeq;
+            } else {
+                return childSeq.tail();
             }
+        }
+        
+        public boolean hasPayload() {
+            return token != null;
+        }
+        
+        public boolean hasTail() {
+            return childSeq != null;
         }
         
         
@@ -138,11 +140,6 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public Pattern _1() {
-            return delegee._1();
-        }
-
-
         public Seq<Pattern> cons(Pattern head) {
             return delegee.cons(head);
         }
@@ -153,18 +150,8 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public Pattern _2() {
-            return delegee._2();
-        }
-
-
         public boolean eq(Atom o) {
             return delegee.eq(o);
-        }
-
-
-        public Pattern _3() {
-            return delegee._3();
         }
 
 
@@ -178,18 +165,8 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public Pattern _4() {
-            return delegee._4();
-        }
-
-
         public boolean match(Union p) {
             return delegee.match(p);
-        }
-
-
-        public Pattern _5() {
-            return delegee._5();
         }
 
 
@@ -203,11 +180,6 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public Pattern _6() {
-            return delegee._6();
-        }
-
-
         public boolean eq(Union o) {
             return delegee.eq(o);
         }
@@ -215,11 +187,6 @@ public class PatternTree extends CommonTree implements Product
 
         public boolean match(Intersection p) {
             return delegee.match(p);
-        }
-
-
-        public Pattern _7() {
-            return delegee._7();
         }
 
 
@@ -233,18 +200,8 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public Pattern _8() {
-            return delegee._8();
-        }
-
-
         public boolean eq(Intersection o) {
             return delegee.eq(o);
-        }
-
-
-        public Pattern _9() {
-            return delegee._9();
         }
 
 

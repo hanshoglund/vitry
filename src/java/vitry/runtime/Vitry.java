@@ -617,6 +617,10 @@ public class Vitry
                     return false;
                 }
                 
+                public boolean hasTail() {
+                    return false;
+                }
+                
                 // Rest of interface unsupported, pretty uninteresting...
 
                 public Product fst() {

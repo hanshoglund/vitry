@@ -27,7 +27,7 @@ public class BindingError extends VitryError
 
         private Object env;
 
-        public BindingError(Object key, Env<?, ?> env) {
+        public BindingError(Object key, Environment<?, ?> env) {
             super("Key " + key + " already defined in " + env);
             this.key = key;
             this.env = env;

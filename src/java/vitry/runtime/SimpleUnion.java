@@ -51,4 +51,8 @@ public class SimpleUnion extends AbstractUnion
         public Seq<Pattern> tail() {
             return elements.tail();
         }
+
+        public boolean hasTail() {
+            return elements.hasTail();
+        }
     }

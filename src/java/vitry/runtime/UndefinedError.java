@@ -25,9 +25,9 @@ public class UndefinedError extends BindingError
     {
         private Object key;
 
-        private Env<?,?> env;
+        private Environment<?,?> env;
 
-        public UndefinedError(Object key, Env<?, ?> env) {
+        public UndefinedError(Object key, Environment<?, ?> env) {
             super("Could not find key " + key + " in " + env);
             this.key = key;
             this.env = env;
@@ -37,7 +37,7 @@ public class UndefinedError extends BindingError
             return key;
         }
 
-        public Env<?,?> getEnv() {
+        public Environment<?,?> getEnv() {
             return env;
         }
 

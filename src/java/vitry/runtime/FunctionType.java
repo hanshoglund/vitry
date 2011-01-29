@@ -100,6 +100,10 @@ public class FunctionType extends BasePattern implements Seq<Pattern>
             return new SingleSeq<Pattern>(dom);
         }
 
+        public boolean hasTail() {
+            return dom != null;
+        }
+
         public Iterator<Pattern> iterator() {
             return new SeqIterator<Pattern>(this);
         }

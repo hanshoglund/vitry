@@ -100,4 +100,9 @@ public class NativeType extends BasePattern implements Set
         private <T> T throwEnumeration() {
             throw new UnsupportedOperationException("Can not enumerate a native type");
         }
+
+        public boolean hasTail() {
+            return false;
+            // TODO Auto-generated method stub
+        }
     }

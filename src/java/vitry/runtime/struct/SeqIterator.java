@@ -36,7 +36,7 @@ public class SeqIterator<T> implements Iterator<T>
         }
 
         public boolean hasNext() {
-            return (seq != null) && (seq.head() != null);
+            return seq != null;
         }
 
         public T next() {

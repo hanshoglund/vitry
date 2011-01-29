@@ -28,19 +28,18 @@ import vitry.runtime.struct.Seq;
 import vitry.runtime.struct.SeqIterator;
 
 /**
- * Base implementation, relying on the underlying seq logic.
- * 
- * Does not support <em>n</em>-accessors where n > 2.
+ * Base implementation, relying on the underlying Seq structure.
  * 
  * For the reified block types, we have to override the Seq methods to adapt
- * traversal to accessors instead of the other way around.
+ * traversal to the generated accessors.
  * 
  * Implement:
  * 
  *   - head/tail/iterator
  *   - (optional) n-accessors
  */
-public abstract class AbstractProduct extends BasePattern implements Product
+abstract public class AbstractProduct extends ConstructionPattern 
+implements Product
     {
         
         public boolean eq(Product o) {
@@ -80,15 +79,6 @@ public abstract class AbstractProduct extends BasePattern implements Product
         public boolean matchFor(Pattern p) {
             return p.match(this);
         }
-        
-        public boolean isDestructible() {
-            return true;
-        }
-
-        public Seq<Pattern> destruct() {
-            return this;
-        }
-        
 
         public Seq<Pattern> cons(Pattern head) {
             return new ConsSeq<Pattern>(head, this);
@@ -132,42 +122,6 @@ public abstract class AbstractProduct extends BasePattern implements Product
             return (tail == null ? null : tail.head());
         }
 
-        public Pattern _1() {
-            return fst();
-        }
-
-        public Pattern _2() {
-            return snd();
-        }
-
-        public Pattern _3() {
-            return throwUnsupported();
-        }
-
-        public Pattern _4() {
-            return throwUnsupported();
-        }
-
-        public Pattern _5() {
-            return throwUnsupported();
-        }
-
-        public Pattern _6() {
-            return throwUnsupported();
-        }
-
-        public Pattern _7() {
-            return throwUnsupported();
-        }
-
-        public Pattern _8() {
-            return throwUnsupported();
-        }
-
-        public Pattern _9() {
-            return throwUnsupported();
-        }
-        
         protected <T> T throwUnsupported() {
             throw new UnsupportedOperationException("No value for this accessor.");
         }

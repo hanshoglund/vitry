@@ -22,7 +22,6 @@ The core language is purely functional with call-by-value evaluation. It has a s
 
 ### Table of Contents
 
-- Lexical properties
 - Parsing
     - Stages
     - Pragmas
@@ -36,47 +35,49 @@ The core language is purely functional with call-by-value evaluation. It has a s
         - Application and fixity
         - Quoting
     - Left and right
+
 - Bindings and scope
-    - Local declarations
-    - Top-level declarations
+    - Local definitions
+    - Top-level definitions
         - Types
-        - Implicits
-        - Fixities
-- Functions
-- Structors
-    - Construction
-    - Deconstruction
-    - Reconstruction
+        - Implicitness
+        - Fixity
+- Atoms
+    - Functions
+    - Symbols
+    - Numbers
+    - Strings
+    
 - Patterns
-    - Types
-        - Construction patterns
-            - Products
-            - Lists
-        - Inclusion patterns
-            - Sets
-            - Unions
-            - Intersections
-            - Comprehensions
+    - Construction patterns
+        - Products
+        - Lists
+    - Inclusion patterns
+        - Sets
+        - Unions
+        - Intersections
+        - Comprehensions
     - Matching
     - Enumeration
-- Formal types
-    - Specifications
-    - Restrictions    
+
+- Types   
+    - Specifications and restrictions
+    - Polymorphism
+    - Implicit conversion
 
 - Literate language
 
-- Module language
-    - Module system    
-    - Extensions
+- Module language    
+    - Match extensions
 
 - Imperative language
     - Do-expressions
 
 - Evaluation
-    - Dependency chain
-    - Import stage
+    - Loading stage
+        - Dendency resolution
     - Typing stage
-    - Run stage
+    - Execution stage
 
 
 
@@ -99,31 +100,32 @@ TODO lexer
 ### Quoting
 ## Left and right
 # Bindings and scope
+- Local definitions
+- Top-level definitions
+    - Types
+    - Implicits
+    - Fixities
 # Functions
-## Partial application
-# Structors
-## Construction
-## Deconstruction
-## Reconstruction
 # Patterns
-## Types
 ### Construction patterns
-#### Inclusion patterns
-#### Predicate patterns
+#### Products
+#### Lists
+### Inclusion patterns
+#### Sets
+#### Unions
+#### Intersections
+#### Comprehensions
 ### Matching
 ### Enumeration
-## Types
-### Specifications
-### Restrictions    
-## Literate sublanguage
-## Declarative sublanguage
+## Formal types
+### Polymorphism
+### Specifications and restrictions
+### Implicit conversion    
+## Literate language
+## Module language
 ### Module system    
-### Top-level value declarations
-### Type declarations
-### Implicit declarations
-### Fixity delcarations
 ### Extensions
-## Imperative sublanguage
+## Imperative language
 ### Do-expressions
 ## Evaluation
 ### Stages   

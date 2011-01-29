@@ -66,5 +66,9 @@ public interface Set extends Pattern, Seq<Pattern>
                 public int hashCode() {
                     return -1;
                 }
+
+                public boolean hasTail() {
+                    return false;
+                }
             }
     }

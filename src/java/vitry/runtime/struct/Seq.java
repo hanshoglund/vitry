@@ -24,10 +24,7 @@ import vitry.runtime.Apply;
 /**
  * Sequence abstraction. The idea is to have a common interface for
  * the core pattern language, as well as for the native list implementations.
- * This means we cane adapt one into the in <em>O(1)</em> time.
- * 
- * To distinguish, we need to use different terminators; seqs have 
- * <code>null</code> while lists have <code>()</code>.
+ * This means we can adapt one into the in <em>O(1)</em> time.
  *
  * Implement:
  * 
@@ -39,6 +36,8 @@ public interface Seq<T> extends Iterable<T>
         T head();
 
         Seq<T> tail();
+        
+        boolean hasTail();
 
         Seq<T> cons(T head);
 
