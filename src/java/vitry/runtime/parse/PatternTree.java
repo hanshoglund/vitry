@@ -31,7 +31,6 @@ import vitry.runtime.Pattern;
 import vitry.runtime.Product;
 import vitry.runtime.Set;
 import vitry.runtime.SimpleProduct;
-import vitry.runtime.Symbol;
 import vitry.runtime.Tagged;
 import vitry.runtime.Type;
 import vitry.runtime.Union;

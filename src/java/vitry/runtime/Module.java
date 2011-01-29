@@ -17,7 +17,13 @@
  * See COPYING.txt for details.
  */
 package vitry.runtime;
-
+         
+/*
+ * Standard top-level entity. Modules are decribed in the declarative
+ * sublanguage. Except for top-level declarations of functions, types
+ * and other values they may also declara imports, exports, implicits
+ * and fixity rules.
+ */
 public class Module extends Callable
     {
         

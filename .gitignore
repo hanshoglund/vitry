@@ -4,6 +4,8 @@
 .project
 .settings
 debug.txt
+HindleyMilner.scala
+hindley-milner.py
 Doxyfile
 doxygen/
 main.js

@@ -50,8 +50,5 @@ public interface Env<K, V> extends Serializable
          */
         Env<K, V> parent();
 
-        /**
-         * Return whether this environment is persistent or not.
-         */
         boolean isPersistent();
     }

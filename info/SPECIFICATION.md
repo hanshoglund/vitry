@@ -5,9 +5,9 @@
 
 ## Vitry
 
-Vitry is a functional, structurally typed and highly adaptable programming language. It was designed to simplify construction and analysis of large and possibly complex data structures. It is a general purpose language, but it was concieved to be used in the creative and artistic fields, hence its emphasis on conciseness, flexibility and structure.
+Vitry is a functional, structurally typed and highly adaptable programming language. It was designed to simplify construction and analysis of large and possibly complex data structures. It is a general purpose language, but it was concieved to be used in the creative fields, hence its emphasis on conciseness and flexibility.
 
-The language itself is highly modular and allow most parts of its syntax and semantics to be overloaded or extended by the user. This is achieved through a set of well-defined *stages*, that speficies how interpretation or compilation should go about.
+The language itself is highly modular and allow most parts of its syntax and semantics to be overloaded or extended by the user. This is achieved through a set of well-defined *stages*.
 
 The core syntactic constructs are all overloadable, including operators, keywords and parentheses.
 
@@ -15,7 +15,7 @@ The core language is purely functional with call-by-value evaluation. It has a s
 
  On top of this there are three standarized *extension languages*, namely:
 
-- The meta language (used for comments)
+- The meta language (used for comments and literate style)
 - The imperative language (used for controlled side-effects)
 - The module language (used for modules, type declarations and implicit conversion)
 
@@ -31,13 +31,18 @@ The core language is purely functional with call-by-value evaluation. It has a s
         - Comments and meta-expressions
     - Syntax tree operations
         - Operators
-        - Parentheses
+        - Parentheses  
+        - Overloading
         - Application and fixity
         - Quoting
     - Left and right
 - Bindings and scope
+    - Local declarations
+    - Top-level declarations
+        - Types
+        - Implicits
+        - Fixities
 - Functions
-    - Partial application
 - Structors
     - Construction
     - Deconstruction
@@ -45,25 +50,29 @@ The core language is purely functional with call-by-value evaluation. It has a s
 - Patterns
     - Types
         - Construction patterns
+            - Products
+            - Lists
         - Inclusion patterns
-        - Predicate patterns
+            - Sets
+            - Unions
+            - Intersections
+            - Comprehensions
     - Matching
     - Enumeration
 - Formal types
     - Specifications
     - Restrictions    
+
 - Literate language
+
 - Module language
     - Module system    
-    - Top-level value declarations
-    - Type declarations
-    - Implicit declarations
-    - Fixity delcarations
     - Extensions
+
 - Imperative language
     - Do-expressions
+
 - Evaluation
-    - Stages   
     - Dependency chain
     - Import stage
     - Typing stage

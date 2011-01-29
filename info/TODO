@@ -1,8 +1,7 @@
                  
 Move general info to NOTES, gradually move this stuff to tracker.
 
-====================================================================================================
-
+==============================================================================
 
 - Implement a core language
     - Type system                   
