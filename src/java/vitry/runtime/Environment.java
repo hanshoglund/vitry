@@ -49,6 +49,8 @@ public interface Environment<K, V> extends Serializable
          * Return the parent environment or null.
          */
         Environment<K, V> parent();
+        
+        Environment<K, V> makeChild();
 
         boolean isPersistent();
     }

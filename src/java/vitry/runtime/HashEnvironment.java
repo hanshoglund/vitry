@@ -47,6 +47,10 @@ public class HashEnvironment<K, V> extends AbstractEnvironment<K, V>
         public boolean isPersistent() {
             return false;
         }
+        
+        public Environment<K, V> makeChild() {
+            return new HashEnvironment<K,V>(this);
+        }
 
         private static final long serialVersionUID = -6896184961023443064L;
 

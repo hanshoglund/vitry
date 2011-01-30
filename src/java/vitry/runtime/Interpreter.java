@@ -18,6 +18,7 @@
  */
 package vitry.runtime;
 
+import java.math.BigInteger;
 import java.util.Properties;
 
 import vitry.runtime.parse.VitryParser;
@@ -25,104 +26,422 @@ import vitry.runtime.parse.VitryToken;
 import vitry.runtime.struct.Seq;
 
 
+/**
+ * Standard interpreter.
+ */
 public class Interpreter implements Eval
-    {
+    {        
 
-        public Value eval(
-            Pattern e, 
-            ClassLoader cl, 
-            Seq<Module> link,
-            Properties systemProperties) 
-            throws ParseError, LinkageError {
+        static final int PrimOp      = VitryParser.Op;
+        static final int PrimSymbol  = VitryParser.Symbol;
+        static final int PrimNatural = VitryParser.Natural;
+        static final int PrimFloat   = VitryParser.Float;
+        static final int PrimComplex = VitryParser.Complex;
+        static final int PrimString  = VitryParser.String;
+        
+        static final int Ang         = VitryParser.Ang;
+        static final int Apply       = VitryParser.Apply;
+        static final int Assign      = VitryParser.Assign;
+        static final int Bra         = VitryParser.Bra;
+        static final int Do          = VitryParser.Do;
+        static final int Fn          = VitryParser.Fn;
+        static final int If          = VitryParser.If;
+        static final int Left        = VitryParser.Left;
+        static final int Let         = VitryParser.Let;
+        static final int Loop        = VitryParser.Loop;
+        static final int Match       = VitryParser.Match;
+        static final int Module      = VitryParser.Module;
+        static final int Ops         = VitryParser.Ops;
+        static final int Par         = VitryParser.Par;
+        static final int Quote       = VitryParser.Quote;
+        static final int Recur       = VitryParser.Recur;
+        static final int Type        = VitryParser.Type;
 
-            VitryToken op = null; 
-            Seq<Pattern> args = null; 
+        static final Symbol delimiter = Symbol.intern("delimiter");
+        static final Symbol nil       = Symbol.intern("nil");
+        static final Symbol par       = Symbol.intern("par");
+        static final Symbol bra       = Symbol.intern("bra");
+        static final Symbol ang       = Symbol.intern("ang");
+        static final Symbol side      = Symbol.intern("side");
+        static final Symbol left      = Symbol.intern("left");
+        static final Symbol right     = Symbol.intern("right");
+        static final Symbol quoted    = Symbol.intern("quoted");
+        static final Symbol t         = Symbol.intern("true");
+        static final Symbol f         = Symbol.intern("false");
+        
+        
+        // Contexts for semantic disambiguition of constructs such as
+        // side-sensitive expressions, delimiters and quoting
+        
+        static final Environment<Symbol, Symbol> stdContext = new HashEnvironment<Symbol, Symbol>();
+        static {
+            stdContext.define(delimiter, nil);
+            stdContext.define(side, right);
+            stdContext.define(quoted, f);
+        }
+        
+        
 
-            try {
-                op = (VitryToken) ((Product) e).head();
-                args = ((Product) e).tail();
-            } catch (ClassCastException t) {
-                t.printStackTrace();
-                // TODO
-            }
-            
-            switch(op.getType()) {
-                
-                case VitryParser.Par:
-                
-                case VitryParser.Bra:
-                
-                case VitryParser.Ang:
-                
-                case VitryParser.Module:
-                    // TODO typecheck
-                    return new InterpretedModule();
-                
-                case VitryParser.Fn: 
-                    // TODO typecheck
-                    // TODO store expr etc.
-                    return new InterpretedFunction();
-                
-                case VitryParser.Let:
-                
-                case VitryParser.Where:
-                
-                case VitryParser.Assign:
-                
-                case VitryParser.Left:
-                
-                case VitryParser.Quote:
-
-                
-                case VitryParser.Apply:
-                
-                case VitryParser.Type:
-                
-                case VitryParser.If:
-                
-                case VitryParser.Match:
-                
-                case VitryParser.Loop:
-                
-                case VitryParser.Recur:
-                
-                case VitryParser.Do:
-                
-                case VitryParser.Ops:
-                
-                default:
-            }
-            
-            
-            // TODO
+        public Object eval
+                (
+                Pattern e, 
+                ClassLoader cl, 
+                Seq<Module> link, 
+                Properties useProps
+                )
+        throws ParseError, LinkageError {
             return null;
         }
         
         
-        
-        
-        // TODO Deconstruction, type restrictions
-        public Value match(final Value input, Seq<Pattern> left, Seq<Pattern> right) {
-            while (left != null && right != null) {
-                if (input.matchFor(left.head())) {
-                    return right.head();
+        public Object eval
+                (
+                Pattern e, 
+                ClassLoader cl, 
+                Seq<Module> link, 
+                Properties useProps,
+                Scope scope,
+                Object types,       // TODO
+                Object implicits,   // TODO
+                Object fixities     // TODO
+                )
+        throws ParseError, LinkageError {
+            
+            if (selfEvaluating(e)) return e;
+
+            Environment<Symbol, Symbol> context = stdContext;
+            Environment<Symbol, Object> env = scope.env();
+            // TODO var env
+            // TODO type env
+            // TODO implicit env
+            // TODO fixity env
+            
+            while (true) {
+                // We simulate tail calls to eval() by continue
+                
+                // Calls to actual functions use apply() for the time being
+                // For interpreted functions this could of course be changed to a jump,
+                // given that we can fix the handling of partial application
+                
+                Pattern      op = ((Product) e).head();
+                Seq<Pattern> args = ((Product) e).tail();
+                
+                VitryToken   vitryOp = null;
+                int          tokenType = -1;
+                
+                try {
+                    vitryOp = (VitryToken) op;
+                    tokenType = vitryOp.tokenType();
+                } catch (ClassCastException t) {
+                    throw new IllegalArgumentException(
+                        "This interpreter only supports VitryTokens");
                 }
-                left = left.tail();
-                right = right.tail();
+
+                switch (tokenType) {
+                                        
+                    case PrimNatural:
+                        return new BigInteger(vitryOp.toString());
+                        
+
+                    case PrimFloat:
+                        return Float.valueOf(vitryOp.toString());
+                        
+                    
+                    case PrimComplex:
+                        throw new RuntimeException("Do not support complex numbers yet");
+                        
+                    
+                    case PrimString:
+                        return vitryOp.toString();
+                    
+                    
+                    case PrimOp:
+                        if (context.lookup(quoted) == t) {
+                            return Symbol.intern(vitryOp.toString());
+                        } else {
+                            return env.lookup(Symbol.intern(vitryOp.toString()));
+                        }
+                        
+                    
+                    case PrimSymbol:
+                        if (context.lookup(quoted) == t) {
+                            return Symbol.intern(vitryOp.toString());
+                        } else {
+                            return env.lookup(Symbol.intern(vitryOp.toString()));
+                        }
+
+                        
+                    case Par:
+                        context = context.makeChild();
+                        context.define(delimiter, par);
+                        // Tail eval body
+                        // (Pop context)
+
+                    case Bra:
+                        context = context.makeChild();
+                        context.define(delimiter, bra);
+                        // Tail eval body
+                        // (Pop context)
+
+                    case Ang:
+                        context = context.makeChild();
+                        context.define(delimiter, ang);
+                        // Tail eval body
+                        // (Pop context)
+
+                    case Module:
+                        // Typecheck
+//                        return new InterpretedModule();
+
+                    case Fn:
+                        // Typecheck
+                        // Store expr etc.
+//                        return new InterpretedFunction(scope);
+
+                    case Let:
+                        env = env.makeChild();
+                        // Do assignments
+                        // Tail eval body
+                        // (Pop env)
+
+                    case Assign:
+                        Symbol key  = (Symbol) args.head();
+                        Pattern val = args.tail().head();
+                        env.define(key, val);
+
+                    case Left:
+                        context = context.makeChild();
+                        context.define(side, left);
+                        // Tail eval body
+                        // (Pop context)
+
+                    case Quote:
+                        context = context.makeChild();
+                        context.define(quoted, t);
+                        // Tail eval body
+                        // (Pop context)
+
+                    case Apply:
+                        if (context.lookup(side) == left) {
+                            // Cast to Apply
+                            // Eval args
+                            // Invoke
+                            // Return result
+                        } else {
+                            // Cast to ApplyLeft
+                            // Eval args
+                            // Invoke
+                            // Return result
+                        }
+
+                    case Type:
+                        if (context.lookup(side) == left) {
+                            // Eval value
+                            // Assert value corresponds to tag or throw TypeError                            
+                        } else {
+                            // Apply tag
+                            // Return value
+                        }
+
+                    case If:
+                        Pattern cond = args.head();
+                        Pattern alt1 = args.tail().head();
+                        Pattern alt2 = args.tail().tail().head();
+
+                        if (!cond.eq(f)) {
+                            // Tail eval alt1
+                        } else {
+                            // Tail eval alt2
+                        }
+
+                    case Match:
+                        // See below
+
+                    case Loop:
+                        // Make new env, assign
+                        // Execute body with rec point here
+
+                    case Recur:
+                        // Jumpt to rec point
+
+                    case Do:
+                        // TODO
+
+                    case Ops:
+                        assert false : "Operators must be rewritten as application";
+
+                    default:
+                        assert false : "Unrecognized operation: " + vitryOp;
+                }
+                context = context.parent();
             }
-            throw new MatchingError(input);
         }
 
+        private boolean selfEvaluating(Pattern e) {
+            return !(e instanceof Value) || e instanceof Atom;
+        }
+        
+        
+        
+        
+//        // TODO Deconstruction, type restrictions
+//        public Value match(final Value input, Seq<Pattern> left, Seq<Pattern> right) {
+//            while (left != null && right != null) {
+//                if (input.matchFor(left.head())) {
+//                    return right.head();
+//                }
+//                left = left.tail();
+//                right = right.tail();
+//            }
+//            throw new MatchingError(input);
+//        }
+
+        abstract class InterpretedFunction extends Function
+            {
+                Seq<Pattern> vars;
+
+                Pattern body;
+            }
+
+        class IFn1 extends InterpretedFunction
+            {
+                public Object apply(Object a0) throws InvocationError {
+                    return a0;
+                }
+            }
+
+        class IFn2 extends InterpretedFunction
+            {
+                public Object apply(Object a0, Object a1) throws InvocationError {
+                    return a1;
+                }
+            }
+
+        class IFn3 extends InterpretedFunction
+            {
+                public Object apply(Object a0, Object a1, Object a2) throws InvocationError {
+                    return a2;
+                }
+            }
+
+        class IFn4 extends InterpretedFunction
+            {
+                public Object apply(Object a0, Object a1, Object a2, Object a3)
+                        throws InvocationError {
+                    return a3;
+                }
+            }
+
+        class IFn5 extends InterpretedFunction
+            {
+                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4)
+                        throws InvocationError {
+                    return a4;
+                }
+            }
+
+        class IFn6 extends InterpretedFunction
+            {
+                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
+                        Object a5) throws InvocationError {
+                    return a5;
+                }
+            }
+
+        class IFn7 extends InterpretedFunction
+            {
+                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
+                        Object a5, Object a6) throws InvocationError {
+                    return a6;
+                }
+            }
+
+        class IFn8 extends InterpretedFunction
+            {
+                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
+                        Object a5, Object a6, Object a7) throws InvocationError {
+                    return a7;
+                }
+            }
+
+        class IFn9 extends InterpretedFunction
+            {
+                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
+                        Object a5, Object a6, Object a7, Object a8) throws InvocationError {
+                    return a8;
+                }
+            }
+
+        class IFn10 extends InterpretedFunction
+            {
+                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
+                        Object a5, Object a6, Object a7, Object a8, Object a9)
+                        throws InvocationError {
+                    return a9;
+                }
+            }
+
+        class IFn11 extends InterpretedFunction
+            {
+                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
+                        Object a5, Object a6, Object a7, Object a8, Object a9, Object a10)
+                        throws InvocationError {
+                    return a10;
+                }
+            }
+
+        class IFn12 extends InterpretedFunction
+            {
+                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
+                        Object a5, Object a6, Object a7, Object a8, Object a9, Object a10,
+                        Object a11) throws InvocationError {
+                    return a11;
+                }
+            }
+
+        class IFn13 extends InterpretedFunction
+            {
+                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
+                        Object a5, Object a6, Object a7, Object a8, Object a9, Object a10,
+                        Object a11, Object a12) throws InvocationError {
+                    return a12;
+                }
+            }
+
+        class IFn14 extends InterpretedFunction
+            {
+                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
+                        Object a5, Object a6, Object a7, Object a8, Object a9, Object a10,
+                        Object a11, Object a12, Object a13) throws InvocationError {
+                    return a13;
+                }
+            }
+
+        class IFn15 extends InterpretedFunction
+            {
+                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
+                        Object a5, Object a6, Object a7, Object a8, Object a9, Object a10,
+                        Object a11, Object a12, Object a13, Object a14) throws InvocationError {
+                    return a14;
+                }
+            }
+
+        class IFn16 extends InterpretedFunction
+            {
+                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
+                        Object a5, Object a6, Object a7, Object a8, Object a9, Object a10,
+                        Object a11, Object a12, Object a13, Object a14, Object a15)
+                        throws InvocationError {
+                    return a15;
+                }
+            }
+
+        class InterpretedModule extends Module
+            {
+
+
+            }
     }
 
 
-class InterpretedFunction extends Function {
-        
-        
-}
-
-
-class InterpretedModule extends Module {
-        
-
-}
+    

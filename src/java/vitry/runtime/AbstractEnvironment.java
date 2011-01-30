@@ -26,7 +26,7 @@ package vitry.runtime;
  *   - Provide put/get/isPersistent
  *   - (opt) Provide empty and (Env parent) constructors
  */
-abstract class AbstractEnvironment<K, V> implements Environment<K, V>
+abstract public class AbstractEnvironment<K, V> implements Environment<K, V>
     {      
         
         private final Environment<K, V> parent;
@@ -145,6 +145,11 @@ abstract class AbstractEnvironment<K, V> implements Environment<K, V>
                 private <T> T throwUnsupported() {
                     throw new UnsupportedOperationException(
                             "Not supported for emtpy environment");
+                }
+                
+                public Environment<Object, Object> makeChild() {
+                    // TODO throw instead?
+                    return new HashEnvironment(this);
                 }
                 
                 public boolean isPersistent() {

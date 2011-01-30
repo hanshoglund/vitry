@@ -10,7 +10,7 @@ tokens {
     Module; Fn;
     Let; Where; Assign; Left; Quote;
     Apply; Type; If; Match; Loop; Recur; Do;
-    Ops; Dummy; 
+    Ops; 
        
     TypeDecl; ImplicitDecl; FnDecl; MemberDecl;
 }
@@ -105,7 +105,7 @@ module
     
 moduleDecl
     : 'type'    '(' assign* ')'                -> ^(TypeDecl assign*)
-    | 'impicit' '(' (expr expr)* ')'           -> ^(ImplicitDecl ^(expr expr)*)
+    | 'implicit' '(' (expr expr)* ')'           -> ^(ImplicitDecl ^(expr expr)*)
     | Symbol    '(' left* ')' '=' inline[true] -> ^(FnDecl Symbol left+ inline)
     | left '=' expr                              -> ^(MemberDecl left expr)
     ;

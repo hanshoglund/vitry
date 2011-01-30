@@ -37,7 +37,7 @@ public class VitryToken extends Atom
             return tok;
         }
         
-        public int getType() {
+        public int tokenType() {
             return tok.getType();
         }
 

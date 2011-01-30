@@ -27,13 +27,19 @@ import vitry.runtime.struct.Seq;
  * Visits the eval operation.        
  * 
  * Evaluation prerequisites like linkage classloader, system properties etc. are typically
- * stored in an instance of the Vitry class. We prefer to pass them explicitly in case we
- * want to use this operation in other contexts.
+ * stored in an instance of the Vitry class. We prefer to pass them explicitly here in case 
+ * we want to use this operation in other contexts.
  */
 public interface Eval
     {
         /**
          * Evaluate the given pattern.
+         *
+         * If the given value is an atomic value, return it. Otherwise, interpret it as a Vitry syntax 
+         * tree and return its value. This may result in a ParseError.
+         *
+         * If the given pattern evaluates to a module, a module is constructed and resolved before
+         * it is returned. This may result in a LinkageError or TypeError.
          * 
          * @param e 
          *      Pattern to evaluate.
@@ -46,6 +52,6 @@ public interface Eval
          * @throws ParseError
          * @throws LinkageError
          */
-        public Value eval(Pattern e, ClassLoader cl, Seq<Module> link, Properties systemProperties)
-        throws ParseError, LinkageError;
+        public Object eval(Pattern e, ClassLoader cl, Seq<Module> link, Properties systemProperties)
+        throws ParseError, LinkageError, TypeError;
     }

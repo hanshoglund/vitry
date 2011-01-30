@@ -22,7 +22,7 @@ package vitry.runtime.struct;
 /**
  * A seq containing a single value.
  */
-public class SingleSeq<T> extends AbstractSeq<T> implements Countable
+public class SingleSeq<T> extends AbstractSeq<T> implements Finite
     {
         
         private final T obj;
@@ -39,7 +39,7 @@ public class SingleSeq<T> extends AbstractSeq<T> implements Countable
             return null;
         }
 
-        public int count() {
+        public int length() {
             return 1;
         }
 

@@ -21,7 +21,7 @@ package vitry.runtime;
 import vitry.runtime.misc.Utilities;
 
 
-abstract class AbstractSet extends InclusionPattern implements Set
+abstract public class AbstractSet extends InclusionPattern implements Set
     {
         public boolean match(Object o) {
             if (o instanceof Value) throw new IllegalArgumentException();

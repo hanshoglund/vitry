@@ -28,7 +28,7 @@
 		    <arg value="-fo"/>
 		    <arg value="src/java/vitry/runtime/parse/"/>
 		    <arg value="-verbose"/>
-		    <arg value="src/grammar/Vitry.g"/>
+		    <arg value="src/antlr/Vitry.g"/>
         </java>
     </target>
     

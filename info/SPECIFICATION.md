@@ -92,10 +92,16 @@ TODO lexer
 ## Pragmas
 ## Token operations
 ### Indentation
-### Comments and meta#expressions
+### Comments and meta-expressions
 ## Syntax tree operations
-### Operators
+
+Vitry allows post-parsing syntax tree operations. These are carried out according to top-level declarations.
+
+### Operator associativity and precedence
+
 ### Parentheses
+
+
 ### Application and fixity
 ### Quoting
 ## Left and right
