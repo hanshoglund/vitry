@@ -21,6 +21,7 @@ package vitry.runtime;
 import java.math.BigInteger;
 import java.util.Properties;
 
+import vitry.runtime.misc.Utilities;
 import vitry.runtime.parse.VitryParser;
 import vitry.runtime.parse.VitryToken;
 import vitry.runtime.struct.Seq;
@@ -96,7 +97,7 @@ public class Interpreter implements Eval
         
         public Object eval
                 (
-                Pattern e, 
+                Pattern expr, 
                 ClassLoader cl, 
                 Seq<Module> link, 
                 Properties useProps,
@@ -107,70 +108,44 @@ public class Interpreter implements Eval
                 )
         throws ParseError, LinkageError {
             
-            if (selfEvaluating(e)) return e;
-
             Environment<Symbol, Symbol> context = stdContext;
-            Environment<Symbol, Object> env = scope.env();
-            // TODO var env
-            // TODO type env
-            // TODO implicit env
-            // TODO fixity env
+            Environment<Symbol, Object> environment = scope.environment();
+            // TODO types
+            // TODO implicits
+            // TODO fixities
+            
+            // We simulate tail calls to eval() by continue
+            
+            // Calls to actual functions use apply() for the time being
+            // For interpreted functions this could of course be changed to a jump,
+            // given that we can fix the handling of partial application
             
             while (true) {
-                // We simulate tail calls to eval() by continue
                 
-                // Calls to actual functions use apply() for the time being
-                // For interpreted functions this could of course be changed to a jump,
-                // given that we can fix the handling of partial application
+                if (isSelfEvaluating(expr)) return expr;                
+                if (isPrimitive(expr))      return evalPrimitive(expr, context, environment);
                 
-                Pattern      op = ((Product) e).head();
-                Seq<Pattern> args = ((Product) e).tail();
-                
-                VitryToken   vitryOp = null;
+                Pattern      op;
+                Seq<Pattern> args;
                 int          tokenType = -1;
                 
                 try {
-                    vitryOp = (VitryToken) op;
-                    tokenType = vitryOp.tokenType();
+                    op   = ((Product) expr).head();
+                    args = ((Product) expr).tail();
+                } catch (ClassCastException t) {
+                    throw new ParseError(
+                        "Improperly formed syntax tree" + Utilities.limit(expr.toString(), 50));
+                }                
+                
+                try {
+                    tokenType = ((VitryToken) op).tokenType();
                 } catch (ClassCastException t) {
                     throw new IllegalArgumentException(
                         "This interpreter only supports VitryTokens");
                 }
 
                 switch (tokenType) {
-                                        
-                    case PrimNatural:
-                        return new BigInteger(vitryOp.toString());
-                        
-
-                    case PrimFloat:
-                        return Float.valueOf(vitryOp.toString());
-                        
                     
-                    case PrimComplex:
-                        throw new RuntimeException("Do not support complex numbers yet");
-                        
-                    
-                    case PrimString:
-                        return vitryOp.toString();
-                    
-                    
-                    case PrimOp:
-                        if (context.lookup(quoted) == t) {
-                            return Symbol.intern(vitryOp.toString());
-                        } else {
-                            return env.lookup(Symbol.intern(vitryOp.toString()));
-                        }
-                        
-                    
-                    case PrimSymbol:
-                        if (context.lookup(quoted) == t) {
-                            return Symbol.intern(vitryOp.toString());
-                        } else {
-                            return env.lookup(Symbol.intern(vitryOp.toString()));
-                        }
-
-                        
                     case Par:
                         context = context.makeChild();
                         context.define(delimiter, par);
@@ -199,7 +174,7 @@ public class Interpreter implements Eval
 //                        return new InterpretedFunction(scope);
 
                     case Let:
-                        env = env.makeChild();
+                        environment = environment.makeChild();
                         // Do assignments
                         // Tail eval body
                         // (Pop env)
@@ -207,7 +182,7 @@ public class Interpreter implements Eval
                     case Assign:
                         Symbol key  = (Symbol) args.head();
                         Pattern val = args.tail().head();
-                        env.define(key, val);
+                        environment.define(key, val);
 
                     case Left:
                         context = context.makeChild();
@@ -271,13 +246,66 @@ public class Interpreter implements Eval
                         assert false : "Operators must be rewritten as application";
 
                     default:
-                        assert false : "Unrecognized operation: " + vitryOp;
+                        assert false : "Unrecognized expression: " + expr;
                 }
                 context = context.parent();
             }
         }
+         
+        
+        
 
-        private boolean selfEvaluating(Pattern e) {
+        private Object evalPrimitive
+                (
+                Pattern expr, 
+                Environment<Symbol, Symbol> context, 
+                Environment<Symbol, Object> env
+                )
+            {
+            int tokenType = -1;            
+            try {
+                tokenType = ((VitryToken) expr).tokenType();
+            } catch (ClassCastException t) {
+                throw new IllegalArgumentException(
+                    "This interpreter only supports VitryTokens");
+            }
+            
+            switch(tokenType) {
+                case PrimNatural:  return new BigInteger(expr.toString());
+                case PrimFloat:    return Float.valueOf(expr.toString());
+                case PrimComplex:  throw new RuntimeException("Does not support complex numbers yet");
+                case PrimString:   return expr.toString();
+                
+                case PrimOp: 
+                case PrimSymbol:
+                    if (context.lookup(quoted) == t) {
+                        return Symbol.intern(expr.toString());
+                    } else {
+                        return env.lookup(Symbol.intern(expr.toString()));
+                    }
+            }
+            assert false : "Invalid primitive token: " + expr.toString();
+            return null;
+        }
+        
+        
+
+
+        private boolean isPrimitive(Pattern e) {
+            if (e instanceof VitryToken) {
+                int type = ((VitryToken) e).tokenType();
+                return type == PrimOp
+                    || type == PrimSymbol
+                    || type == PrimNatural
+                    || type == PrimFloat
+                    || type == PrimComplex
+                    || type == PrimString;
+            }
+            return false;
+        }
+
+
+        private boolean isSelfEvaluating(Pattern e) {
             return !(e instanceof Value) || e instanceof Atom;
         }
         

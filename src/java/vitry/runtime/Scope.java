@@ -35,12 +35,12 @@ abstract public class Scope extends Atom
          * Creates a nested callable entity.
          */
         public Scope(Scope parent) {
-            this.env = parent.env().makeChild();
+            this.env = parent.environment().makeChild();
         }
 
         final Environment<Symbol, Object> env;
 
-        public Environment<Symbol, Object> env() {
+        public Environment<Symbol, Object> environment() {
             return env;
         }
     }

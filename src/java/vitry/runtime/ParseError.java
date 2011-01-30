@@ -6,7 +6,7 @@ public class ParseError extends VitryError
             super(string, cause);
         }
 
-        private ParseError(String string) {
+        ParseError(String string) {
             super(string);
         }
 

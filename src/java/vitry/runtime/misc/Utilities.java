@@ -45,5 +45,13 @@ public class Utilities
             strb.append(end);
             return strb.toString();
         }
+        
+        
+        public static String limit(String s, int maxLength) {
+            if (s.length() > maxLength)
+                return s.substring(0, maxLength) + "...";
+            else
+                return s;
+        }
 
     }
