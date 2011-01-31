@@ -32,6 +32,7 @@ public class IterableSeq<T> extends AbstractSeq<T>
         private Iterator<T> it;
         private T head;
         private Seq<T> tail;
+        private boolean tailed = false;
 
         public IterableSeq(Iterable<T> itbl) {
             this.itbl = itbl;
@@ -53,17 +54,17 @@ public class IterableSeq<T> extends AbstractSeq<T>
         }
 
         public Seq<T> tail() {
-            // Assure we have taken a value
-            if (head == null && it.hasNext()) head = it.next();
-            if (!it.hasNext()) return null;
-            else {
-                if (tail == null)
-                    tail = new IterableSeq<T>(null, it);
-                return tail;
+            head();    
+            if (!tailed) {
+                if (!it.hasNext()) return null;
+                tail = new IterableSeq<T>(null, it);
+                tailed = true;
             }
+            return tail;
         }
 
         public boolean hasTail() {
-            return it.hasNext();
+            if (!tailed) tail();
+            return tail != null;
         }
     }

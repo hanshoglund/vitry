@@ -21,7 +21,7 @@ package vitry.runtime;
 import java.util.Iterator;
 
 import vitry.runtime.misc.Hashing;
-import vitry.runtime.misc.Utilities;
+import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.ConsSeq;
 import vitry.runtime.struct.MapSeq;
 import vitry.runtime.struct.Seq;
@@ -101,7 +101,7 @@ implements Product
         }
 
         public String toString() {
-            return Utilities.join(this, "(", ", ", ")");
+            return Utils.join(this, "(", ", ", ")");
         }
         
         

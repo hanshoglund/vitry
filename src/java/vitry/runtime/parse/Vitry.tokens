@@ -62,7 +62,6 @@ Loop=18
 'module'=55
 'match'=52
 '='=54
-'impicit'=58
 'if'=50
 ':'=38
 '('=39
@@ -74,5 +73,6 @@ Loop=18
 'fn'=46
 'loop'=48
 ']'=42
+'implicit'=58
 'import'=56
 'do'=49

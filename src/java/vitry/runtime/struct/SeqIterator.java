@@ -40,7 +40,7 @@ public class SeqIterator<T> implements Iterator<T>
         }
 
         public T next() {
-            if (seq == null || seq.head() == null) throw new NoSuchElementException();
+            if (seq == null) throw new NoSuchElementException();
 
             T head = seq.head();
             seq = seq.tail();

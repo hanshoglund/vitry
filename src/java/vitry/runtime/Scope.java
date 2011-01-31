@@ -23,17 +23,10 @@ package vitry.runtime;
  */
 abstract public class Scope extends Atom
     {
-        /**
-         * Creates a top-level callable entity (a module or a compiled
-         * function).
-         */
         public Scope() {
             this.env = new HashEnvironment<Symbol, Object>();
         }
 
-        /**
-         * Creates a nested callable entity.
-         */
         public Scope(Scope parent) {
             this.env = parent.environment().makeChild();
         }

@@ -16,7 +16,7 @@ import vitry.runtime.parse.VitryLexer;
 import vitry.runtime.parse.VitryParser;
 
 
-public class ParseStdIn
+public class ParseStdInMod
     {
         public static void main(String[] args) {
 
@@ -37,7 +37,8 @@ public class ParseStdIn
                     parser.setTreeAdaptor(new PatternTreeAdaptor());
 
                     try {
-                        ParserRuleReturnScope res = parser.expr();
+                        ParserRuleReturnScope res = parser.module();
+//                        System.out.println( ((PatternTree) res.getTree()));
 
                         System.out.println(res.getTree());
 

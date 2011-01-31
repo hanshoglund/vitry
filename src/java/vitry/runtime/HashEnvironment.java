@@ -26,6 +26,9 @@ import java.util.HashMap;
  */
 public class HashEnvironment<K, V> extends AbstractEnvironment<K, V>
     {
+        private final HashMap<K, V> bindings = new HashMap<K, V>();
+
+        
         public HashEnvironment() {
         }
 
@@ -33,25 +36,30 @@ public class HashEnvironment<K, V> extends AbstractEnvironment<K, V>
             super(env);
         }
 
-        protected Environment<K, V> put(K key, V val) {
+        public Environment<K, V> define(K key, V val) throws BindingError {
+            if (this.contains(key)) throw new BindingError(key, this);
             bindings.put(key, val);
             return this;
+        }
+        
+        public Environment<K, V> extend(K key, V val) {
+            return makeChild().define(key, val);
+        }
+
+        public Environment<K, V> makeChild() {
+            return new HashEnvironment<K, V>(this);
         }
 
         public V get(K key) {
             return bindings.get(key);
         }
 
-        private final HashMap<K, V> bindings = new HashMap<K, V>();
+        public boolean contains(K key) {
+            return bindings.containsKey(key);
+        }
 
         public boolean isPersistent() {
             return false;
         }
-        
-        public Environment<K, V> makeChild() {
-            return new HashEnvironment<K,V>(this);
-        }
-
-        private static final long serialVersionUID = -6896184961023443064L;
 
     }

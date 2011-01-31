@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 src/antlr/Vitry.g 2011-01-29 23:47:20
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 src/antlr/Vitry.g 2011-02-01 00:21:59
 package vitry.runtime.parse;
 
 import org.antlr.runtime.*;
@@ -12,7 +12,7 @@ import org.antlr.runtime.tree.*;
 
 public class VitryParser extends Parser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "Par", "Bra", "Ang", "Module", "Fn", "Let", "Where", "Assign", "Left", "Quote", "Apply", "Type", "If", "Match", "Loop", "Recur", "Do", "Ops", "TypeDecl", "ImplicitDecl", "FnDecl", "MemberDecl", "Symbol", "Natural", "Float", "Complex", "String", "Op", "Exponent", "Whitespace", "EscapeSeq", "HexDigit", "UnicodeEsc", "OctalEsc", "':'", "'('", "')'", "'['", "']'", "'{'", "'}'", "'`'", "'fn'", "'let'", "'loop'", "'do'", "'if'", "'else'", "'match'", "'recur'", "'='", "'module'", "'import'", "'type'", "'impicit'", "'.'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "Par", "Bra", "Ang", "Module", "Fn", "Let", "Where", "Assign", "Left", "Quote", "Apply", "Type", "If", "Match", "Loop", "Recur", "Do", "Ops", "TypeDecl", "ImplicitDecl", "FnDecl", "MemberDecl", "Symbol", "Natural", "Float", "Complex", "String", "Op", "Exponent", "Whitespace", "EscapeSeq", "HexDigit", "UnicodeEsc", "OctalEsc", "':'", "'('", "')'", "'['", "']'", "'{'", "'}'", "'`'", "'fn'", "'let'", "'loop'", "'do'", "'if'", "'else'", "'match'", "'recur'", "'='", "'module'", "'import'", "'type'", "'implicit'", "'.'"
     };
     public static final int TypeDecl=22;
     public static final int Ops=21;
@@ -2844,7 +2844,7 @@ public class VitryParser extends Parser {
     };
 
     // $ANTLR start "moduleDecl"
-    // src/antlr/Vitry.g:106:1: moduleDecl : ( 'type' '(' ( assign )* ')' -> ^( TypeDecl ( assign )* ) | 'impicit' '(' ( expr expr )* ')' -> ^( ImplicitDecl ( ^( expr expr ) )* ) | Symbol '(' ( left )* ')' '=' inline[true] -> ^( FnDecl Symbol ( left )+ inline ) | left '=' expr -> ^( MemberDecl left expr ) );
+    // src/antlr/Vitry.g:106:1: moduleDecl : ( 'type' '(' ( assign )* ')' -> ^( TypeDecl ( assign )* ) | 'implicit' '(' ( expr expr )* ')' -> ^( ImplicitDecl ( ^( expr expr ) )* ) | Symbol '(' ( left )* ')' '=' inline[true] -> ^( FnDecl Symbol ( left )+ inline ) | left '=' expr -> ^( MemberDecl left expr ) );
     public final VitryParser.moduleDecl_return moduleDecl() throws RecognitionException {
         VitryParser.moduleDecl_return retval = new VitryParser.moduleDecl_return();
         retval.start = input.LT(1);
@@ -2899,7 +2899,7 @@ public class VitryParser extends Parser {
         RewriteRuleSubtreeStream stream_left=new RewriteRuleSubtreeStream(adaptor,"rule left");
         RewriteRuleSubtreeStream stream_expr=new RewriteRuleSubtreeStream(adaptor,"rule expr");
         try {
-            // src/antlr/Vitry.g:107:5: ( 'type' '(' ( assign )* ')' -> ^( TypeDecl ( assign )* ) | 'impicit' '(' ( expr expr )* ')' -> ^( ImplicitDecl ( ^( expr expr ) )* ) | Symbol '(' ( left )* ')' '=' inline[true] -> ^( FnDecl Symbol ( left )+ inline ) | left '=' expr -> ^( MemberDecl left expr ) )
+            // src/antlr/Vitry.g:107:5: ( 'type' '(' ( assign )* ')' -> ^( TypeDecl ( assign )* ) | 'implicit' '(' ( expr expr )* ')' -> ^( ImplicitDecl ( ^( expr expr ) )* ) | Symbol '(' ( left )* ')' '=' inline[true] -> ^( FnDecl Symbol ( left )+ inline ) | left '=' expr -> ^( MemberDecl left expr ) )
             int alt31=4;
             switch ( input.LA(1) ) {
             case 57:
@@ -3031,7 +3031,7 @@ public class VitryParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // src/antlr/Vitry.g:108:7: 'impicit' '(' ( expr expr )* ')'
+                    // src/antlr/Vitry.g:108:7: 'implicit' '(' ( expr expr )* ')'
                     {
                     string_literal74=(Token)match(input,58,FOLLOW_58_in_moduleDecl1370); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_58.add(string_literal74);
@@ -3039,7 +3039,7 @@ public class VitryParser extends Parser {
                     char_literal75=(Token)match(input,39,FOLLOW_39_in_moduleDecl1372); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_39.add(char_literal75);
 
-                    // src/antlr/Vitry.g:108:21: ( expr expr )*
+                    // src/antlr/Vitry.g:108:22: ( expr expr )*
                     loop29:
                     do {
                         int alt29=2;
@@ -3052,7 +3052,7 @@ public class VitryParser extends Parser {
 
                         switch (alt29) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:108:22: expr expr
+                    	    // src/antlr/Vitry.g:108:23: expr expr
                     	    {
                     	    pushFollow(FOLLOW_expr_in_moduleDecl1375);
                     	    expr76=expr();
@@ -3092,16 +3092,16 @@ public class VitryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 108:48: -> ^( ImplicitDecl ( ^( expr expr ) )* )
+                    // 108:49: -> ^( ImplicitDecl ( ^( expr expr ) )* )
                     {
-                        // src/antlr/Vitry.g:108:51: ^( ImplicitDecl ( ^( expr expr ) )* )
+                        // src/antlr/Vitry.g:108:52: ^( ImplicitDecl ( ^( expr expr ) )* )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(ImplicitDecl, "ImplicitDecl"), root_1);
 
-                        // src/antlr/Vitry.g:108:66: ( ^( expr expr ) )*
+                        // src/antlr/Vitry.g:108:67: ( ^( expr expr ) )*
                         while ( stream_expr.hasNext()||stream_expr.hasNext() ) {
-                            // src/antlr/Vitry.g:108:66: ^( expr expr )
+                            // src/antlr/Vitry.g:108:67: ^( expr expr )
                             {
                             Object root_2 = (Object)adaptor.nil();
                             root_2 = (Object)adaptor.becomeRoot(stream_expr.nextNode(), root_2);

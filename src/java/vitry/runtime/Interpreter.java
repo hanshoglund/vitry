@@ -18,10 +18,11 @@
  */
 package vitry.runtime;
 
-import java.math.BigInteger;
-import java.util.Properties;
+import static vitry.runtime.misc.Utils.limit;
 
-import vitry.runtime.misc.Utilities;
+import java.math.BigInteger;
+
+import vitry.runtime.misc.Utils;
 import vitry.runtime.parse.VitryParser;
 import vitry.runtime.parse.VitryToken;
 import vitry.runtime.struct.Seq;
@@ -29,46 +30,51 @@ import vitry.runtime.struct.Seq;
 
 /**
  * Standard interpreter.
+ * 
+ * This implementation optimizes tail calls to interpreted functions, but not
+ * to compiled functions (as these use standard calling conventions).
  */
 public class Interpreter implements Eval
     {        
 
-        static final int PrimOp      = VitryParser.Op;
-        static final int PrimSymbol  = VitryParser.Symbol;
-        static final int PrimNatural = VitryParser.Natural;
-        static final int PrimFloat   = VitryParser.Float;
-        static final int PrimComplex = VitryParser.Complex;
-        static final int PrimString  = VitryParser.String;
+        static final int EXPR_TRACE_LIMIT = 50;
         
-        static final int Ang         = VitryParser.Ang;
-        static final int Apply       = VitryParser.Apply;
-        static final int Assign      = VitryParser.Assign;
-        static final int Bra         = VitryParser.Bra;
-        static final int Do          = VitryParser.Do;
-        static final int Fn          = VitryParser.Fn;
-        static final int If          = VitryParser.If;
-        static final int Left        = VitryParser.Left;
-        static final int Let         = VitryParser.Let;
-        static final int Loop        = VitryParser.Loop;
-        static final int Match       = VitryParser.Match;
-        static final int Module      = VitryParser.Module;
-        static final int Ops         = VitryParser.Ops;
-        static final int Par         = VitryParser.Par;
-        static final int Quote       = VitryParser.Quote;
-        static final int Recur       = VitryParser.Recur;
-        static final int Type        = VitryParser.Type;
+        static final int OP           = VitryParser.Op;
+        static final int SYM          = VitryParser.Symbol;
+        static final int NAT          = VitryParser.Natural;
+        static final int FLOAT        = VitryParser.Float;
+        static final int COMPLEX      = VitryParser.Complex;
+        static final int STRING       = VitryParser.String;
+        
+        static final int Ang          = VitryParser.Ang;
+        static final int Apply        = VitryParser.Apply;
+        static final int Assign       = VitryParser.Assign;
+        static final int Bra          = VitryParser.Bra;
+        static final int Do           = VitryParser.Do;
+        static final int Fn           = VitryParser.Fn;
+        static final int If           = VitryParser.If;
+        static final int Left         = VitryParser.Left;
+        static final int Let          = VitryParser.Let;
+        static final int Loop         = VitryParser.Loop;
+        static final int Match        = VitryParser.Match;
+        static final int Module       = VitryParser.Module;
+        static final int Ops          = VitryParser.Ops;
+        static final int Par          = VitryParser.Par;
+        static final int Quote        = VitryParser.Quote;
+        static final int Recur        = VitryParser.Recur;
+        static final int Type         = VitryParser.Type;
 
         static final Symbol delimiter = Symbol.intern("delimiter");
         static final Symbol nil       = Symbol.intern("nil");
-        static final Symbol par       = Symbol.intern("par");
-        static final Symbol bra       = Symbol.intern("bra");
-        static final Symbol ang       = Symbol.intern("ang");
+        static final Symbol par       = Symbol.intern("()");
+        static final Symbol bra       = Symbol.intern("[]");
+        static final Symbol ang       = Symbol.intern("{}");
         static final Symbol side      = Symbol.intern("side");
         static final Symbol left      = Symbol.intern("left");
         static final Symbol right     = Symbol.intern("right");
         static final Symbol quoted    = Symbol.intern("quoted");
-        static final Symbol t         = Symbol.intern("true");
-        static final Symbol f         = Symbol.intern("false");
+        static final Symbol true_     = Symbol.intern("true");
+        static final Symbol false_    = Symbol.intern("false");
         
         
         // Contexts for semantic disambiguition of constructs such as
@@ -76,125 +82,234 @@ public class Interpreter implements Eval
         
         static final Environment<Symbol, Symbol> stdContext = new HashEnvironment<Symbol, Symbol>();
         static {
-            stdContext.define(delimiter, nil);
-            stdContext.define(side, right);
-            stdContext.define(quoted, f);
+            stdContext.define(delimiter, par);
+            stdContext.define(side,      right);
+            stdContext.define(quoted,    false_);
+        }
+                      
+        static class EvalState {
+                Environment<Symbol, Symbol> context;
+                Scope scope;
+                Object types;       // TODO
+                Object implicits;   // TODO
+                Object fixities;    // TODO
         }
         
+        
+        public Object eval(Pattern expr, EvalPre pre) throws ParseError, LinkageError {
+            // TODO
+            EvalState state = new EvalState();
+            
+            state.scope = new Scope(){
+                public Environment<Symbol, Object> environment() {
+                    HashEnvironment<Symbol, Object> env = new HashEnvironment<Symbol, Object>();
+                    env.define(par, nil);
+                    env.define(ang, nil);
+                    env.define(bra, nil);
+                    env.define(nil, nil);
+                    env.define(true_, true_);
+                    env.define(false_, false_);                    
+                    return env;
+                }
+            };
+            return eval(expr, pre, state);
+        }
         
 
         public Object eval
                 (
-                Pattern e, 
-                ClassLoader cl, 
-                Seq<Module> link, 
-                Properties useProps
+                Pattern expr,
+                EvalPre pre,
+                EvalState state
                 )
         throws ParseError, LinkageError {
-            return null;
+            return eval(expr, pre, 
+                    state.context = state.context == null ? stdContext : state.context,
+                    state.scope.environment(),
+                    state.types,
+                    state.implicits,
+                    state.fixities);
         }
         
+
         
         public Object eval
                 (
-                Pattern expr, 
-                ClassLoader cl, 
-                Seq<Module> link, 
-                Properties useProps,
-                Scope scope,
+                Pattern expr,
+                EvalPre pre,
+                Environment<Symbol, Symbol> context,
+                Environment<Symbol, Object> frame,
                 Object types,       // TODO
                 Object implicits,   // TODO
                 Object fixities     // TODO
                 )
         throws ParseError, LinkageError {
-            
-            Environment<Symbol, Symbol> context = stdContext;
-            Environment<Symbol, Object> environment = scope.environment();
-            // TODO types
-            // TODO implicits
-            // TODO fixities
-            
-            // We simulate tail calls to eval() by continue
-            
+                        
+            // We do everything insida a loop and simulate tail calls to eval() by continue
+            // To self-calf, update the parameters you need and jump
             // Calls to actual functions use apply() for the time being
-            // For interpreted functions this could of course be changed to a jump,
-            // given that we can fix the handling of partial application
             
-            while (true) {
+            // Subexpressions, generated during the analysis phase of each pass from the current value of expr
+            // Do not update from the switch block, they will get overwritten
+                       
+            Pattern      op;            // expr list head or null
+            Seq<Pattern> args;          // expr list tail or null
+            int          type;          // integer type of the head token (for switch)
+
+            
+            while (true)
+            {           
                 
-                if (isSelfEvaluating(expr)) return expr;                
-                if (isPrimitive(expr))      return evalPrimitive(expr, context, environment);
+                @SuppressWarnings("unused")
+                String exprStr = expr.toString(); // Debugger
                 
-                Pattern      op;
-                Seq<Pattern> args;
-                int          tokenType = -1;
+                
+                // Return self-evaluating
+                
+                if (!(expr instanceof Value) || (expr instanceof Atom && !(expr instanceof VitryToken)))
+                    return expr;
+                    
+                
+                // Analysis phase
+                
+                if (expr instanceof VitryToken) {
+                    op   = expr;
+                    args = null;
+                } else {
+                    try {
+                        op   = ((Product) expr).head();
+                        args = ((Product) expr).tail();
+                    } catch (ClassCastException t) {
+                        throw new ParseError(
+                            "Interpreter failed to evaluate syntax tree " +
+                            "" + limit(expr.toString(), EXPR_TRACE_LIMIT));
+                    }                
+                }
                 
                 try {
-                    op   = ((Product) expr).head();
-                    args = ((Product) expr).tail();
+                    type = ((VitryToken) op).tokenType();
                 } catch (ClassCastException t) {
-                    throw new ParseError(
-                        "Improperly formed syntax tree" + Utilities.limit(expr.toString(), 50));
-                }                
-                
-                try {
-                    tokenType = ((VitryToken) op).tokenType();
-                } catch (ClassCastException t) {
-                    throw new IllegalArgumentException(
-                        "This interpreter only supports VitryTokens");
+                    throw new IllegalArgumentException("This interpreter expects VitryTokens");
                 }
 
-                switch (tokenType) {
+                
+                switch (type)
+                {
+                                        
+                    // Terminals
+                    
+                    case NAT:      
+                        return parseNat(op);
+                    
+                    case FLOAT:    
+                        return parseFloat(op);
+                        
+                    case COMPLEX:
+                        return parseComplex(op);
+                    
+                    case STRING:   
+                        return parseString(op);
+                                            
+                    case OP:
+                        // Operators depend on delimiter context
+                        if (context.lookup(quoted) == true_) {
+                            return parseOperator
+                                    (
+                                    op, 
+                                    context.lookup(delimiter)
+                                    );
+                        } else {
+                            return frame.lookup(parseOperator
+                                    (
+                                    op, 
+                                    context.lookup(delimiter)
+                                    ));
+                        }
+
+                    case SYM:
+                        if (context.lookup(quoted) == true_) {
+                            return parseSymbol(op);
+                        } else {
+                            return frame.lookup(parseSymbol(op));
+                        }
+
+                    
+                    // Non-terminals
+                    
+                        
+                    // These forms all have the same behaviour: If () is bound to nil, 
+                    // evaluate the contained expression in a context where delimiter=();
+                    // else apply the bound function to the contained expression evaluated
+                    // a context where delimiter=()
                     
                     case Par:
                         context = context.makeChild();
                         context.define(delimiter, par);
-                        // Tail eval body
-                        // (Pop context)
+                        context.define(quoted, false_);
+                        expr = args.head();
+                        if (frame.lookup(par) == nil) {
+                            continue;                            
+                        } else {
+                            Object val = eval(expr, pre, context, frame, types, implicits, fixities);
+                            return ((Apply) frame.lookup(par)).apply(val);
+                        }
 
                     case Bra:
                         context = context.makeChild();
                         context.define(delimiter, bra);
-                        // Tail eval body
-                        // (Pop context)
-
+                        context.define(quoted, false_);
+                        expr = args.head();
+                        if (frame.lookup(bra) == nil) {
+                            continue;                            
+                        } else {
+                            Object val = eval(expr, pre, context, frame, types, implicits, fixities);
+                            return ((Apply) frame.lookup(bra)).apply(val);
+                        }
+                        
                     case Ang:
                         context = context.makeChild();
-                        context.define(delimiter, ang);
-                        // Tail eval body
-                        // (Pop context)
-
+                        context.define(delimiter, bra);
+                        context.define(quoted, false_);
+                        expr = args.head();
+                        if (frame.lookup(ang) == nil) {
+                            continue;                            
+                        } else {
+                            Object val = eval(expr, pre, context, frame, types, implicits, fixities);
+                            return ((Apply) frame.lookup(ang)).apply(val);
+                        }
+                        
                     case Module:
                         // Typecheck
 //                        return new InterpretedModule();
 
                     case Fn:
                         // Typecheck
-                        // Store expr etc.
-//                        return new InterpretedFunction(scope);
+//                        new InterpretedFunction(scope);
 
                     case Let:
-                        environment = environment.makeChild();
+                        frame = frame.makeChild();
+
+                        Seq<Pattern> assigns = (Seq<Pattern>) args.head(); 
                         // Do assignments
-                        // Tail eval body
-                        // (Pop env)
+
+                        expr = args.tail().head();
+                        continue;
 
                     case Assign:
-                        Symbol key  = (Symbol) args.head();
+                        Symbol  key = (Symbol) args.head();
                         Pattern val = args.tail().head();
-                        environment.define(key, val);
+                        frame.define(key, val);
 
                     case Left:
                         context = context.makeChild();
                         context.define(side, left);
                         // Tail eval body
-                        // (Pop context)
 
                     case Quote:
                         context = context.makeChild();
-                        context.define(quoted, t);
-                        // Tail eval body
-                        // (Pop context)
+                        context.define(quoted, true_);
+                        expr = args.head();
+                        continue;
 
                     case Apply:
                         if (context.lookup(side) == left) {
@@ -220,110 +335,84 @@ public class Interpreter implements Eval
 
                     case If:
                         Pattern cond = args.head();
-                        Pattern alt1 = args.tail().head();
-                        Pattern alt2 = args.tail().tail().head();
-
-                        if (!cond.eq(f)) {
-                            // Tail eval alt1
+                        if (!cond.eq(false_)) {
+                            expr = args.tail().head();
+                            continue;
                         } else {
-                            // Tail eval alt2
+                            expr = args.tail().tail().head();
+                            continue;
                         }
 
                     case Match:
-                        // See below
+                        Pattern input = op;
+                        Seq<Pattern> leftSide = null;
+                        Seq<Pattern> rightSide = null;
+                        while (leftSide != null && rightSide != null) {
+                            if (input.matchFor(leftSide.head())) {
+                                return rightSide.head();
+                            }
+                            leftSide = leftSide.tail();
+                            rightSide = rightSide.tail();
+                        }
+                        throw new MatchingError(input);
 
                     case Loop:
-                        // Make new env, assign
-                        // Execute body with rec point here
+                        // Store expr for recur
+                        // Tail expr
 
                     case Recur:
-                        // Jumpt to rec point
+                        // Tail recur expr
 
                     case Do:
-                        // TODO
+                        // Push a mutable env
+                        // Eval
+                        // Tail the last expr
 
                     case Ops:
-                        assert false : "Operators must be rewritten as application";
+                        // Rewrite as application
+                        // Tail
 
                     default:
-                        assert false : "Unrecognized expression: " + expr;
+                        throw new ParseError("Evaluation failed, unknown form: "
+                                + limit(expr.toString(), EXPR_TRACE_LIMIT));
                 }
-                context = context.parent();
             }
         }
-         
-        
-        
 
-        private Object evalPrimitive
-                (
-                Pattern expr, 
-                Environment<Symbol, Symbol> context, 
-                Environment<Symbol, Object> env
-                )
-            {
-            int tokenType = -1;            
-            try {
-                tokenType = ((VitryToken) expr).tokenType();
-            } catch (ClassCastException t) {
-                throw new IllegalArgumentException(
-                    "This interpreter only supports VitryTokens");
-            }
-            
-            switch(tokenType) {
-                case PrimNatural:  return new BigInteger(expr.toString());
-                case PrimFloat:    return Float.valueOf(expr.toString());
-                case PrimComplex:  throw new RuntimeException("Does not support complex numbers yet");
-                case PrimString:   return expr.toString();
-                
-                case PrimOp: 
-                case PrimSymbol:
-                    if (context.lookup(quoted) == t) {
-                        return Symbol.intern(expr.toString());
-                    } else {
-                        return env.lookup(Symbol.intern(expr.toString()));
-                    }
-            }
-            assert false : "Invalid primitive token: " + expr.toString();
+
+        private BigInteger parseNat(Pattern expr) {
+            return new BigInteger(parseString(expr));
+        }
+
+        private Float parseFloat(Pattern expr) {
+            return Float.valueOf(parseString(expr));
+        }
+
+        private Object parseComplex(Pattern expr) {
+            throw new ParseError("Does not support complex numbers yet");
+        }
+        
+        private Symbol parseOperator(Pattern expr, Symbol delimiter) {
+            if (delimiter == par) return Symbol.intern("(" + expr + ")");
+            if (delimiter == bra) return Symbol.intern("[" + expr + "]");
+            if (delimiter == ang) return Symbol.intern("{" + expr + "}");
+            assert false;
             return null;
         }
         
-        
-
-
-        private boolean isPrimitive(Pattern e) {
-            if (e instanceof VitryToken) {
-                int type = ((VitryToken) e).tokenType();
-                return type == PrimOp
-                    || type == PrimSymbol
-                    || type == PrimNatural
-                    || type == PrimFloat
-                    || type == PrimComplex
-                    || type == PrimString;
-            }
-            return false;
+        private Symbol parseSymbol(Pattern expr) {
+            return Symbol.intern(expr.toString());
         }
 
-
-        private boolean isSelfEvaluating(Pattern e) {
-            return !(e instanceof Value) || e instanceof Atom;
+        private String parseString(Pattern expr) {
+            String str = Utils.unescapeJava(expr.toString());
+            return str.substring(1, str.length() - 1);
         }
         
-        
-        
-        
-//        // TODO Deconstruction, type restrictions
-//        public Value match(final Value input, Seq<Pattern> left, Seq<Pattern> right) {
-//            while (left != null && right != null) {
-//                if (input.matchFor(left.head())) {
-//                    return right.head();
-//                }
-//                left = left.tail();
-//                right = right.tail();
-//            }
-//            throw new MatchingError(input);
-//        }
+         
 
+
+        
         abstract class InterpretedFunction extends Function
             {
                 Seq<Pattern> vars;

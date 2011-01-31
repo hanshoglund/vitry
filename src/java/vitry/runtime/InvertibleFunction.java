@@ -19,12 +19,9 @@
 package vitry.runtime;
 
 /**
- * Extends function with an invert operation, making it usable on the
- * left hand-side of an assignment or match expression.
- *
- * This is mainly used for structors.
+ * Function with known inversion. Can be used in left-expressions.
  */
-abstract public class InvertibleFunction extends Function    {
+abstract public class InvertibleFunction extends Function implements Bijection {
 
         public InvertibleFunction(int arity, FunctionType type) {
             super(arity, type);

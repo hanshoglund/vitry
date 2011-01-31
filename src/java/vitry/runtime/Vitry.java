@@ -646,42 +646,6 @@ public class Vitry
                 public Seq<Pattern> destruct() {
                     return throwUnsupported();
                 }
-
-                public Pattern _1() {
-                    return throwUnsupported();
-                }
-
-                public Pattern _2() {
-                    return throwUnsupported();
-                }
-
-                public Pattern _3() {
-                    return throwUnsupported();
-                }
-
-                public Pattern _4() {
-                    return throwUnsupported();
-                }
-
-                public Pattern _5() {
-                    return throwUnsupported();
-                }
-
-                public Pattern _6() {
-                    return throwUnsupported();
-                }
-
-                public Pattern _7() {
-                    return throwUnsupported();
-                }
-
-                public Pattern _8() {
-                    return throwUnsupported();
-                }
-
-                public Pattern _9() {
-                    return throwUnsupported();
-                }
                 
                 private <T> T throwUnsupported() {
                     throw new UnsupportedOperationException("() has no members.");

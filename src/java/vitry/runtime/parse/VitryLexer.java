@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 src/antlr/Vitry.g 2011-01-29 23:47:21
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 src/antlr/Vitry.g 2011-02-01 00:22:00
 package vitry.runtime.parse;
 
 import org.antlr.runtime.*;
@@ -496,10 +496,10 @@ public class VitryLexer extends Lexer {
         try {
             int _type = T__58;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:31:7: ( 'impicit' )
-            // src/antlr/Vitry.g:31:9: 'impicit'
+            // src/antlr/Vitry.g:31:7: ( 'implicit' )
+            // src/antlr/Vitry.g:31:9: 'implicit'
             {
-            match("impicit"); 
+            match("implicit"); 
 
 
             }
@@ -1756,37 +1756,37 @@ public class VitryLexer extends Lexer {
         }
     }
     static final String DFA20_eotS =
-        "\1\23\1\30\6\uffff\1\31\7\24\1\44\1\24\1\46\2\uffff\1\51\4\uffff"+
-        "\1\53\2\24\1\56\1\57\5\24\1\uffff\1\24\1\uffff\1\70\4\uffff\1\73"+
-        "\1\24\2\uffff\6\24\1\70\3\uffff\1\70\1\uffff\1\106\2\24\1\111\3"+
-        "\24\1\115\1\uffff\1\70\1\uffff\2\24\1\uffff\1\120\1\24\1\122\1\uffff"+
-        "\1\123\1\24\1\uffff\1\125\2\uffff\1\126\2\uffff";
+        "\1\23\1\30\6\uffff\1\31\7\24\1\44\1\24\1\46\2\uffff\1\52\4\uffff"+
+        "\1\53\2\24\1\56\1\57\5\24\1\uffff\1\24\2\uffff\1\72\3\uffff\1\73"+
+        "\1\24\2\uffff\6\24\1\uffff\2\72\3\uffff\1\106\2\24\1\111\3\24\1"+
+        "\115\1\uffff\1\72\1\uffff\2\24\1\uffff\1\120\1\24\1\122\1\uffff"+
+        "\1\123\1\24\1\uffff\1\125\2\uffff\1\24\1\uffff\1\127\1\uffff";
     static final String DFA20_eofS =
-        "\127\uffff";
+        "\130\uffff";
     static final String DFA20_minS =
         "\1\11\1\41\6\uffff\1\41\1\156\1\145\1\157\1\146\1\154\1\141\1\145"+
         "\1\41\1\171\1\41\2\uffff\1\56\4\uffff\1\60\1\164\1\157\2\60\1\160"+
-        "\1\163\1\164\1\144\1\143\1\uffff\1\160\1\uffff\1\60\1\53\3\uffff"+
-        "\1\60\1\160\2\uffff\1\151\1\145\1\143\2\165\1\145\1\60\1\53\1\uffff"+
-        "\2\60\1\uffff\1\60\1\162\1\143\1\60\1\150\1\154\1\162\3\60\1\uffff"+
-        "\1\164\1\151\1\uffff\1\60\1\145\1\60\1\uffff\1\60\1\164\1\uffff"+
-        "\1\60\2\uffff\1\60\2\uffff";
+        "\1\163\1\164\1\144\1\143\1\uffff\1\160\1\uffff\1\53\1\60\3\uffff"+
+        "\1\60\1\160\2\uffff\1\154\1\145\1\143\2\165\1\145\3\60\1\53\2\uffff"+
+        "\1\60\1\162\1\151\1\60\1\150\1\154\1\162\3\60\1\uffff\1\164\1\143"+
+        "\1\uffff\1\60\1\145\1\60\1\uffff\1\60\1\151\1\uffff\1\60\2\uffff"+
+        "\1\164\1\uffff\1\60\1\uffff";
     static final String DFA20_maxS =
         "\1\175\1\176\6\uffff\1\176\1\156\2\157\1\155\1\154\1\157\1\145\1"+
         "\176\1\171\1\176\2\uffff\1\151\4\uffff\1\172\1\164\1\157\2\172\1"+
-        "\160\1\163\1\164\1\144\1\143\1\uffff\1\160\1\uffff\1\151\1\71\3"+
-        "\uffff\1\172\1\160\2\uffff\1\157\1\145\1\143\2\165\1\145\1\151\1"+
-        "\71\1\uffff\1\71\1\151\1\uffff\1\172\1\162\1\143\1\172\1\150\1\154"+
-        "\1\162\1\172\1\71\1\151\1\uffff\1\164\1\151\1\uffff\1\172\1\145"+
-        "\1\172\1\uffff\1\172\1\164\1\uffff\1\172\2\uffff\1\172\2\uffff";
+        "\160\1\163\1\164\1\144\1\143\1\uffff\1\160\1\uffff\1\71\1\151\3"+
+        "\uffff\1\172\1\160\2\uffff\1\157\1\145\1\143\2\165\1\145\1\71\2"+
+        "\151\1\71\2\uffff\1\172\1\162\1\151\1\172\1\150\1\154\1\162\1\172"+
+        "\1\71\1\151\1\uffff\1\164\1\143\1\uffff\1\172\1\145\1\172\1\uffff"+
+        "\1\172\1\151\1\uffff\1\172\2\uffff\1\164\1\uffff\1\172\1\uffff";
     static final String DFA20_acceptS =
         "\2\uffff\1\2\1\3\1\4\1\5\1\6\1\7\13\uffff\1\27\1\30\1\uffff\1\34"+
-        "\1\35\1\1\1\10\12\uffff\1\21\1\uffff\1\26\2\uffff\1\31\1\33\1\11"+
-        "\2\uffff\1\14\1\15\10\uffff\1\32\2\uffff\1\12\12\uffff\1\13\2\uffff"+
-        "\1\16\3\uffff\1\24\2\uffff\1\17\1\uffff\1\20\1\23\1\uffff\1\22\1"+
-        "\25";
+        "\1\35\1\1\1\10\12\uffff\1\21\1\uffff\1\26\2\uffff\1\33\1\31\1\11"+
+        "\2\uffff\1\14\1\15\12\uffff\1\32\1\12\12\uffff\1\13\2\uffff\1\16"+
+        "\3\uffff\1\24\2\uffff\1\17\1\uffff\1\20\1\23\1\uffff\1\22\1\uffff"+
+        "\1\25";
     static final String DFA20_specialS =
-        "\127\uffff}>";
+        "\130\uffff}>";
     static final String[] DFA20_transitionS = {
             "\2\26\2\uffff\1\26\22\uffff\1\26\1\uffff\1\27\5\uffff\1\2\1"+
             "\3\4\uffff\1\22\1\uffff\12\25\1\1\2\uffff\1\20\3\uffff\32\24"+
@@ -1816,7 +1816,7 @@ public class VitryLexer extends Lexer {
             "\1\uffff\3\23\33\uffff\1\23\1\uffff\1\23",
             "",
             "",
-            "\1\47\1\uffff\12\25\13\uffff\1\50\37\uffff\1\50\3\uffff\1\52",
+            "\1\50\1\uffff\12\25\13\uffff\1\47\37\uffff\1\47\3\uffff\1\51",
             "",
             "",
             "",
@@ -1834,8 +1834,8 @@ public class VitryLexer extends Lexer {
             "",
             "\1\65",
             "",
-            "\12\66\13\uffff\1\67\37\uffff\1\67\3\uffff\1\52",
-            "\1\71\1\uffff\1\71\2\uffff\12\72",
+            "\1\66\1\uffff\1\66\2\uffff\12\67",
+            "\12\70\13\uffff\1\71\37\uffff\1\71\3\uffff\1\51",
             "",
             "",
             "",
@@ -1843,17 +1843,17 @@ public class VitryLexer extends Lexer {
             "\1\74",
             "",
             "",
-            "\1\76\5\uffff\1\75",
+            "\1\76\2\uffff\1\75",
             "\1\77",
             "\1\100",
             "\1\101",
             "\1\102",
             "\1\103",
-            "\12\66\13\uffff\1\67\37\uffff\1\67\3\uffff\1\52",
+            "\12\67",
+            "\12\67\57\uffff\1\51",
+            "\12\70\13\uffff\1\71\37\uffff\1\71\3\uffff\1\51",
             "\1\104\1\uffff\1\104\2\uffff\12\105",
             "",
-            "\12\72",
-            "\12\72\57\uffff\1\52",
             "",
             "\12\24\7\uffff\32\24\6\uffff\32\24",
             "\1\107",
@@ -1864,7 +1864,7 @@ public class VitryLexer extends Lexer {
             "\1\114",
             "\12\24\7\uffff\32\24\6\uffff\32\24",
             "\12\105",
-            "\12\105\57\uffff\1\52",
+            "\12\105\57\uffff\1\51",
             "",
             "\1\116",
             "\1\117",
@@ -1879,8 +1879,9 @@ public class VitryLexer extends Lexer {
             "\12\24\7\uffff\32\24\6\uffff\32\24",
             "",
             "",
-            "\12\24\7\uffff\32\24\6\uffff\32\24",
+            "\1\126",
             "",
+            "\12\24\7\uffff\32\24\6\uffff\32\24",
             ""
     };
 

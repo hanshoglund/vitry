@@ -30,27 +30,21 @@ import java.io.Serializable;
  *   - parent is referentially transparent
  *   - if isPersistent holds, then lookup is referentially transparent
  */
-public interface Environment<K, V> extends Serializable
+public interface Environment<K, V>
     {
-
-        /**
-         * Make a new definition in this env, optionally returning
-         * a modified environment.
-         */
         Environment<K, V> define(K key, V val) throws BindingError;
 
-        /**
-         * Lookup the given binding in this environment.
-         * @throws UndefinedError
-         */
-        V lookup(K key) throws UndefinedError;
+        Environment<K, V> extend(K key, V val);
 
-        /**
-         * Return the parent environment or null.
-         */
-        Environment<K, V> parent();
-        
         Environment<K, V> makeChild();
 
+        Environment<K, V> parent();
+
         boolean isPersistent();
+
+        V lookup(K key) throws UndefinedError;
+
+        boolean contains(K key);
+
+        V get(K key);
     }

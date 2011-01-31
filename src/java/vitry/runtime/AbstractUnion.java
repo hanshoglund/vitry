@@ -18,7 +18,7 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.misc.Utilities;
+import vitry.runtime.misc.Utils;
 
 
 abstract public class AbstractUnion extends InclusionPattern implements Union
@@ -63,7 +63,7 @@ abstract public class AbstractUnion extends InclusionPattern implements Union
         }
 
         public String toString() {
-            return Utilities.join(this, "(", " | ", ")");
+            return Utils.join(this, "(", " | ", ")");
             //            return Util.join(this, "", " | ", "");
         }
     }

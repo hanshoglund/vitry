@@ -24,14 +24,45 @@ import vitry.runtime.struct.Seq;
 
 
 /**
- * Visits the eval operation.        
+ * Visits the eval operation.
  * 
- * Evaluation prerequisites like linkage classloader, system properties etc. are typically
- * stored in an instance of the Vitry class. We prefer to pass them explicitly here in case 
- * we want to use this operation in other contexts.
+ * This operation works a lot like a Lisp eval, i.e. it expects a self-evaluating value
+ * or a structure corresponding to the abstract syntax of an expression. Atomic values
+ * and tokens representing terminals are considered self-evaluating. This enable us to
+ * use the parser generated tokens directly, i.e. without having to walk the syntax tree 
+ * and replace tokens with actual numbers, strings, symbols etc. Note that from the point
+ * of a Vitry program, terminals are isomorphic to the values they generate (as all terminals
+ * yield distinct atoms).
+ * 
+ * Nonterminal expressions are represented by symbol-headed tuples such as <em>(Apply, f, x)</em>.
  */
 public interface Eval
     {
+
+        /**
+         * Encapsulates eval prerequisites.
+         */
+        public class EvalPre
+            {
+                public final ClassLoader cl;
+                public final Seq<Module> link;
+                public final Properties useProps;
+                
+                /**
+                 * @param cl
+                 *      ClassLoader from which to obtain dependencies.
+                 * @param link
+                 *      List of loaded modules.
+                 * @param systemProperties
+                 *      System properties, used by some implementations. If null, java.lang.System.getProperties() is used.
+                 */
+                public EvalPre(ClassLoader cl, Seq<vitry.runtime.Module> link, Properties useProps) {
+                    this.cl = cl;
+                    this.link = link;
+                    this.useProps = useProps;
+                }
+            }
+
         /**
          * Evaluate the given pattern.
          *
@@ -40,18 +71,12 @@ public interface Eval
          *
          * If the given pattern evaluates to a module, a module is constructed and resolved before
          * it is returned. This may result in a LinkageError or TypeError.
-         * 
-         * @param e 
+         * @param expr 
          *      Pattern to evaluate.
-         * @param cl
-         *      ClassLoader from which to obtain dependencies.
-         * @param link
-         *      List of loaded modules.
-         * @param systemProperties
-         *      System properties, used by some implementations. If null, java.lang.System.getProperties() is used.
+         * @param pre
+         *      See EvalPre.
          * @throws ParseError
          * @throws LinkageError
          */
-        public Object eval(Pattern e, ClassLoader cl, Seq<Module> link, Properties systemProperties)
-        throws ParseError, LinkageError, TypeError;
+        public Object eval(Pattern expr, EvalPre pre) throws ParseError, LinkageError, TypeError;
     }

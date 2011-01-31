@@ -7,17 +7,7 @@
 
 Vitry is a functional, structurally typed and highly adaptable programming language. It was designed to simplify construction and analysis of large and possibly complex data structures. It is a general purpose language, but it was concieved to be used in the creative fields, hence its emphasis on conciseness and flexibility.
 
-The language itself is highly modular and allow most parts of its syntax and semantics to be overloaded or extended by the user. This is achieved through a set of well-defined *stages*.
-
-The core syntactic constructs are all overloadable, including operators, keywords and parentheses.
-
-The core language is purely functional with call-by-value evaluation. It has a structural type system which explicitly separates the concepts of patterns, constructors and formal types.
-
- On top of this there are three standarized *extension languages*, namely:
-
-- The meta language (used for comments and literate style)
-- The imperative language (used for controlled side-effects)
-- The module language (used for modules, type declarations and implicit conversion)
+Vitry is highly modular and allow most parts of its syntax and semantics to be overloaded or extended by the user.
 
 
 ### Table of Contents
@@ -68,14 +58,15 @@ The core language is purely functional with call-by-value evaluation. It has a s
 - Literate language
 
 - Module language    
-    - Match extensions
+    - Imports and resolution
+    - Function extensions
+    - Data extensions
 
 - Imperative language
     - Do-expressions
 
 - Evaluation
     - Loading stage
-        - Dendency resolution
     - Typing stage
     - Execution stage
 

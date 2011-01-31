@@ -7,6 +7,10 @@ import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 
+import vitry.runtime.Eval;
+import vitry.runtime.Interpreter;
+import vitry.runtime.Pattern;
+import vitry.runtime.Eval.EvalPre;
 import vitry.runtime.misc.Utils;
 import vitry.runtime.parse.PatternTree;
 import vitry.runtime.parse.PatternTreeAdaptor;
@@ -17,16 +21,19 @@ import vitry.runtime.parse.VitryParser;
 /**
  * Parse and lex, dump Vitry AST.
  */
-public class ParseFoo
+public class EvalFoo
     {
 
         /**
      * 
      */
-    private static final String TEST = "(a, b, c, d)";
+    private static final String TEST = "\"test\"";
 
         public static void main(String[] args) {
 
+            Eval interpreter = new Interpreter();
+            EvalPre pre = new Eval.EvalPre(null, null, null);
+            
             VitryLexer lexer = null;
             try {
                 lexer = new VitryLexer(new ANTLRReaderStream(new StringReader(TEST)));
@@ -38,10 +45,11 @@ public class ParseFoo
             parser.setTreeAdaptor(new PatternTreeAdaptor());
 
             try {
-                PatternTree tree = (PatternTree) parser.expr().getTree();
-                System.out.println(Utils.prune(tree));
-                System.out.println(tree);
-                System.out.println(tree);
+                Pattern expr = (Pattern) parser.expr().getTree();
+                System.out.println("Tree : " + expr);
+                Object val = interpreter.eval(expr, pre);
+                System.out.println("Value: " + val);
+                System.out.println("Class: " + val.getClass());
 
             } catch (RecognitionException e) {
                 e.printStackTrace();

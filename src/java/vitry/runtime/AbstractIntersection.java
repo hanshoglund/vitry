@@ -18,7 +18,7 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.misc.Utilities;
+import vitry.runtime.misc.Utils;
 
 
 abstract public class AbstractIntersection extends InclusionPattern implements Intersection
@@ -69,6 +69,6 @@ abstract public class AbstractIntersection extends InclusionPattern implements I
         }
 
         public String toString() {
-            return Utilities.join(this, "(", " & ", ")");
+            return Utils.join(this, "(", " & ", ")");
         }
     }

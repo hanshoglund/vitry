@@ -27,21 +27,16 @@ package vitry.runtime;
  *   - (opt) Provide empty and (Env parent) constructors
  */
 abstract public class AbstractEnvironment<K, V> implements Environment<K, V>
-    {      
-        
-        private final Environment<K, V> parent;
-        
+    {
 
-        /**
-         * Creates a top-level environment.
-         */
+        private final Environment<K, V> parent;
+        private static Environment<?,?> global = new GlobalEnvironment();
+
+
         public AbstractEnvironment() {
             this.parent = AbstractEnvironment.<K, V> empty();
         }
 
-        /**
-         * Create an environment that is a child of the given environment.
-         */
         public AbstractEnvironment(Environment<K, V> parent) {
             this.parent = parent;
         }
@@ -50,115 +45,55 @@ abstract public class AbstractEnvironment<K, V> implements Environment<K, V>
             return parent;
         }
 
-
-        public Environment<K, V> define(K key, V val) throws BindingError {
-            if (this.hasBinding(key))
-                throw new BindingError(key, this);
-            return put(key, val);
-        }
-
         public V lookup(K key) throws UndefinedError {
-            V val = get(key);
-
-            if (val == null) {
-                Environment<K, V> checkEnv = this;
-
-                try {
-                    do {
-                        checkEnv = checkEnv.parent();
-                        if (val instanceof AbstractEnvironment) {
-                            // In case we have an AbstractEnv, check locally
-                            // Either we succeed, or search is continued in parent
-                            val = ((AbstractEnvironment<K,V>) checkEnv).get(key);                            
-                        } else {
-                            // Either we succeed, or we exit by exception
-                            val = checkEnv.lookup(key);
-                        }
-                    } while (val == null);
-
-                } catch (UndefinedError e) {
-                    throw new UndefinedError(key, this);
+            Environment<K, V> env = this;
+            V val = this.get(key);
+            try {
+                while (val == null) {
+                    env = env.parent();
+                    val = env.get(key);
                 }
+            } catch (UndefinedError e) {
+                throw new UndefinedError(key, this);
             }
             return val;
         }
-        
-        /**
-         * Bind the given key to the given value in this env. 
-         */
-        abstract protected Environment<K, V> put(K key, V val);
-                                                                 
-        /**
-         * Returns the value bound to the given key in this env or 
-         * null if no such binding exists. 
-         */
-        abstract protected V get(K key);
-                      
-        /**
-         * Returns whether this env contains the given key or not.
-         */
-        protected boolean hasBinding(K key) {
-            return get(key) != null;
-        }
-        
-        
 
-        
-        // Empty
-        
         @SuppressWarnings("unchecked")
-
-        /**
-         * Returns an empty, persistent environment.
-         */
-        public static <K, V> Environment<K, V> empty() {
-            return (Environment<K, V>) empty;
+        private static <K, V> Environment<K, V> empty() {
+            return (Environment<K, V>) global;
         }
-
-        private static Environment<?, ?> empty = new Empty();
-        
-
-        static class Empty extends AbstractEnvironment<Object, Object>
-            {
-                Empty() {}
-
-                public Environment<Object, Object> define(Object key, Object val) {
-                    return throwUnsupported();
-                }
-
-                public Environment<Object, Object> parent() {
-                    return throwUnsupported();
-                }
-
-                protected Environment<Object, Object> put(Object key, Object val) {
-                    return throwUnsupported();
-                }
-
-                public Object lookup(Object key) {
-                    return throwUnsupported();
-                }
-
-                public Object get(Object key) {
-                    throw new UndefinedError(key, this);
-                }
-
-                private <T> T throwUnsupported() {
-                    throw new UnsupportedOperationException(
-                            "Not supported for emtpy environment");
-                }
-                
-                public Environment<Object, Object> makeChild() {
-                    // TODO throw instead?
-                    return new HashEnvironment(this);
-                }
-                
-                public boolean isPersistent() {
-                    return true;
-                }
-
-                private static final long serialVersionUID = 4460929197701994252L;
-            }
-
-        private static final long serialVersionUID = 8402893922379900923L;
-
     }
+
+class GlobalEnvironment extends AbstractEnvironment<Object, Object> {
+
+    public Environment<Object, Object> define(Object key, Object val) throws BindingError {
+        return throwUnsupported();
+    }
+
+    public Environment<Object, Object> extend(Object key, Object val) {
+        return throwUnsupported();
+    }
+
+    public Environment<Object, Object> makeChild() {
+        return throwUnsupported();
+    }
+
+    public boolean isPersistent() {
+        return true;
+    }
+
+    public boolean contains(Object key) {
+        return false;
+    }
+
+    public Object get(Object key) {
+        throw new UndefinedError(key, this);
+    }
+
+    private <T> T throwUnsupported() {
+        throw new UnsupportedOperationException();
+    }
+
+        
+}

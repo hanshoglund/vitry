@@ -18,7 +18,7 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.misc.Utilities;
+import vitry.runtime.misc.Utils;
 
 
 abstract public class AbstractSet extends InclusionPattern implements Set
@@ -63,6 +63,6 @@ abstract public class AbstractSet extends InclusionPattern implements Set
         }
 
         public String toString() {
-            return Utilities.join(this, "{", ", ", "}");
+            return Utils.join(this, "{", ", ", "}");
         }
     }

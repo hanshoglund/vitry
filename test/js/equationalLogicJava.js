@@ -15,7 +15,7 @@ T = fact.type;
 F = fact.functionType;
 
 s = Symbol.intern;
-l = (function(a) new ListType(a));
+//l = (function(a) new ListType(a));
 nil = Vitry.nil;
 bot = Vitry.bottom;
 any = Vitry.any;
@@ -113,9 +113,9 @@ test = function() {
   printMatches(U(a, b), U(a, U(b, c)));
   printMatches(U(a, b), U(a, U(b, c)));
   
-  printMatches(nil, l(a));
-  printMatches((P(a,P(a,nil))), l(a));
-  printMatches((P(a,P(a,P(b,nil)))), l(U(a,b)));
+//  printMatches(nil, l(a));
+//  printMatches((P(a,P(a,nil))), l(a));
+//  printMatches((P(a,P(a,P(b,nil)))), l(U(a,b)));
   
   
   print();

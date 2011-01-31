@@ -25,8 +25,10 @@ import org.antlr.runtime.tree.CommonTree;
 
 import vitry.runtime.Apply;
 import vitry.runtime.Atom;
+import vitry.runtime.Function;
 import vitry.runtime.FunctionType;
 import vitry.runtime.Intersection;
+import vitry.runtime.InvocationError;
 import vitry.runtime.Pattern;
 import vitry.runtime.Product;
 import vitry.runtime.Set;
@@ -36,6 +38,7 @@ import vitry.runtime.Type;
 import vitry.runtime.Union;
 import vitry.runtime.Value;
 import vitry.runtime.struct.IterableSeq;
+import vitry.runtime.struct.MapSeq;
 import vitry.runtime.struct.Seq;
 import vitry.runtime.struct.SeqIterator;
 
@@ -44,14 +47,15 @@ import vitry.runtime.struct.SeqIterator;
  * Reflects ANTLR-generated trees into Vitry.
  * 
  * Trees such as ^(a b c d) becomes (a, b, c, d) etc.
+ * Currently assumes that ANTLR's list of children contains only PatternTrees.
  */
 public class PatternTree extends CommonTree implements Product
     {
 
         private final Product delegee         = new SimpleProduct(this);
         
-        private IterableSeq<Pattern> childSeq = null;
-        private boolean generatedChildSeq     = false;
+        private Seq<Pattern> childSeq         = null;
+        private boolean generatedSeq          = false;
 
         
         public PatternTree(Token payload) {
@@ -59,23 +63,22 @@ public class PatternTree extends CommonTree implements Product
         }
         
         public Pattern head() {
-            if (!generatedChildSeq) generateChildSeq();
+            if (!generatedSeq) generateSeq();
             
             if (hasPayload()) {
-                return new VitryToken(token);
+                return wrap(token);
             } else {
                 return (childSeq == null) ? null : childSeq.head();
             }
         }
 
         public Seq<Pattern> tail() {
-            if (!generatedChildSeq) generateChildSeq();
-            if (!hasTail()) return null;
+            if (!generatedSeq) generateSeq();
             
             if (hasPayload()) {
-                return childSeq;
+                return (childSeq == null) ? null : childSeq;
             } else {
-                return childSeq.tail();
+                return (childSeq == null) ? null : childSeq.tail();
             }
         }
         
@@ -84,19 +87,37 @@ public class PatternTree extends CommonTree implements Product
         }
         
         public boolean hasTail() {
-            return childSeq != null;
+            if (hasPayload()) {
+                return childSeq != null;
+            } else {
+                return childSeq != null && childSeq.tail() != null;
+            }        
         }
         
-        
-        private void generateChildSeq() {
+        private void generateSeq() {
+            
             if (children != null) {
-                // Assume that ANTLR's list of children only contains
-                // PatternTrees
-                this.childSeq = new IterableSeq<Pattern>(this.children);
+                // Make a seq out of the ANTLR child list
+                Seq<Pattern> itSeq = new IterableSeq<Pattern>(this.children);
+                this.childSeq = new MapSeq<Pattern,Pattern>(new Function(1, null){
+                    
+                    // Replace singletons with their contained token
+                    public Object apply(Object o) throws InvocationError {
+                        CommonTree t = (CommonTree) o;
+                        if (t.getChildCount() == 0 && t.getToken() != null) {
+                            return wrap(t.getToken());
+                        }
+                        return t;
+                    }
+                }, itSeq);
             }
-            generatedChildSeq = true;
+            generatedSeq = true;
         }
         
+        private VitryToken wrap(Token t) {
+            return new VitryToken(t);
+        }
+
         public Iterator<Pattern> iterator() {
             return new SeqIterator<Pattern>(this);
         }
