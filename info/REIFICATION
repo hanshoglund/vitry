@@ -24,7 +24,7 @@ Basic concepts of this library:
     - Blocks provides contagious, dynamically allocated memory (objects).
     - Structors (constructors/destructors) rewrite products to block-based
       structures and vice versa based on the inductive notation "...".
-      Protocols are expressed through pattern matching the structure.
+      Structors are expressed through pattern matching the structure.
 
 
 Protocols

@@ -26,7 +26,7 @@ import org.antlr.runtime.tree.CommonTree;
 import vitry.runtime.Apply;
 import vitry.runtime.Atom;
 import vitry.runtime.Function;
-import vitry.runtime.FunctionType;
+import vitry.runtime.Arrow;
 import vitry.runtime.Intersection;
 import vitry.runtime.InvocationError;
 import vitry.runtime.Pattern;
@@ -37,10 +37,10 @@ import vitry.runtime.Tagged;
 import vitry.runtime.Type;
 import vitry.runtime.Union;
 import vitry.runtime.Value;
-import vitry.runtime.struct.IterableSeq;
-import vitry.runtime.struct.MapSeq;
-import vitry.runtime.struct.Seq;
-import vitry.runtime.struct.SeqIterator;
+import vitry.runtime.struct.IterableSequence;
+import vitry.runtime.struct.MapSequence;
+import vitry.runtime.struct.Sequence;
+import vitry.runtime.struct.SequenceIterator;
 
 
 /**
@@ -54,7 +54,7 @@ public class PatternTree extends CommonTree implements Product
 
         private final Product delegee         = new SimpleProduct(this);
         
-        private Seq<Pattern> childSeq         = null;
+        private Sequence<Pattern> childSeq         = null;
         private boolean generatedSeq          = false;
 
         
@@ -72,7 +72,7 @@ public class PatternTree extends CommonTree implements Product
             }
         }
 
-        public Seq<Pattern> tail() {
+        public Sequence<Pattern> tail() {
             if (!generatedSeq) generateSeq();
             
             if (hasPayload()) {
@@ -98,8 +98,8 @@ public class PatternTree extends CommonTree implements Product
             
             if (children != null) {
                 // Make a seq out of the ANTLR child list
-                Seq<Pattern> itSeq = new IterableSeq<Pattern>(this.children);
-                this.childSeq = new MapSeq<Pattern,Pattern>(new Function(1, null){
+                Sequence<Pattern> itSeq = new IterableSequence<Pattern>(this.children);
+                this.childSeq = new MapSequence<Pattern,Pattern>(new Function(1, null){
                     
                     // Replace singletons with their contained token
                     public Object apply(Object o) throws InvocationError {
@@ -119,7 +119,7 @@ public class PatternTree extends CommonTree implements Product
         }
 
         public Iterator<Pattern> iterator() {
-            return new SeqIterator<Pattern>(this);
+            return new SequenceIterator<Pattern>(this);
         }
         
         
@@ -136,7 +136,7 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public Seq<Pattern> destruct() {
+        public Sequence<Pattern> destruct() {
             return delegee.destruct();
         }
 
@@ -151,18 +151,18 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public Pattern fst() {
-            return delegee.fst();
+        public Pattern first() {
+            return delegee.first();
         }
 
 
-        public Pattern snd() {
-            return delegee.snd();
+        public Pattern second() {
+            return delegee.second();
         }
 
 
-        public Seq<Pattern> cons(Pattern head) {
-            return delegee.cons(head);
+        public Sequence<Pattern> prepend(Pattern head) {
+            return delegee.prepend(head);
         }
 
 
@@ -231,7 +231,7 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public boolean eq(FunctionType o) {
+        public boolean eq(Arrow o) {
             return delegee.eq(o);
         }
 
@@ -241,7 +241,7 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public <U> Seq<U> map(Apply fn) {
+        public <U> Sequence<U> map(Apply fn) {
             return delegee.map(fn);
         }
 
@@ -251,12 +251,17 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public boolean match(FunctionType p) {
+        public boolean match(Arrow p) {
             return delegee.match(p);
         }
 
 
         public boolean matchFor(Pattern p) {
             return delegee.matchFor(p);
+        }
+
+        public Pattern third() {
+            return null;
+            // TODO Auto-generated method stub
         }
     }

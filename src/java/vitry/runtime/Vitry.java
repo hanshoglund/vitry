@@ -21,9 +21,9 @@ package vitry.runtime;
 import java.math.BigInteger;
 import java.util.Iterator;
 
-import vitry.runtime.struct.ConsSeq;
-import vitry.runtime.struct.MapSeq;
-import vitry.runtime.struct.Seq;
+import vitry.runtime.struct.PairSequence;
+import vitry.runtime.struct.MapSequence;
+import vitry.runtime.struct.Sequence;
 
 /**
  * This class encapsulates an entire runtime system. That is, a set of system
@@ -580,8 +580,8 @@ public class Vitry
             
         };
         
-        public static FunctionType fnType(Pattern co, Pattern dom) {
-            return new FunctionType(co, dom);
+        public static Arrow fnType(Pattern co, Pattern dom) {
+            return new Arrow(co, dom);
         }
             
         public static Type symType(String name, Pattern pattern) {
@@ -605,12 +605,12 @@ public class Vitry
                     return "()";
                 }
 
-                public Seq<Pattern> cons(Pattern head) {
-                    return new ConsSeq<Pattern>(head, this);
+                public Sequence<Pattern> prepend(Pattern head) {
+                    return new PairSequence<Pattern>(head, this);
                 }
 
-                public <U> MapSeq<Pattern, U> map(Apply fn) {
-                    return new MapSeq<Pattern,U>(fn, this);
+                public <U> MapSequence<Pattern, U> map(Apply fn) {
+                    return new MapSequence<Pattern,U>(fn, this);
                 }
                 
                 public boolean isDestructible() {
@@ -623,11 +623,11 @@ public class Vitry
                 
                 // Rest of interface unsupported, pretty uninteresting...
 
-                public Product fst() {
+                public Product first() {
                     return throwUnsupported();
                 }
 
-                public Product snd() {
+                public Product second() {
                     return throwUnsupported();
                 }
 
@@ -635,7 +635,7 @@ public class Vitry
                     return throwUnsupported();
                 }
 
-                public Seq<Pattern> tail() {
+                public Sequence<Pattern> tail() {
                     return throwUnsupported();
                 }
 
@@ -643,12 +643,17 @@ public class Vitry
                     return throwUnsupported();
                 }
 
-                public Seq<Pattern> destruct() {
+                public Sequence<Pattern> destruct() {
                     return throwUnsupported();
                 }
                 
                 private <T> T throwUnsupported() {
                     throw new UnsupportedOperationException("() has no members.");
+                }
+
+                public Pattern third() {
+                    return null;
+                    // TODO Auto-generated method stub
                 }
             }
 
@@ -688,7 +693,7 @@ public class Vitry
                     return true;
                 }
 
-                public boolean match(FunctionType p) {
+                public boolean match(Arrow p) {
                     return true;
                 }
 

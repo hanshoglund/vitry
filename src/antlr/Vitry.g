@@ -49,13 +49,14 @@ delim [boolean rs]
     : '(' inline[rs]? ')'                          -> ^(Par inline?)
     | '[' inline[rs]? ']'                          -> ^(Bra inline?)
     | '{' inline[rs]? '}'                          -> ^(Ang inline?)
+    | '`' Op                                       -> ^(Quote Op)
     | '`' delim[rs]                                -> ^(Quote delim)
-    | atom {$rs}?
-    | Symbol
+    | atom
     ;   
 
 atom
-    : Natural
+    : Symbol
+    | Natural
     | Float
     | Complex
     | String
@@ -122,7 +123,7 @@ moduleName :
 Op  : (
         '!' | '#' | '$' | '%' | '&' | '\'' | '*' | '+' | ',' | '-' |
         '.' | '/' | ';' | '<' | '=' | '>' | '?' | '@' | '\\' | '^' | 
-        '_' | '`' | '|' | '~' | ':'
+        '_' | '|' | '~' | ':'
       )*
     ;
     

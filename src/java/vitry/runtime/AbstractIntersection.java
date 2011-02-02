@@ -54,7 +54,7 @@ abstract public class AbstractIntersection extends InclusionPattern implements I
             return true;
         }
 
-        public boolean match(FunctionType p) {
+        public boolean match(Arrow p) {
             for (Pattern x : this)
                 if (!x.match(p)) return false;
             return true;

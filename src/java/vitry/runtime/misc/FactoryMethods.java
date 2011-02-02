@@ -1,6 +1,6 @@
 package vitry.runtime.misc;
 
-import vitry.runtime.FunctionType;
+import vitry.runtime.Arrow;
 import vitry.runtime.Pattern;
 import vitry.runtime.SimpleIntersection;
 import vitry.runtime.SimpleProduct;
@@ -9,7 +9,7 @@ import vitry.runtime.SimpleUnion;
 import vitry.runtime.Symbol;
 import vitry.runtime.Type;
 
-public class StaticFactoryMethods
+public class FactoryMethods
     {
         public static Pattern product(Object... args) {
             return new SimpleProduct(args);
@@ -32,7 +32,7 @@ public class StaticFactoryMethods
         }
 
         public static Pattern functionType(Pattern co, Pattern dom) {
-            return new FunctionType(co, dom);
+            return new Arrow(co, dom);
         }
 
     }

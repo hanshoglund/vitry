@@ -23,24 +23,24 @@ import java.util.Iterator;
 /**
  * Adapts an array as a seq. Concurrently modifying the array is not recommended.
  */
-public class ArraySeq<T> extends AbstractSeq<T>
+public class ArraySequence<T> extends AbstractSequence<T>
     {
         private final T[] array;
         private final int offset;
         private boolean tailCached = false;
-        private Seq<T> tail;
+        private Sequence<T> tail;
 
-        public ArraySeq(T... elements) {
+        public ArraySequence(T... elements) {
             this(elements, 0);
         }
 
-        public ArraySeq(T[] elements, int offset) {
+        public ArraySequence(T[] elements, int offset) {
             if (offset >= elements.length) throw new IllegalArgumentException();
             this.array = elements;
             this.offset = offset;
         }
         
-        private ArraySeq(T[] elements, int offset, Object dummy) {
+        private ArraySequence(T[] elements, int offset, Object dummy) {
             this.array = elements;
             this.offset = offset;
         }
@@ -53,10 +53,10 @@ public class ArraySeq<T> extends AbstractSeq<T>
             return array[offset];
         }
 
-        public Seq<T> tail() {
+        public Sequence<T> tail() {
             if (!tailCached) {
                 if (hasTail()) {
-                    tail = new ArraySeq<T>(array, offset + 1, null);                    
+                    tail = new ArraySequence<T>(array, offset + 1, null);                    
                 }
                 tailCached = true;
             }

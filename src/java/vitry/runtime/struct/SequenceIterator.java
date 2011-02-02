@@ -18,32 +18,36 @@
  */
 package vitry.runtime.struct;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
- * A seq containing a single value.
+ * An iterator over generic sequences.
+ * 
+ * This is the one returned by AbstractSeq, override if a more effiecient
+ * implementation is available.
  */
-public class SingleSeq<T> extends AbstractSeq<T> implements Finite
+public class SequenceIterator<T> implements Iterator<T>
     {
-        
-        private final T obj;
-        
-        public SingleSeq(T obj) {
-            this.obj = obj;
+        private Sequence<T> seq;
+
+        public SequenceIterator(Sequence<T> seq) {
+            this.seq = seq;
         }
 
-        public T head() {
-            return obj;
+        public boolean hasNext() {
+            return seq != null;
         }
 
-        public Seq<T> tail() {
-            return null;
+        public T next() {
+            if (seq == null) throw new NoSuchElementException();
+
+            T head = seq.head();
+            seq = seq.tail();
+            return head;
         }
 
-        public int length() {
-            return 1;
-        }
-
-        public boolean hasTail() {
-            return false;
+        public void remove() {
+            throw new UnsupportedOperationException("Can not modify a Seq");
         }
     }

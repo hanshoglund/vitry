@@ -18,7 +18,7 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.misc.Hashing;
+import vitry.runtime.misc.Utils;
 
 /**
  * Implements tagged values.
@@ -78,8 +78,8 @@ public class Tagged extends BasePattern
 
         public int hashCode() {
             int hash = this.getClass().hashCode();
-            hash = Hashing.hash(hash, val);
-            hash = Hashing.hash(hash, tag);
+            hash = Utils.hash(hash, val);
+            hash = Utils.hash(hash, tag);
             return hash;
         }        
     }

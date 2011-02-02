@@ -48,7 +48,7 @@ abstract public class AbstractSet extends InclusionPattern implements Set
             return false;
         }
 
-        public boolean match(FunctionType p) {
+        public boolean match(Arrow p) {
             for (Pattern x : this)
                 if (x.eq(p)) return true;
             return false;

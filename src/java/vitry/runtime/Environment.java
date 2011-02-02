@@ -22,8 +22,8 @@ import java.io.Serializable;
 
 
 /**
- * Standard environment. That is a set of bindings referencing an enclosing 
- * <em>parent environment</em>.
+ * Standard environment, i.e. a set of bindings referencing an enclosing 
+ * parent environment.
  * 
  * Invariants:    
  *

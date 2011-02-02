@@ -31,12 +31,12 @@ import vitry.runtime.misc.Checks;
 /**
  * A seq adapted from another seq by the map operation.
  */
-public class MapSeq<A, B> extends AbstractSeq<B> implements Dynamic
+public class MapSequence<A, B> extends AbstractSequence<B> implements Dynamic
     {
         private final Apply fn;
-        private final Seq<A> input;
+        private final Sequence<A> input;
 
-        public MapSeq(Apply fn, Seq<A> input) {
+        public MapSequence(Apply fn, Sequence<A> input) {
             Checks.checkNotNull(fn, input);
             if (fn instanceof Function) Checks.checkArity((Function) fn, 1);
             this.fn = fn;
@@ -65,9 +65,9 @@ public class MapSeq<A, B> extends AbstractSeq<B> implements Dynamic
            }
         }
 
-        public Seq<B> tail() {
+        public Sequence<B> tail() {
             if (input.hasTail()) {
-                return new MapSeq<A, B>(fn, input.tail());
+                return new MapSequence<A, B>(fn, input.tail());
             } else {
                 return null;
             }

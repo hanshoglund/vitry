@@ -25,26 +25,8 @@ Move general info to NOTES, gradually move this stuff to tracker.
     
                                         
         - Retagging: OK if the old type includes the new ("narrowing conversion")
-        - See test/js for test scases
-        
-    - Hindley-Milner gives us function types, products, sums and parametric polymorphism
-    - Unions gives us subtyping
-    - Recursive types (implemented as lazy patterns) gives us lists, trees etc.
-        - Provide basic implementations of products and unions, support reification
 
 
-
-- Compiler
-    - Current implementation too ugly
-    - New strategy: 
-        - Implement data structures first
-        - Do parsing as multistage traversal, using internal match
-            - Pass 1: Resolve symbols (replace local lookups etc)
-            - Pass 2: Generate compilation tree/DG
-                - Class gen node
-                - Branch node
-                - Standard snode
-            - Convert to bytecode
 
 
 - Runtime                                  
@@ -113,21 +95,6 @@ Move general info to NOTES, gradually move this stuff to tracker.
             - Arity, defined by Function.arity()
             - Type, defined by Function.type()
             - Body, defined by Apply.apply()
-
-        - Whenever a function f is called with N arguments:
-            if not f instanceof RestArgFunction
-                if  N   < f.arity,  then a partial application is returned
-                if  N   = f.arity,  then f(a1,a2..a[N]) is returned
-                if  N+1 = f.arity,  then f(a1,a2..a[N-1]) f[N] is returned
-                if  N+2 = f.arity,  then f(a1,a2..a[N-2]) f[N-1] f[N] is returned
-                etc.
-            else
-                if  N < f.arity,  then a partial application is returned
-                if  N = f.arity,  then f(a1,a2..a[N]) is returned
-                if  N > f.arity,  then f(a1,a2..a[f.arity], rest) is returned, where rest is an array containing a[f.arity]...a[N]
-                
-    - See the eval/apply method in "Making a Fast Curry"
-
        
 
 - Records

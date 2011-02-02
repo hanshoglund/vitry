@@ -18,29 +18,25 @@
  */
 package vitry.runtime.struct;
 
+import vitry.runtime.Apply;
+
 
 /**
- * A cons of two seqs. Not to be confused with Pair.
+ * A sequence abstaction for parallel computation. Based on the conc lists 
+ * proposed by Guy Steele in <em>Organizing functional code for parallel execution</em>.
+ * 
+ * Currently not used, may be worked into the standard Pattern implementations in
+ * the future.
  */
-public class ConsSeq<T> extends AbstractSeq<T>
-    {        
-        private T head;
-        private Seq<T> tail;
+public interface Parallel<T>
+    {
+        T item();
 
-        public ConsSeq(T head, Seq<T> tail) {
-            this.head = head;
-            this.tail = tail;
-        }
+        Parallel<T> node(T value);
 
-        public T head() {
-            return head;
-        }
+        <U> U split(Apply fn);
 
-        public Seq<T> tail() {
-            return tail;
-        }
+        Parallel<T> conc(Parallel<T> rest);
 
-        public boolean hasTail() {
-            return tail != null;
-        }
+        boolean isSingleton();
     }

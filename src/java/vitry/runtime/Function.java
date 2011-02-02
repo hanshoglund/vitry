@@ -52,20 +52,20 @@ abstract public class Function extends Scope implements Apply, Dynamic
         
         protected final int arity;
 
-        protected final FunctionType type;
+        protected final Arrow type;
 
         
         Function() {
             this.arity = 1;
-            this.type = new FunctionType(Vitry.any, Vitry.any);;
+            this.type = new Arrow(Vitry.any, Vitry.any);;
         }
 
-        public Function(FunctionType type) {
+        public Function(Arrow type) {
             this.arity = 1;
             this.type = type;
         }
         
-        public Function(int arity, FunctionType type) {
+        public Function(int arity, Arrow type) {
             if (arity < MIN_ARITY || arity > MAX_ARITY) 
                 throw new IllegalArgumentException(
                         "Function must have arity a where " +
@@ -78,7 +78,7 @@ abstract public class Function extends Scope implements Apply, Dynamic
             return arity;
         }
 
-        public FunctionType type() {
+        public Arrow type() {
             return type;
         }
         

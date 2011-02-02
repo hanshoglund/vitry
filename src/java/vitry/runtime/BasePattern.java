@@ -27,7 +27,7 @@ package vitry.runtime;
  *   - matchFor
  *   - override eq and match where appropriate
  */
-abstract class BasePattern implements Pattern
+abstract public class BasePattern implements Pattern
     {
         public boolean eq(Object o) {
             if (o instanceof Value) throw new IllegalArgumentException();
@@ -62,7 +62,7 @@ abstract class BasePattern implements Pattern
             return false;
         }
 
-        public boolean eq(FunctionType o) {
+        public boolean eq(Arrow o) {
             return false;
         }
 
@@ -104,7 +104,7 @@ abstract class BasePattern implements Pattern
             return false;
         }
 
-        public boolean match(FunctionType p) {
+        public boolean match(Arrow p) {
             return false;
         }
     }

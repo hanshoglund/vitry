@@ -18,12 +18,12 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.struct.Seq;
+import vitry.runtime.struct.Sequence;
 
 /**
  * Compound entity, matching on membership.
  */
-public interface Set extends Pattern, Seq<Pattern>
+public interface Set extends Pattern, Sequence<Pattern>
     {
 
         /**
@@ -45,9 +45,7 @@ public interface Set extends Pattern, Seq<Pattern>
                 }
 
                 public boolean matchFor(Pattern p) {
-                    // The empty set is a match for any compund pattern, including itself
-                    // The ({}:{}) case could be handled by the standard logic, this is just an optimization.
-                    if (p == this) return true;
+                    if (p == this) return true; // Optimization
                     return p.match(this);
                 }
 
@@ -55,7 +53,7 @@ public interface Set extends Pattern, Seq<Pattern>
                     throw new UnsupportedOperationException("{} has no members.");
                 }
 
-                public Seq<Pattern> tail() {
+                public Sequence<Pattern> tail() {
                     throw new UnsupportedOperationException("{} has no members.");
                 }
 

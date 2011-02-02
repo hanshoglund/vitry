@@ -18,36 +18,28 @@
  */
 package vitry.runtime.struct;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import vitry.runtime.Apply;
+
 
 /**
- * An iterator over generic sequences.
+ * Sequence abstraction. The idea is to have a common interface for
+ * the core pattern language, as well as for the native list implementations.
+ * This means we can adapt one into the in <em>O(1)</em> time.
+ *
+ * Implement:
  * 
- * This is the one returned by AbstractSeq, override if a more effiecient
- * implementation is available.
+ *   - head/tail and iterator
+ *   
  */
-public class SeqIterator<T> implements Iterator<T>
+public interface Sequence<T> extends Iterable<T>
     {
-        private Seq<T> seq;
+        T head();
 
-        public SeqIterator(Seq<T> seq) {
-            this.seq = seq;
-        }
+        Sequence<T> tail();
+        
+        boolean hasTail();
 
-        public boolean hasNext() {
-            return seq != null;
-        }
+        Sequence<T> prepend(T head);
 
-        public T next() {
-            if (seq == null) throw new NoSuchElementException();
-
-            T head = seq.head();
-            seq = seq.tail();
-            return head;
-        }
-
-        public void remove() {
-            throw new UnsupportedOperationException("Can not modify a Seq");
-        }
+        <U> Sequence<U> map(Apply fn);
     }

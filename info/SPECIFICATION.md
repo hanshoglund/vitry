@@ -5,7 +5,7 @@
 
 ## Vitry
 
-Vitry is a functional, structurally typed and highly adaptable programming language. It was designed to simplify construction and analysis of large and possibly complex data structures. It is a general purpose language, but it was concieved to be used in the creative fields, hence its emphasis on conciseness and flexibility.
+Vitry is a functional, structurally typed and highly adaptable programming language. It was designed to simplify construction and analysis of large and possibly complex data structures. It is a general purpose language, but it was concieved to be used primarily for artistic work, hence its emphasis on conciseness and flexibility.
 
 Vitry is highly modular and allow most parts of its syntax and semantics to be overloaded or extended by the user.
 

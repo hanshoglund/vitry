@@ -26,20 +26,20 @@ import java.util.Iterator;
  * 
  * Concurrently modifying the iterable is not recommended.
  */
-public class IterableSeq<T> extends AbstractSeq<T>
+public class IterableSequence<T> extends AbstractSequence<T>
     {
         private Iterable<T> itbl;
         private Iterator<T> it;
         private T head;
-        private Seq<T> tail;
+        private Sequence<T> tail;
         private boolean tailed = false;
 
-        public IterableSeq(Iterable<T> itbl) {
+        public IterableSequence(Iterable<T> itbl) {
             this.itbl = itbl;
             this.it = itbl.iterator();
         }
 
-        private IterableSeq(Iterable<T> itbl, Iterator<T> it) {
+        private IterableSequence(Iterable<T> itbl, Iterator<T> it) {
             this.itbl = itbl;
             this.it = it;
         }
@@ -53,11 +53,11 @@ public class IterableSeq<T> extends AbstractSeq<T>
             return head;
         }
 
-        public Seq<T> tail() {
+        public Sequence<T> tail() {
             head();    
             if (!tailed) {
                 if (!it.hasNext()) return null;
-                tail = new IterableSeq<T>(null, it);
+                tail = new IterableSequence<T>(null, it);
                 tailed = true;
             }
             return tail;

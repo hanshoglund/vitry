@@ -18,19 +18,19 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.misc.Hashing;
-import vitry.runtime.struct.Seq;
+import vitry.runtime.misc.Utils;
+import vitry.runtime.struct.Sequence;
 
 /**
- * A type operator. 
+ * A type or type operator.
  */
 public class Type extends BasePattern
     {
-        private final Pattern     pattern;
-        private final Symbol      id;
-        private final Seq<Symbol> vars;
+        private final Pattern          pattern;
+        private final Symbol           id;
+        private final Sequence<Symbol> vars;
 
-        public Type(Pattern pattern, Symbol id, Seq<Symbol> vars) {
+        public Type(Pattern pattern, Symbol id, Sequence<Symbol> vars) {
             this.pattern = pattern;
             this.id = id;
             this.vars = vars;
@@ -44,7 +44,7 @@ public class Type extends BasePattern
             return id;
         }
 
-        public Seq<Symbol> vars() {
+        public Sequence<Symbol> vars() {
             return vars;
         }
 
@@ -77,7 +77,7 @@ public class Type extends BasePattern
             return false;
         }
 
-        public Seq<Pattern> destruct() {
+        public Sequence<Pattern> destruct() {
             if (pattern instanceof MaybeDestructible)
                 return ((MaybeDestructible) pattern).destruct();
             throw new UnsupportedOperationException("Can not destruct " + pattern);
@@ -89,7 +89,7 @@ public class Type extends BasePattern
 
         public int hashCode() {
             int hash = this.getClass().hashCode();
-            hash = Hashing.hash(hash, pattern);
+            hash = Utils.hash(hash, pattern);
             return hash;
         }
 

@@ -20,19 +20,17 @@ package vitry.runtime;
 
 import java.util.Properties;
 
-import vitry.runtime.struct.Seq;
+import vitry.runtime.struct.Sequence;
 
 
 /**
- * Visits the eval operation.
+ * The eval operation.
  * 
  * This operation works a lot like a Lisp eval, i.e. it expects a self-evaluating value
  * or a structure corresponding to the abstract syntax of an expression. Atomic values
  * and tokens representing terminals are considered self-evaluating. This enable us to
  * use the parser generated tokens directly, i.e. without having to walk the syntax tree 
- * and replace tokens with actual numbers, strings, symbols etc. Note that from the point
- * of a Vitry program, terminals are isomorphic to the values they generate (as all terminals
- * yield distinct atoms).
+ * and replace tokens with actual numbers, strings, symbols etc.
  * 
  * Nonterminal expressions are represented by symbol-headed tuples such as <em>(Apply, f, x)</em>.
  */
@@ -42,24 +40,29 @@ public interface Eval
         /**
          * Encapsulates eval prerequisites.
          */
-        public class EvalPre
+        public class Prerequisites
             {
-                public final ClassLoader cl;
-                public final Seq<Module> link;
-                public final Properties useProps;
+                public final ClassLoader classLoader;
+                public final Sequence<Module> linkedModules;
+                public final Properties systemProperties;
                 
                 /**
-                 * @param cl
+                 * @param classLoader
                  *      ClassLoader from which to obtain dependencies.
-                 * @param link
+                 * @param linkedModules
                  *      List of loaded modules.
                  * @param systemProperties
                  *      System properties, used by some implementations. If null, java.lang.System.getProperties() is used.
                  */
-                public EvalPre(ClassLoader cl, Seq<vitry.runtime.Module> link, Properties useProps) {
-                    this.cl = cl;
-                    this.link = link;
-                    this.useProps = useProps;
+                public Prerequisites
+                        (
+                        ClassLoader classLoader, 
+                        Sequence<vitry.runtime.Module> linkedModules, 
+                        Properties systemProperties
+                        ){
+                    this.classLoader = classLoader;
+                    this.linkedModules = linkedModules;
+                    this.systemProperties = systemProperties;
                 }
             }
 
@@ -73,10 +76,10 @@ public interface Eval
          * it is returned. This may result in a LinkageError or TypeError.
          * @param expr 
          *      Pattern to evaluate.
-         * @param pre
-         *      See EvalPre.
+         * @param setup
+         *      See EvalParams.
          * @throws ParseError
          * @throws LinkageError
          */
-        public Object eval(Pattern expr, EvalPre pre) throws ParseError, LinkageError, TypeError;
+        public Object eval(Pattern expr, Prerequisites setup) throws ParseError, LinkageError, TypeError;
     }

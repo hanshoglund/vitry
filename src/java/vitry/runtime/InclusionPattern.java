@@ -20,18 +20,18 @@ package vitry.runtime;
 
 import java.util.Iterator;
 
-import vitry.runtime.misc.Hashing;
-import vitry.runtime.struct.ConsSeq;
-import vitry.runtime.struct.MapSeq;
-import vitry.runtime.struct.Seq;
-import vitry.runtime.struct.SeqIterator;
+import vitry.runtime.misc.Utils;
+import vitry.runtime.struct.PairSequence;
+import vitry.runtime.struct.MapSequence;
+import vitry.runtime.struct.Sequence;
+import vitry.runtime.struct.SequenceIterator;
 
 /**
  * Base implementation, relying on the underlying Seq structure.
  *
  * See also AbstractProduct.
  */
-abstract class InclusionPattern extends BasePattern implements Seq<Pattern>
+abstract public class InclusionPattern extends BasePattern implements Sequence<Pattern>
     {
         public boolean eq(Set o) {
             return o == this || this.match(o) && this.matchFor(o);
@@ -64,12 +64,12 @@ abstract class InclusionPattern extends BasePattern implements Seq<Pattern>
             return false;
         }
         
-        public Seq<Pattern> cons(Pattern head) {
-            return new ConsSeq<Pattern>(head, this);
+        public Sequence<Pattern> prepend(Pattern head) {
+            return new PairSequence<Pattern>(head, this);
         }
 
-        public <U> MapSeq<Pattern, U> map(Apply fn) {
-            return new MapSeq<Pattern,U>(fn, this);
+        public <U> MapSequence<Pattern, U> map(Apply fn) {
+            return new MapSequence<Pattern,U>(fn, this);
         }
         
         
@@ -85,10 +85,10 @@ abstract class InclusionPattern extends BasePattern implements Seq<Pattern>
         }
 
         public int hashCode() {
-            return Hashing.hash(this.getClass().hashCode(), this);
+            return Utils.hash(this.getClass().hashCode(), this);
         }
 
         public Iterator<Pattern> iterator() {
-            return new SeqIterator<Pattern>(this);
+            return new SequenceIterator<Pattern>(this);
         }
     }

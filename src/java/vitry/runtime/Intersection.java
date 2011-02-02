@@ -18,11 +18,11 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.struct.Seq;
+import vitry.runtime.struct.Sequence;
 
 /**
  * The intersection of sets.
  */
-public interface Intersection extends Pattern, Seq<Pattern>
+public interface Intersection extends Pattern, Sequence<Pattern>
     {
     }

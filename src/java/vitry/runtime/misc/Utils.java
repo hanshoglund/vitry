@@ -27,7 +27,7 @@ import vitry.runtime.Pattern;
 import vitry.runtime.Product;
 import vitry.runtime.SimpleProduct;
 import vitry.runtime.Vitry;
-import vitry.runtime.struct.Seq;
+import vitry.runtime.struct.Sequence;
 
 
 public class Utils
@@ -165,7 +165,14 @@ public class Utils
             }
         }
         
-        
+        @SuppressWarnings("unchecked")
+        public static <T,U> U unsafe(T val) {
+            return (U) val;
+        }
+
+        public static <T> void nothing(T val) {
+            return;
+        }
         
         
         // TODO lazy variant
@@ -174,14 +181,29 @@ public class Utils
                 if ( ((Product) p.head()).tail() == null) {
                     Pattern h = ((Product) p.head()).head();
                     Product t = prune(new SimpleProduct(p.tail()));
-                    return new SimpleProduct(t.cons(h));
+                    return new SimpleProduct(t.prepend(h));
                 }
             } catch (ClassCastException e) {
             }
             if (p.tail() == null) return p;
             Pattern h = p.head();
             Product t = prune(new SimpleProduct(p.tail()));
-            return new SimpleProduct(t.cons(h));
+            return new SimpleProduct(t.prepend(h));
+        }
+
+        public static int hash(int seed, int val) {
+            return (seed * 65050 + val) % 2044508069;
+        }
+
+        public static int hash(int seed, Object val) {
+            return hash(seed, val.hashCode());
+        }
+
+        public static int hash(int seed, Iterable<?> vals) {
+            int hash = seed;
+            for (Object v : vals)
+                hash = hash(hash, v);
+            return hash;
         }
 
     }

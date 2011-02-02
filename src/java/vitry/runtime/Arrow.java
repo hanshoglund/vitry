@@ -20,12 +20,12 @@ package vitry.runtime;
 
 import java.util.Iterator;
 
-import vitry.runtime.misc.Hashing;
-import vitry.runtime.struct.ConsSeq;
-import vitry.runtime.struct.MapSeq;
-import vitry.runtime.struct.Seq;
-import vitry.runtime.struct.SeqIterator;
-import vitry.runtime.struct.SingleSeq;
+import vitry.runtime.misc.Utils;
+import vitry.runtime.struct.PairSequence;
+import vitry.runtime.struct.MapSequence;
+import vitry.runtime.struct.Sequence;
+import vitry.runtime.struct.SequenceIterator;
+import vitry.runtime.struct.SingleSequence;
 
 /**
  * The function type constructor.
@@ -35,14 +35,14 @@ import vitry.runtime.struct.SingleSeq;
  *   then <code>this.head() == a</code> and <code>this.tail()</code> represents <code>b -> c</code>.
  * 
  */
-public class FunctionType extends BasePattern implements Seq<Pattern>
+public class Arrow extends BasePattern implements Sequence<Pattern>
     {
 
         private final Pattern co;
 
         private final Pattern dom;
 
-        public FunctionType(Pattern codomain, Pattern domain) {
+        public Arrow(Pattern codomain, Pattern domain) {
             this.co = codomain;
             this.dom = domain;
         }
@@ -55,7 +55,7 @@ public class FunctionType extends BasePattern implements Seq<Pattern>
             return this.dom;
         }
 
-        public boolean eq(FunctionType o) {
+        public boolean eq(Arrow o) {
             return (o == this) || o.co().eqFor(this.co) && o.dom().eqFor(this.dom);
         }
 
@@ -64,7 +64,7 @@ public class FunctionType extends BasePattern implements Seq<Pattern>
             return (o instanceof Function) && ((Function) o).type().eq(this);
         }
 
-        public boolean match(FunctionType p) {
+        public boolean match(Arrow p) {
             return (p == this) || (p.co().matchFor(this.co) && p.dom().matchFor(this.dom));
         }
 
@@ -77,7 +77,7 @@ public class FunctionType extends BasePattern implements Seq<Pattern>
         }
 
         public String toString() {
-            if (co instanceof FunctionType) 
+            if (co instanceof Arrow) 
                 return ("(" + co + ") -> " + dom);
             else
                 return ("" + co + " -> " + dom);
@@ -85,8 +85,8 @@ public class FunctionType extends BasePattern implements Seq<Pattern>
 
         public int hashCode() {
             int hash = this.getClass().hashCode();
-            hash = Hashing.hash(hash, co);
-            hash = Hashing.hash(hash, dom);
+            hash = Utils.hash(hash, co);
+            hash = Utils.hash(hash, dom);
             return hash;
         }
 
@@ -94,10 +94,10 @@ public class FunctionType extends BasePattern implements Seq<Pattern>
             return co;
         }
 
-        public Seq<Pattern> tail() {
+        public Sequence<Pattern> tail() {
             //        if (dom instanceof Function)
             //            return ((Function) dom).type();
-            return new SingleSeq<Pattern>(dom);
+            return new SingleSequence<Pattern>(dom);
         }
 
         public boolean hasTail() {
@@ -105,15 +105,15 @@ public class FunctionType extends BasePattern implements Seq<Pattern>
         }
 
         public Iterator<Pattern> iterator() {
-            return new SeqIterator<Pattern>(this);
+            return new SequenceIterator<Pattern>(this);
         }
 
-        public Seq<Pattern> cons(Pattern head) {
-            return new ConsSeq<Pattern>(head, this);
+        public Sequence<Pattern> prepend(Pattern head) {
+            return new PairSequence<Pattern>(head, this);
         }
 
-        public <U> MapSeq<Pattern, U> map(Apply fn) {
-            return new MapSeq<Pattern, U>(fn, this);
+        public <U> MapSequence<Pattern, U> map(Apply fn) {
+            return new MapSequence<Pattern, U>(fn, this);
         }
 
     }

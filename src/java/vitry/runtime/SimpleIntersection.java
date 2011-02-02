@@ -20,25 +20,25 @@ package vitry.runtime;
 
 import java.util.Iterator;
 
-import vitry.runtime.struct.ArraySeq;
-import vitry.runtime.struct.Seq;
+import vitry.runtime.struct.ArraySequence;
+import vitry.runtime.struct.Sequence;
 
 
 
 public class SimpleIntersection extends AbstractIntersection
     {
-        Seq<Pattern> elements;
+        Sequence<Pattern> elements;
         
-        public SimpleIntersection(Seq<Pattern> elements) {
+        public SimpleIntersection(Sequence<Pattern> elements) {
             this.elements = elements;
         }
         
         public SimpleIntersection(Pattern... elements) {
-            this.elements = new ArraySeq<Pattern>(elements);
+            this.elements = new ArraySequence<Pattern>(elements);
         }
 
         public SimpleIntersection(Object... elements) {
-            this.elements = Native.wrap(new ArraySeq<Object>(elements));
+            this.elements = Native.wrap(new ArraySequence<Object>(elements));
         }
 
         public Iterator<Pattern> iterator() {
@@ -49,7 +49,7 @@ public class SimpleIntersection extends AbstractIntersection
             return elements.head();
         }
 
-        public Seq<Pattern> tail() {
+        public Sequence<Pattern> tail() {
             return elements.tail();
         }
         

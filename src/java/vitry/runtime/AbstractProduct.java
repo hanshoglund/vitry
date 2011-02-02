@@ -20,12 +20,11 @@ package vitry.runtime;
 
 import java.util.Iterator;
 
-import vitry.runtime.misc.Hashing;
 import vitry.runtime.misc.Utils;
-import vitry.runtime.struct.ConsSeq;
-import vitry.runtime.struct.MapSeq;
-import vitry.runtime.struct.Seq;
-import vitry.runtime.struct.SeqIterator;
+import vitry.runtime.struct.PairSequence;
+import vitry.runtime.struct.MapSequence;
+import vitry.runtime.struct.Sequence;
+import vitry.runtime.struct.SequenceIterator;
 
 /**
  * Base implementation, relying on the underlying Seq structure.
@@ -43,8 +42,8 @@ implements Product
     {
         
         public boolean eq(Product o) {
-            Seq<Pattern> left = o;
-            Seq<Pattern> right = this;
+            Sequence<Pattern> left = o;
+            Sequence<Pattern> right = this;
 
             while (left != null && right != null) {
                 if (!left.head().eqFor(right.head())) return false;
@@ -55,8 +54,8 @@ implements Product
         }
 
         public boolean match(Product p) {
-            Seq<Pattern> left = p;
-            Seq<Pattern> right = this;
+            Sequence<Pattern> left = p;
+            Sequence<Pattern> right = this;
 
             while (left != null && right != null) {
                 if (!left.head().matchFor(right.head())) return false;
@@ -92,12 +91,12 @@ implements Product
         }
 
         public int hashCode() {
-            return Hashing.hash(this.getClass().hashCode(), this);
+            return Utils.hash(this.getClass().hashCode(), this);
         }
 
 
         public Iterator<Pattern> iterator() {
-            return new SeqIterator<Pattern>(this);
+            return new SequenceIterator<Pattern>(this);
         }
 
         public String toString() {
@@ -107,14 +106,20 @@ implements Product
         
         // Accessors
 
-        public Pattern fst() {
+        public Pattern first() {
             return this.head();
         }
 
-        public Pattern snd() {
-            Seq<Pattern> tail = this.tail();
-            return (tail == null ? null : tail.head());
+        public Pattern second() {
+            return this.tail().head();
+//            Seq<Pattern> tail = this.tail();
+//            return (tail == null ? null : tail.head());
         }
+        
+        public Pattern third() {
+            return this.tail().tail().head();
+        }
+
 
         protected <T> T throwUnsupported() {
             throw new UnsupportedOperationException("No value for this accessor.");

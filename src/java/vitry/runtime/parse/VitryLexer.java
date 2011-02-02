@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 src/antlr/Vitry.g 2011-02-01 00:22:00
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 src/antlr/Vitry.g 2011-02-01 02:29:45
 package vitry.runtime.parse;
 
 import org.antlr.runtime.*;
@@ -34,9 +34,9 @@ public class VitryLexer extends Lexer {
     public static final int UnicodeEsc=36;
     public static final int Ang=6;
     public static final int Bra=5;
-    public static final int Op=31;
-    public static final int String=30;
-    public static final int Symbol=26;
+    public static final int Op=26;
+    public static final int String=31;
+    public static final int Symbol=27;
     public static final int Whitespace=33;
     public static final int T__50=50;
     public static final int If=16;
@@ -50,13 +50,13 @@ public class VitryLexer extends Lexer {
     public static final int Type=15;
     public static final int T__44=44;
     public static final int T__45=45;
-    public static final int Natural=27;
+    public static final int Natural=28;
     public static final int T__48=48;
     public static final int T__49=49;
-    public static final int Complex=29;
+    public static final int Complex=30;
     public static final int Apply=14;
     public static final int ImplicitDecl=23;
-    public static final int Float=28;
+    public static final int Float=29;
     public static final int EscapeSeq=34;
     public static final int Match=17;
     public static final int T__38=38;
@@ -537,16 +537,16 @@ public class VitryLexer extends Lexer {
         try {
             int _type = Op;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:122:5: ( ( '!' | '#' | '$' | '%' | '&' | '\\'' | '*' | '+' | ',' | '-' | '.' | '/' | ';' | '<' | '=' | '>' | '?' | '@' | '\\\\' | '^' | '_' | '`' | '|' | '~' | ':' )* )
-            // src/antlr/Vitry.g:122:7: ( '!' | '#' | '$' | '%' | '&' | '\\'' | '*' | '+' | ',' | '-' | '.' | '/' | ';' | '<' | '=' | '>' | '?' | '@' | '\\\\' | '^' | '_' | '`' | '|' | '~' | ':' )*
+            // src/antlr/Vitry.g:123:5: ( ( '!' | '#' | '$' | '%' | '&' | '\\'' | '*' | '+' | ',' | '-' | '.' | '/' | ';' | '<' | '=' | '>' | '?' | '@' | '\\\\' | '^' | '_' | '|' | '~' | ':' )* )
+            // src/antlr/Vitry.g:123:7: ( '!' | '#' | '$' | '%' | '&' | '\\'' | '*' | '+' | ',' | '-' | '.' | '/' | ';' | '<' | '=' | '>' | '?' | '@' | '\\\\' | '^' | '_' | '|' | '~' | ':' )*
             {
-            // src/antlr/Vitry.g:122:7: ( '!' | '#' | '$' | '%' | '&' | '\\'' | '*' | '+' | ',' | '-' | '.' | '/' | ';' | '<' | '=' | '>' | '?' | '@' | '\\\\' | '^' | '_' | '`' | '|' | '~' | ':' )*
+            // src/antlr/Vitry.g:123:7: ( '!' | '#' | '$' | '%' | '&' | '\\'' | '*' | '+' | ',' | '-' | '.' | '/' | ';' | '<' | '=' | '>' | '?' | '@' | '\\\\' | '^' | '_' | '|' | '~' | ':' )*
             loop1:
             do {
                 int alt1=2;
                 int LA1_0 = input.LA(1);
 
-                if ( (LA1_0=='!'||(LA1_0>='#' && LA1_0<='\'')||(LA1_0>='*' && LA1_0<='/')||(LA1_0>=':' && LA1_0<='@')||LA1_0=='\\'||(LA1_0>='^' && LA1_0<='`')||LA1_0=='|'||LA1_0=='~') ) {
+                if ( (LA1_0=='!'||(LA1_0>='#' && LA1_0<='\'')||(LA1_0>='*' && LA1_0<='/')||(LA1_0>=':' && LA1_0<='@')||LA1_0=='\\'||(LA1_0>='^' && LA1_0<='_')||LA1_0=='|'||LA1_0=='~') ) {
                     alt1=1;
                 }
 
@@ -555,7 +555,7 @@ public class VitryLexer extends Lexer {
             	case 1 :
             	    // src/antlr/Vitry.g:
             	    {
-            	    if ( input.LA(1)=='!'||(input.LA(1)>='#' && input.LA(1)<='\'')||(input.LA(1)>='*' && input.LA(1)<='/')||(input.LA(1)>=':' && input.LA(1)<='@')||input.LA(1)=='\\'||(input.LA(1)>='^' && input.LA(1)<='`')||input.LA(1)=='|'||input.LA(1)=='~' ) {
+            	    if ( input.LA(1)=='!'||(input.LA(1)>='#' && input.LA(1)<='\'')||(input.LA(1)>='*' && input.LA(1)<='/')||(input.LA(1)>=':' && input.LA(1)<='@')||input.LA(1)=='\\'||(input.LA(1)>='^' && input.LA(1)<='_')||input.LA(1)=='|'||input.LA(1)=='~' ) {
             	        input.consume();
 
             	    }
@@ -589,8 +589,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = Symbol;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:130:5: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )* )
-            // src/antlr/Vitry.g:130:10: ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
+            // src/antlr/Vitry.g:131:5: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )* )
+            // src/antlr/Vitry.g:131:10: ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
             {
             if ( (input.LA(1)>='A' && input.LA(1)<='Z')||(input.LA(1)>='a' && input.LA(1)<='z') ) {
                 input.consume();
@@ -601,7 +601,7 @@ public class VitryLexer extends Lexer {
                 recover(mse);
                 throw mse;}
 
-            // src/antlr/Vitry.g:130:30: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
+            // src/antlr/Vitry.g:131:30: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
             loop2:
             do {
                 int alt2=2;
@@ -650,10 +650,10 @@ public class VitryLexer extends Lexer {
         try {
             int _type = Natural;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:134:5: ( ( '0' .. '9' )+ )
-            // src/antlr/Vitry.g:134:10: ( '0' .. '9' )+
+            // src/antlr/Vitry.g:135:5: ( ( '0' .. '9' )+ )
+            // src/antlr/Vitry.g:135:10: ( '0' .. '9' )+
             {
-            // src/antlr/Vitry.g:134:10: ( '0' .. '9' )+
+            // src/antlr/Vitry.g:135:10: ( '0' .. '9' )+
             int cnt3=0;
             loop3:
             do {
@@ -667,7 +667,7 @@ public class VitryLexer extends Lexer {
 
                 switch (alt3) {
             	case 1 :
-            	    // src/antlr/Vitry.g:134:10: '0' .. '9'
+            	    // src/antlr/Vitry.g:135:10: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -699,14 +699,14 @@ public class VitryLexer extends Lexer {
         try {
             int _type = Float;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:138:5: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? | ( '0' .. '9' )+ Exponent )
+            // src/antlr/Vitry.g:139:5: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? | ( '0' .. '9' )+ Exponent )
             int alt8=2;
             alt8 = dfa8.predict(input);
             switch (alt8) {
                 case 1 :
-                    // src/antlr/Vitry.g:138:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )?
+                    // src/antlr/Vitry.g:139:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )?
                     {
-                    // src/antlr/Vitry.g:138:9: ( '0' .. '9' )+
+                    // src/antlr/Vitry.g:139:9: ( '0' .. '9' )+
                     int cnt4=0;
                     loop4:
                     do {
@@ -720,7 +720,7 @@ public class VitryLexer extends Lexer {
 
                         switch (alt4) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:138:10: '0' .. '9'
+                    	    // src/antlr/Vitry.g:139:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -737,7 +737,7 @@ public class VitryLexer extends Lexer {
                     } while (true);
 
                     match('.'); 
-                    // src/antlr/Vitry.g:138:25: ( '0' .. '9' )*
+                    // src/antlr/Vitry.g:139:25: ( '0' .. '9' )*
                     loop5:
                     do {
                         int alt5=2;
@@ -750,7 +750,7 @@ public class VitryLexer extends Lexer {
 
                         switch (alt5) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:138:26: '0' .. '9'
+                    	    // src/antlr/Vitry.g:139:26: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -762,7 +762,7 @@ public class VitryLexer extends Lexer {
                         }
                     } while (true);
 
-                    // src/antlr/Vitry.g:138:37: ( Exponent )?
+                    // src/antlr/Vitry.g:139:37: ( Exponent )?
                     int alt6=2;
                     int LA6_0 = input.LA(1);
 
@@ -771,7 +771,7 @@ public class VitryLexer extends Lexer {
                     }
                     switch (alt6) {
                         case 1 :
-                            // src/antlr/Vitry.g:138:37: Exponent
+                            // src/antlr/Vitry.g:139:37: Exponent
                             {
                             mExponent(); 
 
@@ -784,9 +784,9 @@ public class VitryLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // src/antlr/Vitry.g:139:9: ( '0' .. '9' )+ Exponent
+                    // src/antlr/Vitry.g:140:9: ( '0' .. '9' )+ Exponent
                     {
-                    // src/antlr/Vitry.g:139:9: ( '0' .. '9' )+
+                    // src/antlr/Vitry.g:140:9: ( '0' .. '9' )+
                     int cnt7=0;
                     loop7:
                     do {
@@ -800,7 +800,7 @@ public class VitryLexer extends Lexer {
 
                         switch (alt7) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:139:10: '0' .. '9'
+                    	    // src/antlr/Vitry.g:140:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -835,14 +835,14 @@ public class VitryLexer extends Lexer {
         try {
             int _type = Complex;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:143:5: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? 'i' | ( '0' .. '9' )+ Exponent 'i' | ( '0' .. '9' )+ 'i' )
+            // src/antlr/Vitry.g:144:5: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? 'i' | ( '0' .. '9' )+ Exponent 'i' | ( '0' .. '9' )+ 'i' )
             int alt14=3;
             alt14 = dfa14.predict(input);
             switch (alt14) {
                 case 1 :
-                    // src/antlr/Vitry.g:143:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? 'i'
+                    // src/antlr/Vitry.g:144:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? 'i'
                     {
-                    // src/antlr/Vitry.g:143:9: ( '0' .. '9' )+
+                    // src/antlr/Vitry.g:144:9: ( '0' .. '9' )+
                     int cnt9=0;
                     loop9:
                     do {
@@ -856,7 +856,7 @@ public class VitryLexer extends Lexer {
 
                         switch (alt9) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:143:10: '0' .. '9'
+                    	    // src/antlr/Vitry.g:144:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -873,7 +873,7 @@ public class VitryLexer extends Lexer {
                     } while (true);
 
                     match('.'); 
-                    // src/antlr/Vitry.g:143:25: ( '0' .. '9' )*
+                    // src/antlr/Vitry.g:144:25: ( '0' .. '9' )*
                     loop10:
                     do {
                         int alt10=2;
@@ -886,7 +886,7 @@ public class VitryLexer extends Lexer {
 
                         switch (alt10) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:143:26: '0' .. '9'
+                    	    // src/antlr/Vitry.g:144:26: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -898,7 +898,7 @@ public class VitryLexer extends Lexer {
                         }
                     } while (true);
 
-                    // src/antlr/Vitry.g:143:37: ( Exponent )?
+                    // src/antlr/Vitry.g:144:37: ( Exponent )?
                     int alt11=2;
                     int LA11_0 = input.LA(1);
 
@@ -907,7 +907,7 @@ public class VitryLexer extends Lexer {
                     }
                     switch (alt11) {
                         case 1 :
-                            // src/antlr/Vitry.g:143:37: Exponent
+                            // src/antlr/Vitry.g:144:37: Exponent
                             {
                             mExponent(); 
 
@@ -921,9 +921,9 @@ public class VitryLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // src/antlr/Vitry.g:144:9: ( '0' .. '9' )+ Exponent 'i'
+                    // src/antlr/Vitry.g:145:9: ( '0' .. '9' )+ Exponent 'i'
                     {
-                    // src/antlr/Vitry.g:144:9: ( '0' .. '9' )+
+                    // src/antlr/Vitry.g:145:9: ( '0' .. '9' )+
                     int cnt12=0;
                     loop12:
                     do {
@@ -937,7 +937,7 @@ public class VitryLexer extends Lexer {
 
                         switch (alt12) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:144:10: '0' .. '9'
+                    	    // src/antlr/Vitry.g:145:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -959,9 +959,9 @@ public class VitryLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // src/antlr/Vitry.g:145:9: ( '0' .. '9' )+ 'i'
+                    // src/antlr/Vitry.g:146:9: ( '0' .. '9' )+ 'i'
                     {
-                    // src/antlr/Vitry.g:145:9: ( '0' .. '9' )+
+                    // src/antlr/Vitry.g:146:9: ( '0' .. '9' )+
                     int cnt13=0;
                     loop13:
                     do {
@@ -975,7 +975,7 @@ public class VitryLexer extends Lexer {
 
                         switch (alt13) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:145:10: '0' .. '9'
+                    	    // src/antlr/Vitry.g:146:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -1010,8 +1010,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = Whitespace;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:149:5: ( ( ' ' | '\\t' | '\\r' | '\\n' ) )
-            // src/antlr/Vitry.g:149:7: ( ' ' | '\\t' | '\\r' | '\\n' )
+            // src/antlr/Vitry.g:150:5: ( ( ' ' | '\\t' | '\\r' | '\\n' ) )
+            // src/antlr/Vitry.g:150:7: ( ' ' | '\\t' | '\\r' | '\\n' )
             {
             if ( (input.LA(1)>='\t' && input.LA(1)<='\n')||input.LA(1)=='\r'||input.LA(1)==' ' ) {
                 input.consume();
@@ -1039,11 +1039,11 @@ public class VitryLexer extends Lexer {
         try {
             int _type = String;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:157:5: ( '\"' ( EscapeSeq | ~ ( '\\\\' | '\"' ) )* '\"' )
-            // src/antlr/Vitry.g:157:8: '\"' ( EscapeSeq | ~ ( '\\\\' | '\"' ) )* '\"'
+            // src/antlr/Vitry.g:158:5: ( '\"' ( EscapeSeq | ~ ( '\\\\' | '\"' ) )* '\"' )
+            // src/antlr/Vitry.g:158:8: '\"' ( EscapeSeq | ~ ( '\\\\' | '\"' ) )* '\"'
             {
             match('\"'); 
-            // src/antlr/Vitry.g:157:12: ( EscapeSeq | ~ ( '\\\\' | '\"' ) )*
+            // src/antlr/Vitry.g:158:12: ( EscapeSeq | ~ ( '\\\\' | '\"' ) )*
             loop15:
             do {
                 int alt15=3;
@@ -1059,14 +1059,14 @@ public class VitryLexer extends Lexer {
 
                 switch (alt15) {
             	case 1 :
-            	    // src/antlr/Vitry.g:157:14: EscapeSeq
+            	    // src/antlr/Vitry.g:158:14: EscapeSeq
             	    {
             	    mEscapeSeq(); 
 
             	    }
             	    break;
             	case 2 :
-            	    // src/antlr/Vitry.g:157:26: ~ ( '\\\\' | '\"' )
+            	    // src/antlr/Vitry.g:158:26: ~ ( '\\\\' | '\"' )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
             	        input.consume();
@@ -1101,8 +1101,8 @@ public class VitryLexer extends Lexer {
     // $ANTLR start "Exponent"
     public final void mExponent() throws RecognitionException {
         try {
-            // src/antlr/Vitry.g:161:10: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
-            // src/antlr/Vitry.g:161:12: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
+            // src/antlr/Vitry.g:162:10: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
+            // src/antlr/Vitry.g:162:12: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
             {
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
@@ -1113,7 +1113,7 @@ public class VitryLexer extends Lexer {
                 recover(mse);
                 throw mse;}
 
-            // src/antlr/Vitry.g:161:22: ( '+' | '-' )?
+            // src/antlr/Vitry.g:162:22: ( '+' | '-' )?
             int alt16=2;
             int LA16_0 = input.LA(1);
 
@@ -1139,7 +1139,7 @@ public class VitryLexer extends Lexer {
 
             }
 
-            // src/antlr/Vitry.g:161:33: ( '0' .. '9' )+
+            // src/antlr/Vitry.g:162:33: ( '0' .. '9' )+
             int cnt17=0;
             loop17:
             do {
@@ -1153,7 +1153,7 @@ public class VitryLexer extends Lexer {
 
                 switch (alt17) {
             	case 1 :
-            	    // src/antlr/Vitry.g:161:34: '0' .. '9'
+            	    // src/antlr/Vitry.g:162:34: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -1181,8 +1181,8 @@ public class VitryLexer extends Lexer {
     // $ANTLR start "HexDigit"
     public final void mHexDigit() throws RecognitionException {
         try {
-            // src/antlr/Vitry.g:164:10: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
-            // src/antlr/Vitry.g:164:12: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
+            // src/antlr/Vitry.g:165:10: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
+            // src/antlr/Vitry.g:165:12: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
             {
             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                 input.consume();
@@ -1205,7 +1205,7 @@ public class VitryLexer extends Lexer {
     // $ANTLR start "EscapeSeq"
     public final void mEscapeSeq() throws RecognitionException {
         try {
-            // src/antlr/Vitry.g:168:5: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEsc | OctalEsc )
+            // src/antlr/Vitry.g:169:5: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEsc | OctalEsc )
             int alt18=3;
             int LA18_0 = input.LA(1);
 
@@ -1256,7 +1256,7 @@ public class VitryLexer extends Lexer {
             }
             switch (alt18) {
                 case 1 :
-                    // src/antlr/Vitry.g:168:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
+                    // src/antlr/Vitry.g:169:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
                     {
                     match('\\'); 
                     if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||input.LA(1)=='t' ) {
@@ -1272,14 +1272,14 @@ public class VitryLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // src/antlr/Vitry.g:169:9: UnicodeEsc
+                    // src/antlr/Vitry.g:170:9: UnicodeEsc
                     {
                     mUnicodeEsc(); 
 
                     }
                     break;
                 case 3 :
-                    // src/antlr/Vitry.g:170:9: OctalEsc
+                    // src/antlr/Vitry.g:171:9: OctalEsc
                     {
                     mOctalEsc(); 
 
@@ -1296,7 +1296,7 @@ public class VitryLexer extends Lexer {
     // $ANTLR start "OctalEsc"
     public final void mOctalEsc() throws RecognitionException {
         try {
-            // src/antlr/Vitry.g:175:5: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
+            // src/antlr/Vitry.g:176:5: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
             int alt19=3;
             int LA19_0 = input.LA(1);
 
@@ -1342,41 +1342,13 @@ public class VitryLexer extends Lexer {
             }
             switch (alt19) {
                 case 1 :
-                    // src/antlr/Vitry.g:175:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
+                    // src/antlr/Vitry.g:176:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); 
-                    // src/antlr/Vitry.g:175:14: ( '0' .. '3' )
-                    // src/antlr/Vitry.g:175:15: '0' .. '3'
+                    // src/antlr/Vitry.g:176:14: ( '0' .. '3' )
+                    // src/antlr/Vitry.g:176:15: '0' .. '3'
                     {
                     matchRange('0','3'); 
-
-                    }
-
-                    // src/antlr/Vitry.g:175:25: ( '0' .. '7' )
-                    // src/antlr/Vitry.g:175:26: '0' .. '7'
-                    {
-                    matchRange('0','7'); 
-
-                    }
-
-                    // src/antlr/Vitry.g:175:36: ( '0' .. '7' )
-                    // src/antlr/Vitry.g:175:37: '0' .. '7'
-                    {
-                    matchRange('0','7'); 
-
-                    }
-
-
-                    }
-                    break;
-                case 2 :
-                    // src/antlr/Vitry.g:176:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
-                    {
-                    match('\\'); 
-                    // src/antlr/Vitry.g:176:14: ( '0' .. '7' )
-                    // src/antlr/Vitry.g:176:15: '0' .. '7'
-                    {
-                    matchRange('0','7'); 
 
                     }
 
@@ -1387,15 +1359,43 @@ public class VitryLexer extends Lexer {
 
                     }
 
+                    // src/antlr/Vitry.g:176:36: ( '0' .. '7' )
+                    // src/antlr/Vitry.g:176:37: '0' .. '7'
+                    {
+                    matchRange('0','7'); 
+
+                    }
+
 
                     }
                     break;
-                case 3 :
-                    // src/antlr/Vitry.g:177:9: '\\\\' ( '0' .. '7' )
+                case 2 :
+                    // src/antlr/Vitry.g:177:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); 
                     // src/antlr/Vitry.g:177:14: ( '0' .. '7' )
                     // src/antlr/Vitry.g:177:15: '0' .. '7'
+                    {
+                    matchRange('0','7'); 
+
+                    }
+
+                    // src/antlr/Vitry.g:177:25: ( '0' .. '7' )
+                    // src/antlr/Vitry.g:177:26: '0' .. '7'
+                    {
+                    matchRange('0','7'); 
+
+                    }
+
+
+                    }
+                    break;
+                case 3 :
+                    // src/antlr/Vitry.g:178:9: '\\\\' ( '0' .. '7' )
+                    {
+                    match('\\'); 
+                    // src/antlr/Vitry.g:178:14: ( '0' .. '7' )
+                    // src/antlr/Vitry.g:178:15: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -1415,8 +1415,8 @@ public class VitryLexer extends Lexer {
     // $ANTLR start "UnicodeEsc"
     public final void mUnicodeEsc() throws RecognitionException {
         try {
-            // src/antlr/Vitry.g:182:5: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
-            // src/antlr/Vitry.g:182:9: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
+            // src/antlr/Vitry.g:183:5: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
+            // src/antlr/Vitry.g:183:9: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
             {
             match('\\'); 
             match('u'); 
@@ -1699,7 +1699,7 @@ public class VitryLexer extends Lexer {
             this.transition = DFA8_transition;
         }
         public String getDescription() {
-            return "137:1: Float : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? | ( '0' .. '9' )+ Exponent );";
+            return "138:1: Float : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? | ( '0' .. '9' )+ Exponent );";
         }
     }
     static final String DFA14_eotS =
@@ -1752,134 +1752,132 @@ public class VitryLexer extends Lexer {
             this.transition = DFA14_transition;
         }
         public String getDescription() {
-            return "142:1: Complex : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? 'i' | ( '0' .. '9' )+ Exponent 'i' | ( '0' .. '9' )+ 'i' );";
+            return "143:1: Complex : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? 'i' | ( '0' .. '9' )+ Exponent 'i' | ( '0' .. '9' )+ 'i' );";
         }
     }
     static final String DFA20_eotS =
-        "\1\23\1\30\6\uffff\1\31\7\24\1\44\1\24\1\46\2\uffff\1\52\4\uffff"+
-        "\1\53\2\24\1\56\1\57\5\24\1\uffff\1\24\2\uffff\1\72\3\uffff\1\73"+
-        "\1\24\2\uffff\6\24\1\uffff\2\72\3\uffff\1\106\2\24\1\111\3\24\1"+
-        "\115\1\uffff\1\72\1\uffff\2\24\1\uffff\1\120\1\24\1\122\1\uffff"+
-        "\1\123\1\24\1\uffff\1\125\2\uffff\1\24\1\uffff\1\127\1\uffff";
+        "\1\23\1\30\7\uffff\7\24\1\43\1\24\1\45\2\uffff\1\51\3\uffff\1\52"+
+        "\2\24\1\55\1\56\5\24\1\uffff\1\24\2\uffff\1\71\3\uffff\1\72\1\24"+
+        "\2\uffff\6\24\1\uffff\2\71\3\uffff\1\105\2\24\1\110\3\24\1\114\1"+
+        "\uffff\1\71\1\uffff\2\24\1\uffff\1\117\1\24\1\121\1\uffff\1\122"+
+        "\1\24\1\uffff\1\124\2\uffff\1\24\1\uffff\1\126\1\uffff";
     static final String DFA20_eofS =
-        "\130\uffff";
+        "\127\uffff";
     static final String DFA20_minS =
-        "\1\11\1\41\6\uffff\1\41\1\156\1\145\1\157\1\146\1\154\1\141\1\145"+
-        "\1\41\1\171\1\41\2\uffff\1\56\4\uffff\1\60\1\164\1\157\2\60\1\160"+
-        "\1\163\1\164\1\144\1\143\1\uffff\1\160\1\uffff\1\53\1\60\3\uffff"+
-        "\1\60\1\160\2\uffff\1\154\1\145\1\143\2\165\1\145\3\60\1\53\2\uffff"+
-        "\1\60\1\162\1\151\1\60\1\150\1\154\1\162\3\60\1\uffff\1\164\1\143"+
+        "\1\11\1\41\7\uffff\1\156\1\145\1\157\1\146\1\154\1\141\1\145\1\41"+
+        "\1\171\1\41\2\uffff\1\56\3\uffff\1\60\1\164\1\157\2\60\1\160\1\163"+
+        "\1\164\1\144\1\143\1\uffff\1\160\1\uffff\1\53\1\60\3\uffff\1\60"+
+        "\1\160\2\uffff\1\154\1\145\1\143\2\165\1\145\3\60\1\53\2\uffff\1"+
+        "\60\1\162\1\151\1\60\1\150\1\154\1\162\3\60\1\uffff\1\164\1\143"+
         "\1\uffff\1\60\1\145\1\60\1\uffff\1\60\1\151\1\uffff\1\60\2\uffff"+
         "\1\164\1\uffff\1\60\1\uffff";
     static final String DFA20_maxS =
-        "\1\175\1\176\6\uffff\1\176\1\156\2\157\1\155\1\154\1\157\1\145\1"+
-        "\176\1\171\1\176\2\uffff\1\151\4\uffff\1\172\1\164\1\157\2\172\1"+
-        "\160\1\163\1\164\1\144\1\143\1\uffff\1\160\1\uffff\1\71\1\151\3"+
-        "\uffff\1\172\1\160\2\uffff\1\157\1\145\1\143\2\165\1\145\1\71\2"+
-        "\151\1\71\2\uffff\1\172\1\162\1\151\1\172\1\150\1\154\1\162\1\172"+
-        "\1\71\1\151\1\uffff\1\164\1\143\1\uffff\1\172\1\145\1\172\1\uffff"+
-        "\1\172\1\151\1\uffff\1\172\2\uffff\1\164\1\uffff\1\172\1\uffff";
+        "\1\175\1\176\7\uffff\1\156\2\157\1\155\1\154\1\157\1\145\1\176\1"+
+        "\171\1\176\2\uffff\1\151\3\uffff\1\172\1\164\1\157\2\172\1\160\1"+
+        "\163\1\164\1\144\1\143\1\uffff\1\160\1\uffff\1\71\1\151\3\uffff"+
+        "\1\172\1\160\2\uffff\1\157\1\145\1\143\2\165\1\145\1\71\2\151\1"+
+        "\71\2\uffff\1\172\1\162\1\151\1\172\1\150\1\154\1\162\1\172\1\71"+
+        "\1\151\1\uffff\1\164\1\143\1\uffff\1\172\1\145\1\172\1\uffff\1\172"+
+        "\1\151\1\uffff\1\172\2\uffff\1\164\1\uffff\1\172\1\uffff";
     static final String DFA20_acceptS =
-        "\2\uffff\1\2\1\3\1\4\1\5\1\6\1\7\13\uffff\1\27\1\30\1\uffff\1\34"+
-        "\1\35\1\1\1\10\12\uffff\1\21\1\uffff\1\26\2\uffff\1\33\1\31\1\11"+
+        "\2\uffff\1\2\1\3\1\4\1\5\1\6\1\7\1\10\12\uffff\1\27\1\30\1\uffff"+
+        "\1\34\1\35\1\1\12\uffff\1\21\1\uffff\1\26\2\uffff\1\33\1\31\1\11"+
         "\2\uffff\1\14\1\15\12\uffff\1\32\1\12\12\uffff\1\13\2\uffff\1\16"+
         "\3\uffff\1\24\2\uffff\1\17\1\uffff\1\20\1\23\1\uffff\1\22\1\uffff"+
         "\1\25";
     static final String DFA20_specialS =
-        "\130\uffff}>";
+        "\127\uffff}>";
     static final String[] DFA20_transitionS = {
             "\2\26\2\uffff\1\26\22\uffff\1\26\1\uffff\1\27\5\uffff\1\2\1"+
             "\3\4\uffff\1\22\1\uffff\12\25\1\1\2\uffff\1\20\3\uffff\32\24"+
             "\1\4\1\uffff\1\5\2\uffff\1\10\3\24\1\13\1\15\1\11\2\24\1\14"+
             "\2\24\1\12\1\16\4\24\1\17\1\24\1\21\6\24\1\6\1\uffff\1\7",
             "\1\23\1\uffff\5\23\2\uffff\6\23\12\uffff\7\23\33\uffff\1\23"+
-            "\1\uffff\3\23\33\uffff\1\23\1\uffff\1\23",
+            "\1\uffff\2\23\34\uffff\1\23\1\uffff\1\23",
             "",
             "",
             "",
             "",
             "",
             "",
+            "",
+            "\1\31",
+            "\1\32\11\uffff\1\33",
+            "\1\34",
+            "\1\35\6\uffff\1\36",
+            "\1\37",
+            "\1\40\15\uffff\1\41",
+            "\1\42",
             "\1\23\1\uffff\5\23\2\uffff\6\23\12\uffff\7\23\33\uffff\1\23"+
-            "\1\uffff\3\23\33\uffff\1\23\1\uffff\1\23",
-            "\1\32",
-            "\1\33\11\uffff\1\34",
-            "\1\35",
-            "\1\36\6\uffff\1\37",
-            "\1\40",
-            "\1\41\15\uffff\1\42",
-            "\1\43",
+            "\1\uffff\2\23\34\uffff\1\23\1\uffff\1\23",
+            "\1\44",
             "\1\23\1\uffff\5\23\2\uffff\6\23\12\uffff\7\23\33\uffff\1\23"+
-            "\1\uffff\3\23\33\uffff\1\23\1\uffff\1\23",
-            "\1\45",
-            "\1\23\1\uffff\5\23\2\uffff\6\23\12\uffff\7\23\33\uffff\1\23"+
-            "\1\uffff\3\23\33\uffff\1\23\1\uffff\1\23",
+            "\1\uffff\2\23\34\uffff\1\23\1\uffff\1\23",
             "",
             "",
-            "\1\50\1\uffff\12\25\13\uffff\1\47\37\uffff\1\47\3\uffff\1\51",
-            "",
+            "\1\47\1\uffff\12\25\13\uffff\1\46\37\uffff\1\46\3\uffff\1\50",
             "",
             "",
             "",
             "\12\24\7\uffff\32\24\6\uffff\32\24",
+            "\1\53",
             "\1\54",
-            "\1\55",
             "\12\24\7\uffff\32\24\6\uffff\32\24",
             "\12\24\7\uffff\32\24\6\uffff\32\24",
+            "\1\57",
             "\1\60",
             "\1\61",
             "\1\62",
             "\1\63",
+            "",
             "\1\64",
             "",
-            "\1\65",
-            "",
-            "\1\66\1\uffff\1\66\2\uffff\12\67",
-            "\12\70\13\uffff\1\71\37\uffff\1\71\3\uffff\1\51",
+            "\1\65\1\uffff\1\65\2\uffff\12\66",
+            "\12\67\13\uffff\1\70\37\uffff\1\70\3\uffff\1\50",
             "",
             "",
             "",
             "\12\24\7\uffff\32\24\6\uffff\32\24",
-            "\1\74",
+            "\1\73",
             "",
             "",
-            "\1\76\2\uffff\1\75",
+            "\1\75\2\uffff\1\74",
+            "\1\76",
             "\1\77",
             "\1\100",
             "\1\101",
             "\1\102",
-            "\1\103",
-            "\12\67",
-            "\12\67\57\uffff\1\51",
-            "\12\70\13\uffff\1\71\37\uffff\1\71\3\uffff\1\51",
-            "\1\104\1\uffff\1\104\2\uffff\12\105",
+            "\12\66",
+            "\12\66\57\uffff\1\50",
+            "\12\67\13\uffff\1\70\37\uffff\1\70\3\uffff\1\50",
+            "\1\103\1\uffff\1\103\2\uffff\12\104",
             "",
             "",
             "\12\24\7\uffff\32\24\6\uffff\32\24",
+            "\1\106",
             "\1\107",
-            "\1\110",
             "\12\24\7\uffff\32\24\6\uffff\32\24",
+            "\1\111",
             "\1\112",
             "\1\113",
-            "\1\114",
             "\12\24\7\uffff\32\24\6\uffff\32\24",
-            "\12\105",
-            "\12\105\57\uffff\1\51",
+            "\12\104",
+            "\12\104\57\uffff\1\50",
             "",
+            "\1\115",
             "\1\116",
-            "\1\117",
             "",
             "\12\24\7\uffff\32\24\6\uffff\32\24",
-            "\1\121",
+            "\1\120",
             "\12\24\7\uffff\32\24\6\uffff\32\24",
             "",
             "\12\24\7\uffff\32\24\6\uffff\32\24",
-            "\1\124",
+            "\1\123",
             "",
             "\12\24\7\uffff\32\24\6\uffff\32\24",
             "",
             "",
-            "\1\126",
+            "\1\125",
             "",
             "\12\24\7\uffff\32\24\6\uffff\32\24",
             ""

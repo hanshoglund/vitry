@@ -18,7 +18,7 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.struct.Seq;
+import vitry.runtime.struct.Sequence;
 
 
 /**
@@ -33,11 +33,14 @@ import vitry.runtime.struct.Seq;
  *   - <code>p.snd() != null</code>
  * 
  */
-public interface Product extends Pattern, Seq<Pattern>, MaybeDestructible
+public interface Product extends Pattern, Sequence<Pattern>, MaybeDestructible
     {
-        public Pattern fst();
+        public Pattern first();
 
-        public Pattern snd();
+        public Pattern second();
+        
+        // TODO remove
+        public Pattern third();
 
         // TODO generate as needed
     }

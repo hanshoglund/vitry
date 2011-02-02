@@ -48,7 +48,7 @@ abstract public class AbstractUnion extends InclusionPattern implements Union
             return false;
         }
 
-        public boolean match(FunctionType p) {
+        public boolean match(Arrow p) {
             for (Pattern x : this)
                 if (x.match(p)) return true;
             return false;

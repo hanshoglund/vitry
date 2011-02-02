@@ -18,11 +18,11 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.struct.Seq;
+import vitry.runtime.struct.Sequence;
 
 /**
  * The union of sets.
  */
-public interface Union extends Pattern, Seq<Pattern>
+public interface Union extends Pattern, Sequence<Pattern>
     {
     }

@@ -9,13 +9,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import vitry.runtime.Symbol;
-import vitry.runtime.struct.IterableSeq;
+import vitry.runtime.struct.IterableSequence;
 
 
 public class TestIterableSeq
     {
 
-        static IterableSeq<Symbol> seq;
+        static IterableSequence<Symbol> seq;
 
         static Symbol a = Symbol.intern("a"), b = Symbol.intern("b");
 
@@ -24,7 +24,7 @@ public class TestIterableSeq
             List<Symbol> l = new java.util.ArrayList<Symbol>();
             l.add(a);
             l.add(b);
-            seq = new IterableSeq<Symbol>(l);
+            seq = new IterableSequence<Symbol>(l);
         }
 
         @Test

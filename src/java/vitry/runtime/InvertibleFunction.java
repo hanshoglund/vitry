@@ -23,7 +23,7 @@ package vitry.runtime;
  */
 abstract public class InvertibleFunction extends Function implements Bijection {
 
-        public InvertibleFunction(int arity, FunctionType type) {
+        public InvertibleFunction(int arity, Arrow type) {
             super(arity, type);
         }
 

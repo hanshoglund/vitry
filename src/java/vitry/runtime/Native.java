@@ -18,8 +18,8 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.struct.MapSeq;
-import vitry.runtime.struct.Seq;
+import vitry.runtime.struct.MapSequence;
+import vitry.runtime.struct.Sequence;
 
 /**
  * Wrapper for host objects. As vitry code can hold direct references to java 
@@ -75,8 +75,8 @@ public final class Native extends Atom
         /**
          * Applies {@link #wrap(Object)} lazily to the given seq.
          */
-        public static Seq<Pattern> wrap(Seq<Object> values) {
-            return new MapSeq<Object, Pattern>(new Function(1, null){
+        public static Sequence<Pattern> wrap(Sequence<Object> values) {
+            return new MapSequence<Object, Pattern>(new Function(1, null){
                 public Object apply(Object v) throws InvocationError {
                     return wrap(v);
                 }

@@ -10,7 +10,7 @@ import org.antlr.runtime.RecognitionException;
 import vitry.runtime.Eval;
 import vitry.runtime.Interpreter;
 import vitry.runtime.Pattern;
-import vitry.runtime.Eval.EvalPre;
+import vitry.runtime.Eval.Prerequisites;
 import vitry.runtime.misc.Utils;
 import vitry.runtime.parse.PatternTree;
 import vitry.runtime.parse.PatternTreeAdaptor;
@@ -32,7 +32,7 @@ public class EvalFoo
         public static void main(String[] args) {
 
             Eval interpreter = new Interpreter();
-            EvalPre pre = new Eval.EvalPre(null, null, null);
+            Prerequisites pre = new Eval.Prerequisites(null, null, null);
             
             VitryLexer lexer = null;
             try {

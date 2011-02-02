@@ -18,28 +18,32 @@
  */
 package vitry.runtime.struct;
 
-import vitry.runtime.Apply;
-
 
 /**
- * Sequence abstraction. The idea is to have a common interface for
- * the core pattern language, as well as for the native list implementations.
- * This means we can adapt one into the in <em>O(1)</em> time.
- *
- * Implement:
- * 
- *   - head/tail and iterator
- *   
+ * A seq containing a single value.
  */
-public interface Seq<T> extends Iterable<T>
+public class SingleSequence<T> extends AbstractSequence<T> implements Finite
     {
-        T head();
-
-        Seq<T> tail();
         
-        boolean hasTail();
+        private final T obj;
+        
+        public SingleSequence(T obj) {
+            this.obj = obj;
+        }
 
-        Seq<T> cons(T head);
+        public T head() {
+            return obj;
+        }
 
-        <U> Seq<U> map(Apply fn);
+        public Sequence<T> tail() {
+            return null;
+        }
+
+        public int length() {
+            return 1;
+        }
+
+        public boolean hasTail() {
+            return false;
+        }
     }

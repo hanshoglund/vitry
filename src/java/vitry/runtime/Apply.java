@@ -19,7 +19,7 @@
 package vitry.runtime;
 
 /**
- * Visits the apply operation.
+ * The apply operation.
  *
  * Implementations may support any arity through applyVariadic() or some
  * arities (i..j) where 1 ≤ i ≤ j ≤ 16.

@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import vitry.runtime.struct.Seq;
+import vitry.runtime.struct.Sequence;
 
 
 /**
@@ -81,7 +81,7 @@ public class NativeType extends BasePattern implements Set
             return throwEnumeration();
         }
 
-        public Seq<Pattern> tail() {
+        public Sequence<Pattern> tail() {
             return throwEnumeration();
         }
 
@@ -89,11 +89,11 @@ public class NativeType extends BasePattern implements Set
             return throwEnumeration();
         }
 
-        public Seq<Pattern> cons(Pattern head) {
+        public Sequence<Pattern> prepend(Pattern head) {
             return throwEnumeration();
         }
 
-        public <U> Seq<U> map(Apply fn) {
+        public <U> Sequence<U> map(Apply fn) {
             return throwEnumeration();
         }
 

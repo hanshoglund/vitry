@@ -11,7 +11,7 @@ import org.antlr.runtime.ParserRuleReturnScope;
 import org.antlr.runtime.RecognitionException;
 
 import vitry.runtime.Eval;
-import vitry.runtime.Eval.EvalPre;
+import vitry.runtime.Eval.Prerequisites;
 import vitry.runtime.Interpreter;
 import vitry.runtime.Pattern;
 import vitry.runtime.Product;
@@ -24,7 +24,7 @@ import vitry.runtime.parse.VitryParser;
 
 public class EvalStdIn
     {
-        private static final EvalPre pre = new Eval.EvalPre(null, null, null);
+        private static final Prerequisites pre = new Eval.Prerequisites(null, null, null);
 
         public static void main(String[] args) {
 
@@ -37,22 +37,23 @@ public class EvalStdIn
 
             try {
                 while ( (line = lineReader.readLine()) != null) {
-                    if (line.length() == 0) continue;
-
-                    VitryLexer lexer = new VitryLexer(new ANTLRReaderStream(new StringReader(line)));
-                    CommonTokenStream tokens = new CommonTokenStream(lexer);
-
-                    VitryParser parser = new VitryParser(tokens);
-                    parser.setTreeAdaptor(new PatternTreeAdaptor());
-
                     try {
+                        if (line.length() == 0) continue;
+
+                        VitryLexer lexer = new VitryLexer(new ANTLRReaderStream(new StringReader(
+                                line)));
+                        CommonTokenStream tokens = new CommonTokenStream(lexer);
+
+                        VitryParser parser = new VitryParser(tokens);
+                        parser.setTreeAdaptor(new PatternTreeAdaptor());
+
                         Pattern expr = (Pattern) parser.expr().getTree();
                         System.out.println("Tree : " + expr);
                         Object val = interpreter.eval(expr, pre);
                         System.out.println("Value: " + val);
                         System.out.println("Class: " + val.getClass());
-
-                    } catch (RecognitionException e) {
+                    } catch (Exception e) {
+//                        System.err.println(e.getClass().getName() + ": " + e.getMessage());
                         e.printStackTrace();
                     }
                 }

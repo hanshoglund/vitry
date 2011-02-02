@@ -20,26 +20,26 @@ package vitry.runtime;
 
 import java.util.Iterator;
 
-import vitry.runtime.struct.ArraySeq;
-import vitry.runtime.struct.ConsSeq;
-import vitry.runtime.struct.MapSeq;
-import vitry.runtime.struct.Seq;
+import vitry.runtime.struct.ArraySequence;
+import vitry.runtime.struct.PairSequence;
+import vitry.runtime.struct.MapSequence;
+import vitry.runtime.struct.Sequence;
 
 
 public class SimpleProduct extends AbstractProduct
     {
-        Seq<Pattern> elements;
+        Sequence<Pattern> elements;
         
-        public SimpleProduct(Seq<Pattern> elements) {
+        public SimpleProduct(Sequence<Pattern> elements) {
             this.elements = elements;
         }
 
         public SimpleProduct(Pattern... elements) {
-            this.elements = new ArraySeq<Pattern>(elements);
+            this.elements = new ArraySequence<Pattern>(elements);
         }
 
         public SimpleProduct(Object... elements) {
-            this.elements = Native.wrap(new ArraySeq<Object>(elements));
+            this.elements = Native.wrap(new ArraySequence<Object>(elements));
         }
 
         public Iterator<Pattern> iterator() {
@@ -50,16 +50,16 @@ public class SimpleProduct extends AbstractProduct
             return elements.head();
         }
 
-        public Seq<Pattern> tail() {
+        public Sequence<Pattern> tail() {
             return elements.tail();
         }
         
-        public Seq<Pattern> cons(Pattern head) {
-            return new ConsSeq<Pattern>(head, elements);
+        public Sequence<Pattern> prepend(Pattern head) {
+            return new PairSequence<Pattern>(head, elements);
         }
 
-        public <U> MapSeq<Pattern, U> map(Apply fn) {
-            return new MapSeq<Pattern,U>(fn, elements);
+        public <U> MapSequence<Pattern, U> map(Apply fn) {
+            return new MapSequence<Pattern,U>(fn, elements);
         }
 
         public boolean hasTail() {

@@ -53,7 +53,7 @@ package vitry.runtime;
 abstract public class RestArgFunction extends Function
     {
 
-        public RestArgFunction(int arity, FunctionType type) {
+        public RestArgFunction(int arity, Arrow type) {
             super(arity, type);
         }
         
