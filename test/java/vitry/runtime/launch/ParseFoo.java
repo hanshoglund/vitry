@@ -39,7 +39,7 @@ public class ParseFoo
 
             try {
                 PatternTree tree = (PatternTree) parser.expr().getTree();
-                System.out.println(Utils.prune(tree));
+//                System.out.println(Utils.prune(tree));
                 System.out.println(tree);
                 System.out.println(tree);
 

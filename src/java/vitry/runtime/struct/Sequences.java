@@ -12,12 +12,10 @@ import vitry.runtime.misc.Utils;
  */
 public class Sequences
     {
-
-
         private Sequences() {}
 
         private static final Map<Object, Object> memoizedLasts = new WeakHashMap<Object, Object>();
-        private static final Object[] OBJ_ARRAY = new Object[0];
+        private static final Object[] EMPTY_OBJ_ARRAY = new Object[0];
 
         
         
@@ -31,33 +29,32 @@ public class Sequences
             else return cons(xs.head(), append(xs.tail(), ys));
         }
 
-        public static <T> Sequence<T> revappend(Sequence<T> xs, Sequence<T> ys) {
+        public static <T> Sequence<T> reverseAppend(Sequence<T> xs, Sequence<T> ys) {
             if (xs == null) return ys;
-            else return revappend(xs.tail(), cons(xs.head(), ys));
+            else return reverseAppend(xs.tail(), cons(xs.head(), ys));
         }
 
         public static <T> Sequence<T> reverse(Sequence<T> xs) {
-            return revappend(xs, null);
+            return reverseAppend(xs, null);
         }
-        
-
 
         public static <T> Sequence<T> butLast(Sequence<T> s) {
             if (s.tail() == null) {
                 memoizedLasts.put(s, s.head());
                 return null;
             } else {
-                T x = s.head();
-                Sequence<T> xs = butLast(s.tail());
-                return cons(x, xs);
+                return cons(s.head(), butLast(s.tail()));
             }
         }
 
         public static <T> T last(Sequence<T> s) {
-            if (memoizedLasts.containsKey(s)) return Utils.<Object,T>unsafe(memoizedLasts.get(s));
+            Object m = memoizedLasts.get(s);
+            if (m != null) return Utils.<T>unsafe(m);
+            
             while (s.tail() != null) {
                 s = s.tail();
             }
+            memoizedLasts.put(s, s.head());
             return s.head();
         }
 
@@ -76,21 +73,28 @@ public class Sequences
 
         public static int length(Sequence<?> s) {
             int length = 0;
-            while (s.tail() != null) {
-                s = s.tail();
+            do {
                 length++;
-            }
+                s = s.tail();
+            } while (s != null);
             return length;
         }
 
         public static Object[] toArray(Sequence<?> s) {
-            ArrayList<Object> l = new ArrayList<Object>();
-            if (s == null) return l.toArray(OBJ_ARRAY);
+            if (s == null) return EMPTY_OBJ_ARRAY;
+            
+            Object[] a;
+            if (s instanceof Finite)
+                a = new Object[((Finite) s).length()];
+            else
+                a = new Object[length(s)];
+            
+            int i = 0;
             do {
-                l.add(s.head());
+                a[i++] = s.head();
                 s = s.tail();
             } while (s != null);
-            return l.toArray(OBJ_ARRAY);
+            return a;
         }
 
         public static <T> T[] toArray(Sequence<T> s, T[] dummy) {

@@ -5,8 +5,10 @@ import vitry.runtime.struct.Sequence;
 /**
  * Implemented by possibly destructable values.
  */
-public interface MaybeDestructible
+public interface Structible
     {
+        public Bijection structor();
+        
         boolean isDestructible();
 
         Sequence<Pattern> destruct();

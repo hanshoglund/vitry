@@ -25,6 +25,7 @@ import org.antlr.runtime.tree.CommonTree;
 
 import vitry.runtime.Apply;
 import vitry.runtime.Atom;
+import vitry.runtime.Bijection;
 import vitry.runtime.Function;
 import vitry.runtime.Arrow;
 import vitry.runtime.Intersection;
@@ -262,5 +263,9 @@ public class PatternTree extends CommonTree implements Product
 
         public boolean matchFor(Pattern p) {
             return delegee.matchFor(p);
+        }
+
+        public Bijection structor() {
+            return delegee.structor();
         }
     }

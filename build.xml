@@ -19,7 +19,7 @@
 	
 	
 	<!-- =============================================================== -->
-    <target name="antlr-gen" description="">
+    <target name="generate-antlr" description="">
 		<java fork="true"
 		    classpath="lib/antlr.jar:bin"
 		    classname="org.antlr.Tool"

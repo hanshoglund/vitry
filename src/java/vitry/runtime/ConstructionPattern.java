@@ -6,8 +6,9 @@ import vitry.runtime.struct.Sequence;
 
 
 abstract public class ConstructionPattern extends BasePattern 
-implements Sequence<Pattern>, MaybeDestructible
+implements Sequence<Pattern>, Structible
     {
+        
         public boolean isDestructible() {
             return true;
         }
@@ -15,7 +16,7 @@ implements Sequence<Pattern>, MaybeDestructible
         public Sequence<Pattern> destruct() {
             return this;
         }
-        
+
         /**
          * Instances destructs on their elements.
          */

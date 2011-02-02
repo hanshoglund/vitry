@@ -18,14 +18,36 @@
  */
 package vitry.runtime;
 
-/**
- * Function with known inversion. Can be used in left-expressions.
- */
-abstract public class InvertibleFunction extends Function implements Bijection {
+import java.util.Iterator;
 
-        public InvertibleFunction(int arity, Arrow type) {
-            super(arity, type);
+/**
+ * A sequential value.
+ */
+abstract public class List extends ConstructionPattern
+    {
+
+        
+        public Bijection structor() {
+            return null;
         }
 
-        abstract public InvertibleFunction inverse();
+        public boolean hasTail() {
+            return false;
+            // TODO Auto-generated method stub
+        }
+
+        public Iterator<Pattern> iterator() {
+            return null;
+            // TODO Auto-generated method stub
+        }
+
+        public boolean eqFor(Value o) {
+            return false;
+            // TODO Auto-generated method stub
+        }
+
+        public boolean matchFor(Pattern p) {
+            return false;
+            // TODO Auto-generated method stub
+        }
     }

@@ -63,6 +63,10 @@ public final class Nil extends Atom implements Product
             return throwUnsupported();
         }
 
+        public Bijection structor() {
+            return throwUnsupported();
+        }
+
         private <T> T throwUnsupported() {
             throw new UnsupportedOperationException("() has no members.");
         }

@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import vitry.runtime.Apply;
-import vitry.runtime.Dynamic;
 import vitry.runtime.Function;
 import vitry.runtime.InvocationError;
 import vitry.runtime.misc.Checks;
@@ -31,7 +30,7 @@ import vitry.runtime.misc.Checks;
 /**
  * A seq adapted from another seq by the map operation.
  */
-public class MapSequence<A, B> extends AbstractSequence<B> implements Dynamic
+public class MapSequence<A, B> extends AbstractSequence<B>
     {
         private final Apply fn;
         private final Sequence<A> input;

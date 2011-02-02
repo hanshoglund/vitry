@@ -72,14 +72,14 @@ public class Type extends BasePattern
         }
 
         public boolean isDestructible() {
-            if (pattern instanceof MaybeDestructible)
-                return ((MaybeDestructible) pattern).isDestructible();
+            if (pattern instanceof Structible)
+                return ((Structible) pattern).isDestructible();
             return false;
         }
 
         public Sequence<Pattern> destruct() {
-            if (pattern instanceof MaybeDestructible)
-                return ((MaybeDestructible) pattern).destruct();
+            if (pattern instanceof Structible)
+                return ((Structible) pattern).destruct();
             throw new UnsupportedOperationException("Can not destruct " + pattern);
         }
 

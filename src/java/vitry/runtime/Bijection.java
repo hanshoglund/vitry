@@ -18,11 +18,16 @@
  */
 package vitry.runtime;
 
+import vitry.runtime.struct.Sequence;
+
 /**
  * A bijective entity.
  */
-public interface Bijection
-    {      
+public interface Bijection extends Apply
+    {                                    
+        
+        Sequence<Object> revApply(Object a0) throws InvocationError;
+        
         public boolean isInNormalForm();
         
         public Bijection inverse();

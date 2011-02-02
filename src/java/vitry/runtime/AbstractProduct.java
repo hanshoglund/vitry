@@ -25,7 +25,7 @@ import vitry.runtime.struct.Sequence;
 import vitry.runtime.struct.SequenceIterator;
 
 /**
- * Base implementation, relying on the underlying Seq structure.
+ * Base implementation, relying on a sequence structure.
  * 
  * For the reified block types, we have to override the Seq methods to adapt
  * traversal to the generated accessors.
@@ -38,6 +38,10 @@ import vitry.runtime.struct.SequenceIterator;
 abstract public class AbstractProduct extends ConstructionPattern 
 implements Product
     {
+        
+        public Bijection structor() {
+            return null;
+        }
         
         public boolean eq(Product o) {
             Sequence<Pattern> left = o;

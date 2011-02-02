@@ -33,6 +33,7 @@ import vitry.runtime.misc.Utils;
 import vitry.runtime.parse.VitryParser;
 import vitry.runtime.parse.VitryToken;
 import vitry.runtime.struct.Sequence;
+import vitry.runtime.struct.Sequences;
 
 
 /**
@@ -83,16 +84,16 @@ public class Interpreter implements Eval
         
         // Various identifiers
          
-        private static final Symbol delimiter = Symbol.intern("delimiter");
-        private static final Symbol par       = Symbol.intern("()");
-        private static final Symbol bra       = Symbol.intern("[]");
-        private static final Symbol ang       = Symbol.intern("{}");
-        private static final Symbol side      = Symbol.intern("side");
-        private static final Symbol left      = Symbol.intern("left");
-        private static final Symbol right     = Symbol.intern("right");
-        private static final Symbol quoted    = Symbol.intern("quoted");
-        private static final Symbol true_     = Symbol.intern("true");
-        private static final Symbol false_    = Symbol.intern("false");
+        private static final Symbol DELIMITER = Symbol.intern("delimiter");
+        private static final Symbol SIDE      = Symbol.intern("side");
+        private static final Symbol QUOTED    = Symbol.intern("quoted");
+        private static final Symbol PAR       = Symbol.intern("()");
+        private static final Symbol BRA       = Symbol.intern("[]");
+        private static final Symbol ANG       = Symbol.intern("{}");
+        private static final Symbol LEFT      = Symbol.intern("left");
+        private static final Symbol RIGHT     = Symbol.intern("right");
+        private static final Symbol TRUE      = Symbol.intern("true");
+        private static final Symbol FALSE     = Symbol.intern("false");
         
         
         /**
@@ -125,9 +126,9 @@ public class Interpreter implements Eval
          */
         private static final Environment<Symbol, Symbol> standardContext = 
             new HashEnvironment<Symbol, Symbol>()
-            .define( delimiter , par    )
-            .define( side      , right  )
-            .define( quoted    , false_ )
+            .define( DELIMITER , PAR    )
+            .define( SIDE      , RIGHT  )
+            .define( QUOTED    , FALSE )
             ; 
                 
                 
@@ -155,7 +156,7 @@ public class Interpreter implements Eval
                 expr, 
                 setup, 
                 standardContext,
-                VitryRuntime.prelude.makeChild());
+                VitryRuntime.prelude/*.makeChild()*/);
         }
         
 
@@ -206,7 +207,7 @@ public class Interpreter implements Eval
                         args = ((Product) expr).tail();
                     }
                 } catch (Exception _) {
-                    throw new ParseError("Malformed syntax tree: " + limit(expr.toString(), EXPR_TRACE_LIMIT));
+                    throw new ParseError("Malformed syntax tree: " + limit( expr.toString(), EXPR_TRACE_LIMIT) );
                 }
                 try {
                     try {
@@ -242,18 +243,18 @@ public class Interpreter implements Eval
 
                     case OP:
                         // Operators depend on delimiter context
-                        if (context.lookup(quoted) == true_) {
-                            return parseOperator( op, context.lookup(delimiter) );  
+                        if (context.lookup(QUOTED) == TRUE) {
+                            return parseOperator( op, context.lookup(DELIMITER) );  
                         } else {
-                            return frame.lookup(parseOperator( op, context.lookup(delimiter)) );   
+                            return frame.lookup( parseOperator( op, context.lookup(DELIMITER) ));   
                         }
 
 
                     case SYM:
-                        if (context.lookup(side) == left) {
+                        if (context.lookup(SIDE) == LEFT) {
                             return parseSymbol(op);
                         } else {
-                            if (context.lookup(quoted) == true_) {
+                            if (context.lookup(QUOTED) == TRUE) {
                                 return parseSymbol(op);
                             } else {
                                 return frame.lookup( parseSymbol(op) );
@@ -270,45 +271,45 @@ public class Interpreter implements Eval
                     
                     case Par:
                         context = context.makeChild()
-                            .define(delimiter, par)
-                            .define(quoted, false_);
+                            .define(DELIMITER, PAR)
+                            .define(QUOTED, FALSE);
                         
                         expr = args.head();
                         
-                        if (frame.lookup(par) != VitryRuntime.nil) 
+                        if (frame.lookup(PAR) != VitryRuntime.nil) 
                         {
                             Object value = eval(expr, pre, context, frame);
-                            return ((Apply) frame.lookup(par)).apply(value);
+                            return ((Apply) frame.lookup(PAR)).apply(value);
                         } 
                         else continue;
                         
 
                     case Bra:
                         context = context.makeChild()
-                            .define(delimiter, bra)
-                            .define(quoted, false_);
+                            .define(DELIMITER, BRA)
+                            .define(QUOTED, FALSE);
                         
                         expr = args.head();
                         
-                        if (frame.lookup(bra) != VitryRuntime.nil) 
+                        if (frame.lookup(BRA) != VitryRuntime.nil) 
                         {
                             Object value = eval(expr, pre, context, frame);
-                            return ((Apply) frame.lookup(bra)).apply(value);
+                            return ((Apply) frame.lookup(BRA)).apply(value);
                         } 
                         else continue;
                         
                         
                     case Ang:
                         context = context.makeChild()
-                            .define(delimiter, ang)
-                            .define(quoted, false_);
+                            .define(DELIMITER, ANG)
+                            .define(QUOTED, FALSE);
                         
                         expr = args.head();
                         
-                        if (frame.lookup(ang) != VitryRuntime.nil) 
+                        if (frame.lookup(ANG) != VitryRuntime.nil) 
                         {
                             Object value = eval(expr, pre, context, frame);
-                            return ((Apply) frame.lookup(ang)).apply(value);
+                            return ((Apply) frame.lookup(ANG)).apply(value);
                         } 
                         else continue;
                         
@@ -329,9 +330,6 @@ public class Interpreter implements Eval
                             
                             return new InterpretedFunction(params, body, arity, frame);
                         }
-
-                        
-
 
 
                     case Let:
@@ -360,19 +358,19 @@ public class Interpreter implements Eval
                         
 
                     case Left:
-                        context = context.makeChild().define(side, left);
+                        context = context.makeChild().define(SIDE, LEFT);
                         expr = args.head();
                         continue;
                         
 
                     case Quote:
-                        context = context.makeChild().define(quoted, true_);
+                        context = context.makeChild().define(QUOTED, TRUE);
                         expr = args.head();
                         continue;
                         
 
                     case Apply:
-                        if (context.lookup(side) == left) {
+                        if (context.lookup(SIDE) == LEFT) {
                             // TODO
                         
                         } else {
@@ -400,7 +398,7 @@ public class Interpreter implements Eval
                         
 
                     case Type:
-                        if (context.lookup(side) == left) {
+                        if (context.lookup(SIDE) == LEFT) {
                             // Eval value
                             // Assert value corresponds to tag or throw TypeError                            
                         } else {
@@ -409,12 +407,14 @@ public class Interpreter implements Eval
                         }
 
                     case If:
-                        Object cond = eval(args.head(), pre, context, frame );
-                        if (!false_.equals(cond)) {
-                            expr = args.tail().head();
-                            continue;
-                        } else {
-                            expr = args.tail().tail().head();
+                        {
+                            Object condition = eval(Sequences.first(args), pre, context, frame);
+    
+                            if (! (condition.equals(FALSE)) ) {
+                                expr = Sequences.second(args);
+                            } else {
+                                expr = Sequences.third(args);
+                            }
                             continue;
                         }
 
@@ -448,7 +448,7 @@ public class Interpreter implements Eval
                         // Tail
 
                     default:
-                        throw new ParseError("Unknown form: "
+                        throw new ParseError("Unkown form '" + op + "' in tree " 
                                 + limit(expr.toString(), EXPR_TRACE_LIMIT));
                 }
             }
@@ -495,7 +495,7 @@ public class Interpreter implements Eval
             for (Pattern fa : fnArgs) {
                 fnArgVals.add(eval(fa, pre, context, frame));
             }
-            return ((Apply) fn).applyTo(fnArgVals.toArray());
+            return ((Function) fn).applyTo(fnArgVals.toArray());
         }
         
         
@@ -520,6 +520,8 @@ public class Interpreter implements Eval
         private boolean isToken(Pattern expr) {
             return expr instanceof VitryToken;
         }
+        
+        
 
 
         private BigInteger parseNat(Pattern expr) {
@@ -535,9 +537,9 @@ public class Interpreter implements Eval
         }
         
         private Symbol parseOperator(Pattern expr, Symbol delimiter) {
-            if (delimiter == par) return Symbol.intern("(" + expr + ")");
-            if (delimiter == bra) return Symbol.intern("[" + expr + "]");
-            if (delimiter == ang) return Symbol.intern("{" + expr + "}");
+            if (delimiter == PAR) return Symbol.intern("(" + expr + ")");
+            if (delimiter == BRA) return Symbol.intern("[" + expr + "]");
+            if (delimiter == ANG) return Symbol.intern("{" + expr + "}");
             assert false;
             return null;
         }
@@ -551,13 +553,13 @@ public class Interpreter implements Eval
             return str.substring(1, str.length() - 1);
         }
         
+        
 
         
         static class InterpretedFunction extends Function
             {
                 Sequence<Pattern> params;
                 Pattern body;
-                int arity;
                 Environment<Symbol, Object> env;
 
                 public InterpretedFunction(Sequence<Pattern> params, Pattern body, int arity, Environment<Symbol, Object> env) {

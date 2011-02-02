@@ -19,6 +19,9 @@
 package vitry.runtime;
 
 import java.math.BigInteger;
+import java.util.Iterator;
+
+import vitry.runtime.struct.Sequence;
 
 
 /**
@@ -322,10 +325,27 @@ public class VitryRuntime
 
 
         // /
-        public static final Apply div = new Function(2, null)
+            public static final Apply div = new Function(2, null)
             {
                 public Object apply(Object a, Object b) {
-                    return null; // TODO
+                    if (a instanceof BigRational) {
+                        if (b instanceof BigRational) return ((BigRational) a).divide((BigRational) b);
+                        else if (b instanceof Number) return ((BigRational) a).divide(((Number) b).longValue());
+                        throw new RuntimeException("Expected number type.");
+                    }
+                    if (a instanceof BigInteger)  {
+                        if (b instanceof BigInteger)  return ((BigInteger) a).divide((BigInteger) b);
+                        throw new RuntimeException("Expected number type.");
+                    }
+                    if (a instanceof Double)      {
+                        if (b instanceof Number)      return ((Double) a) / ((Number) b).doubleValue();
+                        throw new RuntimeException("Expected number type.");
+                    }
+                    if (a instanceof Float)      {
+                        if (b instanceof Number)      return ((Float) a) / ((Number) b).floatValue();
+                        throw new RuntimeException("Expected number type.");
+                    }
+                    throw new RuntimeException("Expected number type.");
                 }
             };
 
@@ -564,6 +584,21 @@ public class VitryRuntime
             
         };
         
+        // unique
+        public static final List unique = new List(){
+
+            public Pattern head() {
+                return null;
+                // TODO Auto-generated method stub
+            }
+
+            public Sequence<Pattern> tail() {
+                return null;
+                // TODO Auto-generated method stub
+            }
+        };
+        
+        
         public static Arrow fnType(Pattern co, Pattern dom) {
             return new Arrow(co, dom);
         }
@@ -610,6 +645,51 @@ public class VitryRuntime
             prelude.define( Symbol.intern("div"),      div );
             prelude.define( Symbol.intern("mod"),      mod );
             prelude.define( Symbol.intern("quit"),     quit );
+            prelude.define( Symbol.intern("unique"),   unique );
+            prelude.define( Symbol.intern("arity"),    arity );
         }
+        
+        
+        
+        
+        
+        
+        
+        private static BigInteger uniqueState = BigInteger.valueOf(0x2177375305f7L);
+        
+        public static Symbol unique() {
+            byte[] val = uniqueState.toByteArray();
+            char[] str = new char[val.length/2 + 1];
+            for (int i = 0; i < val.length; i += 2) {
+                if ((str.length & 1) == 1)
+                        str[i/2] = (char) (val[i]);
+                    else 
+                        str[i/2] = (char) ((val[i] << 8) | val[i+1]);
+                        
+            }
+            uniqueState = uniqueState.add(BigInteger.ONE);
+            return Symbol.intern(new String(str));
+        }
+
+        public static Pattern product(Object... args) {
+            return new SimpleProduct(args);
+        }
+
+        public static Pattern set(Object... args) {
+            return new SimpleSet(args);
+        }
+
+        public static Pattern union(Object... args) {
+            return new SimpleUnion(args);
+        }
+
+        public static Pattern intersection(Object... args) {
+            return new SimpleIntersection(args);
+        }
+        
+        
+        
+        
+        
 
     }

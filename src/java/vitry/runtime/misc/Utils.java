@@ -30,7 +30,7 @@ public class Utils
         private Utils() {
         }
 
-        public static Object[] concat(Object[] a, Object... b) {
+        public static Object[] conc(Object[] a, Object... b) {
             Object[] res = new Object[a.length + b.length];
             System.arraycopy(a, 0, res, 0, a.length);
             System.arraycopy(b, 0, res, a.length, b.length);
@@ -160,7 +160,7 @@ public class Utils
             }
         }
 
-        public static <T,U> U unsafe(T val) {
+        public static <U> U unsafe(Object val) {
             @SuppressWarnings("unchecked")
             U casted = (U) val;
             return casted;

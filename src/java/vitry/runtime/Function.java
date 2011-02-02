@@ -33,6 +33,11 @@ import vitry.runtime.struct.Sequences;
  * a function has type <em>T</em> where <em>T</em> is a sequence and <code>T.head</code> 
  * represents <em>t1</em>, <code>T.head().head()</code> represents t2 and so on.
  * 
+ * See <em>Making a Fast Curry: Push/Enter vs Eval/Apply for Higher-order 
+ * Languages</em> by Marlow and Jones.
+ * 
+ * 
+ * 
  * <h4>Invariants:</h4>
  * 
  * Whenever a Function f is called with n arguments:                      
@@ -42,18 +47,15 @@ import vitry.runtime.struct.Sequences;
  *     if  n + 1 = f.arity,  then f(a1,a2..a[N-1]) f[N] is returned
  *     if  n + 2 = f.arity,  then f(a1,a2..a[N-2]) f[N-1] f[N] is returned</pre>
  * etc.
- * 
- * See <em>Making a Fast Curry: Push/Enter vs Eval/Apply for Higher-order 
- * Languages</em> by Marlow and Jones
  */
-abstract public class Function extends Scope implements Apply, Dynamic
+abstract public class Function extends Scope implements Apply
     {
 
         static final int MIN_ARITY = 1;
         static final int MAX_ARITY = 0xf;
         
-        protected final int arity;
-        protected final Arrow type;
+        protected int arity;
+        protected Arrow type;
 
         
         Function() {
@@ -568,14 +570,14 @@ class PartialApplication extends Function
             assert (this.arity > 0);
         }
 
-        private final Apply original;
+        private final Function original;
 
         private final Object[] args;
 
         public Object apply(Object a0) throws InvocationError {
             switch (arity) {
                 case 1:
-                    return original.applyTo(Utils.concat(args, a0));
+                    return original.applyTo(Utils.conc(args, a0));
                 default:
                     return new PartialApplication(this, a0);
             }
@@ -587,7 +589,7 @@ class PartialApplication extends Function
                 case 1:
                     return ((Apply) this.apply(a0)).apply(a1);
                 case 2:
-                    return original.applyTo(Utils.concat(args, a0, a1));
+                    return original.applyTo(Utils.conc(args, a0, a1));
                 default:
                     return new PartialApplication(this, a0, a1);
             }
@@ -601,7 +603,7 @@ class PartialApplication extends Function
                 case 2:
                     return ((Apply) this.apply(a0, a1)).apply(a2);
                 case 3:
-                    return original.applyTo(Utils.concat(args, a0, a1, a2));
+                    return original.applyTo(Utils.conc(args, a0, a1, a2));
                 default:
                     return new PartialApplication(this, a0, a1, a2);
             }
@@ -617,7 +619,7 @@ class PartialApplication extends Function
                 case 3:
                     return ((Apply) this.apply(a0, a1, a2)).apply(a3);
                 case 4:
-                    return original.applyTo(Utils.concat(args, a0, a1, a2, a3));
+                    return original.applyTo(Utils.conc(args, a0, a1, a2, a3));
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3);
             }
@@ -635,7 +637,7 @@ class PartialApplication extends Function
                 case 4:
                     return ((Apply) this.apply(a0, a1, a2, a3)).apply(a4);
                 case 5:
-                    return original.applyTo(Utils.concat(args, a0, a1, a2, a3, a4));
+                    return original.applyTo(Utils.conc(args, a0, a1, a2, a3, a4));
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4);
             }
@@ -655,7 +657,7 @@ class PartialApplication extends Function
                 case 5:
                     return ((Apply) this.apply(a0, a1, a2, a3, a4)).apply(a5);
                 case 6:
-                    return original.applyTo(Utils.concat(args, a0, a1, a2, a3, a4, a5));
+                    return original.applyTo(Utils.conc(args, a0, a1, a2, a3, a4, a5));
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5);
             }
@@ -677,7 +679,7 @@ class PartialApplication extends Function
                 case 6:
                     return ((Apply) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6);
                 case 7:
-                    return original.applyTo(Utils.concat(args, a0, a1, a2, a3, a4, a5, a6));
+                    return original.applyTo(Utils.conc(args, a0, a1, a2, a3, a4, a5, a6));
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6);
             }
@@ -701,7 +703,7 @@ class PartialApplication extends Function
                 case 7:
                     return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7);
                 case 8:
-                    return original.applyTo(Utils.concat(args, a0, a1, a2, a3, a4, a5, a6, a7));
+                    return original.applyTo(Utils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7));
 
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7);
@@ -728,7 +730,7 @@ class PartialApplication extends Function
                 case 8:
                     return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8);
                 case 9:
-                    return original.applyTo(Utils.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8));
+                    return original.applyTo(Utils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7, a8));
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8);
             }
@@ -756,7 +758,7 @@ class PartialApplication extends Function
                 case 9:
                     return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8)).apply(a9);
                 case 10:
-                    return original.applyTo(Utils.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9));
+                    return original.applyTo(Utils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9));
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9);
             }
@@ -786,7 +788,7 @@ class PartialApplication extends Function
                 case 10:
                     return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)).apply(a10);
                 case 11:
-                    return original.applyTo(Utils.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10));
+                    return original.applyTo(Utils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10));
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
             }
@@ -818,7 +820,7 @@ class PartialApplication extends Function
                 case 11:
                     return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)).apply(a11);
                 case 12:
-                    return original.applyTo(Utils.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11));
+                    return original.applyTo(Utils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11));
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11);
             }
@@ -852,7 +854,7 @@ class PartialApplication extends Function
                 case 12:
                     return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)).apply(a12);
                 case 13:
-                    return original.applyTo(Utils.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12));
+                    return original.applyTo(Utils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12));
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12);
             }
@@ -888,7 +890,7 @@ class PartialApplication extends Function
                 case 13:
                     return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)).apply(a13);
                 case 14:
-                    return original.applyTo(Utils.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13));
+                    return original.applyTo(Utils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13));
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13);
             }
@@ -927,7 +929,7 @@ class PartialApplication extends Function
                     return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13)).apply(a14);
 
                 case 15:
-                    return original.applyTo(Utils.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14));
+                    return original.applyTo(Utils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14));
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
             }
@@ -967,7 +969,7 @@ class PartialApplication extends Function
                 case 15:
                     return ((Apply) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14)).apply(a15);
                 case 16:
-                    return original.applyTo(Utils.concat(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15));
+                    return original.applyTo(Utils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15));
                 default:
                     return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
             }
@@ -979,7 +981,6 @@ class NoImplementationException extends RuntimeException
     {
         public NoImplementationException() {
             // TODO
-            super("No n-ary implementation for X");
         }
 
         private static final long serialVersionUID = 2787250838481872800L;

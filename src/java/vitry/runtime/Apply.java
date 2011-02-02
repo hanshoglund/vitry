@@ -22,9 +22,8 @@ import vitry.runtime.struct.Sequence;
 
 /**
  * The apply operation.
- *
- * Implementations may support any arity through applyVariadic() or some
- * arities (i..j) where 1 ≤ i ≤ j ≤ 16.
+ * 
+ * See Function for details.
  */
 public interface Apply
     {
@@ -61,8 +60,5 @@ public interface Apply
 
         Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12, Object a13, Object a14, Object a15) throws InvocationError;
 
-        Object applyTo(Object... args) throws InvocationError;
-
         Object applyTo(Sequence<?> args) throws InvocationError;
-
     }

@@ -38,25 +38,25 @@ import vitry.runtime.struct.SingleSequence;
 public class Arrow extends BasePattern implements Sequence<Pattern>
     {
 
-        private final Pattern co;
+        private final Pattern domain;
 
-        private final Pattern dom;
+        private final Pattern range;
 
-        public Arrow(Pattern codomain, Pattern domain) {
-            this.co = codomain;
-            this.dom = domain;
+        public Arrow(Pattern domain, Pattern range) {
+            this.domain = domain;
+            this.range = range;
         }
 
-        public Pattern co() {
-            return this.co;
+        public Pattern domain() {
+            return this.domain;
         }
 
-        public Pattern dom() {
-            return this.dom;
+        public Pattern range() {
+            return this.range;
         }
 
         public boolean eq(Arrow o) {
-            return (o == this) || o.co().eqFor(this.co) && o.dom().eqFor(this.dom);
+            return (o == this) || o.domain().eqFor(this.domain) && o.range().eqFor(this.range);
         }
 
         public boolean match(Atom o) {
@@ -65,7 +65,7 @@ public class Arrow extends BasePattern implements Sequence<Pattern>
         }
 
         public boolean match(Arrow p) {
-            return (p == this) || (p.co().matchFor(this.co) && p.dom().matchFor(this.dom));
+            return (p == this) || (p.domain().matchFor(this.domain) && p.range().matchFor(this.range));
         }
 
         public boolean matchFor(Pattern p) {
@@ -77,31 +77,31 @@ public class Arrow extends BasePattern implements Sequence<Pattern>
         }
 
         public String toString() {
-            if (co instanceof Arrow) 
-                return ("(" + co + ") -> " + dom);
+            if (domain instanceof Arrow) 
+                return ("(" + domain + ") -> " + range);
             else
-                return ("" + co + " -> " + dom);
+                return ("" + domain + " -> " + range);
         }
 
         public int hashCode() {
             int hash = this.getClass().hashCode();
-            hash = Utils.hash(hash, co);
-            hash = Utils.hash(hash, dom);
+            hash = Utils.hash(hash, domain);
+            hash = Utils.hash(hash, range);
             return hash;
         }
 
         public Pattern head() {
-            return co;
+            return domain;
         }
 
         public Sequence<Pattern> tail() {
             //        if (dom instanceof Function)
             //            return ((Function) dom).type();
-            return new SingleSequence<Pattern>(dom);
+            return new SingleSequence<Pattern>(range);
         }
 
         public boolean hasTail() {
-            return dom != null;
+            return range != null;
         }
 
         public Iterator<Pattern> iterator() {
