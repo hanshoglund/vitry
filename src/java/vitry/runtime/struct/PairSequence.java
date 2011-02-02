@@ -19,9 +19,6 @@
 package vitry.runtime.struct;
 
 
-/**
- * A cons of two seqs. Not to be confused with Pair.
- */
 public class PairSequence<T> extends AbstractSequence<T>
     {        
         private T head;

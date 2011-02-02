@@ -33,7 +33,7 @@ import vitry.runtime.struct.SequenceIterator;
  */
 abstract public class InclusionPattern extends BasePattern implements Sequence<Pattern>
     {
-        public boolean eq(Set o) {
+        public boolean eq(SetLike o) {
             return o == this || this.match(o) && this.matchFor(o);
         }
 
@@ -45,8 +45,8 @@ abstract public class InclusionPattern extends BasePattern implements Sequence<P
             return o == this || this.match(o) && this.matchFor(o);
         }
 
-        public boolean match(Set a) {
-            if (a == Vitry.bottom) return true;
+        public boolean match(SetLike a) {
+            if (a == VitryRuntime.bottom) return true;
             for (Pattern x : a)
                 if (!x.matchFor(this)) return false;
             return true;
@@ -78,7 +78,7 @@ abstract public class InclusionPattern extends BasePattern implements Sequence<P
         public boolean equals(Object o) {
             if (o == this) return true;
 
-            if (o instanceof Set) return this.eq((Set) o);
+            if (o instanceof SetLike) return this.eq((SetLike) o);
             if (o instanceof Union) return this.eq((Union) o);
             if (o instanceof Intersection) return this.eq((Intersection) o);
             return false;

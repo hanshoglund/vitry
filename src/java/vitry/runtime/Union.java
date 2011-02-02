@@ -18,11 +18,52 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.struct.Sequence;
+import vitry.runtime.misc.Utils;
 
-/**
- * The union of sets.
- */
-public interface Union extends Pattern, Sequence<Pattern>
+
+abstract public class Union extends InclusionPattern
     {
+        public boolean match(Object o) {
+            if (o instanceof Value) throw new IllegalArgumentException();
+            for (Pattern x : this)
+                if (x.match(o)) return true;
+            return false;
+        }
+
+        public boolean match(Atom a) {
+            for (Pattern x : this)
+                if (x.match(a)) return true;
+            return false;
+        }
+
+        public boolean match(Tagged p) {
+            for (Pattern x : this)
+                if (x.match(p)) return true;
+            return false;
+        }
+
+        public boolean match(Product a) {
+            for (Pattern x : this)
+                if (x.match(a)) return true;
+            return false;
+        }
+
+        public boolean match(Arrow p) {
+            for (Pattern x : this)
+                if (x.match(p)) return true;
+            return false;
+        }
+
+        public boolean eqFor(Value p) {
+            return p.eq(this);
+        }
+
+        public boolean matchFor(Pattern p) {
+            return p.match(this);
+        }
+
+        public String toString() {
+            return Utils.join(this, "(", " | ", ")");
+            //            return Util.join(this, "", " | ", "");
+        }
     }

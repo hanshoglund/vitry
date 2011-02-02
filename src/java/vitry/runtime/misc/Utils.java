@@ -23,11 +23,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 import vitry.runtime.ParseError;
-import vitry.runtime.Pattern;
-import vitry.runtime.Product;
-import vitry.runtime.SimpleProduct;
-import vitry.runtime.Vitry;
-import vitry.runtime.struct.Sequence;
 
 
 public class Utils
@@ -164,10 +159,11 @@ public class Utils
                 out.write('\\');
             }
         }
-        
-        @SuppressWarnings("unchecked")
+
         public static <T,U> U unsafe(T val) {
-            return (U) val;
+            @SuppressWarnings("unchecked")
+            U casted = (U) val;
+            return casted;
         }
 
         public static <T> void nothing(T val) {
@@ -175,21 +171,20 @@ public class Utils
         }
         
         
-        // TODO lazy variant
-        public static Product prune(Product p) {
-            try {
-                if ( ((Product) p.head()).tail() == null) {
-                    Pattern h = ((Product) p.head()).head();
-                    Product t = prune(new SimpleProduct(p.tail()));
-                    return new SimpleProduct(t.cons(h));
-                }
-            } catch (ClassCastException e) {
-            }
-            if (p.tail() == null) return p;
-            Pattern h = p.head();
-            Product t = prune(new SimpleProduct(p.tail()));
-            return new SimpleProduct(t.cons(h));
-        }
+//        public static Product prune(Product p) {
+//            try {
+//                if ( ((Product) p.head()).tail() == null) {
+//                    Pattern h = ((Product) p.head()).head();
+//                    Product t = prune(new SimpleProduct(p.tail()));
+//                    return new SimpleProduct(t.cons(h));
+//                }
+//            } catch (ClassCastException e) {
+//            }
+//            if (p.tail() == null) return p;
+//            Pattern h = p.head();
+//            Product t = prune(new SimpleProduct(p.tail()));
+//            return new SimpleProduct(t.cons(h));
+//        }
 
         public static int hash(int seed, int val) {
             return (seed * 65050 + val) % 2044508069;

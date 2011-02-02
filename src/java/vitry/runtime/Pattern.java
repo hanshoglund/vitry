@@ -38,7 +38,7 @@ public interface Pattern extends Value
 
         boolean match(Union p);
 
-        boolean match(Set p);
+        boolean match(SetLike p);
 
         boolean match(Intersection p);
 

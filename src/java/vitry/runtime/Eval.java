@@ -82,4 +82,9 @@ public interface Eval
          * @throws LinkageError
          */
         public Object eval(Pattern expr, Prerequisites setup) throws ParseError, LinkageError, TypeError;
+        
+        
+        public boolean acceptsParserTokens();
+        public boolean acceptsUserTokens();
+        
     }

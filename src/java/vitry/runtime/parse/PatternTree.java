@@ -31,7 +31,7 @@ import vitry.runtime.Intersection;
 import vitry.runtime.InvocationError;
 import vitry.runtime.Pattern;
 import vitry.runtime.Product;
-import vitry.runtime.Set;
+import vitry.runtime.SetLike;
 import vitry.runtime.SimpleProduct;
 import vitry.runtime.Tagged;
 import vitry.runtime.Type;
@@ -94,10 +94,14 @@ public class PatternTree extends CommonTree implements Product
             }        
         }
         
+        
+        
+        
         private void generateSeq() {
             
             if (children != null) {
                 // Make a seq out of the ANTLR child list
+                @SuppressWarnings("unchecked") // ANTLR api is non-generic
                 Sequence<Pattern> itSeq = new IterableSequence<Pattern>(this.children);
                 this.childSeq = new MapSequence<Pattern,Pattern>(new Function(1, null){
                     
@@ -196,7 +200,7 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public boolean match(Set p) {
+        public boolean match(SetLike p) {
             return delegee.match(p);
         }
 
@@ -211,7 +215,7 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public boolean eq(Set o) {
+        public boolean eq(SetLike o) {
             return delegee.eq(o);
         }
 
@@ -258,10 +262,5 @@ public class PatternTree extends CommonTree implements Product
 
         public boolean matchFor(Pattern p) {
             return delegee.matchFor(p);
-        }
-
-        public Pattern third() {
-            return null;
-            // TODO Auto-generated method stub
         }
     }

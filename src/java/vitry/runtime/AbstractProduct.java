@@ -21,8 +21,6 @@ package vitry.runtime;
 import java.util.Iterator;
 
 import vitry.runtime.misc.Utils;
-import vitry.runtime.struct.PairSequence;
-import vitry.runtime.struct.MapSequence;
 import vitry.runtime.struct.Sequence;
 import vitry.runtime.struct.SequenceIterator;
 
@@ -116,11 +114,6 @@ implements Product
 //            return (tail == null ? null : tail.head());
         }
         
-        public Pattern third() {
-            return this.tail().tail().head();
-        }
-
-
         protected <T> T throwUnsupported() {
             throw new UnsupportedOperationException("No value for this accessor.");
         }

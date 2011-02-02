@@ -49,25 +49,27 @@ import vitry.runtime.struct.Sequences;
 abstract public class Function extends Scope implements Apply, Dynamic
     {
 
-        public static int MIN_ARITY = 1;
-        public static int MAX_ARITY = 0xf;
+        static final int MIN_ARITY = 1;
+        static final int MAX_ARITY = 0xf;
         
         protected final int arity;
-
         protected final Arrow type;
 
         
         Function() {
+            super();
             this.arity = 1;
-            this.type = new Arrow(Vitry.any, Vitry.any);;
+            this.type = new Arrow(VitryRuntime.any, VitryRuntime.any);;
         }
 
         public Function(Arrow type) {
+            super();
             this.arity = 1;
             this.type = type;
         }
         
         public Function(int arity, Arrow type) {
+            super();
             if (arity < MIN_ARITY || arity > MAX_ARITY) 
                 throw new IllegalArgumentException(
                         "Function must have arity a where " +
@@ -75,6 +77,29 @@ abstract public class Function extends Scope implements Apply, Dynamic
             this.arity = arity;
             this.type = type;
         }
+        
+        Function(Scope scope) {
+            super(scope);
+            this.arity = 1;
+            this.type = new Arrow(VitryRuntime.any, VitryRuntime.any);;
+        }
+
+        public Function(Arrow type, Scope scope) {
+            super(scope);
+            this.arity = 1;
+            this.type = type;
+        }
+        
+        public Function(int arity, Arrow type, Scope scope) {
+            super(scope);
+            if (arity < MIN_ARITY || arity > MAX_ARITY) 
+                throw new IllegalArgumentException(
+                        "Function must have arity a where " +
+                        MIN_ARITY + " < a < " + MAX_ARITY);
+            this.arity = arity;
+            this.type = type;
+        }
+        
 
         public int arity() {
             return arity;

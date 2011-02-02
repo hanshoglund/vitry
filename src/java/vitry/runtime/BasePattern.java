@@ -46,7 +46,7 @@ abstract public class BasePattern implements Pattern
             return false;
         }
 
-        public boolean eq(Set o) {
+        public boolean eq(SetLike o) {
             return false;
         }
 
@@ -83,7 +83,7 @@ abstract public class BasePattern implements Pattern
             return false;
         }
 
-        public boolean match(Set p) {
+        public boolean match(SetLike p) {
             return false;
         }
 

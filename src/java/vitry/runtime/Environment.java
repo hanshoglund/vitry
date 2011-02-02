@@ -18,7 +18,6 @@
  */
 package vitry.runtime;
 
-import java.io.Serializable;
 
 
 /**

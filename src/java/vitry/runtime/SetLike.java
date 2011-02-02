@@ -18,38 +18,11 @@
  */
 package vitry.runtime;
 
+import vitry.runtime.struct.Sequence;
+
 /**
- * Equality semantics. 
- * 
- * Values can be used at both sides of equality operations and
- * on the left side of match operations, however, they can not be used
- * on the right side of a match operation. Most built-in values will also 
- * implement {@link Pattern}.
- *
- * <code>this.eqFor(x)</code> ↔ <em>this == x</em>
+ * Compound entity, matching on membership.
  */
-public interface Value
+public interface SetLike extends Pattern, Sequence<Pattern>
     {
-        
-        boolean eq(Object o);
-
-        boolean eq(Atom o);
-        
-        boolean eq(Tagged o);
-
-        boolean eq(Product o);
-        
-        boolean eq(Union o);
-
-        boolean eq(SetLike o);
-
-        boolean eq(Intersection o);
-
-        boolean eq(Type o);
-        
-        boolean eq(Arrow o);
-
-        boolean eqFor(Value o);
-        
-        boolean matchFor(Pattern p);
     }

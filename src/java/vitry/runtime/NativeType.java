@@ -29,10 +29,10 @@ import vitry.runtime.struct.Sequence;
  * Includes host objects of a particular class, as well as Native instances wrapping
  * objects of that class. 
  */
-public class NativeType extends BasePattern implements Set
+public class NativeType extends BasePattern implements SetLike
     {
 
-        private static final Map<Class<?>, Set> instanceMap = new WeakHashMap<Class<?>, Set>();
+        private static final Map<Class<?>, SetLike> instanceMap = new WeakHashMap<Class<?>, SetLike>();
 
         private final Class<?> javaClass;
 
@@ -41,8 +41,8 @@ public class NativeType extends BasePattern implements Set
             this.javaClass = javaClass;
         }
 
-        public static Set forClass(Class<?> javaClass) {
-            Set obj = instanceMap.get(javaClass);
+        public static SetLike forClass(Class<?> javaClass) {
+            SetLike obj = instanceMap.get(javaClass);
             if (obj == null) {
                 obj = new NativeType(javaClass);
                 instanceMap.put(javaClass, obj);
@@ -50,7 +50,7 @@ public class NativeType extends BasePattern implements Set
             return obj;
         }
 
-        public boolean eq(Set o) {
+        public boolean eq(SetLike o) {
             if (o == this) return true;
             if (o instanceof NativeType) return ((NativeType) o).javaClass == this.javaClass;
             return false;

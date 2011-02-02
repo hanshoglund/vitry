@@ -24,7 +24,7 @@ import vitry.runtime.struct.ArraySequence;
 import vitry.runtime.struct.Sequence;
 
 
-public class SimpleUnion extends AbstractUnion
+public class SimpleUnion extends Union
     {
         Sequence<Pattern> elements;
 

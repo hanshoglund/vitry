@@ -18,55 +18,51 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.struct.Sequence;
+import vitry.runtime.misc.Utils;
 
-/**
- * Compound entity, matching on membership.
- */
-public interface Set extends Pattern, Sequence<Pattern>
+
+abstract public class Set extends InclusionPattern implements SetLike
     {
+        public boolean match(Object o) {
+            if (o instanceof Value) throw new IllegalArgumentException();
+            for (Pattern x : this)
+                if (x.eq(o)) return true;
+            return false;
+        }
 
-        /**
-         * Implements the empty set, written as <code>{}</code>.
-         */
-        public static final class Empty extends InclusionPattern implements Set
-            {
-                private Empty() {
-                }
+        public boolean match(Atom a) {
+            for (Pattern x : this)
+                if (x.eq(a)) return true;
+            return false;
+        }
 
-                public static final Empty instance = new Empty();
+        public boolean match(Tagged p) {
+            for (Pattern x : this)
+                if (x.eq(p)) return true;
+            return false;
+        }
 
-                public boolean eq(Set o) {
-                    return o == this;
-                }
+        public boolean match(Product a) {
+            for (Pattern x : this)
+                if (x.eq(a)) return true;
+            return false;
+        }
 
-                public boolean eqFor(Value o) {
-                    return o.eq(this);
-                }
+        public boolean match(Arrow p) {
+            for (Pattern x : this)
+                if (x.eq(p)) return true;
+            return false;
+        }
 
-                public boolean matchFor(Pattern p) {
-                    if (p == this) return true; // Optimization
-                    return p.match(this);
-                }
+        public boolean eqFor(Value p) {
+            return p.eq(this);
+        }
 
-                public Pattern head() {
-                    throw new UnsupportedOperationException("{} has no members.");
-                }
+        public boolean matchFor(Pattern p) {
+            return p.match(this);
+        }
 
-                public Sequence<Pattern> tail() {
-                    throw new UnsupportedOperationException("{} has no members.");
-                }
-
-                public String toString() {
-                    return "{}";
-                }
-
-                public int hashCode() {
-                    return -1;
-                }
-
-                public boolean hasTail() {
-                    return false;
-                }
-            }
+        public String toString() {
+            return Utils.join(this, "{", ", ", "}");
+        }
     }

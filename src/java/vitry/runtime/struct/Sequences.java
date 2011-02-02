@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import vitry.runtime.Pattern;
-import vitry.runtime.SimpleProduct;
-import vitry.runtime.Vitry;
 import vitry.runtime.misc.Utils;
 
 
@@ -16,14 +13,13 @@ import vitry.runtime.misc.Utils;
 public class Sequences
     {
 
+
+        private Sequences() {}
+
+        private static final Map<Object, Object> memoizedLasts = new WeakHashMap<Object, Object>();
         private static final Object[] OBJ_ARRAY = new Object[0];
 
-
-        private Sequences() {
-        }
-
-        private static Map<Object, Object> memoizedLasts = new WeakHashMap<Object, Object>();
-
+        
         
         public static <T> Sequence<T> cons(T x, Sequence<T> xs) {
             if (xs == null) return new SingleSequence<T>(x);
@@ -43,6 +39,7 @@ public class Sequences
         public static <T> Sequence<T> reverse(Sequence<T> xs) {
             return revappend(xs, null);
         }
+        
 
 
         public static <T> Sequence<T> butLast(Sequence<T> s) {
@@ -57,7 +54,7 @@ public class Sequences
         }
 
         public static <T> T last(Sequence<T> s) {
-            if (memoizedLasts.containsKey(s)) return Utils.unsafe(memoizedLasts.get(s));
+            if (memoizedLasts.containsKey(s)) return Utils.<Object,T>unsafe(memoizedLasts.get(s));
             while (s.tail() != null) {
                 s = s.tail();
             }
@@ -105,15 +102,16 @@ public class Sequences
             } while (s != null);
             return l.toArray(dummy);
         }
+        
 
 
-        public static void main(String[] args) {
+        // public static void main(String[] args) {
             //            Pattern p = FactoryMethods.product(1, 2, 3, 4, 5);
             //            System.out.println(new SimpleProduct(butLast((Sequence<Pattern>) p)));
             //            System.out.println(last((Sequence<?>) p)); 
 
-            ArraySequence<Pattern> s = new ArraySequence<Pattern>(new Pattern[]{ Vitry.nil, Vitry.true_ });
-            Sequence<Pattern> s2 = revappend(s, s);
-            System.out.println(new SimpleProduct((Sequence<Pattern>) s2));
-        }
+            // ArraySequence<Pattern> s = new ArraySequence<Pattern>(new Pattern[]{ VitryRuntime.nil, VitryRuntime.true_ });
+            // Sequence<Pattern> s2 = revappend(s, s);
+            // System.out.println(new SimpleProduct((Sequence<Pattern>) s2));
+        // }
     }

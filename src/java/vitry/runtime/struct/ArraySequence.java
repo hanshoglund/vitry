@@ -27,7 +27,7 @@ public class ArraySequence<T> extends AbstractSequence<T>
     {
         private final T[] array;
         private final int offset;
-        private boolean tailCached = false;
+        private boolean tailed = false;
         private Sequence<T> tail;
 
         public ArraySequence(T... elements) {
@@ -54,11 +54,11 @@ public class ArraySequence<T> extends AbstractSequence<T>
         }
 
         public Sequence<T> tail() {
-            if (!tailCached) {
+            if (!tailed) {
                 if (hasTail()) {
                     tail = new ArraySequence<T>(array, offset + 1, null);                    
                 }
-                tailCached = true;
+                tailed = true;
             }
             return tail;
         }

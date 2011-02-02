@@ -18,11 +18,57 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.struct.Sequence;
+import vitry.runtime.misc.Utils;
 
-/**
- * The intersection of sets.
- */
-public interface Intersection extends Pattern, Sequence<Pattern>
+
+abstract public class Intersection extends InclusionPattern
     {
+        public boolean match(Object o) {
+            if (o instanceof Value) throw new IllegalArgumentException();
+            for (Pattern x : this)
+                if (!x.match(o)) return false;
+            return true;
+        }
+
+        public boolean match(Atom a) {
+            for (Pattern x : this)
+                if (!x.match(a)) return false;
+            return true;
+        }
+
+        public boolean match(Tagged p) {
+            for (Pattern x : this)
+                if (!x.match(p)) return false;
+            return true;
+        }
+
+        public boolean match(Product a) {
+            for (Pattern x : this)
+                if (!x.match(a)) return false;
+            return true;
+        }
+
+        public boolean match(Intersection a) {
+            for (Pattern x : this)
+                if (!x.match(a)) return false;
+            return true;
+        }
+
+        public boolean match(Arrow p) {
+            for (Pattern x : this)
+                if (!x.match(p)) return false;
+            return true;
+        }
+
+        public boolean eqFor(Value p) {
+            return p.eq(this);
+        }
+
+        public boolean matchFor(Pattern p) {
+            return p.match(this);
+        }
+
+        public String toString() {
+            return Utils.join(this, "(", " & ", ")");
+        }
     }

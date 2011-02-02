@@ -18,16 +18,21 @@
  */
 package vitry.runtime;
 
+import static vitry.runtime.build.*;
 import static vitry.runtime.misc.Utils.limit;
-import static vitry.runtime.misc.Utils.nothing;
+import static vitry.runtime.struct.Sequences.butLast;
+import static vitry.runtime.struct.Sequences.first;
+import static vitry.runtime.struct.Sequences.last;
+import static vitry.runtime.struct.Sequences.length;
+import static vitry.runtime.struct.Sequences.second;
 
 import java.math.BigInteger;
+import java.util.Iterator;
 
 import vitry.runtime.misc.Utils;
 import vitry.runtime.parse.VitryParser;
 import vitry.runtime.parse.VitryToken;
 import vitry.runtime.struct.Sequence;
-import vitry.runtime.struct.Sequences;
 
 
 /**
@@ -45,7 +50,6 @@ public class Interpreter implements Eval
 
              
         private static final int     EXPR_TRACE_LIMIT = 50;
-        private static final boolean DEBUG = true;
         
         
         // Token types
@@ -75,35 +79,11 @@ public class Interpreter implements Eval
         private static final int Recur        = VitryParser.Recur;
         private static final int Type         = VitryParser.Type;
 
-        /**
-         * Maps user-provided symbolic tokens to parser-generated types. 
-         */
-        private static final Environment<Pattern, Integer> SYMBOLIC_TOKENS =
-            new HashEnvironment<Pattern, Integer>()
-                .define(Symbol.intern("Ang"),    Ang)
-                .define(Symbol.intern("Apply"),  Apply)
-                .define(Symbol.intern("Assign"), Assign)
-                .define(Symbol.intern("Bra"),    Bra)
-                .define(Symbol.intern("Do"),     Do)
-                .define(Symbol.intern("Fn"),     Fn)
-                .define(Symbol.intern("If"),     If)
-                .define(Symbol.intern("Left"),   Left)
-                .define(Symbol.intern("Let"),    Let)
-                .define(Symbol.intern("Loop"),   Loop)
-                .define(Symbol.intern("Match"),  Match)
-                .define(Symbol.intern("Module"), Module)
-                .define(Symbol.intern("Ops"),    Ops)
-                .define(Symbol.intern("Par"),    Par)
-                .define(Symbol.intern("Quote"),  Quote)
-                .define(Symbol.intern("Recur"),  Recur)
-                .define(Symbol.intern("Type"),   Type)
-                ;
 
         
         // Various identifiers
          
         private static final Symbol delimiter = Symbol.intern("delimiter");
-        private static final Symbol nil       = Symbol.intern("nil");
         private static final Symbol par       = Symbol.intern("()");
         private static final Symbol bra       = Symbol.intern("[]");
         private static final Symbol ang       = Symbol.intern("{}");
@@ -113,33 +93,57 @@ public class Interpreter implements Eval
         private static final Symbol quoted    = Symbol.intern("quoted");
         private static final Symbol true_     = Symbol.intern("true");
         private static final Symbol false_    = Symbol.intern("false");
-        private static final Symbol add       = Symbol.intern("add");
+        
+        
+        /**
+         * Maps user-provided symbolic tokens to parser-generated types. 
+         */
+        private static final Environment<Pattern, Integer> SYMBOLIC_TOKENS =
+             new HashEnvironment<Pattern, Integer>()
+             .define( Symbol.intern("Ang")    , Ang    )
+             .define( Symbol.intern("Apply")  , Apply  )
+             .define( Symbol.intern("Assign") , Assign )
+             .define( Symbol.intern("Bra")    , Bra    )
+             .define( Symbol.intern("Do")     , Do     )
+             .define( Symbol.intern("Fn")     , Fn     )
+             .define( Symbol.intern("If")     , If     )
+             .define( Symbol.intern("Left")   , Left   )
+             .define( Symbol.intern("Let")    , Let    )
+             .define( Symbol.intern("Loop")   , Loop   )
+             .define( Symbol.intern("Match")  , Match  )
+             .define( Symbol.intern("Module") , Module )
+             .define( Symbol.intern("Ops")    , Ops    )
+             .define( Symbol.intern("Par")    , Par    )
+             .define( Symbol.intern("Quote")  , Quote  )
+             .define( Symbol.intern("Recur")  , Recur  )
+             .define( Symbol.intern("Type")   , Type   )
+             ;
+        
 
         /**
          * Context for semantic disambiguition
          */
-        private static final Environment<Symbol, Symbol> STD_CONTEXT = 
-            new HashEnvironment<Symbol, Symbol> ()
-                .define(delimiter, par)
-                .define(side,      right)
-                .define(quoted,    false_)
-                ;
+        private static final Environment<Symbol, Symbol> standardContext = 
+            new HashEnvironment<Symbol, Symbol>()
+            .define( delimiter , par    )
+            .define( side      , right  )
+            .define( quoted    , false_ )
+            ; 
+                
+                
+                
+        public boolean acceptsParserTokens() {
+            return true;
+        }
         
-        private static final Scope STD_SCOPE = new Scope(){
-            public Environment<Symbol, Object> environment() {
-                return new HashEnvironment<Symbol, Object>()
-                    .define(par, nil)
-                    .define(ang, nil)
-                    .define(bra, nil)
-                    .define(nil, nil)
-                    .define(add, Vitry.add)
-                    .define(true_, true_)
-                    .define(false_, false_)
-                    ;
-            }
-        };
-
-
+        
+        public boolean acceptsUserTokens() {
+            return true;
+        }
+        
+        
+        
+        
         public Object eval
                 (
                 Pattern expr, 
@@ -150,17 +154,14 @@ public class Interpreter implements Eval
                 (
                 expr, 
                 setup, 
-                STD_CONTEXT,
-                STD_SCOPE.environment());
+                standardContext,
+                VitryRuntime.prelude.makeChild());
         }
         
 
 
 
-
- 
-
-        public Object eval
+        Object eval
                 (
                 Pattern expr,
                 Prerequisites pre,
@@ -172,8 +173,8 @@ public class Interpreter implements Eval
                 )
         throws ParseError, LinkageError, TypeError {
                                     
-            // Subexpressions, generated during the analysis phase
-            // Do not update from the switch block, or your value is overwritten
+            // Subexpressions, generated during analysis
+            // Do not change from the switch block
                        
             Pattern op;                     // expr head or null
             Sequence<Pattern> args;         // expr tail or null
@@ -186,7 +187,7 @@ public class Interpreter implements Eval
                 if (DEBUG) 
                 {                    
                     String exprStr = expr.toString();
-                    nothing(exprStr);
+                    Utils.nothing(exprStr);
                 }
                 
                 // Analysis phase
@@ -225,31 +226,28 @@ public class Interpreter implements Eval
                     
                     case NAT:      
                         return parseNat(op);
+
                     
                     case FLOAT:    
                         return parseFloat(op);
                         
+
                     case COMPLEX:
                         return parseComplex(op);
                     
+
                     case STRING:   
                         return parseString(op);
                                             
+
                     case OP:
                         // Operators depend on delimiter context
                         if (context.lookup(quoted) == true_) {
-                            return parseOperator
-                                (
-                                op, 
-                                context.lookup(delimiter)
-                                );  
+                            return parseOperator( op, context.lookup(delimiter) );  
                         } else {
-                            return frame.lookup(parseOperator
-                                (
-                                op, 
-                                context.lookup(delimiter)
-                                ));   
+                            return frame.lookup(parseOperator( op, context.lookup(delimiter)) );   
                         }
+
 
                     case SYM:
                         if (context.lookup(side) == left) {
@@ -258,14 +256,13 @@ public class Interpreter implements Eval
                             if (context.lookup(quoted) == true_) {
                                 return parseSymbol(op);
                             } else {
-                                return frame.lookup(parseSymbol(op));
+                                return frame.lookup( parseSymbol(op) );
                             }                            
                         }
 
                     
                     // Non-terminals
                     
-                        
                     // These forms all have the same behaviour: If () is bound to nil, 
                     // evaluate the contained expression in a context where delimiter=();
                     // else apply the bound function to the contained expression evaluated
@@ -275,102 +272,132 @@ public class Interpreter implements Eval
                         context = context.makeChild()
                             .define(delimiter, par)
                             .define(quoted, false_);
+                        
                         expr = args.head();
-                        if (frame.lookup(par) == nil) {
-                            continue;                            
-                        } else {
-                            Object val = eval(expr, pre, context, frame);
-                            return ((Apply) frame.lookup(par)).apply(val);
-                        }
+                        
+                        if (frame.lookup(par) != VitryRuntime.nil) 
+                        {
+                            Object value = eval(expr, pre, context, frame);
+                            return ((Apply) frame.lookup(par)).apply(value);
+                        } 
+                        else continue;
+                        
 
                     case Bra:
                         context = context.makeChild()
                             .define(delimiter, bra)
                             .define(quoted, false_);
+                        
                         expr = args.head();
-                        if (frame.lookup(bra) == nil) {
-                            continue;                            
-                        } else {
-                            Object val = eval(expr, pre, context, frame);
-                            return ((Apply) frame.lookup(bra)).apply(val);
-                        }   
+                        
+                        if (frame.lookup(bra) != VitryRuntime.nil) 
+                        {
+                            Object value = eval(expr, pre, context, frame);
+                            return ((Apply) frame.lookup(bra)).apply(value);
+                        } 
+                        else continue;
+                        
                         
                     case Ang:
                         context = context.makeChild()
                             .define(delimiter, ang)
                             .define(quoted, false_);
+                        
                         expr = args.head();
-                        if (frame.lookup(ang) == nil) {
-                            continue;                            
-                        } else {
-                            Object val = eval(expr, pre, context, frame);
-                            return ((Apply) frame.lookup(ang)).apply(val);
-                        }
+                        
+                        if (frame.lookup(ang) != VitryRuntime.nil) 
+                        {
+                            Object value = eval(expr, pre, context, frame);
+                            return ((Apply) frame.lookup(ang)).apply(value);
+                        } 
+                        else continue;
+                        
+                        
+                        
                         
                     case Module:
                         // Typecheck
 //                        return new InterpretedModule();
+                           
+                    
 
                     case Fn:
                         {
-                            Sequence<Pattern> params = Sequences.butLast(args);
-                            expr = Sequences.last(args);
+                            Sequence<Pattern> params = butLast(args);
+                            Pattern body = last(args);
+                            int arity = length(params);
+                            
+                            return new InterpretedFunction(params, body, arity, frame);
                         }
 
                         
-                        
-                        // Typecheck
-//                        new InterpretedFunction(scope);
+
+
 
                     case Let:
                         {
-                            Sequence<Pattern> assigns = Sequences.butLast(args);
-                            expr = Sequences.last(args);
+                            Sequence<Pattern> assignments = butLast(args);
+                            expr = last(args);
                             frame = frame.makeChild();
-                            for (Pattern a : assigns)
-                                eval(a, pre, context, frame);
+                            for (Pattern a : assignments) {
+                                eval(a, pre, context, frame);              
+                            }
                         }
                         continue;
+                        
 
                     case Assign:
                         {
-                            Object key = eval(Sequences.first(args), pre, context, frame);
-                            Object val = eval(Sequences.second(args), pre, context, frame);
+                        Object name = eval(first(args), pre, context, frame);
+                        Object value = eval(second(args), pre, context, frame);
                             try {
-                                frame.define((Symbol) key, val);
+                                frame.define((Symbol) name, value);
                             } catch (ClassCastException e) {
-                                throw new ParseError("Can not assign to non-symbol " + key);
+                                throw new ParseError("Can not assign to non-symbol " + name);
                             }
                             return null;
                         }
+                        
 
                     case Left:
                         context = context.makeChild().define(side, left);
                         expr = args.head();
                         continue;
+                        
 
                     case Quote:
                         context = context.makeChild().define(quoted, true_);
                         expr = args.head();
                         continue;
+                        
 
                     case Apply:
                         if (context.lookup(side) == left) {
                             // TODO
                         
                         } else {
-                            Object f = eval(args.head(), pre, context, frame);
+                            Object fn = eval(args.head(), pre, context, frame);
+                            Sequence<Pattern> fnArgs = args.tail();
+
+                            // If fn is interpreted and has the correct arity, we evaluate it directly, 
+                            // otherwise we fall back on the common calling conventions
                             
-                            if (f instanceof InterpretedFunction) {
-                                // TODO
+                            InterpretedFunction ifn = null;
+                            try { 
+                                ifn = (InterpretedFunction) fn; 
+                                } catch (Exception _){}
+                            
+                            if (ifn != null && ifn.arity == length(fnArgs)) {
+                                frame = ifn.environment().makeChild();                                
+                                assignParameters(pre, context, frame, ifn, fnArgs);
+                                expr = ifn.body;
+                                continue;
+                                
                             } else {
-                                java.util.List<Object> fargs = new java.util.LinkedList<Object>();
-                                for (Pattern farg : args.tail()) {
-                                    fargs.add(eval(farg, pre, context, frame));
-                                }
-                                return ((Apply) f).applyTo(fargs.toArray());
+                                return applyDefault(pre, context, frame, fn, fnArgs);
                             }
                         }
+                        
 
                     case Type:
                         if (context.lookup(side) == left) {
@@ -430,7 +457,48 @@ public class Interpreter implements Eval
 
 
 
+        private void assignParameters
+            (
+            Prerequisites pre, 
+            Environment<Symbol, Symbol> context,
+            Environment<Symbol, Object> frame, 
+            InterpretedFunction ifn,
+            Sequence<Pattern> fnArgs
+            )
+        {    
+            for (Iterator<Pattern> l = ifn.params.iterator(), r = fnArgs.iterator();
+                 l.hasNext() && r.hasNext();) {
+                Object name = eval(l.next(), pre, context, frame);
+                Object value = eval(r.next(), pre, context, frame);
+                try {
+                    frame.define((Symbol) name, value);
+                } catch (ClassCastException e) {
+                    throw new ParseError("Can not assign to non-symbol " + name);
+                }
+            }
+        }
 
+
+
+
+        private Object applyDefault
+            (
+            Prerequisites pre, 
+            Environment<Symbol, Symbol> context,
+            Environment<Symbol, Object> frame, 
+            Object fn, 
+            Sequence<Pattern> fnArgs
+            )
+        {    
+            java.util.List<Object> fnArgVals = new java.util.LinkedList<Object>();
+            
+            for (Pattern fa : fnArgs) {
+                fnArgVals.add(eval(fa, pre, context, frame));
+            }
+            return ((Apply) fn).applyTo(fnArgVals.toArray());
+        }
+        
+        
 
 
         private int parserTokenType(Pattern op) {
@@ -483,33 +551,34 @@ public class Interpreter implements Eval
             return str.substring(1, str.length() - 1);
         }
         
-        
-        
-        
-
-         
-
 
         
         static class InterpretedFunction extends Function
             {
-                Sequence<Pattern> vars;
+                Sequence<Pattern> params;
                 Pattern body;
                 int arity;
-                
-                public InterpretedFunction(Sequence<Pattern> args, Pattern body, int arity) {
-                    this.vars = args;
+                Environment<Symbol, Object> env;
+
+                public InterpretedFunction(Sequence<Pattern> params, Pattern body, int arity, Environment<Symbol, Object> env) {
+                    this.params = params;
                     this.body = body;
                     this.arity = arity;
+                    this.env = env;
+                }
+
+                public Environment<Symbol, Object> environment() {
+                    return env;
                 }
             }
             
-            
+
+
+
+
 
         static class InterpretedModule extends Module
             {
-
-
             }
             
             

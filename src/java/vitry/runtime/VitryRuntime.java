@@ -19,11 +19,7 @@
 package vitry.runtime;
 
 import java.math.BigInteger;
-import java.util.Iterator;
 
-import vitry.runtime.struct.PairSequence;
-import vitry.runtime.struct.MapSequence;
-import vitry.runtime.struct.Sequence;
 
 /**
  * This class encapsulates an entire runtime system. That is, a set of system
@@ -38,33 +34,13 @@ import vitry.runtime.struct.Sequence;
  *     Float        <=> float
  *     Double       <=> double
  *     String       <=> str
- *     
- * Implemented in vitry.runtime:
- * 
- *     Product      <=> ,
- *     Set          <=> {,}
- *     Union        <=> |
- *     Intersection <=> &
  * </code></pre>
  * 
  * @author Hans Höglund
  */
-public class Vitry
+public class VitryRuntime
     {
         
-        // TODO move down
-        public static Apply not;
-
-        public static Apply less;
-
-        public static Apply greater;
-
-        public static Apply list;
-
-        public static Apply set;
-
-        public static Apply product;
-
         /**
          * Standard operator bindings.
          */
@@ -126,19 +102,15 @@ public class Vitry
             }
         
         
-        // Special forms
-
-        // These are done in the interpreter
-        //     ` fn if let do match loop recur
 
         // ()
         public static final Nil        nil = new Nil();
 
-        // ?
-        public static final Any    any = new Any();
-
         // {}
-        public static final Set.Empty   bottom = Set.Empty.instance;
+        public static final Bottom   bottom = Bottom.instance;
+        
+        // _
+        public static final Any    any = new Any();
 
         
         
@@ -151,18 +123,6 @@ public class Vitry
                     return null; // TODO
                 }
             };
-
-
-        // type name pattern
-        public static final Apply type = new Function(
-                2, 
-                null)
-            {
-                public Object apply(Object name, Object pattern) {
-                    return symType((String) name, (Pattern) pattern);
-                }
-            };
-            
             
 
         // Basic types
@@ -179,12 +139,12 @@ public class Vitry
         //   float  = ...
         //   double = ...
         //   str    = ...
-        public static final Set    nat     = NativeType.forClass(BigInteger.class);
-        public static final Set    int_    = NativeType.forClass(BigInteger.class);
-        public static final Set    rat     = NativeType.forClass(BigRational.class);
-        public static final Set    float_  = NativeType.forClass(Float.class);
-        public static final Set    double_ = NativeType.forClass(Double.class);
-        public static final Set    str     = NativeType.forClass(String.class);
+        public static final SetLike    nat     = NativeType.forClass(BigInteger.class);
+        public static final SetLike    int_    = NativeType.forClass(BigInteger.class);
+        public static final SetLike    rat     = NativeType.forClass(BigRational.class);
+        public static final SetLike    float_  = NativeType.forClass(Float.class);
+        public static final SetLike    double_ = NativeType.forClass(Double.class);
+        public static final SetLike    str     = NativeType.forClass(String.class);
 
         //
         // implicit
@@ -563,6 +523,30 @@ public class Vitry
         // read        : -> ?
         // help        : ->
             
+        public static Apply not;
+
+
+
+        public static Apply less;
+
+
+
+        public static Apply greater;
+
+
+
+        public static Apply list;
+
+
+
+        public static Apply set;
+
+
+
+        public static Apply product;
+
+
+
         // quit        : ->
         public static final Apply quit = new Function(
                 1, 
@@ -589,117 +573,43 @@ public class Vitry
             // TODO
         }
 
-        /**
-         * The nil value, written as <code>()</code>.
-         */
-        public static final class Nil extends Atom implements Product
+        
+        
+        
+        public static Scope stdScope = new Scope()
             {
-                private Nil() {
+                public Environment<Symbol, Object> environment() {
+                    return prelude;
                 }
-                
-                public boolean eq(Atom o) {
-                    return o == this;
-                }
+            };
 
-                public String toString() {
-                    return "()";
-                }
-
-                public Sequence<Pattern> cons(Pattern head) {
-                    return new PairSequence<Pattern>(head, this);
-                }
-
-                public <U> MapSequence<Pattern, U> map(Apply fn) {
-                    return new MapSequence<Pattern,U>(fn, this);
-                }
-                
-                public boolean isDestructible() {
-                    return false;
-                }
-                
-                public boolean hasTail() {
-                    return false;
-                }
-                
-                // Rest of interface unsupported, pretty uninteresting...
-
-                public Product first() {
-                    return throwUnsupported();
-                }
-
-                public Product second() {
-                    return throwUnsupported();
-                }
-
-                public Pattern head() {
-                    return throwUnsupported();
-                }
-
-                public Sequence<Pattern> tail() {
-                    return throwUnsupported();
-                }
-
-                public Iterator<Pattern> iterator() {
-                    return throwUnsupported();
-                }
-
-                public Sequence<Pattern> destruct() {
-                    return throwUnsupported();
-                }
-                
-                private <T> T throwUnsupported() {
-                    throw new UnsupportedOperationException("() has no members.");
-                }
-
-                public Pattern third() {
-                    return null;
-                    // TODO Auto-generated method stub
-                }
-            }
-
-        /**
-         * The top type, written as <code>_</code>.
-         */
-        public static final class Any extends Atom
-            {
-                private Any() {
-                }
-
-                public boolean eq(Atom o) {
-                    return o == this;
-                }
-
-                public boolean match(Atom o) {
-                    return true;
-                }
-
-                public boolean match(Product p) {
-                    return true;
-                }
-
-                public boolean match(Union p) {
-                    return true;
-                }
-
-                public boolean match(Set p) {
-                    return true;
-                }
-
-                public boolean match(Intersection p) {
-                    return true;
-                }
-
-                public boolean match(Type p) {
-                    return true;
-                }
-
-                public boolean match(Arrow p) {
-                    return true;
-                }
-
-                public String toString() {
-                    return "_";
-                }
-            }
+        static Environment<Symbol, Object> prelude = new HashEnvironment<Symbol, Object>();
+        static {
+            prelude.define( Symbol.intern("()"),       nil );
+            prelude.define( Symbol.intern("[]"),       nil );
+            prelude.define( Symbol.intern("{}"),       nil );
+            prelude.define( Symbol.intern("`()"),      nil );
+            prelude.define( Symbol.intern("`[]"),      nil );
+            prelude.define( Symbol.intern("`{}"),      bottom );
+            prelude.define( Symbol.intern("nil"),      nil );
+            prelude.define( Symbol.intern("=="),       eq );
+            prelude.define( Symbol.intern("eq"),       eq );
+            prelude.define( Symbol.intern("bool"),     bool );
+            prelude.define( Symbol.intern("true"),     true_ );
+            prelude.define( Symbol.intern("false"),    false_ );
+            prelude.define( Symbol.intern("int"),      int_ );
+            prelude.define( Symbol.intern("nat"),      nat );
+            prelude.define( Symbol.intern("rat"),      rat );
+            prelude.define( Symbol.intern("float"),    float_ );
+            prelude.define( Symbol.intern("double"),   double_ );
+            prelude.define( Symbol.intern("str"),      str );
+            prelude.define( Symbol.intern("id"),       id );
+            prelude.define( Symbol.intern("add"),      add );
+            prelude.define( Symbol.intern("sub"),      sub );
+            prelude.define( Symbol.intern("mul"),      mul );
+            prelude.define( Symbol.intern("div"),      div );
+            prelude.define( Symbol.intern("mod"),      mod );
+            prelude.define( Symbol.intern("quit"),     quit );
+        }
 
     }

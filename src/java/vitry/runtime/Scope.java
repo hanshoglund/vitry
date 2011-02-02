@@ -24,7 +24,7 @@ package vitry.runtime;
 abstract public class Scope extends Atom
     {
         public Scope() {
-            this.env = new HashEnvironment<Symbol, Object>();
+            this.env = VitryRuntime.prelude;
         }
 
         public Scope(Scope parent) {

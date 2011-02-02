@@ -38,9 +38,4 @@ public interface Product extends Pattern, Sequence<Pattern>, MaybeDestructible
         public Pattern first();
 
         public Pattern second();
-        
-        // TODO remove
-        public Pattern third();
-
-        // TODO generate as needed
     }
