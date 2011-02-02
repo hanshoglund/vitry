@@ -54,7 +54,7 @@ public class SimpleProduct extends AbstractProduct
             return elements.tail();
         }
         
-        public Sequence<Pattern> prepend(Pattern head) {
+        public Sequence<Pattern> cons(Pattern head) {
             return new PairSequence<Pattern>(head, elements);
         }
 

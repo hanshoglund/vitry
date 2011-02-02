@@ -19,7 +19,7 @@ implements Sequence<Pattern>, MaybeDestructible
         /**
          * Instances destructs on their elements.
          */
-        public Sequence<Pattern> prepend(Pattern head) {
+        public Sequence<Pattern> cons(Pattern head) {
             return new PairSequence<Pattern>(head, this);
         }
 

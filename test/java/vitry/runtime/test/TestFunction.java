@@ -73,7 +73,7 @@ public class TestFunction
         }
 
         /**
-         * Test method for {@link vitry.runtime.Function#applyVariadic(java.lang.Object[])}.
+         * Test method for {@link vitry.runtime.Function#applyTo(java.lang.Object[])}.
          */
         @Test
         public void testApplyVariadic() {

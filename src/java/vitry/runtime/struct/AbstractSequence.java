@@ -25,7 +25,7 @@ import vitry.runtime.Apply;
 
 abstract public class AbstractSequence<T> implements Sequence<T>
     {
-        public Sequence<T> prepend(T head) {
+        public Sequence<T> cons(T head) {
             return new PairSequence<T>(head, this);
         }
 

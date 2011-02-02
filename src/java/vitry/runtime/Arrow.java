@@ -108,7 +108,7 @@ public class Arrow extends BasePattern implements Sequence<Pattern>
             return new SequenceIterator<Pattern>(this);
         }
 
-        public Sequence<Pattern> prepend(Pattern head) {
+        public Sequence<Pattern> cons(Pattern head) {
             return new PairSequence<Pattern>(head, this);
         }
 

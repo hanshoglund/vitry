@@ -181,14 +181,14 @@ public class Utils
                 if ( ((Product) p.head()).tail() == null) {
                     Pattern h = ((Product) p.head()).head();
                     Product t = prune(new SimpleProduct(p.tail()));
-                    return new SimpleProduct(t.prepend(h));
+                    return new SimpleProduct(t.cons(h));
                 }
             } catch (ClassCastException e) {
             }
             if (p.tail() == null) return p;
             Pattern h = p.head();
             Product t = prune(new SimpleProduct(p.tail()));
-            return new SimpleProduct(t.prepend(h));
+            return new SimpleProduct(t.cons(h));
         }
 
         public static int hash(int seed, int val) {

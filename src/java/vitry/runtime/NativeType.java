@@ -89,7 +89,7 @@ public class NativeType extends BasePattern implements Set
             return throwEnumeration();
         }
 
-        public Sequence<Pattern> prepend(Pattern head) {
+        public Sequence<Pattern> cons(Pattern head) {
             return throwEnumeration();
         }
 

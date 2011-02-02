@@ -39,7 +39,7 @@ public interface Sequence<T> extends Iterable<T>
         
         boolean hasTail();
 
-        Sequence<T> prepend(T head);
+        Sequence<T> cons(T head);
 
         <U> Sequence<U> map(Apply fn);
     }

@@ -18,7 +18,8 @@
  */
 package vitry.runtime;
 
-import static vitry.runtime.misc.Utils.*;
+import static vitry.runtime.misc.Utils.limit;
+import static vitry.runtime.misc.Utils.nothing;
 
 import java.math.BigInteger;
 
@@ -112,6 +113,7 @@ public class Interpreter implements Eval
         private static final Symbol quoted    = Symbol.intern("quoted");
         private static final Symbol true_     = Symbol.intern("true");
         private static final Symbol false_    = Symbol.intern("false");
+        private static final Symbol add       = Symbol.intern("add");
 
         /**
          * Context for semantic disambiguition
@@ -130,6 +132,7 @@ public class Interpreter implements Eval
                     .define(ang, nil)
                     .define(bra, nil)
                     .define(nil, nil)
+                    .define(add, Vitry.add)
                     .define(true_, true_)
                     .define(false_, false_)
                     ;
@@ -309,6 +312,13 @@ public class Interpreter implements Eval
 //                        return new InterpretedModule();
 
                     case Fn:
+                        {
+                            Sequence<Pattern> params = Sequences.butLast(args);
+                            expr = Sequences.last(args);
+                        }
+
+                        
+                        
                         // Typecheck
 //                        new InterpretedFunction(scope);
 
@@ -326,7 +336,11 @@ public class Interpreter implements Eval
                         {
                             Object key = eval(Sequences.first(args), pre, context, frame);
                             Object val = eval(Sequences.second(args), pre, context, frame);
-                            frame.define((Symbol) key, val);
+                            try {
+                                frame.define((Symbol) key, val);
+                            } catch (ClassCastException e) {
+                                throw new ParseError("Can not assign to non-symbol " + key);
+                            }
                             return null;
                         }
 
@@ -342,15 +356,20 @@ public class Interpreter implements Eval
 
                     case Apply:
                         if (context.lookup(side) == left) {
-                            // Cast to Apply
-                            // Eval args
-                            // Invoke
-                            // Return result
+                            // TODO
+                        
                         } else {
-                            // Cast to ApplyLeft
-                            // Eval args
-                            // Invoke
-                            // Return result
+                            Object f = eval(args.head(), pre, context, frame);
+                            
+                            if (f instanceof InterpretedFunction) {
+                                // TODO
+                            } else {
+                                java.util.List<Object> fargs = new java.util.LinkedList<Object>();
+                                for (Pattern farg : args.tail()) {
+                                    fargs.add(eval(farg, pre, context, frame));
+                                }
+                                return ((Apply) f).applyTo(fargs.toArray());
+                            }
                         }
 
                     case Type:
@@ -373,17 +392,17 @@ public class Interpreter implements Eval
                         }
 
                     case Match:
-                        Pattern input = op;
-                        Sequence<Pattern> leftSide = null;
-                        Sequence<Pattern> rightSide = null;
-                        while (leftSide != null && rightSide != null) {
-                            if (input.matchFor(leftSide.head())) {
-                                return rightSide.head();
-                            }
-                            leftSide = leftSide.tail();
-                            rightSide = rightSide.tail();
-                        }
-                        throw new MatchingError(input);
+                        // Pattern input = op;
+                        // Sequence<Pattern> leftSide = null;
+                        // Sequence<Pattern> rightSide = null;
+                        // while (leftSide != null && rightSide != null) {
+                        //     if (input.matchFor(leftSide.head())) {
+                        //         return rightSide.head();
+                        //     }
+                        //     leftSide = leftSide.tail();
+                        //     rightSide = rightSide.tail();
+                        // }
+                        // throw new MatchingError(input); 
 
                     case Loop:
                         // Store expr for recur
@@ -472,13 +491,18 @@ public class Interpreter implements Eval
 
 
         
-        abstract static class InterpretedFunction extends Function
+        static class InterpretedFunction extends Function
             {
                 Sequence<Pattern> vars;
-
                 Pattern body;
+                int arity;
+                
+                public InterpretedFunction(Sequence<Pattern> args, Pattern body, int arity) {
+                    this.vars = args;
+                    this.body = body;
+                    this.arity = arity;
+                }
             }
-            
             
             
 
@@ -490,138 +514,139 @@ public class Interpreter implements Eval
             
             
 
-        private static class IFn1 extends InterpretedFunction
-            {
-                public Object apply(Object a0) throws InvocationError {
-                    return a0;
-                }
-            }
-
-        private static class IFn2 extends InterpretedFunction
-            {
-                public Object apply(Object a0, Object a1) throws InvocationError {
-                    return a1;
-                }
-            }
-
-        private static class IFn3 extends InterpretedFunction
-            {
-                public Object apply(Object a0, Object a1, Object a2) throws InvocationError {
-                    return a2;
-                }
-            }
-
-        private static class IFn4 extends InterpretedFunction
-            {
-                public Object apply(Object a0, Object a1, Object a2, Object a3)
-                        throws InvocationError {
-                    return a3;
-                }
-            }
-
-        private static class IFn5 extends InterpretedFunction
-            {
-                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4)
-                        throws InvocationError {
-                    return a4;
-                }
-            }
-
-        private static class IFn6 extends InterpretedFunction
-            {
-                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
-                        Object a5) throws InvocationError {
-                    return a5;
-                }
-            }
-
-        private static class IFn7 extends InterpretedFunction
-            {
-                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
-                        Object a5, Object a6) throws InvocationError {
-                    return a6;
-                }
-            }
-
-        private static class IFn8 extends InterpretedFunction
-            {
-                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
-                        Object a5, Object a6, Object a7) throws InvocationError {
-                    return a7;
-                }
-            }
-
-        private static class IFn9 extends InterpretedFunction
-            {
-                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
-                        Object a5, Object a6, Object a7, Object a8) throws InvocationError {
-                    return a8;
-                }
-            }
-
-        private static class IFn10 extends InterpretedFunction
-            {
-                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
-                        Object a5, Object a6, Object a7, Object a8, Object a9)
-                        throws InvocationError {
-                    return a9;
-                }
-            }
-
-        private static class IFn11 extends InterpretedFunction
-            {
-                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
-                        Object a5, Object a6, Object a7, Object a8, Object a9, Object a10)
-                        throws InvocationError {
-                    return a10;
-                }
-            }
-
-        private static class IFn12 extends InterpretedFunction
-            {
-                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
-                        Object a5, Object a6, Object a7, Object a8, Object a9, Object a10,
-                        Object a11) throws InvocationError {
-                    return a11;
-                }
-            }
-
-        private static class IFn13 extends InterpretedFunction
-            {
-                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
-                        Object a5, Object a6, Object a7, Object a8, Object a9, Object a10,
-                        Object a11, Object a12) throws InvocationError {
-                    return a12;
-                }
-            }
-
-        private static class IFn14 extends InterpretedFunction
-            {
-                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
-                        Object a5, Object a6, Object a7, Object a8, Object a9, Object a10,
-                        Object a11, Object a12, Object a13) throws InvocationError {
-                    return a13;
-                }
-            }
-
-        private static class IFn15 extends InterpretedFunction
-            {
-                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
-                        Object a5, Object a6, Object a7, Object a8, Object a9, Object a10,
-                        Object a11, Object a12, Object a13, Object a14) throws InvocationError {
-                    return a14;
-                }
-            }
-
-        private static class IFn16 extends InterpretedFunction
-            {
-                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
-                        Object a5, Object a6, Object a7, Object a8, Object a9, Object a10,
-                        Object a11, Object a12, Object a13, Object a14, Object a15)
-                        throws InvocationError {
-                    return a15;
-                }
-            }
+//        static class IFn1 extends InterpretedFunction
+//            {   
+//                
+//                public Object apply(Object a0) throws InvocationError {
+//                    return a0;
+//                }
+//            }
+//
+//        static class IFn2 extends InterpretedFunction
+//            {
+//                public Object apply(Object a0, Object a1) throws InvocationError {
+//                    return a1;
+//                }
+//            }
+//
+//        static class IFn3 extends InterpretedFunction
+//            {
+//                public Object apply(Object a0, Object a1, Object a2) throws InvocationError {
+//                    return a2;
+//                }
+//            }
+//
+//        static class IFn4 extends InterpretedFunction
+//            {
+//                public Object apply(Object a0, Object a1, Object a2, Object a3)
+//                        throws InvocationError {
+//                    return a3;
+//                }
+//            }
+//
+//        static class IFn5 extends InterpretedFunction
+//            {
+//                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4)
+//                        throws InvocationError {
+//                    return a4;
+//                }
+//            }
+//
+//        static class IFn6 extends InterpretedFunction
+//            {
+//                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
+//                        Object a5) throws InvocationError {
+//                    return a5;
+//                }
+//            }
+//
+//        static class IFn7 extends InterpretedFunction
+//            {
+//                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
+//                        Object a5, Object a6) throws InvocationError {
+//                    return a6;
+//                }
+//            }
+//
+//        static class IFn8 extends InterpretedFunction
+//            {
+//                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
+//                        Object a5, Object a6, Object a7) throws InvocationError {
+//                    return a7;
+//                }
+//            }
+//
+//        static class IFn9 extends InterpretedFunction
+//            {
+//                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
+//                        Object a5, Object a6, Object a7, Object a8) throws InvocationError {
+//                    return a8;
+//                }
+//            }
+//
+//        static class IFn10 extends InterpretedFunction
+//            {
+//                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
+//                        Object a5, Object a6, Object a7, Object a8, Object a9)
+//                        throws InvocationError {
+//                    return a9;
+//                }
+//            }
+//
+//        static class IFn11 extends InterpretedFunction
+//            {
+//                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
+//                        Object a5, Object a6, Object a7, Object a8, Object a9, Object a10)
+//                        throws InvocationError {
+//                    return a10;
+//                }
+//            }
+//
+//        static class IFn12 extends InterpretedFunction
+//            {
+//                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
+//                        Object a5, Object a6, Object a7, Object a8, Object a9, Object a10,
+//                        Object a11) throws InvocationError {
+//                    return a11;
+//                }
+//            }
+//
+//        static class IFn13 extends InterpretedFunction
+//            {
+//                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
+//                        Object a5, Object a6, Object a7, Object a8, Object a9, Object a10,
+//                        Object a11, Object a12) throws InvocationError {
+//                    return a12;
+//                }
+//            }
+//
+//        static class IFn14 extends InterpretedFunction
+//            {
+//                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
+//                        Object a5, Object a6, Object a7, Object a8, Object a9, Object a10,
+//                        Object a11, Object a12, Object a13) throws InvocationError {
+//                    return a13;
+//                }
+//            }
+//
+//        static class IFn15 extends InterpretedFunction
+//            {
+//                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
+//                        Object a5, Object a6, Object a7, Object a8, Object a9, Object a10,
+//                        Object a11, Object a12, Object a13, Object a14) throws InvocationError {
+//                    return a14;
+//                }
+//            }
+//
+//        static class IFn16 extends InterpretedFunction
+//            {
+//                public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4,
+//                        Object a5, Object a6, Object a7, Object a8, Object a9, Object a10,
+//                        Object a11, Object a12, Object a13, Object a14, Object a15)
+//                        throws InvocationError {
+//                    return a15;
+//                }
+//            }
 
     }
 

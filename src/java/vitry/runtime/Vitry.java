@@ -605,7 +605,7 @@ public class Vitry
                     return "()";
                 }
 
-                public Sequence<Pattern> prepend(Pattern head) {
+                public Sequence<Pattern> cons(Pattern head) {
                     return new PairSequence<Pattern>(head, this);
                 }
 

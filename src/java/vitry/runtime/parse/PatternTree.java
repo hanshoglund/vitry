@@ -161,8 +161,8 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public Sequence<Pattern> prepend(Pattern head) {
-            return delegee.prepend(head);
+        public Sequence<Pattern> cons(Pattern head) {
+            return delegee.cons(head);
         }
 
 
