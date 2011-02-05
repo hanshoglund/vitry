@@ -20,9 +20,6 @@ package vitry.runtime;
 
 import vitry.runtime.struct.Sequence;
 
-/**
- * Compound entity, matching on membership.
- */
 public interface Set extends Pattern, Sequence<Pattern>
     {
     }

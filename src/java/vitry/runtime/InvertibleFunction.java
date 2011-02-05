@@ -24,5 +24,5 @@ public interface InvertibleFunction extends Function
     {                                            
         Sequence<Object> applyInverse(Object a0) throws InvocationError;
         
-        public InvertibleFunction inverse();
+        public InvertibleFunction getInverse();
     }

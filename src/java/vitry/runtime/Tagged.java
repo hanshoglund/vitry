@@ -85,7 +85,7 @@ public class Tagged extends BasePattern implements Destructible
             return hash;
         }
 
-        public boolean isCompound() {
+        public boolean canDestruct() {
             return false;
             // TODO Auto-generated method stub
         }

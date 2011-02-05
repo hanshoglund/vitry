@@ -22,11 +22,9 @@ import vitry.runtime.struct.Sequence;
 
 
 /**
- * A compound value.
- *
  * Represents <em>n</em>-ary tuples and <em>n</em>-ary product types where <em>n</em> > 1.
  */
-public interface Product extends Pattern, Sequence<Pattern>, Destructible
+public interface Product extends Pattern, Sequence<Pattern>
     {
         // Provide fast access to pair
         

@@ -69,9 +69,9 @@ public class Type extends BasePattern implements TypeExpr
             return o.eq(this);
         }
 
-        public boolean isCompound() {
+        public boolean canDestruct() {
             if (pattern instanceof Destructible)
-                return ((Destructible) pattern).isCompound();
+                return ((Destructible) pattern).canDestruct();
             return false;
         }
 

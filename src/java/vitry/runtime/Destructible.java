@@ -23,7 +23,7 @@ import vitry.runtime.struct.Sequence;
 
 public interface Destructible
     {
-        boolean isCompound();
+        boolean canDestruct();
 
         Sequence<Pattern> destruct();
     }

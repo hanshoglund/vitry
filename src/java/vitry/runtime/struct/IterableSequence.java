@@ -30,9 +30,10 @@ public class IterableSequence<T> extends AbstractSequence<T>
     {
         private Iterable<T> itbl;   // Store for iterator in the leading node
         private Iterator<T> it;
-        private T head;
+        private T           head;
         private Sequence<T> tail;
-        private boolean tailed = false;
+        private boolean     headed = false;
+        private boolean     tailed = false;
 
         public IterableSequence(Iterable<T> itbl) {
             this.itbl = itbl;
@@ -49,15 +50,18 @@ public class IterableSequence<T> extends AbstractSequence<T>
         }
 
         public T head() {
-            if (head == null) head = it.next();
+            if (!headed) {
+                head = it.next();
+                headed = true;
+            }
             return head;
         }
 
         public Sequence<T> tail() {
-            head();    
             if (!tailed) {
-                if (!it.hasNext()) return null;
-                tail = new IterableSequence<T>(null, it);
+                head();
+                if (it.hasNext())
+                    tail = new IterableSequence<T>(null, it);
                 tailed = true;
             }
             return tail;

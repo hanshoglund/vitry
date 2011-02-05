@@ -35,18 +35,24 @@ public class Sequences
         
         
         public static <T> Sequence<T> cons(T x, Sequence<T> xs) {
-            if (xs == null) return new SingleSequence<T>(x);
-            else return xs.cons(x);
+            if (xs == null) 
+                return new SingleSequence<T>(x);
+            else 
+                return xs.cons(x);
         }
 
         public static <T> Sequence<T> append(Sequence<T> xs, Sequence<T> ys) {
-            if (xs == null) return ys;
-            else return cons(xs.head(), append(xs.tail(), ys));
+            if (xs == null) 
+                return ys;
+            else 
+                return cons(xs.head(), append(xs.tail(), ys));
         }
 
         public static <T> Sequence<T> reverseAppend(Sequence<T> xs, Sequence<T> ys) {
-            if (xs == null) return ys;
-            else return reverseAppend(xs.tail(), cons(xs.head(), ys));
+            if (xs == null) 
+                return ys;
+            else 
+                return reverseAppend(xs.tail(), cons(xs.head(), ys));
         }
 
         public static <T> Sequence<T> reverse(Sequence<T> xs) {
@@ -68,15 +74,18 @@ public class Sequences
             if (MEMOIZE_SEQS) {                
                 Object m = memoizedLasts.get(s);
                 if (m != null) return Utils.<T>unsafe(m);
-            }
-            
+            }            
+
             while (s.tail() != null) {
                 s = s.tail();
             }
+            
+            T r = s.head();
+            
             if (MEMOIZE_SEQS) {
-                memoizedLasts.put(s, s.head());                
+                memoizedLasts.put(s, r);                
             }
-            return s.head();
+            return r;
         }
 
         public static <T> T first(Sequence<T> s) {

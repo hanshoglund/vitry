@@ -24,7 +24,7 @@ import vitry.runtime.struct.Sequences;
 
 
 /**
- * Applicable object with partial and extended application.
+ * Function object with partial application.
  * 
  * See <em>Making a Fast Curry: Push/Enter vs Eval/Apply for Higher-order 
  * Languages</em> by Marlow and Jones.

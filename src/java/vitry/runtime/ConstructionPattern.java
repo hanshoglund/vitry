@@ -27,7 +27,7 @@ abstract public class ConstructionPattern extends BasePattern
 implements Sequence<Pattern>, Destructible
     {
         
-        public boolean isCompound() {
+        public boolean canDestruct() {
             return true;
         }
 

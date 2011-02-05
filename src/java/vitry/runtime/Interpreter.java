@@ -348,7 +348,7 @@ public class Interpreter implements Eval
                             
                             if (ifn != null && ifn.arity == length(fnArgs)) {
                                 frame = ifn.getEnvironment().extend();                                
-                                assignParameters(pre, context, frame, ifn, fnArgs);
+                                assignParameters(pre, STANDARD_CONTEXT, frame, ifn, fnArgs);
                                 expr = ifn.body;
                                 continue;
                                 
@@ -440,8 +440,6 @@ public class Interpreter implements Eval
         }
 
 
-
-
         private Object applyDefault
             (
             Prerequisites pre, 
@@ -461,9 +459,10 @@ public class Interpreter implements Eval
         }
         
         
+        
          
 
-        private int parserTokenType(Pattern op) {
+        private static int parserTokenType(Pattern op) {
             return ((VitryToken) op).getTokenType();
         }
                 
@@ -488,40 +487,39 @@ public class Interpreter implements Eval
         
      // TODO move to subclass?
 
-        private int symbolicTokenType(Pattern p) {
+        private static int symbolicTokenType(Pattern p) {
             try {
                 return SYMBOLIC_TOKENS.lookup(p);                
             } catch (Exception e) {
                 throw new ParseError("Unknown form: " + p);
             }
         }
-        
-        
+
         
         
         
 
-        private boolean isSelfEvaluating(Pattern expr) {
+        private static boolean isSelfEvaluating(Pattern expr) {
             return (expr instanceof Atom && !(expr instanceof VitryToken)) || !(expr instanceof Pattern);
         }
         
-        private boolean isToken(Pattern expr) {
+        private static boolean isToken(Pattern expr) {
             return expr instanceof VitryToken;
         }
         
-        private BigInteger parseNat(Pattern expr) {
+        private static BigInteger parseNat(Pattern expr) {
             return new BigInteger(expr.toString());
         }
 
-        private Float parseFloat(Pattern expr) {
+        private static Float parseFloat(Pattern expr) {
             return Float.valueOf(expr.toString());
         }
 
-        private Object parseComplex(Pattern expr) {
+        private static Object parseComplex(Pattern expr) {
             throw new ParseError("Does not support complex numbers yet");
         }
         
-        private Symbol parseOperator(Pattern expr, Symbol delimiter) {
+        private static Symbol parseOperator(Pattern expr, Symbol delimiter) {
             if (delimiter == PAR) return Symbol.intern("(" + expr + ")");
             if (delimiter == BRA) return Symbol.intern("[" + expr + "]");
             if (delimiter == ANG) return Symbol.intern("{" + expr + "}");
@@ -529,16 +527,17 @@ public class Interpreter implements Eval
             return null;
         }
         
-        private Symbol parseSymbol(Pattern expr) {
+        private static Symbol parseSymbol(Pattern expr) {
             return Symbol.intern(expr.toString());
         }
 
-        private String parseString(Pattern expr) {
+        private static String parseString(Pattern expr) {
             String str = Utils.unescapeJava(expr.toString());
             return str.substring(1, str.length() - 1);
         }
         
         
+                      
 
         
         static class InterpretedFunction extends AbstractFunction
@@ -546,6 +545,8 @@ public class Interpreter implements Eval
                 Sequence<Pattern> params;
                 Pattern body;
                 Environment<Symbol, Object> env;
+                Prerequisites pre;
+                Interpreter i;
 
                 public InterpretedFunction(Sequence<Pattern> params, Pattern body, int arity, Environment<Symbol, Object> env) {
                     this.params = params;
@@ -556,6 +557,12 @@ public class Interpreter implements Eval
 
                 public Environment<Symbol, Object> getEnvironment() {
                     return env;
+                }
+                
+                protected Object eval(Sequence<Pattern> args) {
+                    Environment<Symbol, Object> frame = this.getEnvironment().extend();                                
+                    i.assignParameters(pre, STANDARD_CONTEXT, frame, this, args);
+                    return i.eval(body, pre, STANDARD_CONTEXT, frame);
                 }
             }
             

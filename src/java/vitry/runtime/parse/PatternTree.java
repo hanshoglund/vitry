@@ -133,14 +133,6 @@ public class PatternTree extends CommonTree implements Product
             return delegee.toString();
         }
 
-        public boolean isCompound() {
-            return delegee.isCompound();
-        }
-
-
-        public Sequence<Pattern> destruct() {
-            return delegee.destruct();
-        }
 
 
         public boolean match(Object o) {
