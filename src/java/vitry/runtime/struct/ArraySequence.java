@@ -25,10 +25,10 @@ import java.util.Iterator;
  */
 public class ArraySequence<T> extends AbstractSequence<T>
     {
-        private final T[] array;
-        private final int offset;
-        private boolean tailed = false;
+        private final T[]   array;
+        private final int   offset;
         private Sequence<T> tail;
+        private boolean     tailed = false;
 
         public ArraySequence(T... elements) {
             this(elements, 0);

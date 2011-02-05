@@ -18,8 +18,6 @@
  */
 package vitry.runtime;
 
-
-
 /**
  * Standard environment, i.e. a set of bindings referencing an enclosing 
  * parent environment.
@@ -35,9 +33,9 @@ public interface Environment<K, V>
 
         Environment<K, V> extend(K key, V val);
 
-        Environment<K, V> makeChild();
+        Environment<K, V> extend();
 
-        Environment<K, V> parent();
+        Environment<K, V> getParent();
 
         boolean isPersistent();
 

@@ -20,14 +20,12 @@ package vitry.runtime;
 
 import java.util.Iterator;
 
-/**
- * A sequential value.
- */
+
 abstract public class List extends ConstructionPattern
     {
 
         
-        public Bijection structor() {
+        public InvertibleFunction structor() {
             return null;
         }
 
@@ -41,7 +39,7 @@ abstract public class List extends ConstructionPattern
             // TODO Auto-generated method stub
         }
 
-        public boolean eqFor(Value o) {
+        public boolean eqFor(Pattern o) {
             return false;
             // TODO Auto-generated method stub
         }

@@ -24,7 +24,7 @@ import vitry.runtime.misc.Utils;
 abstract public class Union extends InclusionPattern
     {
         public boolean match(Object o) {
-            if (o instanceof Value) throw new IllegalArgumentException();
+            if (o instanceof Pattern) throw new IllegalArgumentException();
             for (Pattern x : this)
                 if (x.match(o)) return true;
             return false;
@@ -48,13 +48,7 @@ abstract public class Union extends InclusionPattern
             return false;
         }
 
-        public boolean match(Arrow p) {
-            for (Pattern x : this)
-                if (x.match(p)) return true;
-            return false;
-        }
-
-        public boolean eqFor(Value p) {
+        public boolean eqFor(Pattern p) {
             return p.eq(this);
         }
 

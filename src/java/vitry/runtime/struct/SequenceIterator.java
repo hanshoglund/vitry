@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * An iterator over generic sequences.
+ * An generic iterator over sequences.
  * 
  * This is the one returned by AbstractSeq, override if a more effiecient
  * implementation is available.

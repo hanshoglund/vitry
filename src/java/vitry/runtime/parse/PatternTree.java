@@ -23,21 +23,18 @@ import java.util.Iterator;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 
-import vitry.runtime.Apply;
-import vitry.runtime.Atom;
-import vitry.runtime.Bijection;
 import vitry.runtime.Function;
-import vitry.runtime.Arrow;
+import vitry.runtime.Atom;
+import vitry.runtime.AbstractFunction;
 import vitry.runtime.Intersection;
 import vitry.runtime.InvocationError;
 import vitry.runtime.Pattern;
 import vitry.runtime.Product;
-import vitry.runtime.SetLike;
+import vitry.runtime.Set;
 import vitry.runtime.SimpleProduct;
 import vitry.runtime.Tagged;
 import vitry.runtime.Type;
 import vitry.runtime.Union;
-import vitry.runtime.Value;
 import vitry.runtime.struct.IterableSequence;
 import vitry.runtime.struct.MapSequence;
 import vitry.runtime.struct.Sequence;
@@ -104,7 +101,7 @@ public class PatternTree extends CommonTree implements Product
                 // Make a seq out of the ANTLR child list
                 @SuppressWarnings("unchecked") // ANTLR api is non-generic
                 Sequence<Pattern> itSeq = new IterableSequence<Pattern>(this.children);
-                this.childSeq = new MapSequence<Pattern,Pattern>(new Function(1, null){
+                this.childSeq = new MapSequence<Pattern,Pattern>(new AbstractFunction(1, null){
                     
                     // Replace singletons with their contained token
                     public Object apply(Object o) throws InvocationError {
@@ -136,8 +133,8 @@ public class PatternTree extends CommonTree implements Product
             return delegee.toString();
         }
 
-        public boolean isDestructible() {
-            return delegee.isDestructible();
+        public boolean isCompound() {
+            return delegee.isCompound();
         }
 
 
@@ -201,7 +198,7 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public boolean match(SetLike p) {
+        public boolean match(Set p) {
             return delegee.match(p);
         }
 
@@ -216,7 +213,7 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public boolean eq(SetLike o) {
+        public boolean eq(Set o) {
             return delegee.eq(o);
         }
 
@@ -236,17 +233,13 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public boolean eq(Arrow o) {
-            return delegee.eq(o);
-        }
 
-
-        public boolean eqFor(Value o) {
+        public boolean eqFor(Pattern o) {
             return delegee.eqFor(o);
         }
 
 
-        public <U> Sequence<U> map(Apply fn) {
+        public <U> Sequence<U> map(Function fn) {
             return delegee.map(fn);
         }
 
@@ -256,16 +249,7 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public boolean match(Arrow p) {
-            return delegee.match(p);
-        }
-
-
         public boolean matchFor(Pattern p) {
             return delegee.matchFor(p);
-        }
-
-        public Bijection structor() {
-            return delegee.structor();
         }
     }

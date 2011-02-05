@@ -18,15 +18,8 @@
  */
 package vitry.runtime;
 
-/**
- * Matching semantics.
- * 
- * May be used on the right side of a match operation, specifically:
- *  
- * <code>this.matchFor(x)</code> ↔ <em>this : x</em>
- * 
- */
-public interface Pattern extends Value
+
+public interface Pattern
     {
         boolean match(Object o);
 
@@ -38,11 +31,29 @@ public interface Pattern extends Value
 
         boolean match(Union p);
 
-        boolean match(SetLike p);
+        boolean match(Set p);
 
         boolean match(Intersection p);
 
         boolean match(Type p);
+        
+        boolean eq(Object o);
 
-        boolean match(Arrow p);
+        boolean eq(Atom o);
+        
+        boolean eq(Tagged o);
+
+        boolean eq(Product o);
+        
+        boolean eq(Union o);
+
+        boolean eq(Set o);
+
+        boolean eq(Intersection o);
+
+        boolean eq(Type o);
+
+        boolean eqFor(Pattern o);
+        
+        boolean matchFor(Pattern p);
     }

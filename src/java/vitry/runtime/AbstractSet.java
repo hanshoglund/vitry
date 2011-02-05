@@ -21,37 +21,31 @@ package vitry.runtime;
 import vitry.runtime.misc.Utils;
 
 
-abstract public class Intersection extends InclusionPattern
+abstract public class AbstractSet extends InclusionPattern implements Set
     {
         public boolean match(Object o) {
             if (o instanceof Pattern) throw new IllegalArgumentException();
             for (Pattern x : this)
-                if (!x.match(o)) return false;
-            return true;
+                if (x.eq(o)) return true;
+            return false;
         }
 
         public boolean match(Atom a) {
             for (Pattern x : this)
-                if (!x.match(a)) return false;
-            return true;
+                if (x.eq(a)) return true;
+            return false;
         }
 
         public boolean match(Tagged p) {
             for (Pattern x : this)
-                if (!x.match(p)) return false;
-            return true;
+                if (x.eq(p)) return true;
+            return false;
         }
 
         public boolean match(Product a) {
             for (Pattern x : this)
-                if (!x.match(a)) return false;
-            return true;
-        }
-
-        public boolean match(Intersection a) {
-            for (Pattern x : this)
-                if (!x.match(a)) return false;
-            return true;
+                if (x.eq(a)) return true;
+            return false;
         }
 
         public boolean eqFor(Pattern p) {
@@ -63,6 +57,6 @@ abstract public class Intersection extends InclusionPattern
         }
 
         public String toString() {
-            return Utils.join(this, "(", " & ", ")");
+            return Utils.join(this, "{", ", ", "}");
         }
     }

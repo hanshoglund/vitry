@@ -1,5 +1,24 @@
+/*
+ * Vitry, copyright (C) Hans Hoglund 2011
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * See COPYING.txt for details.
+ */
 package vitry.runtime.struct;
 
+import static vitry.runtime.Build.*;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -7,16 +26,12 @@ import java.util.WeakHashMap;
 import vitry.runtime.misc.Utils;
 
 
-/**
- * Fast implementation of some sequencing functions.
- */
 public class Sequences
     {
         private Sequences() {}
 
         private static final Map<Object, Object> memoizedLasts = new WeakHashMap<Object, Object>();
         private static final Object[] EMPTY_OBJ_ARRAY = new Object[0];
-
         
         
         public static <T> Sequence<T> cons(T x, Sequence<T> xs) {
@@ -40,7 +55,9 @@ public class Sequences
 
         public static <T> Sequence<T> butLast(Sequence<T> s) {
             if (s.tail() == null) {
-                memoizedLasts.put(s, s.head());
+                if (MEMOIZE_SEQS) {
+                    memoizedLasts.put(s, s.head());                    
+                }
                 return null;
             } else {
                 return cons(s.head(), butLast(s.tail()));
@@ -48,13 +65,17 @@ public class Sequences
         }
 
         public static <T> T last(Sequence<T> s) {
-            Object m = memoizedLasts.get(s);
-            if (m != null) return Utils.<T>unsafe(m);
+            if (MEMOIZE_SEQS) {                
+                Object m = memoizedLasts.get(s);
+                if (m != null) return Utils.<T>unsafe(m);
+            }
             
             while (s.tail() != null) {
                 s = s.tail();
             }
-            memoizedLasts.put(s, s.head());
+            if (MEMOIZE_SEQS) {
+                memoizedLasts.put(s, s.head());                
+            }
             return s.head();
         }
 

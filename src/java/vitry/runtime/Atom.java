@@ -18,17 +18,9 @@
  */
 package vitry.runtime;
 
-/**
- * A nondestructible value with trivial matching semantics.
- * 
- * Implement:         
- *
- *   - eq or equals
- *   - hashCode
- */
 abstract public class Atom extends BasePattern
     {
-
+        
         public boolean eq(Atom o) {
             return this.equals(o);
         }
@@ -37,7 +29,7 @@ abstract public class Atom extends BasePattern
             return this.eq(o);
         }
 
-        public boolean eqFor(Value o) {
+        public boolean eqFor(Pattern o) {
             return o.eq(this);
         }
 

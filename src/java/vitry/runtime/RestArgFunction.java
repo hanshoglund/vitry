@@ -50,13 +50,13 @@ package vitry.runtime;
  *     - Add missing cases
  *     - Use Vitry seq instead of JVM array?
  */
-abstract public class RestArgFunction extends Function
+abstract public class RestArgFunction extends AbstractFunction
     {
 
-        public RestArgFunction(int arity, Arrow type) {
-            super(arity, type);
+        public RestArgFunction(int arity) {
+            super(arity);
         }
-        
+
         // No need to override apply(Object) ?
 
         public Object apply(Object a0, Object a1) throws InvocationError {
@@ -96,7 +96,8 @@ abstract public class RestArgFunction extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4) throws InvocationError {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4)
+                throws InvocationError {
 
             switch (arity) {
 
@@ -107,7 +108,8 @@ abstract public class RestArgFunction extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5) throws InvocationError {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5)
+                throws InvocationError {
 
             switch (arity) {
 
@@ -118,7 +120,8 @@ abstract public class RestArgFunction extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6) throws InvocationError {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
+                Object a6) throws InvocationError {
 
             switch (arity) {
 
@@ -130,7 +133,8 @@ abstract public class RestArgFunction extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7) throws InvocationError {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
+                Object a6, Object a7) throws InvocationError {
 
             switch (arity) {
 
@@ -143,7 +147,8 @@ abstract public class RestArgFunction extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8) throws InvocationError {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
+                Object a6, Object a7, Object a8) throws InvocationError {
 
             switch (arity) {
 
@@ -155,7 +160,8 @@ abstract public class RestArgFunction extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9) throws InvocationError {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
+                Object a6, Object a7, Object a8, Object a9) throws InvocationError {
 
             switch (arity) {
 
@@ -168,7 +174,8 @@ abstract public class RestArgFunction extends Function
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10) throws InvocationError {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
+                Object a6, Object a7, Object a8, Object a9, Object a10) throws InvocationError {
 
             switch (arity) {
 
@@ -176,11 +183,14 @@ abstract public class RestArgFunction extends Function
                 case 11:
                     throw new NoImplementationException();
                 default:
-                    return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
+                    return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8,
+                            a9, a10);
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11) throws InvocationError {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
+                Object a6, Object a7, Object a8, Object a9, Object a10, Object a11)
+                throws InvocationError {
 
             switch (arity) {
 
@@ -188,11 +198,14 @@ abstract public class RestArgFunction extends Function
                 case 12:
                     throw new NoImplementationException();
                 default:
-                    return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11);
+                    return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8,
+                            a9, a10, a11);
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12) throws InvocationError {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
+                Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12)
+                throws InvocationError {
 
             switch (arity) {
 
@@ -200,11 +213,14 @@ abstract public class RestArgFunction extends Function
                 case 13:
                     throw new NoImplementationException();
                 default:
-                    return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12);
+                    return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8,
+                            a9, a10, a11, a12);
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12, Object a13) throws InvocationError {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
+                Object a6, Object a7, Object a8, Object a9, Object a10, Object a11,
+                Object a12, Object a13) throws InvocationError {
 
             switch (arity) {
 
@@ -212,11 +228,14 @@ abstract public class RestArgFunction extends Function
                 case 14:
                     throw new NoImplementationException();
                 default:
-                    return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13);
+                    return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8,
+                            a9, a10, a11, a12, a13);
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12, Object a13, Object a14) throws InvocationError {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
+                Object a6, Object a7, Object a8, Object a9, Object a10, Object a11,
+                Object a12, Object a13, Object a14) throws InvocationError {
 
             switch (arity) {
 
@@ -224,47 +243,66 @@ abstract public class RestArgFunction extends Function
                 case 15:
                     throw new NoImplementationException();
                 default:
-                    return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
+                    return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8,
+                            a9, a10, a11, a12, a13, a14);
             }
         }
 
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5, Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12, Object a13, Object a14, Object a15) throws InvocationError {
+        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
+                Object a6, Object a7, Object a8, Object a9, Object a10, Object a11,
+                Object a12, Object a13, Object a14, Object a15) throws InvocationError {
 
             switch (arity) {
                 case 1:
-                    return apply(new Object[]{ a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15 });
+                    return apply(new Object[]{ a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10,
+                        a11, a12, a13, a14, a15 });
                 case 2:
-                    return apply(a0, new Object[]{ a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15 });
+                    return apply(a0, new Object[]{ a1, a2, a3, a4, a5, a6, a7, a8, a9, a10,
+                        a11, a12, a13, a14, a15 });
                 case 3:
-                    return apply(a0, a1, new Object[]{ a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15 });
+                    return apply(a0, a1, new Object[]{ a2, a3, a4, a5, a6, a7, a8, a9, a10,
+                        a11, a12, a13, a14, a15 });
                 case 4:
-                    return apply(a0, a1, a2, new Object[]{ a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15 });
+                    return apply(a0, a1, a2, new Object[]{ a3, a4, a5, a6, a7, a8, a9, a10,
+                        a11, a12, a13, a14, a15 });
                 case 5:
-                    return apply(a0, a1, a2, a3, new Object[]{ a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15 });
+                    return apply(a0, a1, a2, a3, new Object[]{ a4, a5, a6, a7, a8, a9, a10,
+                        a11, a12, a13, a14, a15 });
                 case 6:
-                    return apply(a0, a1, a2, a3, a4, new Object[]{ a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15 });
+                    return apply(a0, a1, a2, a3, a4, new Object[]{ a5, a6, a7, a8, a9, a10,
+                        a11, a12, a13, a14, a15 });
                 case 7:
-                    return apply(a0, a1, a2, a3, a4, a5, new Object[]{ a6, a7, a8, a9, a10, a11, a12, a13, a14, a15 });
+                    return apply(a0, a1, a2, a3, a4, a5, new Object[]{ a6, a7, a8, a9, a10,
+                        a11, a12, a13, a14, a15 });
                 case 8:
-                    return apply(a0, a1, a2, a3, a4, a5, a6, new Object[]{ a7, a8, a9, a10, a11, a12, a13, a14, a15 });
+                    return apply(a0, a1, a2, a3, a4, a5, a6, new Object[]{ a7, a8, a9, a10,
+                        a11, a12, a13, a14, a15 });
                 case 9:
-                    return apply(a0, a1, a2, a3, a4, a5, a6, a7, new Object[]{ a8, a9, a10, a11, a12, a13, a14, a15 });
+                    return apply(a0, a1, a2, a3, a4, a5, a6, a7, new Object[]{ a8, a9, a10,
+                        a11, a12, a13, a14, a15 });
                 case 10:
-                    return apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, new Object[]{ a9, a10, a11, a12, a13, a14, a15 });
+                    return apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, new Object[]{ a9, a10,
+                        a11, a12, a13, a14, a15 });
                 case 11:
-                    return apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, new Object[]{ a10, a11, a12, a13, a14, a15 });
+                    return apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, new Object[]{ a10,
+                        a11, a12, a13, a14, a15 });
                 case 12:
-                    return apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, new Object[]{ a11, a12, a13, a14, a15 });
+                    return apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, new Object[]{
+                        a11, a12, a13, a14, a15 });
                 case 13:
-                    return apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, new Object[]{ a12, a13, a14, a15 });
+                    return apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11,
+                            new Object[]{ a12, a13, a14, a15 });
                 case 14:
-                    return apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, new Object[]{ a13, a14, a15 });
+                    return apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12,
+                            new Object[]{ a13, a14, a15 });
                 case 15:
-                    return apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, new Object[]{ a14, a15 });
+                    return apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13,
+                            new Object[]{ a14, a15 });
                 case 16:
                     throw new NoImplementationException();
                 default:
-                    return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
+                    return new PartialApplication(this, a0, a1, a2, a3, a4, a5, a6, a7, a8,
+                            a9, a10, a11, a12, a13, a14, a15);
 
             }
         }

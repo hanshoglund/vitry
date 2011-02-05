@@ -18,16 +18,9 @@
  */
 package vitry.runtime;
          
-/*
- * Implements the module sublanguage.
- */
+
 public class Module extends Scope
     {
-        
-
-        public Value get() {
-            return null; // TODO give empty module?
-        }
 
         // TODO implicit env
         // TODO type env

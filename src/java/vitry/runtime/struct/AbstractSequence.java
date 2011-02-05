@@ -20,7 +20,7 @@ package vitry.runtime.struct;
 
 import java.util.Iterator;
 
-import vitry.runtime.Apply;
+import vitry.runtime.Function;
 
 
 abstract public class AbstractSequence<T> implements Sequence<T>
@@ -29,7 +29,7 @@ abstract public class AbstractSequence<T> implements Sequence<T>
             return new PairSequence<T>(head, this);
         }
 
-        public <U> MapSequence<T, U> map(Apply fn) {
+        public <U> MapSequence<T, U> map(Function fn) {
             return new MapSequence<T, U>(fn, this);
         }
 

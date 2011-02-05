@@ -1,4 +1,5 @@
 /*
+
  * Vitry, copyright (C) Hans Hoglund 2011
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -19,24 +20,25 @@
 package vitry.runtime;
 
 import vitry.runtime.misc.Utils;
+import vitry.runtime.struct.Sequence;
 
 /**
  * Implements tagged values.
  *
- * This is required for runtime type information.
+ * Used for runtime type information.
  */
-public class Tagged extends BasePattern
+public class Tagged extends BasePattern implements Destructible
     {
-        private final Value  val;
+        private final Pattern  val;
 
         private final Type tag;
 
-        public Tagged(Value val, Type tag) {
+        public Tagged(Pattern val, Type tag) {
             this.val = val;
             this.tag = tag;
         }
 
-        public Value getVal() {
+        public Pattern getValue() {
             return val;
         }
 
@@ -56,7 +58,7 @@ public class Tagged extends BasePattern
             return (this == o) || (val.eqFor(o.val) && tag.equals(o.tag));
         }
 
-        public boolean eqFor(Value o) {
+        public boolean eqFor(Pattern o) {
             return o.eq(this);
         }
 
@@ -81,5 +83,15 @@ public class Tagged extends BasePattern
             hash = Utils.hash(hash, val);
             hash = Utils.hash(hash, tag);
             return hash;
+        }
+
+        public boolean isCompound() {
+            return false;
+            // TODO Auto-generated method stub
+        }
+
+        public Sequence<Pattern> destruct() {
+            return null;
+            // TODO Auto-generated method stub
         }        
     }

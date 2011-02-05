@@ -3,11 +3,12 @@
 
 
 
-## Vitry
+# Vitry
 
-Vitry is a functional, structurally typed and highly adaptable programming language. It was designed to simplify construction and analysis of large and possibly complex data structures. It is a general purpose language, but it was concieved to be used primarily for artistic work, hence its emphasis on conciseness and flexibility.
+Vitry is a functional, structurally typed programming language. It was concieved to be used for representation and manipulation of music, but can also be used for general-purpose programming. Its original aims manifest in an emphasis on conciseness and flexibility.
 
-Vitry is highly modular and allow most parts of its syntax and semantics to be overloaded or extended by the user.
+Vitry allows most parts of its syntax and semantics to be overloaded or extended by the user. It combines static type checking with highly dynamic techinques such as predicate matching and first class patterns.
+ 
 
 
 ### Table of Contents
@@ -15,6 +16,7 @@ Vitry is highly modular and allow most parts of its syntax and semantics to be o
 - Parsing
     - Stages
     - Pragmas
+    - Lexing
     - Token operations
         - Indentation
         - Comments and meta-expressions
@@ -72,65 +74,87 @@ Vitry is highly modular and allow most parts of its syntax and semantics to be o
 
 
 
-# Lexical properties
+As we are not going to provide a formal description of the Vitry languge in this document, there is no need to provide definitions of basic mathematical concepts such as numbers, sets and functions. However, it is useful to give a specific definition of some more commonly used terms:
 
-Programs are writte using Unicode, typically encoded in UTF-8 text files.
+*Vitry* is the language described by this document. Programs written in this language consists of characters, written in files or on the command line, which may be executed by an implementation.
 
-TODO lexer
+By *character* we mean a Unicode character.
 
-# Parsing
-## Stages
-## Pragmas
-## Token operations
-### Indentation
-### Comments and meta-expressions
-## Syntax tree operations
+By *value* is a fixed, unmodifiable datum. By *pattern* we mean a value with matching semantics. By *matching* or *inclusion* we mean set inclusion. Thus, patterns are values representing sets or values.
 
-Vitry allows post-parsing syntax tree operations. These are carried out according to top-level declarations.
+By *type* we mean a compile-time or runtime representation of a pattern.
 
-### Operator associativity and precedence
-
-### Parentheses
+By *atom* we mean a non-destructible value with trivial matching semantics. By *compound* we mean a destructible value with non-trivial matching semantics.
 
 
-### Application and fixity
-### Quoting
-## Left and right
-# Bindings and scope
-- Local definitions
-- Top-level definitions
-    - Types
-    - Implicits
-    - Fixities
-# Functions
-# Patterns
-### Construction patterns
-#### Products
-#### Lists
-### Inclusion patterns
-#### Sets
-#### Unions
-#### Intersections
-#### Comprehensions
-### Matching
-### Enumeration
-## Formal types
-### Polymorphism
-### Specifications and restrictions
-### Implicit conversion    
-## Literate language
-## Module language
-### Module system    
-### Extensions
-## Imperative language
-### Do-expressions
-## Evaluation
-### Stages   
-### Dependency chain
-### Import stage
-### Typing stage
-### Run stage  
+## Parsing
 
+Parsing is the process of transforming a sequence of characters into a value. The resulting value may be an atom, or a compound structure confirming to certain syntax rules. Such a value is known as an expression tree, as it typically consist of a tree-like structure.
+
+Evaluation is the process of transforming an expression tree into a value. Evaluation is a surjective function, meaning that for any value there is at least one expression tree that, when evaluated, yields this value.
+
+        - Stages
+        - Pragmas
+        - Lexing
+        - Token operations
+            - Indentation
+            - Comments and meta-expressions
+        - Syntax tree operations
+            - Operators
+            - Parentheses  
+            - Overloading
+            - Application and fixity
+            - Quoting
+        - Left and right
+
+## Bindings
+
+Binding is the process of associating values with identifiers. For identifiers we invariable use atomic symbols.
+
+An environment is tuple consisting of a set of bindings and a parent scope. There is an implicit top-level scope which has no bindings and no parent.
+
+        - Local definitions
+        - Top-level definitions
+            - Types
+            - Implicitness
+            - Fixity
+    - Atoms
+        - Functions
+        - Symbols
+        - Numbers
+        - Strings
+    
+    - Patterns
+        - Construction patterns
+            - Products
+            - Lists
+        - Inclusion patterns
+            - Sets
+            - Unions
+            - Intersections
+            - Comprehensions
+        - Matching
+        - Enumeration
+
+    - Types   
+        - Specifications and restrictions
+        - Polymorphism
+        - Implicit conversion
+
+    - Literate language
+
+    - Module language    
+        - Imports and resolution
+        - Function extensions
+        - Data extensions
+
+    - Imperative language
+        - Do-expressions
+
+    - Evaluation
+        - Loading stage
+        - Typing stage
+        - Execution stage 
 
 
 

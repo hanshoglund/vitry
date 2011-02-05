@@ -19,15 +19,12 @@
 package vitry.runtime;
 
 /**
- * Indicates all language errors. We do not use checked exceptions for the
- * Vitry language.
- * 
+ * Indicates all language errors. We do not use checked exceptions.
+ *
  * The runtime classes may also throw general exceptions such as 
  * IllegalArgumentException and of course VirtualMachineErrors. These should
  * be considered implementation bugs.
  */                        
-@SuppressWarnings("serial")
-
 abstract public class VitryError extends RuntimeException
     {
 

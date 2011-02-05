@@ -24,7 +24,7 @@ import vitry.runtime.struct.ArraySequence;
 import vitry.runtime.struct.Sequence;
 
 
-public class SimpleSet extends Set
+public class SimpleSet extends AbstractSet
     {
         Sequence<Pattern> elements;
 

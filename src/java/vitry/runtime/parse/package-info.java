@@ -16,13 +16,8 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
-
-import vitry.runtime.struct.Sequence;
 
 /**
- * Compound entity, matching on membership.
+ * <p>Lexer and parser for the Vitry language.</p>
  */
-public interface SetLike extends Pattern, Sequence<Pattern>
-    {
-    }
+package vitry.runtime.parse;

@@ -19,10 +19,8 @@
 package vitry.runtime.struct;
 
 
-/**
- * A seq containing a single value.
- */
-public class SingleSequence<T> extends AbstractSequence<T> implements Finite
+
+public class SingleSequence<T> extends AbstractSequence<T> implements Finite<T>
     {
         
         private final T obj;

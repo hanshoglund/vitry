@@ -22,37 +22,36 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import vitry.runtime.struct.MapSequence;
 import vitry.runtime.struct.Sequence;
 
-
 /**
- * Includes host objects of a particular class, as well as Native instances wrapping
- * objects of that class. 
+ * A set of host objects (wrapped or unwrapped).
  */
-public class NativeType extends BasePattern implements SetLike
+public class NativeSet extends AbstractSet
     {
 
-        private static final Map<Class<?>, SetLike> instanceMap = new WeakHashMap<Class<?>, SetLike>();
+        private static final Map<Class<?>, Set> instanceMap = new WeakHashMap<Class<?>, Set>();
 
         private final Class<?> javaClass;
 
 
-        private NativeType(Class<?> javaClass) {
+        private NativeSet(Class<?> javaClass) {
             this.javaClass = javaClass;
         }
 
-        public static SetLike forClass(Class<?> javaClass) {
-            SetLike obj = instanceMap.get(javaClass);
+        public static Set forClass(Class<?> javaClass) {
+            Set obj = instanceMap.get(javaClass);
             if (obj == null) {
-                obj = new NativeType(javaClass);
+                obj = new NativeSet(javaClass);
                 instanceMap.put(javaClass, obj);
             }
             return obj;
         }
 
-        public boolean eq(SetLike o) {
+        public boolean eq(Set o) {
             if (o == this) return true;
-            if (o instanceof NativeType) return ((NativeType) o).javaClass == this.javaClass;
+            if (o instanceof NativeSet) return ((NativeSet) o).javaClass == this.javaClass;
             return false;
         }
 
@@ -65,8 +64,17 @@ public class NativeType extends BasePattern implements SetLike
             if (o instanceof Native) return javaClass.isInstance( ((Native) o).obj);
             return false;
         }
+        
+        public boolean eq(Product o) {
+            return false;
+        }
 
-        public boolean eqFor(Value o) {
+        public boolean eq(Tagged o) {
+            // ?
+            return false;
+        }
+
+        public boolean eqFor(Pattern o) {
             return o.eq(this);
         }
 
@@ -93,7 +101,7 @@ public class NativeType extends BasePattern implements SetLike
             return throwEnumeration();
         }
 
-        public <U> Sequence<U> map(Apply fn) {
+        public <U> MapSequence<Pattern, U> map(Function fn) {
             return throwEnumeration();
         }
 

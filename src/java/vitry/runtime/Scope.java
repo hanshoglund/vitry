@@ -18,9 +18,7 @@
  */
 package vitry.runtime;
 
-/**
- * Object carrying a value environment.
- */
+
 abstract public class Scope extends Atom
     {
         public Scope() {
@@ -28,12 +26,12 @@ abstract public class Scope extends Atom
         }
 
         public Scope(Scope parent) {
-            this.env = parent.environment().makeChild();
+            this.env = parent.getEnvironment().extend();
         }
 
-        final Environment<Symbol, Object> env;
+        protected final Environment<Symbol, Object> env;
 
-        public Environment<Symbol, Object> environment() {
+        public Environment<Symbol, Object> getEnvironment() {
             return env;
         }
     }

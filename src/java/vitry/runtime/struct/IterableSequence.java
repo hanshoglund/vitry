@@ -28,7 +28,7 @@ import java.util.Iterator;
  */
 public class IterableSequence<T> extends AbstractSequence<T>
     {
-        private Iterable<T> itbl;
+        private Iterable<T> itbl;   // Store for iterator in the leading node
         private Iterator<T> it;
         private T head;
         private Sequence<T> tail;

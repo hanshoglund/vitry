@@ -25,42 +25,24 @@ package vitry.runtime;
  */
 public class Typing
     {
-
-
-        public TypeExp prune(TypeExp t) {
+        public TypeExpr prune(TypeExpr t) {
             // TODO
             return null;
         }
     }
 
+interface TypeExpr {
+        
+}
 
-class TypeExp
+
+class TypeVar extends BasePattern implements TypeExpr
     {
-        public final Type type;
-
-        public final TypeVar var;
-
-        public TypeExp(Type type) {
-            this.type = type;
-            this.var = null;
+        public boolean eqFor(Pattern o) {
+            return false;
         }
 
-        public TypeExp(TypeVar var) {
-            this.type = null;
-            this.var = var;
+        public boolean matchFor(Pattern p) {
+            return false;
         }
-
-        public boolean isVar() {
-            return var != null;
-        }
-    }
-
-
-class TypeVar
-    {
-        public boolean isInitiated() {
-            return instance != null;
-        }
-
-        public Type instance = null;
     }

@@ -19,12 +19,14 @@
 package vitry.runtime;
 
 /**
- * Thrown to indicate a type error.
+ * Thrown to indicate a typing error.
+ *
+ * TODO
  */
 public class TypeError extends VitryError
     {
 
-        public TypeError(Type tag, Value v) {
+        public TypeError(Type tag, Pattern v) {
             super("Can not apply tag " + tag + " to " + v);
         }
 

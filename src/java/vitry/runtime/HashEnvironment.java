@@ -43,10 +43,10 @@ public class HashEnvironment<K, V> extends AbstractEnvironment<K, V>
         }
         
         public Environment<K, V> extend(K key, V val) {
-            return makeChild().define(key, val);
+            return extend().define(key, val);
         }
 
-        public Environment<K, V> makeChild() {
+        public Environment<K, V> extend() {
             return new HashEnvironment<K, V>(this);
         }
 

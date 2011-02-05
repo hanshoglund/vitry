@@ -19,12 +19,7 @@
 package vitry.runtime;
 
 /**         
- * Base environment.
- *
- * Implement:          
- *
- *   - Provide put/get/isPersistent
- *   - (opt) Provide empty and (Env parent) constructors
+ * Base environment. Implements non-stack consuming lookup.
  */
 abstract public class AbstractEnvironment<K, V> implements Environment<K, V>
     {
@@ -41,7 +36,7 @@ abstract public class AbstractEnvironment<K, V> implements Environment<K, V>
             this.parent = parent;
         }
 
-        public Environment<K, V> parent() {
+        public Environment<K, V> getParent() {
             return parent;
         }
 
@@ -50,7 +45,7 @@ abstract public class AbstractEnvironment<K, V> implements Environment<K, V>
             V val = this.get(key);
             try {
                 while (val == null) {
-                    env = env.parent();
+                    env = env.getParent();
                     val = env.get(key);
                 }
             } catch (UndefinedError e) {
@@ -75,7 +70,7 @@ class GlobalEnvironment extends AbstractEnvironment<Object, Object> {
         return throwUnsupported();
     }
 
-    public Environment<Object, Object> makeChild() {
+    public Environment<Object, Object> extend() {
         return throwUnsupported();
     }
 

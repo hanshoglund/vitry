@@ -19,7 +19,6 @@
 package vitry.runtime;
 
 import java.math.BigInteger;
-import java.util.Iterator;
 
 import vitry.runtime.struct.Sequence;
 
@@ -28,16 +27,6 @@ import vitry.runtime.struct.Sequence;
  * This class encapsulates an entire runtime system. That is, a set of system
  * properties, a set of loaded modules and possibly an interpreter.
  * Implements functions and types needed to bootstrap <code>Vitry.Prelude</code>.
- * 
- * The native types we use are:
- * <pre><code>
- *     BigInteger   <=> nat
- *     BigInteger   <=> int
- *     BigRational  <=> rat
- *     Float        <=> float
- *     Double       <=> double
- *     String       <=> str
- * </code></pre>
  * 
  * @author Hans Höglund
  */
@@ -50,56 +39,56 @@ public class VitryRuntime
         static class Ops
             {
                 // !
-                public static final Apply _21 = null;
+                public static final Function _21 = null;
                 // #
-                public static final Apply _23 = null;
+                public static final Function _23 = null;
                 // $
-                public static final Apply _24 = null;
+                public static final Function _24 = null;
                 // %
-                public static final Apply _25 = mod;
+                public static final Function _25 = mod;
                 // &
-                public static final Apply _26 = intersection;
+                public static final Function _26 = intersection;
                 // '
-                public static final Apply _27 = add;
+                public static final Function _27 = add;
                 // *
-                public static final Apply _2A = mul;
+                public static final Function _2A = mul;
                 // +
-                public static final Apply _2B = add;
+                public static final Function _2B = add;
                 // ,
-                public static final Apply _2C = product;
+                public static final Function _2C = product;
                 // -
-                public static final Apply _2D = sub;
+                public static final Function _2D = sub;
                 // /
-                public static final Apply _2F = div;
+                public static final Function _2F = div;
                 
                 // ;
-                public static final Apply _3B = null;
+                public static final Function _3B = null;
                 // <
-                public static final Apply _3C = less;
+                public static final Function _3C = less;
                 // >
-                public static final Apply _3E = greater;
+                public static final Function _3E = greater;
                 // ?
                 public static final Any _3F = any;
                 // @
-                public static final Apply _40 = null;
+                public static final Function _40 = null;
                 
                 // ^
-                public static final Apply _5E = null;
+                public static final Function _5E = null;
                 // _
-                public static final Apply _5F = null;
+                public static final Function _5F = null;
                 
                 // |
-                public static final Apply _7C = union;
+                public static final Function _7C = union;
                 // ~
-                public static final Apply _7F = not;
+                public static final Function _7F = not;
 
                 
                 // ==
-                public static final Apply _3D_3D = eq;
+                public static final Function _3D_3D = eq;
                 // []
-                public static final Apply _5B_5D = list;
+                public static final Function _5B_5D = list;
                 // {}
-                public static final Apply _7B_7D = set;
+                public static final Function _7B_7D = set;
                 
                 // TODO precedence rules
             }
@@ -118,9 +107,9 @@ public class VitryRuntime
         
         
         // ==
-        public static final Apply eq = new Function(
-                2, 
-                fnType(any, any))
+        public static final Function eq = new AbstractFunction(
+                2 
+                /*fnType(any, any)*/)
             {
                 public Object apply(Object a, Object b) {
                     return null; // TODO
@@ -142,12 +131,12 @@ public class VitryRuntime
         //   float  = ...
         //   double = ...
         //   str    = ...
-        public static final SetLike    nat     = NativeType.forClass(BigInteger.class);
-        public static final SetLike    int_    = NativeType.forClass(BigInteger.class);
-        public static final SetLike    rat     = NativeType.forClass(BigRational.class);
-        public static final SetLike    float_  = NativeType.forClass(Float.class);
-        public static final SetLike    double_ = NativeType.forClass(Double.class);
-        public static final SetLike    str     = NativeType.forClass(String.class);
+        public static final Set    nat     = NativeSet.forClass(BigInteger.class);
+        public static final Set    int_    = NativeSet.forClass(BigInteger.class);
+        public static final Set    rat     = NativeSet.forClass(BigRational.class);
+        public static final Set    float_  = NativeSet.forClass(Float.class);
+        public static final Set    double_ = NativeSet.forClass(Double.class);
+        public static final Set    str     = NativeSet.forClass(String.class);
 
         //
         // implicit
@@ -177,18 +166,18 @@ public class VitryRuntime
 
         // ; Functions
         // arity     : ? -> nat
-        public static final Apply arity = new Function(
-                1, 
-                fnType(any, nat))
+        public static final Function arity = new AbstractFunction(
+                1 
+                /*fnType(any, nat)*/)
             {
                 public Object apply(Object a) {
-                    return ((Function) a).arity;
+                    return ((AbstractFunction) a).arity;
                 }
             };
 
         //
         // id        : (a -> a)
-        public static final Apply id = new Function(1, null)
+        public static final Function id = new AbstractFunction(1, null)
             {
                 public Object apply(Object a) {
                     return a;
@@ -197,10 +186,10 @@ public class VitryRuntime
 
 
         // const     : a -> (? -> a)
-        public static final Apply const_ = new Function(1, null)
+        public static final Function const_ = new AbstractFunction(1, null)
             {
                 public Object apply(final Object a) {
-                    return new Function(1, null)
+                    return new AbstractFunction(1, null)
                         {
                             public Object apply(Object b) {
                                 return a;
@@ -231,12 +220,12 @@ public class VitryRuntime
         // be handled by the matching logic. Here we do explicit checks to speed
         // things up a bit.
             
-        static class ArithmeticFunction extends Function {
+        static class ArithmeticFunction extends AbstractFunction {
                 // TODO factor out instance checks to here
                 // Try to avoid call overhead
         }
             
-        public static final Apply neg = new Function(1, null)
+        public static final Function neg = new AbstractFunction(1, null)
             {
                 public Object apply(Object a) {
                     if (a instanceof BigRational) return ((BigRational) a).negate();
@@ -247,7 +236,7 @@ public class VitryRuntime
             };
             
         // + 
-        public static final Apply add = new Function(2, null)
+        public static final Function add = new AbstractFunction(2, null)
             {
                 public Object apply(Object a, Object b) {
                     if (a instanceof BigRational) {
@@ -274,7 +263,7 @@ public class VitryRuntime
 
             
         // -
-        public static final Apply sub = new Function(2, null)
+        public static final Function sub = new AbstractFunction(2, null)
             {
                 public Object apply(Object a, Object b) {
                     if (a instanceof BigRational) {
@@ -299,7 +288,7 @@ public class VitryRuntime
             };
 
         // *
-        public static final Apply mul = new Function(2, null)
+        public static final Function mul = new AbstractFunction(2, null)
             {
                 public Object apply(Object a, Object b) {
                     if (a instanceof BigRational) {
@@ -325,7 +314,7 @@ public class VitryRuntime
 
 
         // /
-            public static final Apply div = new Function(2, null)
+            public static final Function div = new AbstractFunction(2, null)
             {
                 public Object apply(Object a, Object b) {
                     if (a instanceof BigRational) {
@@ -351,7 +340,7 @@ public class VitryRuntime
 
 
         // %
-        public static final Apply mod = new Function(2, null)
+        public static final Function mod = new AbstractFunction(2, null)
             {
                 public Object apply(Object a, Object b) {
                     return null; // TODO
@@ -360,7 +349,7 @@ public class VitryRuntime
 
 
         // (%%)
-        public static final Apply modp = new Function(2, null)
+        public static final Function modp = new AbstractFunction(2, null)
             {
                 public Object apply(Object a, Object b) {
                     return null; // TODO
@@ -372,7 +361,7 @@ public class VitryRuntime
             
             
         // pow
-        public static final Apply pow = new Function(2, null)
+        public static final Function pow = new AbstractFunction(2, null)
         {
             public Object apply(Object a, Object b) {
                 if (a instanceof BigRational) return ((BigRational) a).pow(((Number) b).intValue());
@@ -408,9 +397,8 @@ public class VitryRuntime
         // Sets
                 
         // union         : {a} -> {a}
-         public static final Function union = new RestArgFunction(
-                 2, 
-                 null) {
+         public static final AbstractFunction union = new RestArgFunction(
+                 2) {
              public Object apply(Object elem) {
                  if (elem instanceof Object[])
                      return new SimpleUnion((Object[]) elem);
@@ -420,7 +408,7 @@ public class VitryRuntime
          };
 
         // intersection  : {a} -> {a}
-         public static final Function intersection = new Function(
+         public static final AbstractFunction intersection = new AbstractFunction(
                  2, 
                  null) {
              public Object apply(Object elem) {
@@ -543,34 +531,34 @@ public class VitryRuntime
         // read        : -> ?
         // help        : ->
             
-        public static Apply not;
+        public static Function not;
 
 
 
-        public static Apply less;
+        public static Function less;
 
 
 
-        public static Apply greater;
+        public static Function greater;
 
 
 
-        public static Apply list;
+        public static Function list;
 
 
 
-        public static Apply set;
+        public static Function set;
 
 
 
-        public static Apply product;
+        public static Function product;
 
 
 
         // quit        : ->
-        public static final Apply quit = new Function(
-                1, 
-                fnType(any, any)){
+        public static final Function quit = new AbstractFunction(
+                1 
+                /*fnType(any, any)*/){
             
             public Object apply(Object a) throws InvocationError {
                 if (a instanceof Number)
@@ -598,10 +586,10 @@ public class VitryRuntime
             }
         };
         
-        
-        public static Arrow fnType(Pattern co, Pattern dom) {
-            return new Arrow(co, dom);
-        }
+//        
+//        public static Arrow fnType(Pattern co, Pattern dom) {
+//            return new Arrow(co, dom);
+//        }
             
         public static Type symType(String name, Pattern pattern) {
             return new Type(pattern, Symbol.intern(name), null);
@@ -613,7 +601,7 @@ public class VitryRuntime
         
         public static Scope stdScope = new Scope()
             {
-                public Environment<Symbol, Object> environment() {
+                public Environment<Symbol, Object> getEnvironment() {
                     return prelude;
                 }
             };

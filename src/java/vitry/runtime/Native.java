@@ -21,14 +21,13 @@ package vitry.runtime;
 import vitry.runtime.struct.MapSequence;
 import vitry.runtime.struct.Sequence;
 
+
 /**
- * Wrapper for host objects. As vitry code can hold direct references to java 
- * objects it is generally not necessary to wrap native objects to simpy expose
- * them; however, this class may be used to view a native object as an Atom
- * (and thus a Pattern), which is necessary to use it in a match expression.
+ * Wrapper for host objects. It is not necessary to wrap java objects to
+ * simply expose them, but it is necessary in order to include them in
+ * patterns.
  *
- * Note that values have to be referentially transparent on {@link equals()}
- * and {@link hashCode()}.
+ * Wrapping mutable objects is not recommended.
  *
  */
 public final class Native extends Atom
@@ -76,7 +75,7 @@ public final class Native extends Atom
          * Applies {@link #wrap(Object)} lazily to the given seq.
          */
         public static Sequence<Pattern> wrap(Sequence<Object> values) {
-            return new MapSequence<Object, Pattern>(new Function(1, null){
+            return new MapSequence<Object, Pattern>(new AbstractFunction(1, null){
                 public Object apply(Object v) throws InvocationError {
                     return wrap(v);
                 }

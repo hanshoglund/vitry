@@ -16,27 +16,8 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime.struct;
-
-import vitry.runtime.Apply;
-
 
 /**
- * A sequence abstaction for parallel computation. Based on the conc lists 
- * proposed by Guy Steele in <em>Organizing functional code for parallel execution</em>.
- * 
- * Currently not used, may be worked into the standard Pattern implementations in
- * the future.
+ * <p>Basic data structures and abstractions.</p>
  */
-public interface Parallel<T>
-    {
-        T item();
-
-        Parallel<T> node(T value);
-
-        <U> U split(Apply fn);
-
-        Parallel<T> conc(Parallel<T> rest);
-
-        boolean isSingleton();
-    }
+package vitry.runtime.struct;

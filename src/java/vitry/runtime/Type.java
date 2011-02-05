@@ -21,34 +21,32 @@ package vitry.runtime;
 import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.Sequence;
 
-/**
- * A type or type operator.
- */
-public class Type extends BasePattern
+
+public class Type extends BasePattern implements TypeExpr
     {
         private final Pattern          pattern;
-        private final Symbol           id;
-        private final Sequence<Symbol> vars;
+        private final Symbol           name;
+        private final Sequence<TypeExpr> vars;
 
-        public Type(Pattern pattern, Symbol id, Sequence<Symbol> vars) {
+        public Type(Pattern pattern, Symbol id, Sequence<TypeExpr> vars) {
             this.pattern = pattern;
-            this.id = id;
+            this.name = id;
             this.vars = vars;
         }
 
-        public Pattern pattern() {
+        public Pattern getPattern() {
             return pattern;
         }
 
-        public Symbol id() {
-            return id;
+        public Symbol getName() {
+            return name;
         }
 
-        public Sequence<Symbol> vars() {
+        public Sequence<TypeExpr> getTypeVariables() {
             return vars;
         }
 
-        public Pattern tag(Value v) throws TypeError {
+        public Pattern tag(Pattern v) throws TypeError {
             if (v.matchFor(pattern)) return new Tagged(v, this);
             else throw new TypeError(this, v);
         }
@@ -67,19 +65,19 @@ public class Type extends BasePattern
             return p.match(this);
         }
 
-        public boolean eqFor(Value o) {
+        public boolean eqFor(Pattern o) {
             return o.eq(this);
         }
 
-        public boolean isDestructible() {
-            if (pattern instanceof Structible)
-                return ((Structible) pattern).isDestructible();
+        public boolean isCompound() {
+            if (pattern instanceof Destructible)
+                return ((Destructible) pattern).isCompound();
             return false;
         }
 
         public Sequence<Pattern> destruct() {
-            if (pattern instanceof Structible)
-                return ((Structible) pattern).destruct();
+            if (pattern instanceof Destructible)
+                return ((Destructible) pattern).destruct();
             throw new UnsupportedOperationException("Can not destruct " + pattern);
         }
 

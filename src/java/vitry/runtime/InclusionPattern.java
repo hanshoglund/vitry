@@ -26,14 +26,10 @@ import vitry.runtime.struct.MapSequence;
 import vitry.runtime.struct.Sequence;
 import vitry.runtime.struct.SequenceIterator;
 
-/**
- * Base implementation, relying on the underlying Seq structure.
- *
- * See also AbstractProduct.
- */
+
 abstract public class InclusionPattern extends BasePattern implements Sequence<Pattern>
     {
-        public boolean eq(SetLike o) {
+        public boolean eq(Set o) {
             return o == this || this.match(o) && this.matchFor(o);
         }
 
@@ -45,7 +41,7 @@ abstract public class InclusionPattern extends BasePattern implements Sequence<P
             return o == this || this.match(o) && this.matchFor(o);
         }
 
-        public boolean match(SetLike a) {
+        public boolean match(Set a) {
             if (a == VitryRuntime.bottom) return true;
             for (Pattern x : a)
                 if (!x.matchFor(this)) return false;
@@ -68,7 +64,7 @@ abstract public class InclusionPattern extends BasePattern implements Sequence<P
             return new PairSequence<Pattern>(head, this);
         }
 
-        public <U> MapSequence<Pattern, U> map(Apply fn) {
+        public <U> MapSequence<Pattern, U> map(Function fn) {
             return new MapSequence<Pattern,U>(fn, this);
         }
         
@@ -78,7 +74,7 @@ abstract public class InclusionPattern extends BasePattern implements Sequence<P
         public boolean equals(Object o) {
             if (o == this) return true;
 
-            if (o instanceof SetLike) return this.eq((SetLike) o);
+            if (o instanceof Set) return this.eq((Set) o);
             if (o instanceof Union) return this.eq((Union) o);
             if (o instanceof Intersection) return this.eq((Intersection) o);
             return false;

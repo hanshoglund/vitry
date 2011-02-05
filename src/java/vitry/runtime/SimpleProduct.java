@@ -58,7 +58,7 @@ public class SimpleProduct extends AbstractProduct
             return new PairSequence<Pattern>(head, elements);
         }
 
-        public <U> MapSequence<Pattern, U> map(Apply fn) {
+        public <U> MapSequence<Pattern, U> map(Function fn) {
             return new MapSequence<Pattern,U>(fn, elements);
         }
 

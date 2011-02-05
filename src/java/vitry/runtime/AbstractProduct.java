@@ -29,17 +29,12 @@ import vitry.runtime.struct.SequenceIterator;
  * 
  * For the reified block types, we have to override the Seq methods to adapt
  * traversal to the generated accessors.
- * 
- * Implement:
- * 
- *   - head/tail/iterator
- *   - (optional) n-accessors
  */
 abstract public class AbstractProduct extends ConstructionPattern 
 implements Product
     {
         
-        public Bijection structor() {
+        public InvertibleFunction structor() {
             return null;
         }
         
@@ -73,7 +68,7 @@ implements Product
             return false;
         }
 
-        public boolean eqFor(Value p) {
+        public boolean eqFor(Pattern p) {
             return p.eq(this);
         }
 

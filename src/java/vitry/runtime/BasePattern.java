@@ -18,19 +18,10 @@
  */
 package vitry.runtime;
 
-/**
- * Base implementation of pattern.
- * 
- * Implement:     
- *
- *   - eqFor
- *   - matchFor
- *   - override eq and match where appropriate
- */
 abstract public class BasePattern implements Pattern
     {
         public boolean eq(Object o) {
-            if (o instanceof Value) throw new IllegalArgumentException();
+            if (o instanceof Pattern) throw new IllegalArgumentException();
             return false;
         }
 
@@ -46,7 +37,7 @@ abstract public class BasePattern implements Pattern
             return false;
         }
 
-        public boolean eq(SetLike o) {
+        public boolean eq(Set o) {
             return false;
         }
 
@@ -62,12 +53,8 @@ abstract public class BasePattern implements Pattern
             return false;
         }
 
-        public boolean eq(Arrow o) {
-            return false;
-        }
-
         public boolean match(Object o) {
-            if (o instanceof Value) throw new IllegalArgumentException();
+            if (o instanceof Pattern) throw new IllegalArgumentException();
             return false;
         }
 
@@ -83,13 +70,10 @@ abstract public class BasePattern implements Pattern
             return false;
         }
 
-        public boolean match(SetLike p) {
+        public boolean match(Set p) {
             return false;
         }
 
-//        public boolean match(Intersection a) {
-//            return false;
-//        }
         public boolean match(Intersection a) {
             for (Pattern x : a)
                 if (x.matchFor(this)) return true;
@@ -104,7 +88,4 @@ abstract public class BasePattern implements Pattern
             return false;
         }
 
-        public boolean match(Arrow p) {
-            return false;
-        }
     }

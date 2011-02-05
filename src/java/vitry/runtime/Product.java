@@ -25,16 +25,11 @@ import vitry.runtime.struct.Sequence;
  * A compound value.
  *
  * Represents <em>n</em>-ary tuples and <em>n</em>-ary product types where <em>n</em> > 1.
- * This interface is the backbone of the structural type system, so we provide many several
- * implementation possibilities, including Seq, Par and generated classes.
- * 
- * Invariants:
- *   - <code>p.fst() != null</code>
- *   - <code>p.snd() != null</code>
- * 
  */
-public interface Product extends Pattern, Sequence<Pattern>, Structible
+public interface Product extends Pattern, Sequence<Pattern>, Destructible
     {
+        // Provide fast access to pair
+        
         public Pattern first();
 
         public Pattern second();

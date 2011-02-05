@@ -20,15 +20,9 @@ package vitry.runtime;
 
 import vitry.runtime.struct.Sequence;
 
-/**
- * A bijective entity.
- */
-public interface Bijection extends Apply
-    {                                    
+public interface InvertibleFunction extends Function
+    {                                            
+        Sequence<Object> applyInverse(Object a0) throws InvocationError;
         
-        Sequence<Object> revApply(Object a0) throws InvocationError;
-        
-        public boolean isInNormalForm();
-        
-        public Bijection inverse();
+        public InvertibleFunction inverse();
     }

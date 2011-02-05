@@ -21,23 +21,25 @@ package vitry.runtime.struct;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import vitry.runtime.Apply;
 import vitry.runtime.Function;
+import vitry.runtime.AbstractFunction;
 import vitry.runtime.InvocationError;
 import vitry.runtime.misc.Checks;
 
 
 /**
  * A seq adapted from another seq by the map operation.
+ *
+ * The function is applied on head lookup, not tail.
  */
 public class MapSequence<A, B> extends AbstractSequence<B>
     {
-        private final Apply fn;
+        private final Function fn;
         private final Sequence<A> input;
 
-        public MapSequence(Apply fn, Sequence<A> input) {
+        public MapSequence(Function fn, Sequence<A> input) {
             Checks.checkNotNull(fn, input);
-            if (fn instanceof Function) Checks.checkArity((Function) fn, 1);
+            if (fn instanceof AbstractFunction) Checks.checkArity((AbstractFunction) fn, 1);
             this.fn = fn;
             this.input = input;
         }
@@ -81,11 +83,11 @@ public class MapSequence<A, B> extends AbstractSequence<B>
 class MapIterator<T> implements Iterator<T>
     {
 
-        private Apply fn;
+        private Function fn;
         private Iterator<?> input;
 
-        public MapIterator(Apply fn, Iterator<?> input) {
-            if (fn instanceof Function) Checks.checkArity((Function) fn, 1);
+        public MapIterator(Function fn, Iterator<?> input) {
+            if (fn instanceof AbstractFunction) Checks.checkArity((AbstractFunction) fn, 1);
             this.fn = fn;
             this.input = input;
         }
