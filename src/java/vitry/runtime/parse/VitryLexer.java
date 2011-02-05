@@ -1,5 +1,7 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 src/antlr/Vitry.g 2011-02-01 02:29:45
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 src/antlr/Vitry.g 2011-02-05 18:41:49
+// See src/antlr/Vitry.g
 package vitry.runtime.parse;
+
 
 import org.antlr.runtime.*;
 import java.util.Stack;
@@ -85,8 +87,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = T__38;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:11:7: ( ':' )
-            // src/antlr/Vitry.g:11:9: ':'
+            // src/antlr/Vitry.g:13:7: ( ':' )
+            // src/antlr/Vitry.g:13:9: ':'
             {
             match(':'); 
 
@@ -105,8 +107,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = T__39;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:12:7: ( '(' )
-            // src/antlr/Vitry.g:12:9: '('
+            // src/antlr/Vitry.g:14:7: ( '(' )
+            // src/antlr/Vitry.g:14:9: '('
             {
             match('('); 
 
@@ -125,8 +127,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = T__40;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:13:7: ( ')' )
-            // src/antlr/Vitry.g:13:9: ')'
+            // src/antlr/Vitry.g:15:7: ( ')' )
+            // src/antlr/Vitry.g:15:9: ')'
             {
             match(')'); 
 
@@ -145,8 +147,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = T__41;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:14:7: ( '[' )
-            // src/antlr/Vitry.g:14:9: '['
+            // src/antlr/Vitry.g:16:7: ( '[' )
+            // src/antlr/Vitry.g:16:9: '['
             {
             match('['); 
 
@@ -165,8 +167,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = T__42;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:15:7: ( ']' )
-            // src/antlr/Vitry.g:15:9: ']'
+            // src/antlr/Vitry.g:17:7: ( ']' )
+            // src/antlr/Vitry.g:17:9: ']'
             {
             match(']'); 
 
@@ -185,8 +187,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = T__43;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:16:7: ( '{' )
-            // src/antlr/Vitry.g:16:9: '{'
+            // src/antlr/Vitry.g:18:7: ( '{' )
+            // src/antlr/Vitry.g:18:9: '{'
             {
             match('{'); 
 
@@ -205,8 +207,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = T__44;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:17:7: ( '}' )
-            // src/antlr/Vitry.g:17:9: '}'
+            // src/antlr/Vitry.g:19:7: ( '}' )
+            // src/antlr/Vitry.g:19:9: '}'
             {
             match('}'); 
 
@@ -225,8 +227,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = T__45;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:18:7: ( '`' )
-            // src/antlr/Vitry.g:18:9: '`'
+            // src/antlr/Vitry.g:20:7: ( '`' )
+            // src/antlr/Vitry.g:20:9: '`'
             {
             match('`'); 
 
@@ -245,8 +247,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = T__46;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:19:7: ( 'fn' )
-            // src/antlr/Vitry.g:19:9: 'fn'
+            // src/antlr/Vitry.g:21:7: ( 'fn' )
+            // src/antlr/Vitry.g:21:9: 'fn'
             {
             match("fn"); 
 
@@ -266,8 +268,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = T__47;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:20:7: ( 'let' )
-            // src/antlr/Vitry.g:20:9: 'let'
+            // src/antlr/Vitry.g:22:7: ( 'let' )
+            // src/antlr/Vitry.g:22:9: 'let'
             {
             match("let"); 
 
@@ -287,8 +289,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = T__48;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:21:7: ( 'loop' )
-            // src/antlr/Vitry.g:21:9: 'loop'
+            // src/antlr/Vitry.g:23:7: ( 'loop' )
+            // src/antlr/Vitry.g:23:9: 'loop'
             {
             match("loop"); 
 
@@ -308,8 +310,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = T__49;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:22:7: ( 'do' )
-            // src/antlr/Vitry.g:22:9: 'do'
+            // src/antlr/Vitry.g:24:7: ( 'do' )
+            // src/antlr/Vitry.g:24:9: 'do'
             {
             match("do"); 
 
@@ -329,8 +331,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = T__50;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:23:7: ( 'if' )
-            // src/antlr/Vitry.g:23:9: 'if'
+            // src/antlr/Vitry.g:25:7: ( 'if' )
+            // src/antlr/Vitry.g:25:9: 'if'
             {
             match("if"); 
 
@@ -350,8 +352,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = T__51;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:24:7: ( 'else' )
-            // src/antlr/Vitry.g:24:9: 'else'
+            // src/antlr/Vitry.g:26:7: ( 'else' )
+            // src/antlr/Vitry.g:26:9: 'else'
             {
             match("else"); 
 
@@ -371,8 +373,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = T__52;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:25:7: ( 'match' )
-            // src/antlr/Vitry.g:25:9: 'match'
+            // src/antlr/Vitry.g:27:7: ( 'match' )
+            // src/antlr/Vitry.g:27:9: 'match'
             {
             match("match"); 
 
@@ -392,8 +394,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = T__53;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:26:7: ( 'recur' )
-            // src/antlr/Vitry.g:26:9: 'recur'
+            // src/antlr/Vitry.g:28:7: ( 'recur' )
+            // src/antlr/Vitry.g:28:9: 'recur'
             {
             match("recur"); 
 
@@ -413,8 +415,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = T__54;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:27:7: ( '=' )
-            // src/antlr/Vitry.g:27:9: '='
+            // src/antlr/Vitry.g:29:7: ( '=' )
+            // src/antlr/Vitry.g:29:9: '='
             {
             match('='); 
 
@@ -433,8 +435,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = T__55;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:28:7: ( 'module' )
-            // src/antlr/Vitry.g:28:9: 'module'
+            // src/antlr/Vitry.g:30:7: ( 'module' )
+            // src/antlr/Vitry.g:30:9: 'module'
             {
             match("module"); 
 
@@ -454,8 +456,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = T__56;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:29:7: ( 'import' )
-            // src/antlr/Vitry.g:29:9: 'import'
+            // src/antlr/Vitry.g:31:7: ( 'import' )
+            // src/antlr/Vitry.g:31:9: 'import'
             {
             match("import"); 
 
@@ -475,8 +477,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = T__57;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:30:7: ( 'type' )
-            // src/antlr/Vitry.g:30:9: 'type'
+            // src/antlr/Vitry.g:32:7: ( 'type' )
+            // src/antlr/Vitry.g:32:9: 'type'
             {
             match("type"); 
 
@@ -496,8 +498,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = T__58;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:31:7: ( 'implicit' )
-            // src/antlr/Vitry.g:31:9: 'implicit'
+            // src/antlr/Vitry.g:33:7: ( 'implicit' )
+            // src/antlr/Vitry.g:33:9: 'implicit'
             {
             match("implicit"); 
 
@@ -517,8 +519,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = T__59;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:32:7: ( '.' )
-            // src/antlr/Vitry.g:32:9: '.'
+            // src/antlr/Vitry.g:34:7: ( '.' )
+            // src/antlr/Vitry.g:34:9: '.'
             {
             match('.'); 
 
@@ -537,10 +539,10 @@ public class VitryLexer extends Lexer {
         try {
             int _type = Op;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:123:5: ( ( '!' | '#' | '$' | '%' | '&' | '\\'' | '*' | '+' | ',' | '-' | '.' | '/' | ';' | '<' | '=' | '>' | '?' | '@' | '\\\\' | '^' | '_' | '|' | '~' | ':' )* )
-            // src/antlr/Vitry.g:123:7: ( '!' | '#' | '$' | '%' | '&' | '\\'' | '*' | '+' | ',' | '-' | '.' | '/' | ';' | '<' | '=' | '>' | '?' | '@' | '\\\\' | '^' | '_' | '|' | '~' | ':' )*
+            // src/antlr/Vitry.g:124:5: ( ( '!' | '#' | '$' | '%' | '&' | '\\'' | '*' | '+' | ',' | '-' | '.' | '/' | ';' | '<' | '=' | '>' | '?' | '@' | '\\\\' | '^' | '_' | '|' | '~' | ':' )* )
+            // src/antlr/Vitry.g:124:7: ( '!' | '#' | '$' | '%' | '&' | '\\'' | '*' | '+' | ',' | '-' | '.' | '/' | ';' | '<' | '=' | '>' | '?' | '@' | '\\\\' | '^' | '_' | '|' | '~' | ':' )*
             {
-            // src/antlr/Vitry.g:123:7: ( '!' | '#' | '$' | '%' | '&' | '\\'' | '*' | '+' | ',' | '-' | '.' | '/' | ';' | '<' | '=' | '>' | '?' | '@' | '\\\\' | '^' | '_' | '|' | '~' | ':' )*
+            // src/antlr/Vitry.g:124:7: ( '!' | '#' | '$' | '%' | '&' | '\\'' | '*' | '+' | ',' | '-' | '.' | '/' | ';' | '<' | '=' | '>' | '?' | '@' | '\\\\' | '^' | '_' | '|' | '~' | ':' )*
             loop1:
             do {
                 int alt1=2;
@@ -589,8 +591,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = Symbol;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:131:5: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )* )
-            // src/antlr/Vitry.g:131:10: ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
+            // src/antlr/Vitry.g:132:5: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )* )
+            // src/antlr/Vitry.g:132:10: ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
             {
             if ( (input.LA(1)>='A' && input.LA(1)<='Z')||(input.LA(1)>='a' && input.LA(1)<='z') ) {
                 input.consume();
@@ -601,7 +603,7 @@ public class VitryLexer extends Lexer {
                 recover(mse);
                 throw mse;}
 
-            // src/antlr/Vitry.g:131:30: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
+            // src/antlr/Vitry.g:132:30: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
             loop2:
             do {
                 int alt2=2;
@@ -650,10 +652,10 @@ public class VitryLexer extends Lexer {
         try {
             int _type = Natural;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:135:5: ( ( '0' .. '9' )+ )
-            // src/antlr/Vitry.g:135:10: ( '0' .. '9' )+
+            // src/antlr/Vitry.g:136:5: ( ( '0' .. '9' )+ )
+            // src/antlr/Vitry.g:136:10: ( '0' .. '9' )+
             {
-            // src/antlr/Vitry.g:135:10: ( '0' .. '9' )+
+            // src/antlr/Vitry.g:136:10: ( '0' .. '9' )+
             int cnt3=0;
             loop3:
             do {
@@ -667,7 +669,7 @@ public class VitryLexer extends Lexer {
 
                 switch (alt3) {
             	case 1 :
-            	    // src/antlr/Vitry.g:135:10: '0' .. '9'
+            	    // src/antlr/Vitry.g:136:10: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -699,14 +701,14 @@ public class VitryLexer extends Lexer {
         try {
             int _type = Float;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:139:5: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? | ( '0' .. '9' )+ Exponent )
+            // src/antlr/Vitry.g:140:5: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? | ( '0' .. '9' )+ Exponent )
             int alt8=2;
             alt8 = dfa8.predict(input);
             switch (alt8) {
                 case 1 :
-                    // src/antlr/Vitry.g:139:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )?
+                    // src/antlr/Vitry.g:140:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )?
                     {
-                    // src/antlr/Vitry.g:139:9: ( '0' .. '9' )+
+                    // src/antlr/Vitry.g:140:9: ( '0' .. '9' )+
                     int cnt4=0;
                     loop4:
                     do {
@@ -720,7 +722,7 @@ public class VitryLexer extends Lexer {
 
                         switch (alt4) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:139:10: '0' .. '9'
+                    	    // src/antlr/Vitry.g:140:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -737,7 +739,7 @@ public class VitryLexer extends Lexer {
                     } while (true);
 
                     match('.'); 
-                    // src/antlr/Vitry.g:139:25: ( '0' .. '9' )*
+                    // src/antlr/Vitry.g:140:25: ( '0' .. '9' )*
                     loop5:
                     do {
                         int alt5=2;
@@ -750,7 +752,7 @@ public class VitryLexer extends Lexer {
 
                         switch (alt5) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:139:26: '0' .. '9'
+                    	    // src/antlr/Vitry.g:140:26: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -762,7 +764,7 @@ public class VitryLexer extends Lexer {
                         }
                     } while (true);
 
-                    // src/antlr/Vitry.g:139:37: ( Exponent )?
+                    // src/antlr/Vitry.g:140:37: ( Exponent )?
                     int alt6=2;
                     int LA6_0 = input.LA(1);
 
@@ -771,7 +773,7 @@ public class VitryLexer extends Lexer {
                     }
                     switch (alt6) {
                         case 1 :
-                            // src/antlr/Vitry.g:139:37: Exponent
+                            // src/antlr/Vitry.g:140:37: Exponent
                             {
                             mExponent(); 
 
@@ -784,9 +786,9 @@ public class VitryLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // src/antlr/Vitry.g:140:9: ( '0' .. '9' )+ Exponent
+                    // src/antlr/Vitry.g:141:9: ( '0' .. '9' )+ Exponent
                     {
-                    // src/antlr/Vitry.g:140:9: ( '0' .. '9' )+
+                    // src/antlr/Vitry.g:141:9: ( '0' .. '9' )+
                     int cnt7=0;
                     loop7:
                     do {
@@ -800,7 +802,7 @@ public class VitryLexer extends Lexer {
 
                         switch (alt7) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:140:10: '0' .. '9'
+                    	    // src/antlr/Vitry.g:141:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -835,14 +837,14 @@ public class VitryLexer extends Lexer {
         try {
             int _type = Complex;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:144:5: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? 'i' | ( '0' .. '9' )+ Exponent 'i' | ( '0' .. '9' )+ 'i' )
+            // src/antlr/Vitry.g:145:5: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? 'i' | ( '0' .. '9' )+ Exponent 'i' | ( '0' .. '9' )+ 'i' )
             int alt14=3;
             alt14 = dfa14.predict(input);
             switch (alt14) {
                 case 1 :
-                    // src/antlr/Vitry.g:144:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? 'i'
+                    // src/antlr/Vitry.g:145:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? 'i'
                     {
-                    // src/antlr/Vitry.g:144:9: ( '0' .. '9' )+
+                    // src/antlr/Vitry.g:145:9: ( '0' .. '9' )+
                     int cnt9=0;
                     loop9:
                     do {
@@ -856,7 +858,7 @@ public class VitryLexer extends Lexer {
 
                         switch (alt9) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:144:10: '0' .. '9'
+                    	    // src/antlr/Vitry.g:145:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -873,7 +875,7 @@ public class VitryLexer extends Lexer {
                     } while (true);
 
                     match('.'); 
-                    // src/antlr/Vitry.g:144:25: ( '0' .. '9' )*
+                    // src/antlr/Vitry.g:145:25: ( '0' .. '9' )*
                     loop10:
                     do {
                         int alt10=2;
@@ -886,7 +888,7 @@ public class VitryLexer extends Lexer {
 
                         switch (alt10) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:144:26: '0' .. '9'
+                    	    // src/antlr/Vitry.g:145:26: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -898,7 +900,7 @@ public class VitryLexer extends Lexer {
                         }
                     } while (true);
 
-                    // src/antlr/Vitry.g:144:37: ( Exponent )?
+                    // src/antlr/Vitry.g:145:37: ( Exponent )?
                     int alt11=2;
                     int LA11_0 = input.LA(1);
 
@@ -907,7 +909,7 @@ public class VitryLexer extends Lexer {
                     }
                     switch (alt11) {
                         case 1 :
-                            // src/antlr/Vitry.g:144:37: Exponent
+                            // src/antlr/Vitry.g:145:37: Exponent
                             {
                             mExponent(); 
 
@@ -921,9 +923,9 @@ public class VitryLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // src/antlr/Vitry.g:145:9: ( '0' .. '9' )+ Exponent 'i'
+                    // src/antlr/Vitry.g:146:9: ( '0' .. '9' )+ Exponent 'i'
                     {
-                    // src/antlr/Vitry.g:145:9: ( '0' .. '9' )+
+                    // src/antlr/Vitry.g:146:9: ( '0' .. '9' )+
                     int cnt12=0;
                     loop12:
                     do {
@@ -937,7 +939,7 @@ public class VitryLexer extends Lexer {
 
                         switch (alt12) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:145:10: '0' .. '9'
+                    	    // src/antlr/Vitry.g:146:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -959,9 +961,9 @@ public class VitryLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // src/antlr/Vitry.g:146:9: ( '0' .. '9' )+ 'i'
+                    // src/antlr/Vitry.g:147:9: ( '0' .. '9' )+ 'i'
                     {
-                    // src/antlr/Vitry.g:146:9: ( '0' .. '9' )+
+                    // src/antlr/Vitry.g:147:9: ( '0' .. '9' )+
                     int cnt13=0;
                     loop13:
                     do {
@@ -975,7 +977,7 @@ public class VitryLexer extends Lexer {
 
                         switch (alt13) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:146:10: '0' .. '9'
+                    	    // src/antlr/Vitry.g:147:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -1010,8 +1012,8 @@ public class VitryLexer extends Lexer {
         try {
             int _type = Whitespace;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:150:5: ( ( ' ' | '\\t' | '\\r' | '\\n' ) )
-            // src/antlr/Vitry.g:150:7: ( ' ' | '\\t' | '\\r' | '\\n' )
+            // src/antlr/Vitry.g:151:5: ( ( ' ' | '\\t' | '\\r' | '\\n' ) )
+            // src/antlr/Vitry.g:151:7: ( ' ' | '\\t' | '\\r' | '\\n' )
             {
             if ( (input.LA(1)>='\t' && input.LA(1)<='\n')||input.LA(1)=='\r'||input.LA(1)==' ' ) {
                 input.consume();
@@ -1039,11 +1041,11 @@ public class VitryLexer extends Lexer {
         try {
             int _type = String;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/antlr/Vitry.g:158:5: ( '\"' ( EscapeSeq | ~ ( '\\\\' | '\"' ) )* '\"' )
-            // src/antlr/Vitry.g:158:8: '\"' ( EscapeSeq | ~ ( '\\\\' | '\"' ) )* '\"'
+            // src/antlr/Vitry.g:159:5: ( '\"' ( EscapeSeq | ~ ( '\\\\' | '\"' ) )* '\"' )
+            // src/antlr/Vitry.g:159:8: '\"' ( EscapeSeq | ~ ( '\\\\' | '\"' ) )* '\"'
             {
             match('\"'); 
-            // src/antlr/Vitry.g:158:12: ( EscapeSeq | ~ ( '\\\\' | '\"' ) )*
+            // src/antlr/Vitry.g:159:12: ( EscapeSeq | ~ ( '\\\\' | '\"' ) )*
             loop15:
             do {
                 int alt15=3;
@@ -1059,14 +1061,14 @@ public class VitryLexer extends Lexer {
 
                 switch (alt15) {
             	case 1 :
-            	    // src/antlr/Vitry.g:158:14: EscapeSeq
+            	    // src/antlr/Vitry.g:159:14: EscapeSeq
             	    {
             	    mEscapeSeq(); 
 
             	    }
             	    break;
             	case 2 :
-            	    // src/antlr/Vitry.g:158:26: ~ ( '\\\\' | '\"' )
+            	    // src/antlr/Vitry.g:159:26: ~ ( '\\\\' | '\"' )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
             	        input.consume();
@@ -1101,8 +1103,8 @@ public class VitryLexer extends Lexer {
     // $ANTLR start "Exponent"
     public final void mExponent() throws RecognitionException {
         try {
-            // src/antlr/Vitry.g:162:10: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
-            // src/antlr/Vitry.g:162:12: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
+            // src/antlr/Vitry.g:163:10: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
+            // src/antlr/Vitry.g:163:12: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
             {
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
@@ -1113,7 +1115,7 @@ public class VitryLexer extends Lexer {
                 recover(mse);
                 throw mse;}
 
-            // src/antlr/Vitry.g:162:22: ( '+' | '-' )?
+            // src/antlr/Vitry.g:163:22: ( '+' | '-' )?
             int alt16=2;
             int LA16_0 = input.LA(1);
 
@@ -1139,7 +1141,7 @@ public class VitryLexer extends Lexer {
 
             }
 
-            // src/antlr/Vitry.g:162:33: ( '0' .. '9' )+
+            // src/antlr/Vitry.g:163:33: ( '0' .. '9' )+
             int cnt17=0;
             loop17:
             do {
@@ -1153,7 +1155,7 @@ public class VitryLexer extends Lexer {
 
                 switch (alt17) {
             	case 1 :
-            	    // src/antlr/Vitry.g:162:34: '0' .. '9'
+            	    // src/antlr/Vitry.g:163:34: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -1181,8 +1183,8 @@ public class VitryLexer extends Lexer {
     // $ANTLR start "HexDigit"
     public final void mHexDigit() throws RecognitionException {
         try {
-            // src/antlr/Vitry.g:165:10: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
-            // src/antlr/Vitry.g:165:12: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
+            // src/antlr/Vitry.g:166:10: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
+            // src/antlr/Vitry.g:166:12: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
             {
             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                 input.consume();
@@ -1205,7 +1207,7 @@ public class VitryLexer extends Lexer {
     // $ANTLR start "EscapeSeq"
     public final void mEscapeSeq() throws RecognitionException {
         try {
-            // src/antlr/Vitry.g:169:5: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEsc | OctalEsc )
+            // src/antlr/Vitry.g:170:5: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEsc | OctalEsc )
             int alt18=3;
             int LA18_0 = input.LA(1);
 
@@ -1256,7 +1258,7 @@ public class VitryLexer extends Lexer {
             }
             switch (alt18) {
                 case 1 :
-                    // src/antlr/Vitry.g:169:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
+                    // src/antlr/Vitry.g:170:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
                     {
                     match('\\'); 
                     if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||input.LA(1)=='t' ) {
@@ -1272,14 +1274,14 @@ public class VitryLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // src/antlr/Vitry.g:170:9: UnicodeEsc
+                    // src/antlr/Vitry.g:171:9: UnicodeEsc
                     {
                     mUnicodeEsc(); 
 
                     }
                     break;
                 case 3 :
-                    // src/antlr/Vitry.g:171:9: OctalEsc
+                    // src/antlr/Vitry.g:172:9: OctalEsc
                     {
                     mOctalEsc(); 
 
@@ -1296,7 +1298,7 @@ public class VitryLexer extends Lexer {
     // $ANTLR start "OctalEsc"
     public final void mOctalEsc() throws RecognitionException {
         try {
-            // src/antlr/Vitry.g:176:5: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
+            // src/antlr/Vitry.g:177:5: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
             int alt19=3;
             int LA19_0 = input.LA(1);
 
@@ -1342,41 +1344,13 @@ public class VitryLexer extends Lexer {
             }
             switch (alt19) {
                 case 1 :
-                    // src/antlr/Vitry.g:176:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
+                    // src/antlr/Vitry.g:177:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); 
-                    // src/antlr/Vitry.g:176:14: ( '0' .. '3' )
-                    // src/antlr/Vitry.g:176:15: '0' .. '3'
+                    // src/antlr/Vitry.g:177:14: ( '0' .. '3' )
+                    // src/antlr/Vitry.g:177:15: '0' .. '3'
                     {
                     matchRange('0','3'); 
-
-                    }
-
-                    // src/antlr/Vitry.g:176:25: ( '0' .. '7' )
-                    // src/antlr/Vitry.g:176:26: '0' .. '7'
-                    {
-                    matchRange('0','7'); 
-
-                    }
-
-                    // src/antlr/Vitry.g:176:36: ( '0' .. '7' )
-                    // src/antlr/Vitry.g:176:37: '0' .. '7'
-                    {
-                    matchRange('0','7'); 
-
-                    }
-
-
-                    }
-                    break;
-                case 2 :
-                    // src/antlr/Vitry.g:177:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
-                    {
-                    match('\\'); 
-                    // src/antlr/Vitry.g:177:14: ( '0' .. '7' )
-                    // src/antlr/Vitry.g:177:15: '0' .. '7'
-                    {
-                    matchRange('0','7'); 
 
                     }
 
@@ -1387,15 +1361,43 @@ public class VitryLexer extends Lexer {
 
                     }
 
+                    // src/antlr/Vitry.g:177:36: ( '0' .. '7' )
+                    // src/antlr/Vitry.g:177:37: '0' .. '7'
+                    {
+                    matchRange('0','7'); 
+
+                    }
+
 
                     }
                     break;
-                case 3 :
-                    // src/antlr/Vitry.g:178:9: '\\\\' ( '0' .. '7' )
+                case 2 :
+                    // src/antlr/Vitry.g:178:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); 
                     // src/antlr/Vitry.g:178:14: ( '0' .. '7' )
                     // src/antlr/Vitry.g:178:15: '0' .. '7'
+                    {
+                    matchRange('0','7'); 
+
+                    }
+
+                    // src/antlr/Vitry.g:178:25: ( '0' .. '7' )
+                    // src/antlr/Vitry.g:178:26: '0' .. '7'
+                    {
+                    matchRange('0','7'); 
+
+                    }
+
+
+                    }
+                    break;
+                case 3 :
+                    // src/antlr/Vitry.g:179:9: '\\\\' ( '0' .. '7' )
+                    {
+                    match('\\'); 
+                    // src/antlr/Vitry.g:179:14: ( '0' .. '7' )
+                    // src/antlr/Vitry.g:179:15: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -1415,8 +1417,8 @@ public class VitryLexer extends Lexer {
     // $ANTLR start "UnicodeEsc"
     public final void mUnicodeEsc() throws RecognitionException {
         try {
-            // src/antlr/Vitry.g:183:5: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
-            // src/antlr/Vitry.g:183:9: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
+            // src/antlr/Vitry.g:184:5: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
+            // src/antlr/Vitry.g:184:9: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
             {
             match('\\'); 
             match('u'); 
@@ -1699,7 +1701,7 @@ public class VitryLexer extends Lexer {
             this.transition = DFA8_transition;
         }
         public String getDescription() {
-            return "138:1: Float : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? | ( '0' .. '9' )+ Exponent );";
+            return "139:1: Float : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? | ( '0' .. '9' )+ Exponent );";
         }
     }
     static final String DFA14_eotS =
@@ -1752,7 +1754,7 @@ public class VitryLexer extends Lexer {
             this.transition = DFA14_transition;
         }
         public String getDescription() {
-            return "143:1: Complex : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? 'i' | ( '0' .. '9' )+ Exponent 'i' | ( '0' .. '9' )+ 'i' );";
+            return "144:1: Complex : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? 'i' | ( '0' .. '9' )+ Exponent 'i' | ( '0' .. '9' )+ 'i' );";
         }
     }
     static final String DFA20_eotS =

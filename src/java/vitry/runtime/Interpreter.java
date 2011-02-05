@@ -18,8 +18,8 @@
  */
 package vitry.runtime;
 
-import static vitry.runtime.Build.*;
-import static vitry.runtime.misc.Utils.limit;
+import static vitry.runtime.Build.DEBUG;
+import static vitry.runtime.Build.TRACE_LIMIT;
 import static vitry.runtime.struct.Sequences.butLast;
 import static vitry.runtime.struct.Sequences.first;
 import static vitry.runtime.struct.Sequences.last;
@@ -30,6 +30,7 @@ import java.math.BigInteger;
 import java.util.Iterator;
 
 import vitry.runtime.misc.Utils;
+import vitry.runtime.parse.TokenTypes;
 import vitry.runtime.parse.VitryParser;
 import vitry.runtime.parse.VitryToken;
 import vitry.runtime.struct.Sequence;
@@ -41,16 +42,13 @@ import vitry.runtime.struct.Sequences;
  * 
  * This implementation optimizes tail calls to interpreted functions, but not
  * to compiled functions (as these use standard calling conventions).
- * 
- * This class may be used with both parser-generated and custom syntax trees, i.e. it
- * accepts both Symbols and VitryTokens for imaginary nodes, and both atomic values and 
- * VitryTokens for terminal symbols.
  */
 public class Interpreter implements Eval
     {                
         
-        // Token types
-        
+        /*
+         * Token types
+         */
         private static final int OP           = VitryParser.Op;
         private static final int SYM          = VitryParser.Symbol;
         private static final int NAT          = VitryParser.Natural;
@@ -77,8 +75,9 @@ public class Interpreter implements Eval
         private static final int Type         = VitryParser.Type;
 
         
-        // Various identifiers
-         
+        /*
+         * Various identifiers
+         */
         private static final Symbol DELIMITER = Symbol.intern("delimiter");
         private static final Symbol SIDE      = Symbol.intern("side");
         private static final Symbol QUOTED    = Symbol.intern("quoted");
@@ -90,7 +89,7 @@ public class Interpreter implements Eval
         private static final Symbol TRUE      = Symbol.intern("true");
         private static final Symbol FALSE     = Symbol.intern("false");
 
-        /**
+        /*
          * Context for semantic disambiguition
          */
         private static final Environment<Symbol, Symbol> STANDARD_CONTEXT = (new HashEnvironment<Symbol, Symbol>()
@@ -104,11 +103,9 @@ public class Interpreter implements Eval
             return true;
         }
         
-        
         public boolean acceptsUserTokens() {
             return true;
         }
-        
         
         
         
@@ -141,9 +138,10 @@ public class Interpreter implements Eval
                 )
         throws ParseError, LinkageError, TypeError {
                                     
-            // Subexpressions, generated during analysis
-            // Do not change from the switch block
-                       
+            /*
+             * Subexpressions, generated during analysis
+             * Do not change from the switch block
+             */        
             Pattern op;                     // expr head or null
             Sequence<Pattern> args;         // expr tail or null
             int type;                       // type of head (to switch on)
@@ -158,12 +156,14 @@ public class Interpreter implements Eval
                     Utils.nothing(exprStr);
                 }
                 
-                // Analysis phase
+                /*
+                 * Analysis phase
+                 */
                 
                 if (isSelfEvaluating(expr)) return expr;                    
                 
                 try {
-                    if (isToken(expr)) 
+                    if (isAcceptedToken(expr)) 
                     {
                         op   = expr;
                         args = null;                            
@@ -174,13 +174,14 @@ public class Interpreter implements Eval
                         args = ((Product) expr).tail();
                     }
                 } catch (Exception _) {
-                    throw new ParseError("Malformed syntax tree: " + limit( expr.toString(), TRACE_LIMIT) );
+                    throw new ParseError("Malformed syntax tree: " 
+                        + Utils.limit( expr.toString(), TRACE_LIMIT) );
                 }
                 try {
                     try {
-                        type = parserTokenType(op);
+                        type = TokenTypes.parserTokenType(op);
                     } catch (Exception _) {
-                        type = symbolicTokenType(op);
+                        type = TokenTypes.symbolicTokenType(op);
                     }
                 } catch (VitryError e) {
                     throw e;
@@ -188,10 +189,12 @@ public class Interpreter implements Eval
                 
                 
                 switch (type)
-                {
-                                        
-                    // Terminals
-                    
+                {       
+                        
+                    /*
+                     * Terminals
+                     */
+                                                                                 
                     case NAT:      
                         return parseNat(op);
 
@@ -228,14 +231,12 @@ public class Interpreter implements Eval
                             }                            
                         }
 
-                    
-                    // Non-terminals
-                    
-                    // These forms all have the same behaviour: If () is bound to nil, 
-                    // evaluate the contained expression in a context where delimiter=();
-                    // else apply the bound function to the contained expression evaluated
-                    // a context where delimiter=()
-                    
+                      
+
+                    /*
+                     * Non-terminals
+                     */
+                                                               
                     case Par:
                         context = context.extend(DELIMITER, PAR)
                                          .define(QUOTED, FALSE);
@@ -274,9 +275,7 @@ public class Interpreter implements Eval
                         } 
                         else continue;
                         
-                        
-                        
-                        
+                             
                     case Module:
                         // Typecheck
 //                        return new InterpretedModule();
@@ -307,12 +306,12 @@ public class Interpreter implements Eval
 
                     case Assign:
                         {
-                        Object name = eval(first(args), pre, context, frame);
-                        Object value = eval(second(args), pre, context, frame);
+                        Object id = eval(first(args), pre, context, frame);
+                        Object val = eval(second(args), pre, context, frame);
                             try {
-                                frame.define((Symbol) name, value);
+                                frame.define((Symbol) id, val);
                             } catch (ClassCastException e) {
-                                throw new ParseError("Can not assign to non-symbol " + name);
+                                throw new ParseError("Can not assign to non-symbol " + id);
                             }
                             return null;
                         }
@@ -335,25 +334,35 @@ public class Interpreter implements Eval
                             // TODO
                         
                         } else {
-                            Object fn = eval(args.head(), pre, context, frame);
-                            Sequence<Pattern> fnArgs = args.tail();
+                            Object function = eval(args.head(), pre, context, frame);
+                            Sequence<Pattern> functionArguments = args.tail();
 
-                            // If fn is interpreted and has the correct arity, we evaluate it directly, 
-                            // otherwise we fall back on the common calling conventions
+                            /*
+                             * If the given function is interpreted and has the correct arity, 
+                             * evaluate it directly, otherwise fall back on the common calling 
+                             * mechanism.
+                             */
+                            InterpretedFunction interpretedFunction = null;
+                            try {  
+                                interpretedFunction = (InterpretedFunction) function;  
+                            } catch (Exception _) {
+                            }   
                             
-                            InterpretedFunction ifn = null;
-                            try { 
-                                ifn = (InterpretedFunction) fn; 
-                                } catch (Exception _){}
-                            
-                            if (ifn != null && ifn.arity == length(fnArgs)) {
-                                frame = ifn.getEnvironment().extend();                                
-                                assignParameters(pre, STANDARD_CONTEXT, frame, ifn, fnArgs);
-                                expr = ifn.body;
+                            if (interpretedFunction       != null
+                             && interpretedFunction.arity == length(functionArguments)) {
+
+                                context = STANDARD_CONTEXT;                           
+                                frame = interpretedFunction.getEnvironment().extend();
+                                // types
+                                // implicits
+                                // fixities
+                                
+                                assignParameters(pre, context, frame, interpretedFunction, functionArguments);
+                                expr = interpretedFunction.body;
                                 continue;
                                 
                             } else {
-                                return applyDefault(pre, context, frame, fn, fnArgs);
+                                return applyDefault(pre, context, frame, function, functionArguments);
                             }
                         }
                         
@@ -369,8 +378,7 @@ public class Interpreter implements Eval
 
                     case If:
                         {
-                            Object condition = eval(Sequences.first(args), pre, context, frame);
-    
+                            Object condition = eval(Sequences.first(args), pre, context, frame);    
                             if (! (condition.equals(FALSE)) ) {
                                 expr = Sequences.second(args);
                             } else {
@@ -410,7 +418,7 @@ public class Interpreter implements Eval
 
                     default:
                         throw new ParseError("Unkown form '" + op + "' in tree " 
-                                + limit(expr.toString(), TRACE_LIMIT));
+                            + Utils.limit(expr.toString(), TRACE_LIMIT));
                 }
             }
         }
@@ -456,54 +464,45 @@ public class Interpreter implements Eval
             }
             // TODO we want to have a seq here and call apply actually...
             return ((AbstractFunction) fn).applyTo(fnArgVals.toArray());
-        }
+        }           
+        
+        
+        static class InterpretedFunction extends AbstractFunction
+            {
+                Sequence<Pattern> params;
+                Pattern body;
+                Environment<Symbol, Object> env;
+                Prerequisites pre;
+                Interpreter i;
+
+                public InterpretedFunction(Sequence<Pattern> params, Pattern body, int arity, Environment<Symbol, Object> env) {
+                    this.params = params;
+                    this.body = body;
+                    this.arity = arity;
+                    this.env = env;
+                }
+
+                public Environment<Symbol, Object> getEnvironment() {
+                    return env;
+                }
+                
+                protected Object eval(Sequence<Pattern> args) {
+                    Environment<Symbol, Object> frame = this.getEnvironment().extend();                                
+                    i.assignParameters(pre, STANDARD_CONTEXT, frame, this, args);
+                    return i.eval(body, pre, STANDARD_CONTEXT, frame);
+                }
+            }
+
         
         
         
          
 
-        private static int parserTokenType(Pattern op) {
-            return ((VitryToken) op).getTokenType();
-        }
-                
-        private static final Environment<Pattern, Integer> SYMBOLIC_TOKENS = (new HashEnvironment<Pattern, Integer>()
-             .define( Symbol.intern("Ang")    , Ang    )
-             .define( Symbol.intern("Apply")  , Apply  )
-             .define( Symbol.intern("Assign") , Assign )
-             .define( Symbol.intern("Bra")    , Bra    )
-             .define( Symbol.intern("Do")     , Do     )
-             .define( Symbol.intern("Fn")     , Fn     )
-             .define( Symbol.intern("If")     , If     )
-             .define( Symbol.intern("Left")   , Left   )
-             .define( Symbol.intern("Let")    , Let    )
-             .define( Symbol.intern("Loop")   , Loop   )
-             .define( Symbol.intern("Match")  , Match  )
-             .define( Symbol.intern("Module") , Module )
-             .define( Symbol.intern("Ops")    , Ops    )
-             .define( Symbol.intern("Par")    , Par    )
-             .define( Symbol.intern("Quote")  , Quote  )
-             .define( Symbol.intern("Recur")  , Recur  )
-             .define( Symbol.intern("Type")   , Type   )); 
-        
-     // TODO move to subclass?
-
-        private static int symbolicTokenType(Pattern p) {
-            try {
-                return SYMBOLIC_TOKENS.lookup(p);                
-            } catch (Exception e) {
-                throw new ParseError("Unknown form: " + p);
-            }
-        }
-
-        
-        
-        
-
         private static boolean isSelfEvaluating(Pattern expr) {
             return (expr instanceof Atom && !(expr instanceof VitryToken)) || !(expr instanceof Pattern);
         }
         
-        private static boolean isToken(Pattern expr) {
+        private static boolean isAcceptedToken(Pattern expr) {
             return expr instanceof VitryToken;
         }
         
@@ -537,35 +536,7 @@ public class Interpreter implements Eval
         }
         
         
-                      
 
-        
-        static class InterpretedFunction extends AbstractFunction
-            {
-                Sequence<Pattern> params;
-                Pattern body;
-                Environment<Symbol, Object> env;
-                Prerequisites pre;
-                Interpreter i;
-
-                public InterpretedFunction(Sequence<Pattern> params, Pattern body, int arity, Environment<Symbol, Object> env) {
-                    this.params = params;
-                    this.body = body;
-                    this.arity = arity;
-                    this.env = env;
-                }
-
-                public Environment<Symbol, Object> getEnvironment() {
-                    return env;
-                }
-                
-                protected Object eval(Sequence<Pattern> args) {
-                    Environment<Symbol, Object> frame = this.getEnvironment().extend();                                
-                    i.assignParameters(pre, STANDARD_CONTEXT, frame, this, args);
-                    return i.eval(body, pre, STANDARD_CONTEXT, frame);
-                }
-            }
-            
 
 
 

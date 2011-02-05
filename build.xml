@@ -107,13 +107,16 @@
 
 
 	<!-- =============================================================== -->
-	<target name="debug" depends="clean, dirs, compile-src, compile-js, doc" description="">
-	</target>    
-	
+	<target name="debug" depends="
+	    clean, 
+	    dirs, 
+	    generate-antlr, 
+	    compile-src, 
+	    compile-js, 
+	    doc" 
+	    description="">
+	</target>
 
-	<!-- =============================================================== -->
-    <target name="debug-js" depends="compile-js" description="">
-    </target>
     
 
 	<!-- =============================================================== -->

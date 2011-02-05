@@ -1,3 +1,23 @@
+/*
+ * Vitry, copyright (C) Hans Hoglund 2011
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * See COPYING.txt for details.
+ */          
+ 
+ 
 grammar Vitry;
 
 options {     
@@ -14,37 +34,48 @@ tokens {
        
     TypeDecl; ImplicitDecl; FnDecl; MemberDecl;
 }
-@header {package vitry.runtime.parse;}
-@lexer::header {package vitry.runtime.parse;}
+
+
+@header 
+{// See src/antlr/Vitry.g        
+package vitry.runtime.parse;
+}
+
+@lexer::header 
+{// See src/antlr/Vitry.g
+package vitry.runtime.parse;
+}                         
 
 @members {
-// TODO override mismatch() and recoverFromMismatchSet()
+    // TODO override mismatch() and recoverFromMismatchSet()
 }
+
 @lexer::members{
 }
 
-// General precedence order (higher to lower):
-//   (:)
-//   (`)
-//   a b
-//   a + b -- defined by user
-// 
-// XXX if, let and other forms vs. application?
 
+
+/*
+ * Parser rules
+ */
 
 expr    
     : (delim[true] ':') => delim[true] ':' expr    -> ^(Type delim expr)
     | delim[true]
     ; 
 
-// Left-side expression, forces destructuring and type checks
-// Note that in a : b, b is always right-side
+/*
+ * Left-side expression, forces destructuring and type checks
+ * Note that in a : b, b is always right-side
+ */
 left   
     : (delim[false] ':') => delim[false] ':' expr  -> ^(Left ^(Type delim expr))
     | delim[false]                                 -> ^(Left delim)
     ;
 
-// Delimited, quoted or atomic
+/* 
+ * Delimited, quoted or atomic
+ */
 delim [boolean rs]
     : '(' inline[rs]? ')'                          -> ^(Par inline?)
     | '[' inline[rs]? ']'                          -> ^(Bra inline?)
@@ -61,16 +92,20 @@ atom
     | Complex
     | String
     ;
-    
-// Inline, that is operator expr, application or special form
+
+/*    
+ * Inline, that is operator expr, application or special form
+ */
 inline [boolean rs]
     : {$rs}? inlineRight
     | (Op apply?)+                                 -> ^(Ops ^(Op apply?)+)
     | (apply Op) => e+=apply (Op f+=apply?)+       -> ^(Ops $e ^(Op $f)+) // FIXME
     | apply
     ;                      
-    
-// Strictly right-side special forms
+
+/*    
+ * Strictly right-side special forms
+ */
 inlineRight
     : 'fn' '(' left* ')' inline[true]              -> ^(Fn left* inline)
     | 'let' '(' assign* ')' inline[true]           -> ^(Let assign* inline)
@@ -78,7 +113,7 @@ inlineRight
     | 'do' '(' assign* ')' expr*                   -> ^(Do assign* expr*)
     | 'if' expr expr 'else'? inline[true]          -> ^(If expr expr inline)
     | 'match' v=expr '(' (l+=left r+=expr)* ')'    -> ^(Match $v ^($l $r)*)
-    | 'recur' expr*         					   -> ^(Recur expr*)
+    | 'recur' expr*         			   -> ^(Recur expr*)
     ;
 
 assign
@@ -91,11 +126,13 @@ apply
     | expr
     ;
     
-    
-// Declarative forms
-// These are a superset of the expression language
-// They compile into functions that constructs modules and are implemented
-// by rewriting
+
+/* 
+ * Declarative forms
+ * These are a superset of the expression language
+ * They compile into functions that constructs modules and are implemented
+ * by rewriting
+ */
 
 module 
     : 'module' moduleName ('(' exports+=Symbol* ')')?
@@ -118,8 +155,12 @@ moduleName :
 
 
 
-// Lexer      
 
+
+/*
+ * Lexer rules
+ */
+ 
 Op  : (
         '!' | '#' | '$' | '%' | '&' | '\'' | '*' | '+' | ',' | '-' |
         '.' | '/' | ';' | '<' | '=' | '>' | '?' | '@' | '\\' | '^' | 

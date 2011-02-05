@@ -26,19 +26,15 @@ import vitry.runtime.struct.Sequence;
 /**
  * The eval operation.
  * 
- * This operation works a lot like a Lisp eval, i.e. it expects a self-evaluating value
- * or a structure corresponding to the abstract syntax of an expression. Atomic values
- * and tokens representing terminals are considered self-evaluating. This enable us to
- * use the parser generated tokens directly, i.e. without having to walk the syntax tree 
- * and replace tokens with actual numbers, strings, symbols etc.
- * 
- * Nonterminal expressions are represented by symbol-headed tuples such as <em>(Apply, f, x)</em>.
+ * Expects a atomic values or a an expression tree. Atomic values and tokens representing 
+ * atomic values evaluate to the corresponding values. Compound structures evaluate as
+ * compound expressions. 
  */
 public interface Eval
     {
 
         /**
-         * Encapsulates eval prerequisites.
+         * Encapsulates evaluation prerequisites.
          */
         public class Prerequisites
             {
@@ -46,14 +42,6 @@ public interface Eval
                 public final Sequence<Module> linkedModules;
                 public final Properties systemProperties;
                 
-                /**
-                 * @param classLoader
-                 *      ClassLoader from which to obtain dependencies.
-                 * @param linkedModules
-                 *      List of loaded modules.
-                 * @param systemProperties
-                 *      System properties, used by some implementations. If null, java.lang.System.getProperties() is used.
-                 */
                 public Prerequisites
                         (
                         ClassLoader classLoader, 
@@ -83,8 +71,14 @@ public interface Eval
          */
         public Object eval(Pattern expr, Prerequisites setup) throws ParseError, LinkageError, TypeError;
         
-        
+        /**
+         * Whether this eval method accepts parser-generated tokens.
+         */
         public boolean acceptsParserTokens();
+
+        /**
+         * Whether this eval method accepts symbolic tokens.
+         */
         public boolean acceptsUserTokens();
         
     }
