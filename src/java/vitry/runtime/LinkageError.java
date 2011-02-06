@@ -18,6 +18,7 @@
  */
 package vitry.runtime;
 
+
 public class LinkageError extends VitryError
     {
         private LinkageError(String string, Throwable cause) {

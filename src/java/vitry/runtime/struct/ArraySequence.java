@@ -21,9 +21,9 @@ package vitry.runtime.struct;
 import java.util.Iterator;
 
 /**
- * Adapts an array as a seq. Concurrently modifying the array is not recommended.
+ * Adapts an array as a sequence. Mutating the array is not recommended.
  */
-public class ArraySequence<T> extends AbstractSequence<T>
+public class ArraySequence<T> extends AbstractSequence<T> implements Finite<T>
     {
         private final T[]   array;
         private final int   offset;
@@ -65,5 +65,9 @@ public class ArraySequence<T> extends AbstractSequence<T>
         
         public boolean hasTail() {
             return offset + 1 < array.length;
+        }
+
+        public int length() {
+            return array.length - offset;
         }
     }

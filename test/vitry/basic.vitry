@@ -1,0 +1,38 @@
+
+-- ======================================================================
+-- Basic interpreter tests              
+-- ======================================================================
+
+1
+1.2
+1.
+1e12
+"test"
+"test\ttest"
+nil
+false
+true    
+
+(if true 1 0)
+(if true 1 else 0)
+(if nil 1 0)            
+        
+(let (foo=`foo) foo)
+(let (true=false) `true)
+
+-- Functionn creation and application
+(fn (x) x)
+((fn (x) x) 3)
+                                    
+-- Delayed evaluation
+(let (f=(fn (x y) add x y)) f 1 2)
+(let (f=(fn (x y) add x y)) (f 1) 2)
+
+
+-- Operators 
+-- Delimiters
+-- Matching
+-- Typing
+-- Loop
+
+-- Modules

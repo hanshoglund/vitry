@@ -18,14 +18,19 @@
  */
 package vitry.runtime.struct;
 
-import static vitry.runtime.Build.*;
+import static vitry.runtime.Build.MEMOIZE_SEQS;
+
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.WeakHashMap;
 
 import vitry.runtime.misc.Utils;
 
-
+/**
+ * Basic sequence operations.
+ * 
+ * TODO rewrite in core with proper tail calls.
+ */
 public class Sequences
     {
         private Sequences() {}
@@ -115,7 +120,7 @@ public class Sequences
             
             Object[] a;
             if (s instanceof Finite)
-                a = new Object[((Finite) s).length()];
+                a = new Object[((Finite<?>) s).length()];
             else
                 a = new Object[length(s)];
             

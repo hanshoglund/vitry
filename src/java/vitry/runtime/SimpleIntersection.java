@@ -24,7 +24,6 @@ import vitry.runtime.struct.ArraySequence;
 import vitry.runtime.struct.Sequence;
 
 
-
 public class SimpleIntersection extends Intersection
     {
         Sequence<Pattern> elements;

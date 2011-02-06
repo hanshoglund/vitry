@@ -112,6 +112,7 @@
 	    dirs, 
 	    generate-antlr, 
 	    compile-src, 
+	    compile-test, 
 	    compile-js, 
 	    doc" 
 	    description="">

@@ -18,41 +18,17 @@
  */
 package vitry.runtime;
 
-import java.util.Properties;
-
-import vitry.runtime.struct.Sequence;
 
 
 /**
  * The eval operation.
  * 
- * Expects a atomic values or a an expression tree. Atomic values and tokens representing 
- * atomic values evaluate to the corresponding values. Compound structures evaluate as
- * compound expressions. 
+ * Expects a atomic values or a an expression tree. Atomic values evaluate to themselves.
+ * Tokens representing atomic values evaluate to the value represented. 
+ * Compound structures evaluate as the expression they represent.
  */
 public interface Eval
     {
-
-        /**
-         * Encapsulates evaluation prerequisites.
-         */
-        public class Prerequisites
-            {
-                public final ClassLoader classLoader;
-                public final Sequence<Module> linkedModules;
-                public final Properties systemProperties;
-                
-                public Prerequisites
-                        (
-                        ClassLoader classLoader, 
-                        Sequence<vitry.runtime.Module> linkedModules, 
-                        Properties systemProperties
-                        ){
-                    this.classLoader = classLoader;
-                    this.linkedModules = linkedModules;
-                    this.systemProperties = systemProperties;
-                }
-            }
 
         /**
          * Evaluate the given pattern.
@@ -64,12 +40,10 @@ public interface Eval
          * it is returned. This may result in a LinkageError or TypeError.
          * @param expr 
          *      Pattern to evaluate.
-         * @param setup
-         *      See EvalParams.
          * @throws ParseError
          * @throws LinkageError
          */
-        public Object eval(Pattern expr, Prerequisites setup) throws ParseError, LinkageError, TypeError;
+        public Object eval(Pattern expr) throws ParseError, LinkageError, TypeError;
         
         /**
          * Whether this eval method accepts parser-generated tokens.

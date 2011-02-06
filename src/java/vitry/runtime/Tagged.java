@@ -25,7 +25,7 @@ import vitry.runtime.struct.Sequence;
 /**
  * Implements tagged values.
  *
- * Used for runtime type information.
+ * (Used for runtime type information.)
  */
 public class Tagged extends BasePattern implements Destructible
     {

@@ -21,10 +21,10 @@ package vitry.runtime.struct;
 import java.util.Iterator;
 
 /**
- * Adapts seq from an Iterable. This class will fetch a single iterator
- * from the given object at construction time and traverse it as required.
+ * Sequence adapted from an Iterable. Fetches a single iterator from the given
+ * object at construction time and traverses it as required.
  * 
- * Concurrently modifying the iterable is not recommended.
+ * Mutating the iterable is not recommended.
  */
 public class IterableSequence<T> extends AbstractSequence<T>
     {

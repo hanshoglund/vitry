@@ -18,6 +18,8 @@
  */
 package vitry.runtime;
 
+import vitry.runtime.misc.Utils;
+
 /**         
  * Base environment. Implements non-stack consuming lookup.
  */
@@ -25,7 +27,8 @@ abstract public class AbstractEnvironment<K, V> implements Environment<K, V>
     {
 
         private final Environment<K, V> parent;
-        private static Environment<?,?> global = new GlobalEnvironment();
+
+        private static Environment<?, ?> global = new GlobalEnvironment();
 
 
         public AbstractEnvironment() {
@@ -42,11 +45,11 @@ abstract public class AbstractEnvironment<K, V> implements Environment<K, V>
 
         public V lookup(K key) throws UndefinedError {
             Environment<K, V> env = this;
-            V val = this.get(key);
+            V val = this.getBinding(key);
             try {
                 while (val == null) {
                     env = env.getParent();
-                    val = env.get(key);
+                    val = env.getBinding(key);
                 }
             } catch (UndefinedError e) {
                 throw new UndefinedError(key, this);
@@ -54,41 +57,47 @@ abstract public class AbstractEnvironment<K, V> implements Environment<K, V>
             return val;
         }
 
-        @SuppressWarnings("unchecked")
         private static <K, V> Environment<K, V> empty() {
-            return (Environment<K, V>) global;
+            return Utils.<Environment<K, V>>unsafe(global);
+        }
+
+        public Environment<K, V> assoc(K key, V val) {
+            return throwUnsupported();
+        }
+
+        private <T> T throwUnsupported() {
+            throw new UnsupportedOperationException();
         }
     }
 
-class GlobalEnvironment extends AbstractEnvironment<Object, Object> {
 
-    public Environment<Object, Object> define(Object key, Object val) throws BindingError {
-        return throwUnsupported();
+class GlobalEnvironment extends AbstractEnvironment<Object, Object>
+    {
+        public Environment<Object, Object> define(Object key, Object val) throws BindingError {
+            return throwUnsupported();
+        }
+
+        public Environment<Object, Object> extend(Object key, Object val) {
+            return throwUnsupported();
+        }
+
+        public Environment<Object, Object> extend() {
+            return throwUnsupported();
+        }
+
+        public boolean isPersistent() {
+            return true;
+        }
+
+        public boolean hasBinding(Object key) {
+            return false;
+        }
+
+        public Object getBinding(Object key) {
+            throw new UndefinedError(key, this);
+        }
+
+        private <T> T throwUnsupported() {
+            throw new UnsupportedOperationException();
+        }
     }
-
-    public Environment<Object, Object> extend(Object key, Object val) {
-        return throwUnsupported();
-    }
-
-    public Environment<Object, Object> extend() {
-        return throwUnsupported();
-    }
-
-    public boolean isPersistent() {
-        return true;
-    }
-
-    public boolean contains(Object key) {
-        return false;
-    }
-
-    public Object get(Object key) {
-        throw new UndefinedError(key, this);
-    }
-
-    private <T> T throwUnsupported() {
-        throw new UnsupportedOperationException();
-    }
-
-        
-}

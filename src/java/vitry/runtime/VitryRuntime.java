@@ -24,9 +24,9 @@ import vitry.runtime.struct.Sequence;
 
 
 /**
- * This class encapsulates an entire runtime system. That is, a set of system
- * properties, a set of loaded modules and possibly an interpreter.
- * Implements functions and types needed to bootstrap <code>Vitry.Prelude</code>.
+ * This class encapsulates the runtime system. 
+ *
+ * TODO
  * 
  * @author Hans Höglund
  */
@@ -107,14 +107,22 @@ public class VitryRuntime
         
         
         // ==
-        public static final Function eq = new AbstractFunction(
-                2 
-                /*fnType(any, any)*/)
+        public static final Function eq = new AbstractFunction(2)
             {
                 public Object apply(Object a, Object b) {
-                    return null; // TODO
+                    if (b instanceof Pattern) {
+                        if (a instanceof Pattern) {
+                            return toVitryBool(((Atom) a).eqFor((Pattern) b));
+                        }
+                        return toVitryBool(((Pattern) b).eq(a));
+                    }
+                    return toVitryBool(a.equals(b));
                 }
             };
+            
+        private static Symbol toVitryBool(boolean a) {
+            return a ? true_ : false_;
+        }
             
 
         // Basic types
@@ -177,7 +185,7 @@ public class VitryRuntime
 
         //
         // id        : (a -> a)
-        public static final Function id = new AbstractFunction(1, null)
+        public static final Function id = new AbstractFunction(1)
             {
                 public Object apply(Object a) {
                     return a;
@@ -186,10 +194,10 @@ public class VitryRuntime
 
 
         // const     : a -> (? -> a)
-        public static final Function const_ = new AbstractFunction(1, null)
+        public static final Function const_ = new AbstractFunction(1)
             {
                 public Object apply(final Object a) {
-                    return new AbstractFunction(1, null)
+                    return new AbstractFunction(1)
                         {
                             public Object apply(Object b) {
                                 return a;
@@ -225,7 +233,7 @@ public class VitryRuntime
                 // Try to avoid call overhead
         }
             
-        public static final Function neg = new AbstractFunction(1, null)
+        public static final Function neg = new AbstractFunction(1)
             {
                 public Object apply(Object a) {
                     if (a instanceof BigRational) return ((BigRational) a).negate();
@@ -236,7 +244,7 @@ public class VitryRuntime
             };
             
         // + 
-        public static final Function add = new AbstractFunction(2, null)
+        public static final Function add = new AbstractFunction(2)
             {
                 public Object apply(Object a, Object b) {
                     if (a instanceof BigRational) {
@@ -263,7 +271,7 @@ public class VitryRuntime
 
             
         // -
-        public static final Function sub = new AbstractFunction(2, null)
+        public static final Function sub = new AbstractFunction(2)
             {
                 public Object apply(Object a, Object b) {
                     if (a instanceof BigRational) {
@@ -288,7 +296,7 @@ public class VitryRuntime
             };
 
         // *
-        public static final Function mul = new AbstractFunction(2, null)
+        public static final Function mul = new AbstractFunction(2)
             {
                 public Object apply(Object a, Object b) {
                     if (a instanceof BigRational) {
@@ -314,7 +322,7 @@ public class VitryRuntime
 
 
         // /
-            public static final Function div = new AbstractFunction(2, null)
+            public static final Function div = new AbstractFunction(2)
             {
                 public Object apply(Object a, Object b) {
                     if (a instanceof BigRational) {
@@ -340,7 +348,7 @@ public class VitryRuntime
 
 
         // %
-        public static final Function mod = new AbstractFunction(2, null)
+        public static final Function mod = new AbstractFunction(2)
             {
                 public Object apply(Object a, Object b) {
                     return null; // TODO
@@ -349,7 +357,7 @@ public class VitryRuntime
 
 
         // (%%)
-        public static final Function modp = new AbstractFunction(2, null)
+        public static final Function modp = new AbstractFunction(2)
             {
                 public Object apply(Object a, Object b) {
                     return null; // TODO
@@ -361,7 +369,7 @@ public class VitryRuntime
             
             
         // pow
-        public static final Function pow = new AbstractFunction(2, null)
+        public static final Function pow = new AbstractFunction(2)
         {
             public Object apply(Object a, Object b) {
                 if (a instanceof BigRational) return ((BigRational) a).pow(((Number) b).intValue());
@@ -408,9 +416,7 @@ public class VitryRuntime
          };
 
         // intersection  : {a} -> {a}
-         public static final AbstractFunction intersection = new AbstractFunction(
-                 2, 
-                 null) {
+         public static final AbstractFunction intersection = new AbstractFunction(2) {
              public Object apply(Object elem) {
                  if (elem instanceof Object[])
                      return new SimpleIntersection((Object[]) elem);

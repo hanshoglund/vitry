@@ -35,6 +35,7 @@ import vitry.runtime.SimpleProduct;
 import vitry.runtime.Tagged;
 import vitry.runtime.Type;
 import vitry.runtime.Union;
+import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.IterableSequence;
 import vitry.runtime.struct.MapSequence;
 import vitry.runtime.struct.Sequence;
@@ -44,7 +45,6 @@ import vitry.runtime.struct.SequenceIterator;
 /**
  * Reflects ANTLR-generated trees into Vitry.
  * 
- * Trees such as ^(a b c d) becomes (a, b, c, d) etc.
  * Currently assumes that ANTLR's list of children contains only PatternTrees.
  */
 public class PatternTree extends CommonTree implements Product
@@ -99,9 +99,11 @@ public class PatternTree extends CommonTree implements Product
             
             if (children != null) {
                 // Make a seq out of the ANTLR child list
-                @SuppressWarnings("unchecked") // ANTLR api is non-generic
-                Sequence<Pattern> itSeq = new IterableSequence<Pattern>(this.children);
-                this.childSeq = new MapSequence<Pattern,Pattern>(new AbstractFunction(1, null){
+                Sequence<Pattern> itSeq = 
+                    new IterableSequence<Pattern>(
+                            Utils.<Iterable<Pattern>>unsafe(this.children));
+                
+                this.childSeq = new MapSequence<Pattern,Pattern>(new AbstractFunction(1){
                     
                     // Replace singletons with their contained token
                     public Object apply(Object o) throws InvocationError {

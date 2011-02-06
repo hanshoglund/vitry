@@ -37,7 +37,7 @@ public class HashEnvironment<K, V> extends AbstractEnvironment<K, V>
         }
 
         public Environment<K, V> define(K key, V val) throws BindingError {
-            if (this.contains(key)) throw new BindingError(key, this);
+            if (this.hasBinding(key)) throw new BindingError(key, this);
             bindings.put(key, val);
             return this;
         }
@@ -50,16 +50,23 @@ public class HashEnvironment<K, V> extends AbstractEnvironment<K, V>
             return new HashEnvironment<K, V>(this);
         }
 
-        public V get(K key) {
+        public V getBinding(K key) {
             return bindings.get(key);
         }
 
-        public boolean contains(K key) {
+        public boolean hasBinding(K key) {
             return bindings.containsKey(key);
         }
 
         public boolean isPersistent() {
             return false;
         }
+
+        public Environment<K, V> assoc(K key, V val) {
+            bindings.put(key, val);
+            return this;
+        }
+        
+        
 
     }

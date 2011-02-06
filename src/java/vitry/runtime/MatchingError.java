@@ -18,6 +18,9 @@
  */
 package vitry.runtime;
 
+/**
+ * Thrown to indicate matching errors.
+ */
 public class MatchingError extends VitryError
     {
 

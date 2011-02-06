@@ -30,9 +30,10 @@ import java.math.BigInteger;
 import java.util.Iterator;
 
 import vitry.runtime.misc.Utils;
-import vitry.runtime.parse.TokenTypes;
+import vitry.runtime.parse.VitryTokenTypes;
 import vitry.runtime.parse.VitryParser;
 import vitry.runtime.parse.VitryToken;
+import vitry.runtime.struct.ArraySequence;
 import vitry.runtime.struct.Sequence;
 import vitry.runtime.struct.Sequences;
 
@@ -41,10 +42,11 @@ import vitry.runtime.struct.Sequences;
  * Standard interpreter.
  * 
  * This implementation optimizes tail calls to interpreted functions, but not
- * to compiled functions (as these use standard calling conventions).
+ * to compiled functions.
  */
-public class Interpreter implements Eval
+public class Interpreter implements Eval 
     {                
+
         
         /*
          * Token types
@@ -111,14 +113,12 @@ public class Interpreter implements Eval
         
         public Object eval
                 (
-                Pattern expr, 
-                Prerequisites setup
+                Pattern expr
                 ) 
         throws ParseError, LinkageError, TypeError {
             return eval
                 (
                 expr, 
-                setup, 
                 STANDARD_CONTEXT,
                 VitryRuntime.prelude);
         }
@@ -129,7 +129,6 @@ public class Interpreter implements Eval
         final Object eval
                 (
                 Pattern expr,
-                Prerequisites pre,
                 Environment<Symbol, Symbol> context,
                 Environment<Symbol, Object> frame
 //                Sequence<vitry.runtime.Type> types,
@@ -179,9 +178,9 @@ public class Interpreter implements Eval
                 }
                 try {
                     try {
-                        type = TokenTypes.parserTokenType(op);
+                        type = VitryTokenTypes.parserTokenType(op);
                     } catch (Exception _) {
-                        type = TokenTypes.symbolicTokenType(op);
+                        type = VitryTokenTypes.symbolicTokenType(op);
                     }
                 } catch (VitryError e) {
                     throw e;
@@ -244,7 +243,7 @@ public class Interpreter implements Eval
                         expr = args.head();
                         
                         if (frame.lookup(PAR) != VitryRuntime.nil) {
-                            Object value = eval(expr, pre, context, frame);
+                            Object value = eval(expr, context, frame);
                             return ((Function) frame.lookup(PAR)).apply(value);
                         } 
                         else continue;
@@ -257,7 +256,7 @@ public class Interpreter implements Eval
                         expr = args.head();
                         
                         if (frame.lookup(BRA) != VitryRuntime.nil) {
-                            Object value = eval(expr, pre, context, frame);
+                            Object value = eval(expr, context, frame);
                             return ((Function) frame.lookup(BRA)).apply(value);
                         } 
                         else continue;
@@ -270,7 +269,7 @@ public class Interpreter implements Eval
                         expr = args.head();
                         
                         if (frame.lookup(ANG) != VitryRuntime.nil) {
-                            Object value = eval(expr, pre, context, frame);
+                            Object value = eval(expr, context, frame);
                             return ((Function) frame.lookup(ANG)).apply(value);
                         } 
                         else continue;
@@ -298,7 +297,7 @@ public class Interpreter implements Eval
                             expr = last(args);
                             frame = frame.extend();
                             for (Pattern a : assignments) {
-                                eval(a, pre, context, frame);              
+                                eval(a, context, frame);              
                             }
                         }
                         continue;
@@ -306,8 +305,8 @@ public class Interpreter implements Eval
 
                     case Assign:
                         {
-                        Object id = eval(first(args), pre, context, frame);
-                        Object val = eval(second(args), pre, context, frame);
+                        Object id = eval(first(args), context, frame);
+                        Object val = eval(second(args), context, frame);
                             try {
                                 frame.define((Symbol) id, val);
                             } catch (ClassCastException e) {
@@ -334,7 +333,7 @@ public class Interpreter implements Eval
                             // TODO
                         
                         } else {
-                            Object function = eval(args.head(), pre, context, frame);
+                            Object function = eval(args.head(), context, frame);
                             Sequence<Pattern> functionArguments = args.tail();
 
                             /*
@@ -357,12 +356,12 @@ public class Interpreter implements Eval
                                 // implicits
                                 // fixities
                                 
-                                assignParameters(pre, context, frame, interpretedFunction, functionArguments);
+                                assignExprs(context, frame, interpretedFunction, functionArguments);
                                 expr = interpretedFunction.body;
                                 continue;
                                 
                             } else {
-                                return applyDefault(pre, context, frame, function, functionArguments);
+                                return applyDefault(context, frame, function, functionArguments);
                             }
                         }
                         
@@ -378,7 +377,7 @@ public class Interpreter implements Eval
 
                     case If:
                         {
-                            Object condition = eval(Sequences.first(args), pre, context, frame);    
+                            Object condition = eval(Sequences.first(args), context, frame);    
                             if (! (condition.equals(FALSE)) ) {
                                 expr = Sequences.second(args);
                             } else {
@@ -426,53 +425,11 @@ public class Interpreter implements Eval
 
 
 
-        private void assignParameters
-            (
-            Prerequisites pre, 
-            Environment<Symbol, Symbol> context,
-            Environment<Symbol, Object> frame, 
-            InterpretedFunction ifn,
-            Sequence<Pattern> fnArgs
-            )
-        {    
-            for (Iterator<Pattern> l = ifn.params.iterator(), r = fnArgs.iterator();
-                 l.hasNext() && r.hasNext();) {
-                Object name = eval(l.next(), pre, context, frame);
-                Object value = eval(r.next(), pre, context, frame);
-                try {
-                    frame.define((Symbol) name, value);
-                } catch (ClassCastException e) {
-                    throw new ParseError("Can not assign to non-symbol " + name);
-                }
-            }
-        }
-
-
-        private Object applyDefault
-            (
-            Prerequisites pre, 
-            Environment<Symbol, Symbol> context,
-            Environment<Symbol, Object> frame, 
-            Object fn, 
-            Sequence<Pattern> fnArgs
-            )
-        {    
-            java.util.List<Object> fnArgVals = new java.util.LinkedList<Object>();
-            
-            for (Pattern fa : fnArgs) {
-                fnArgVals.add(eval(fa, pre, context, frame));
-            }
-            // TODO we want to have a seq here and call apply actually...
-            return ((AbstractFunction) fn).applyTo(fnArgVals.toArray());
-        }           
-        
-        
         static class InterpretedFunction extends AbstractFunction
             {
-                Sequence<Pattern> params;
-                Pattern body;
-                Environment<Symbol, Object> env;
-                Prerequisites pre;
+                final Sequence<Pattern> params;
+                final Pattern body;
+                final Environment<Symbol, Object> env;
                 Interpreter i;
 
                 public InterpretedFunction(Sequence<Pattern> params, Pattern body, int arity, Environment<Symbol, Object> env) {
@@ -486,11 +443,11 @@ public class Interpreter implements Eval
                     return env;
                 }
                 
-                protected Object eval(Sequence<Pattern> args) {
-                    Environment<Symbol, Object> frame = this.getEnvironment().extend();                                
-                    i.assignParameters(pre, STANDARD_CONTEXT, frame, this, args);
-                    return i.eval(body, pre, STANDARD_CONTEXT, frame);
-                }
+//                public Object applyTo(Sequence<?> args, int length) {
+//                    Environment<Symbol, Object> frame = this.getEnvironment().extend();                                
+//                    i.assignParameters(STANDARD_CONTEXT, frame, this, args);
+//                    return i.eval(body, STANDARD_CONTEXT, frame);
+//                }
             }
 
         
@@ -498,8 +455,52 @@ public class Interpreter implements Eval
         
          
 
+        private void assignExprs
+            (
+            Environment<Symbol, Symbol> context,
+            Environment<Symbol, Object> frame, 
+            InterpretedFunction ifn,
+            Sequence<Pattern> fnArgs
+            )
+        {    
+            for (Iterator<Pattern> l = ifn.params.iterator(), r = fnArgs.iterator();
+                 l.hasNext() && r.hasNext();) {
+                Object name = eval(l.next(), context, frame);
+                Object value = eval(r.next(), context, frame);
+                try {
+                    frame.define((Symbol) name, value);
+                } catch (ClassCastException e) {
+                    throw new ParseError("Can not assign to non-symbol " + name);
+                }
+            }
+        }
+
+        private Object applyDefault
+            (
+            Environment<Symbol, Symbol> context,
+            Environment<Symbol, Object> frame, 
+            Object fn, 
+            Sequence<Pattern> fnArgs
+            )
+        {    
+            // TODO this is a hack, find a faster and simpler way to do it...
+            java.util.List<Object> fnArgVals = new java.util.LinkedList<Object>();
+            
+            for (Pattern fa : fnArgs) {
+                fnArgVals.add(eval(fa, context, frame));
+            }
+            return ((AbstractFunction) fn).applyTo(fnArgVals.toArray());
+        }
+        
+        
+        
+        
+        
+        
+
         private static boolean isSelfEvaluating(Pattern expr) {
-            return (expr instanceof Atom && !(expr instanceof VitryToken)) || !(expr instanceof Pattern);
+            return (expr instanceof Atom && !(expr instanceof VitryToken)) 
+                || !(expr instanceof Pattern);
         }
         
         private static boolean isAcceptedToken(Pattern expr) {
@@ -552,7 +553,7 @@ public class Interpreter implements Eval
 //            {   
 //                
 //                public Object apply(Object a0) throws InvocationError {
-//                    return a0;
+//                    return eval(new ArraySequence<Pattern>(a0));
 //                }
 //            }
 //

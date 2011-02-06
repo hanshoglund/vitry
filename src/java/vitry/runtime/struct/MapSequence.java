@@ -25,6 +25,7 @@ import vitry.runtime.Function;
 import vitry.runtime.AbstractFunction;
 import vitry.runtime.InvocationError;
 import vitry.runtime.misc.Checks;
+import vitry.runtime.misc.Utils;
 
 
 /**
@@ -48,8 +49,6 @@ public class MapSequence<A, B> extends AbstractSequence<B>
             return new MapIterator<B>(fn, input.iterator());
         }
 
-        @SuppressWarnings("unchecked")
-        
         public B head() {
             A head = input.head();
 
@@ -57,7 +56,7 @@ public class MapSequence<A, B> extends AbstractSequence<B>
 
             try {
                 // Either returns or throw an InvocationException
-                return (B) fn.apply(head);
+                return Utils.<B>unsafe(fn.apply(head));
                 
             } catch (InvocationError e) {
                 throw new InvocationError(
@@ -95,8 +94,6 @@ class MapIterator<T> implements Iterator<T>
         public boolean hasNext() {
             return input.hasNext();
         }
-
-        @SuppressWarnings("unchecked")
         
         public T next() {
             Object next = null;
@@ -106,7 +103,7 @@ class MapIterator<T> implements Iterator<T>
                 next = input.next();
 
                 // Either returns or throw an InvocationException
-                return (T) fn.apply(next);
+                return Utils.<T>unsafe(fn.apply(next));
 
             } catch (NoSuchElementException e) {
                 throw e;

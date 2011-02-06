@@ -23,7 +23,6 @@ import vitry.runtime.struct.Sequence;
 
 public interface Function
     {
-
         Object apply(Object a0) throws InvocationError;
 
         Object apply(Object a0, Object a1) throws InvocationError;

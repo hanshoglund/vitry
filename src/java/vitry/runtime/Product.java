@@ -21,9 +21,6 @@ package vitry.runtime;
 import vitry.runtime.struct.Sequence;
 
 
-/**
- * Represents <em>n</em>-ary tuples and <em>n</em>-ary product types where <em>n</em> > 1.
- */
 public interface Product extends Pattern, Sequence<Pattern>
     {
         // Provide fast access to pair

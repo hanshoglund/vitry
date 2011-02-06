@@ -81,6 +81,7 @@ delim [boolean rs]
     | '[' inline[rs]? ']'                          -> ^(Bra inline?)
     | '{' inline[rs]? '}'                          -> ^(Ang inline?)
     | '`' Op                                       -> ^(Quote Op)
+    // TODO quoted delimiters/ops, i.e. `(+)
     | '`' delim[rs]                                -> ^(Quote delim)
     | atom
     ;   
@@ -94,12 +95,12 @@ atom
     ;
 
 /*    
- * Inline, that is operator expr, application or special form
+ * Inline, that is operator expression, application or special form
  */
 inline [boolean rs]
     : {$rs}? inlineRight
     | (Op apply?)+                                 -> ^(Ops ^(Op apply?)+)
-    | (apply Op) => e+=apply (Op f+=apply?)+       -> ^(Ops $e ^(Op $f)+) // FIXME
+    | (apply Op) => e+=apply (Op f+=apply?)+       -> ^(Ops $e ^(Op $f)+)
     | apply
     ;                      
 
@@ -112,7 +113,7 @@ inlineRight
     | 'loop' '(' assign* ')' inline[true]          -> ^(Loop assign* inline)
     | 'do' '(' assign* ')' expr*                   -> ^(Do assign* expr*)
     | 'if' expr expr 'else'? inline[true]          -> ^(If expr expr inline)
-    | 'match' v=expr '(' (l+=left r+=expr)* ')'    -> ^(Match $v ^($l $r)*)
+    | 'match' v=expr '(' (c+=left e+=expr)* ')'    -> ^(Match $v ^($c $e)*)
     | 'recur' expr*         			   -> ^(Recur expr*)
     ;
 
@@ -125,13 +126,14 @@ apply
     : (expr expr) => expr+                         -> ^(Apply expr+)
     | expr
     ;
+
+
+
     
 
 /* 
  * Declarative forms
- * These are a superset of the expression language
- * They compile into functions that constructs modules and are implemented
- * by rewriting
+ * TODO
  */
 
 module 

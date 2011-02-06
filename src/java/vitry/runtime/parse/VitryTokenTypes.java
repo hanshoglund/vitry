@@ -10,7 +10,7 @@ import vitry.runtime.Symbol;
 /**
  * Provides integers identifiers representing token types.
  */
-public class TokenTypes
+public class VitryTokenTypes
     {
 
         public static final Environment<Pattern, Integer> SYMBOLIC_TOKENS = (new HashEnvironment<Pattern, Integer>()

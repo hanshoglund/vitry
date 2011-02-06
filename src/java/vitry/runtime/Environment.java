@@ -19,29 +19,62 @@
 package vitry.runtime;
 
 /**
- * Standard environment, i.e. a set of bindings referencing an enclosing 
- * parent environment.
+ * A set of bindings possibly referencing an enclosing parent environment.
  * 
- * Invariants:    
- *
- *   - parent is referentially transparent
- *   - if isPersistent holds, then lookup is referentially transparent
+ * This interface supports both persistent (immutable) and non-persistent
+ * (mutable) environments. For persistent environments the define operation
+ * is indentical to extend and never throws an exception. For non-persistent 
+ * implementations define may be used to add bindings, but not to override
+ * previous bindings. The assoc operation is used to mutate non-persistent 
+ * environments explicitly.
  */
 public interface Environment<K, V>
     {
+        /**
+         * Define the given key in this environment.
+         * @return A modified environment, which is this if this is a 
+         * non-persistent environment.
+         * @throws BindingError If the given key already exists.
+         */
         Environment<K, V> define(K key, V val) throws BindingError;
 
+        /**
+         * Returns an extension of this environment containing the given 
+         * binding. Does not modify this environment.
+         */
         Environment<K, V> extend(K key, V val);
 
+        /**
+         * Returns an extension of this environment.          
+         */
         Environment<K, V> extend();
-
+        
+        /**
+         * Update this environment to associate the given key with the given
+         * value. Not supported by persistent environments.
+         */
+        Environment<K, V> assoc(K key, V val);
+        
+        /**
+         * Returns the parent. Referentially transparent.
+         */
         Environment<K, V> getParent();
+
+        /**
+         * Lookup the given key. Referentially transparent iff this is a
+         * persistent environment.
+         */
+        V lookup(K key) throws UndefinedError;
 
         boolean isPersistent();
 
-        V lookup(K key) throws UndefinedError;
+        /**
+         * Returns the local binding for the given key, if any.
+         */
+        V getBinding(K key);
 
-        boolean contains(K key);
-
-        V get(K key);
+        /**
+         * Returns whether a local binding exists for the given key.
+         */
+        boolean hasBinding(K key);
     }

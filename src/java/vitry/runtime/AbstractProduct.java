@@ -25,9 +25,9 @@ import vitry.runtime.struct.Sequence;
 import vitry.runtime.struct.SequenceIterator;
 
 /**
- * Base implementation, relying on a sequence structure.
+ * Base implementation, relying on a sequence.
  * 
- * For the reified block types, we have to override the Seq methods to adapt
+ * For the reified block types, we have to override the Sequence methods to adapt
  * traversal to the generated accessors.
  */
 abstract public class AbstractProduct extends ConstructionPattern 

@@ -20,7 +20,9 @@ package vitry.runtime;
 
 import java.util.Iterator;
 
-
+/**
+ * Base implementation, relying on a sequence.
+ */
 abstract public class List extends ConstructionPattern
     {
 

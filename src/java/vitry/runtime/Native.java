@@ -23,7 +23,7 @@ import vitry.runtime.struct.Sequence;
 
 
 /**
- * Wrapper for host objects. It is not necessary to wrap java objects to
+ * Wrapper for host objects. It is not necessary to wrap objects to
  * simply expose them, but it is necessary in order to include them in
  * patterns.
  *
@@ -75,7 +75,7 @@ public final class Native extends Atom
          * Applies {@link #wrap(Object)} lazily to the given seq.
          */
         public static Sequence<Pattern> wrap(Sequence<Object> values) {
-            return new MapSequence<Object, Pattern>(new AbstractFunction(1, null){
+            return new MapSequence<Object, Pattern>(new AbstractFunction(1){
                 public Object apply(Object v) throws InvocationError {
                     return wrap(v);
                 }

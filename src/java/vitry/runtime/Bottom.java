@@ -20,7 +20,9 @@ package vitry.runtime;
 
 import vitry.runtime.struct.Sequence;
 
-
+/**
+ * The bottom type, a.k.a. the empty set.
+ */
 public final class Bottom extends InclusionPattern implements Set
     {
         private Bottom() {}

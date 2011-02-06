@@ -20,9 +20,18 @@ package vitry.runtime;
 
 import vitry.runtime.struct.Sequence;
 
+/**
+ * A function with a known inverse.
+ */
 public interface InvertibleFunction extends Function
-    {                                            
-        Sequence<Object> applyInverse(Object a0) throws InvocationError;
+    {                                          
+        /**
+         * Apply the inverse function directly.
+         */
+        Sequence<Object> applyInverse(Object a) throws InvocationError;
         
+        /**
+         * Returns the inverse function of this.
+         */
         public InvertibleFunction getInverse();
     }

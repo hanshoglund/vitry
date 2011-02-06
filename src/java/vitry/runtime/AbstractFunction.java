@@ -634,7 +634,7 @@ class PartialApplication extends AbstractFunction
     {
 
         PartialApplication(AbstractFunction original, Object... args) {
-            super(original.arity - args.length, null);
+            super(original.arity - args.length);
             this.original = original;
             this.args = args;
 

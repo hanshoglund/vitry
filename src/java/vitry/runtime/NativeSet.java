@@ -26,7 +26,12 @@ import vitry.runtime.struct.MapSequence;
 import vitry.runtime.struct.Sequence;
 
 /**
- * A set of host objects (wrapped or unwrapped).
+ * A set of host values, defined by a class or interface. 
+ *
+ * Matches wrapped and nonwrapped host objects that are instaces of some
+ * host type. Subclasses behave as expected. 
+ *
+ * Does not work for other Pattern instances other than Native.
  */
 public class NativeSet extends AbstractSet
     {
