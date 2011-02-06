@@ -19,19 +19,7 @@
 package vitry.runtime;
 
 
-abstract public class Scope extends Atom
+interface Scope
     {
-        public Scope() {
-            this.env = VitryRuntime.prelude;
-        }
-
-        public Scope(Scope parent) {
-            this.env = parent.getEnvironment().extend();
-        }
-
-        protected final Environment<Symbol, Object> env;
-
-        public Environment<Symbol, Object> getEnvironment() {
-            return env;
-        }
+        public Environment<Symbol, Object> getEnvironment();
     }

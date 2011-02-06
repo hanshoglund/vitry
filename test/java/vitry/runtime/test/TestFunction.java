@@ -33,7 +33,7 @@ public class TestFunction
         }
 
         /**
-         * Test method for {@link vitry.runtime.AbstractFunction#getArity()}.
+         * Test method for {@link vitry.runtime.StandardFunction#getArity()}.
          */
         @Test
         public void testArity() {
@@ -41,7 +41,7 @@ public class TestFunction
         }
 
         /**
-         * Test method for {@link vitry.runtime.AbstractFunction#type()}.
+         * Test method for {@link vitry.runtime.StandardFunction#type()}.
          */
         @Test
         public void testType() {
@@ -49,7 +49,7 @@ public class TestFunction
         }
 
         /**
-         * Test method for {@link vitry.runtime.AbstractFunction#apply(java.lang.Object, java.lang.Object)}.
+         * Test method for {@link vitry.runtime.StandardFunction#apply(java.lang.Object, java.lang.Object)}.
          */
         @Test
         public void testApplyObjectObject() {
@@ -57,7 +57,7 @@ public class TestFunction
         }
 
         /**
-         * Test method for {@link vitry.runtime.AbstractFunction#apply(java.lang.Object, java.lang.Object, java.lang.Object)}.
+         * Test method for {@link vitry.runtime.StandardFunction#apply(java.lang.Object, java.lang.Object, java.lang.Object)}.
          */
         @Test
         public void testApplyObjectObjectObject() {
@@ -65,7 +65,7 @@ public class TestFunction
         }
 
         /**
-         * Test method for {@link vitry.runtime.AbstractFunction#apply(java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object)}.
+         * Test method for {@link vitry.runtime.StandardFunction#apply(java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object)}.
          */
         @Test
         public void testApplyObjectObjectObjectObject() {
@@ -73,7 +73,7 @@ public class TestFunction
         }
 
         /**
-         * Test method for {@link vitry.runtime.AbstractFunction#applyTo(java.lang.Object[])}.
+         * Test method for {@link vitry.runtime.StandardFunction#applyVar(java.lang.Object[])}.
          */
         @Test
         public void testApplyVariadic() {

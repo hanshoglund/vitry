@@ -23,9 +23,10 @@ package vitry.runtime;
  *
  * The runtime classes may of course also throw general exceptions such as 
  * ClassCastException etc. These should be considered implementation bugs.
- */                        
+ */
 abstract public class VitryError extends RuntimeException
     {
+        private static final long serialVersionUID = 1L;
 
         public VitryError(String string) {
             super(string);

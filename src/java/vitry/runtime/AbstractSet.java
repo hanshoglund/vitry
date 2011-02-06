@@ -59,4 +59,14 @@ abstract public class AbstractSet extends InclusionPattern implements Set
         public String toString() {
             return Utils.join(this, "{", ", ", "}");
         }
+
+        public Pattern union(Set b) {
+            return new SimpleUnion(this, b);
+        }
+
+        public Pattern intersection(Set b) {
+            return new SimpleIntersection(this, b);
+        }
+        
+        
     }

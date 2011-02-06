@@ -33,65 +33,65 @@ import vitry.runtime.struct.Sequence;
 public class VitryRuntime
     {
         
-        /**
-         * Standard operator bindings.
-         */
-        static class Ops
-            {
-                // !
-                public static final Function _21 = null;
-                // #
-                public static final Function _23 = null;
-                // $
-                public static final Function _24 = null;
-                // %
-                public static final Function _25 = mod;
-                // &
-                public static final Function _26 = intersection;
-                // '
-                public static final Function _27 = add;
-                // *
-                public static final Function _2A = mul;
-                // +
-                public static final Function _2B = add;
-                // ,
-                public static final Function _2C = product;
-                // -
-                public static final Function _2D = sub;
-                // /
-                public static final Function _2F = div;
-                
-                // ;
-                public static final Function _3B = null;
-                // <
-                public static final Function _3C = less;
-                // >
-                public static final Function _3E = greater;
-                // ?
-                public static final Any _3F = any;
-                // @
-                public static final Function _40 = null;
-                
-                // ^
-                public static final Function _5E = null;
-                // _
-                public static final Function _5F = null;
-                
-                // |
-                public static final Function _7C = union;
-                // ~
-                public static final Function _7F = not;
-
-                
-                // ==
-                public static final Function _3D_3D = eq;
-                // []
-                public static final Function _5B_5D = list;
-                // {}
-                public static final Function _7B_7D = set;
-                
-                // TODO precedence rules
-            }
+//        /**
+//         * Standard operator bindings.
+//         */
+//        static class Ops
+//            {
+//                // !
+//                public static final Function _21 = null;
+//                // #
+//                public static final Function _23 = null;
+//                // $
+//                public static final Function _24 = null;
+//                // %
+//                public static final Function _25 = mod;
+//                // &
+//                public static final Function _26 = intersection;
+//                // '
+//                public static final Function _27 = add;
+//                // *
+//                public static final Function _2A = mul;
+//                // +
+//                public static final Function _2B = add;
+//                // ,
+//                public static final Function _2C = product;
+//                // -
+//                public static final Function _2D = sub;
+//                // /
+//                public static final Function _2F = div;
+//                
+//                // ;
+//                public static final Function _3B = null;
+//                // <
+//                public static final Function _3C = less;
+//                // >
+//                public static final Function _3E = greater;
+//                // ?
+//                public static final Any _3F = any;
+//                // @
+//                public static final Function _40 = null;
+//                
+//                // ^
+//                public static final Function _5E = null;
+//                // _
+//                public static final Function _5F = null;
+//                
+//                // |
+//                public static final Function _7C = union;
+//                // ~
+//                public static final Function _7F = not;
+//
+//                
+//                // ==
+//                public static final Function _3D_3D = eq;
+//                // []
+//                public static final Function _5B_5D = list;
+//                // {}
+//                public static final Function _7B_7D = set;
+//                
+//                // TODO precedence rules
+//            }
         
         
 
@@ -99,7 +99,7 @@ public class VitryRuntime
         public static final Nil        nil = new Nil();
 
         // {}
-        public static final Bottom   bottom = Bottom.instance;
+        public static final Bottom   bottom = new Bottom();
         
         // _
         public static final Any    any = new Any();
@@ -107,7 +107,7 @@ public class VitryRuntime
         
         
         // ==
-        public static final Function eq = new AbstractFunction(2)
+        public static final Function eq = new StandardFunction(2)
             {
                 public Object apply(Object a, Object b) {
                     if (b instanceof Pattern) {
@@ -174,18 +174,18 @@ public class VitryRuntime
 
         // ; Functions
         // arity     : ? -> nat
-        public static final Function arity = new AbstractFunction(
+        public static final Function arity = new StandardFunction(
                 1 
                 /*fnType(any, nat)*/)
             {
                 public Object apply(Object a) {
-                    return ((AbstractFunction) a).arity;
+                    return ((Arity) a).getArity();
                 }
             };
 
         //
         // id        : (a -> a)
-        public static final Function id = new AbstractFunction(1)
+        public static final Function id = new StandardFunction(1)
             {
                 public Object apply(Object a) {
                     return a;
@@ -194,10 +194,10 @@ public class VitryRuntime
 
 
         // const     : a -> (? -> a)
-        public static final Function const_ = new AbstractFunction(1)
+        public static final Function const_ = new StandardFunction(1)
             {
                 public Object apply(final Object a) {
-                    return new AbstractFunction(1)
+                    return new StandardFunction(1)
                         {
                             public Object apply(Object b) {
                                 return a;
@@ -228,12 +228,17 @@ public class VitryRuntime
         // be handled by the matching logic. Here we do explicit checks to speed
         // things up a bit.
             
-        static class ArithmeticFunction extends AbstractFunction {
+        static class ArithmeticFunction extends StandardFunction {
+
+                public ArithmeticFunction(int i) {
+                    super(i);
+                    // TODO Auto-generated constructor stub
+                }
                 // TODO factor out instance checks to here
                 // Try to avoid call overhead
-        }
+            }
             
-        public static final Function neg = new AbstractFunction(1)
+        public static final Function neg = new StandardFunction(1)
             {
                 public Object apply(Object a) {
                     if (a instanceof BigRational) return ((BigRational) a).negate();
@@ -244,7 +249,7 @@ public class VitryRuntime
             };
             
         // + 
-        public static final Function add = new AbstractFunction(2)
+        public static final Function add = new StandardFunction(2)
             {
                 public Object apply(Object a, Object b) {
                     if (a instanceof BigRational) {
@@ -271,7 +276,7 @@ public class VitryRuntime
 
             
         // -
-        public static final Function sub = new AbstractFunction(2)
+        public static final Function sub = new StandardFunction(2)
             {
                 public Object apply(Object a, Object b) {
                     if (a instanceof BigRational) {
@@ -296,7 +301,7 @@ public class VitryRuntime
             };
 
         // *
-        public static final Function mul = new AbstractFunction(2)
+        public static final Function mul = new StandardFunction(2)
             {
                 public Object apply(Object a, Object b) {
                     if (a instanceof BigRational) {
@@ -322,7 +327,7 @@ public class VitryRuntime
 
 
         // /
-            public static final Function div = new AbstractFunction(2)
+            public static final Function div = new StandardFunction(2)
             {
                 public Object apply(Object a, Object b) {
                     if (a instanceof BigRational) {
@@ -348,7 +353,7 @@ public class VitryRuntime
 
 
         // %
-        public static final Function mod = new AbstractFunction(2)
+        public static final Function mod = new StandardFunction(2)
             {
                 public Object apply(Object a, Object b) {
                     return null; // TODO
@@ -357,7 +362,7 @@ public class VitryRuntime
 
 
         // (%%)
-        public static final Function modp = new AbstractFunction(2)
+        public static final Function modp = new StandardFunction(2)
             {
                 public Object apply(Object a, Object b) {
                     return null; // TODO
@@ -369,7 +374,7 @@ public class VitryRuntime
             
             
         // pow
-        public static final Function pow = new AbstractFunction(2)
+        public static final Function pow = new StandardFunction(2)
         {
             public Object apply(Object a, Object b) {
                 if (a instanceof BigRational) return ((BigRational) a).pow(((Number) b).intValue());
@@ -405,26 +410,8 @@ public class VitryRuntime
         // Sets
                 
         // union         : {a} -> {a}
-         public static final AbstractFunction union = new RestArgFunction(
-                 2) {
-             public Object apply(Object elem) {
-                 if (elem instanceof Object[])
-                     return new SimpleUnion((Object[]) elem);
-                 else
-                     return new SimpleUnion(elem);
-             }
-         };
 
         // intersection  : {a} -> {a}
-         public static final AbstractFunction intersection = new AbstractFunction(2) {
-             public Object apply(Object elem) {
-                 if (elem instanceof Object[])
-                     return new SimpleIntersection((Object[]) elem);
-                 else
-                     return new SimpleIntersection(elem);
-             }
-         };
-         
          
          // symdif        : {a} -> {a}
          // powerset      : {a} -> {a}
@@ -562,7 +549,7 @@ public class VitryRuntime
 
 
         // quit        : ->
-        public static final Function quit = new AbstractFunction(
+        public static final Function quit = new StandardFunction(
                 1 
                 /*fnType(any, any)*/){
             
@@ -680,6 +667,11 @@ public class VitryRuntime
         public static Pattern intersection(Object... args) {
             return new SimpleIntersection(args);
         }
+
+
+        static final int MIN_ARITY = 1;
+
+        static final int MAX_ARITY = 0xf;
         
         
         

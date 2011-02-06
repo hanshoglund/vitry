@@ -21,6 +21,26 @@ package vitry.runtime;
 
 public interface Pattern
     {
+        boolean eq(Object o);
+
+        boolean eq(Atom o);
+
+        boolean eq(Tagged o);
+
+        boolean eq(Product o);
+
+        boolean eq(Function p);
+
+        boolean eq(List p);
+
+        boolean eq(Set o);
+
+        boolean eq(Union o);
+
+        boolean eq(Intersection o);
+
+        boolean eq(Type o);
+
         boolean match(Object o);
 
         boolean match(Atom o);
@@ -29,31 +49,22 @@ public interface Pattern
 
         boolean match(Product p);
 
-        boolean match(Union p);
+        boolean match(Function p);
+
+        boolean match(List p);
 
         boolean match(Set p);
+
+        boolean match(Union p);
 
         boolean match(Intersection p);
 
         boolean match(Type p);
         
-        boolean eq(Object o);
-
-        boolean eq(Atom o);
-        
-        boolean eq(Tagged o);
-
-        boolean eq(Product o);
-        
-        boolean eq(Union o);
-
-        boolean eq(Set o);
-
-        boolean eq(Intersection o);
-
-        boolean eq(Type o);
-
+        /*
+         * Dispatch methods
+         */
         boolean eqFor(Pattern o);
-        
+
         boolean matchFor(Pattern p);
     }

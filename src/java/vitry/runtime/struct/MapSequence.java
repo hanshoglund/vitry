@@ -21,8 +21,8 @@ package vitry.runtime.struct;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import vitry.runtime.Arity;
 import vitry.runtime.Function;
-import vitry.runtime.AbstractFunction;
 import vitry.runtime.InvocationError;
 import vitry.runtime.misc.Checks;
 import vitry.runtime.misc.Utils;
@@ -40,7 +40,7 @@ public class MapSequence<A, B> extends AbstractSequence<B>
 
         public MapSequence(Function fn, Sequence<A> input) {
             Checks.checkNotNull(fn, input);
-            if (fn instanceof AbstractFunction) Checks.checkArity((AbstractFunction) fn, 1);
+            if (fn instanceof Arity) Checks.checkArity((Arity) fn, 1);
             this.fn = fn;
             this.input = input;
         }
@@ -86,7 +86,7 @@ class MapIterator<T> implements Iterator<T>
         private Iterator<?> input;
 
         public MapIterator(Function fn, Iterator<?> input) {
-            if (fn instanceof AbstractFunction) Checks.checkArity((AbstractFunction) fn, 1);
+            if (fn instanceof Arity) Checks.checkArity((Arity) fn, 1);
             this.fn = fn;
             this.input = input;
         }

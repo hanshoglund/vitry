@@ -18,6 +18,8 @@
  */
 package vitry.runtime;
 
+import vitry.runtime.struct.Sequence;
+
 /**
  * Implements type inference.
  * 
@@ -35,6 +37,22 @@ interface TypeExpr {
         
 }
 
+/**
+ * A mutable reference to domain and range of a function.
+ */
+interface TypableFunction
+    {
+
+        Pattern getDomain();
+
+        Sequence<Pattern> getRange();
+
+        void setDomain(Pattern domain);
+
+        void setRange(Sequence<Pattern> range);
+
+    }
+
 
 class TypeVar extends BasePattern implements TypeExpr
     {
@@ -43,6 +61,8 @@ class TypeVar extends BasePattern implements TypeExpr
         }
 
         public boolean matchFor(Pattern p) {
+            // TODO if type checking is finished, throw exception
+            // TypeVars should be initiated/removed before runtime
             return false;
         }
     }

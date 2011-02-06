@@ -15,9 +15,11 @@ true
 
 (if true 1 0)
 (if true 1 else 0)
+(if false 1 0)
 (if nil 1 0)            
         
 (let (foo=`foo) foo)
+(let (true=false) true)
 (let (true=false) `true)
 
 -- Functionn creation and application

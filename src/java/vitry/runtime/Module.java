@@ -17,10 +17,20 @@
  * See COPYING.txt for details.
  */
 package vitry.runtime;
-         
 
-public class Module extends Scope
+
+public class Module implements Scope
     {
+
+        public Module(Environment<Symbol, Object> env) {
+            this.env = env;
+        }
+
+        private final Environment<Symbol, Object> env;
+
+        public Environment<Symbol, Object> getEnvironment() {
+            return env;
+        }
 
         // TODO implicit env
         // TODO type env

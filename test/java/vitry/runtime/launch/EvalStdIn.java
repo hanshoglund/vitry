@@ -7,16 +7,10 @@ import java.io.StringReader;
 
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.ParserRuleReturnScope;
-import org.antlr.runtime.RecognitionException;
 
 import vitry.runtime.Eval;
-import vitry.runtime.Eval.Prerequisites;
 import vitry.runtime.Interpreter;
 import vitry.runtime.Pattern;
-import vitry.runtime.Product;
-import vitry.runtime.misc.Utils;
-import vitry.runtime.parse.PatternTree;
 import vitry.runtime.parse.PatternTreeAdaptor;
 import vitry.runtime.parse.VitryLexer;
 import vitry.runtime.parse.VitryParser;
@@ -24,8 +18,6 @@ import vitry.runtime.parse.VitryParser;
 
 public class EvalStdIn
     {
-        private static final Prerequisites pre = new Eval.Prerequisites(null, null, null);
-
         public static void main(String[] args) {
 
             // Read lines from std in
@@ -49,9 +41,10 @@ public class EvalStdIn
 
                         Pattern expr = (Pattern) parser.expr().getTree();
                         System.out.println("Tree : " + expr);
-                        Object val = interpreter.eval(expr, pre);
+                        Object val = interpreter.eval(expr);
                         System.out.println("Value: " + val);
                         System.out.println("Class: " + val.getClass());
+                        System.out.println();
                     } catch (Exception e) {
 //                        System.err.println(e.getClass().getName() + ": " + e.getMessage());
                         e.printStackTrace();

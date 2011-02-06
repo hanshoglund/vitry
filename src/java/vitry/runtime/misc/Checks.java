@@ -18,7 +18,7 @@
  */
 package vitry.runtime.misc;
 
-import vitry.runtime.AbstractFunction;
+import vitry.runtime.Arity;
 
 /**
  * Static methods to check function arguments.
@@ -30,8 +30,8 @@ public class Checks
         private Checks() {
         }
 
-        public static void checkArity(AbstractFunction fn, int arity) {
-            if (fn.getArity() != arity)
+        public static void checkArity(Arity a, int arity) {
+            if (a.getArity() != arity)
                 throw new IllegalArgumentException("Function must have arity " + arity);
         }
 

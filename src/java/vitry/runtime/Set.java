@@ -22,4 +22,6 @@ import vitry.runtime.struct.Sequence;
 
 public interface Set extends Pattern, Sequence<Pattern>
     {
+        Pattern union(Set b);
+        Pattern intersection(Set b);
     }

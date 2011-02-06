@@ -75,7 +75,7 @@ public final class Native extends Atom
          * Applies {@link #wrap(Object)} lazily to the given seq.
          */
         public static Sequence<Pattern> wrap(Sequence<Object> values) {
-            return new MapSequence<Object, Pattern>(new AbstractFunction(1){
+            return new MapSequence<Object, Pattern>(new StandardFunction(1){
                 public Object apply(Object v) throws InvocationError {
                     return wrap(v);
                 }

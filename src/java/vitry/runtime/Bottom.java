@@ -23,23 +23,12 @@ import vitry.runtime.struct.Sequence;
 /**
  * The bottom type, a.k.a. the empty set.
  */
-public final class Bottom extends InclusionPattern implements Set
+public final class Bottom extends AbstractSet
     {
-        private Bottom() {}
-
-        public static final Bottom instance = new Bottom();
+        Bottom() {}
 
         public boolean eq(Set o) {
             return o == this;
-        }
-
-        public boolean eqFor(Pattern o) {
-            return o.eq(this);
-        }
-
-        public boolean matchFor(Pattern p) {
-            if (p == this) return true; // Optimization
-            return p.match(this);
         }
 
         public String toString() {
@@ -53,14 +42,13 @@ public final class Bottom extends InclusionPattern implements Set
         public boolean hasTail() {
             return false;
         }
-        
 
         public Pattern head() {
             return throwUnsupported();
         }
 
         public Sequence<Pattern> tail() {
-            return throwUnsupported();
+            return null;
         }       
         
         private <T> T throwUnsupported() {

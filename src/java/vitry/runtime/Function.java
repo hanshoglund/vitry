@@ -21,8 +21,12 @@ package vitry.runtime;
 import vitry.runtime.struct.Sequence;
 
 
-public interface Function
+
+public interface Function extends Sequence<Pattern>
     {
+        
+        public Object applyVar(Sequence<?> args) throws InvocationError;        
+        
         Object apply(Object a0) throws InvocationError;
 
         Object apply(Object a0, Object a1) throws InvocationError;
@@ -72,5 +76,4 @@ public interface Function
                 Object a6, Object a7, Object a8, Object a9, Object a10, Object a11,
                 Object a12, Object a13, Object a14, Object a15) throws InvocationError;
 
-        Object applyTo(Sequence<?> args) throws InvocationError;
     }

@@ -47,10 +47,8 @@ import vitry.runtime.struct.Sequences;
 public class Interpreter implements Eval 
     {                
 
+        // Token types
         
-        /*
-         * Token types
-         */
         private static final int OP           = VitryParser.Op;
         private static final int SYM          = VitryParser.Symbol;
         private static final int NAT          = VitryParser.Natural;
@@ -77,9 +75,8 @@ public class Interpreter implements Eval
         private static final int Type         = VitryParser.Type;
 
         
-        /*
-         * Various identifiers
-         */
+        // Various identifiers
+        
         private static final Symbol DELIMITER = Symbol.intern("delimiter");
         private static final Symbol SIDE      = Symbol.intern("side");
         private static final Symbol QUOTED    = Symbol.intern("quoted");
@@ -91,9 +88,9 @@ public class Interpreter implements Eval
         private static final Symbol TRUE      = Symbol.intern("true");
         private static final Symbol FALSE     = Symbol.intern("false");
 
-        /*
-         * Context for semantic disambiguition
-         */
+
+        // Context for semantic disambiguition
+        
         private static final Environment<Symbol, Symbol> STANDARD_CONTEXT = (new HashEnvironment<Symbol, Symbol>()
             .define( DELIMITER , PAR    )
             .define( SIDE      , RIGHT  )
@@ -425,7 +422,7 @@ public class Interpreter implements Eval
 
 
 
-        static class InterpretedFunction extends AbstractFunction
+        static class InterpretedFunction extends StandardFunction
             {
                 final Sequence<Pattern> params;
                 final Pattern body;
@@ -433,9 +430,9 @@ public class Interpreter implements Eval
                 Interpreter i;
 
                 public InterpretedFunction(Sequence<Pattern> params, Pattern body, int arity, Environment<Symbol, Object> env) {
+                    super(arity);
                     this.params = params;
                     this.body = body;
-                    this.arity = arity;
                     this.env = env;
                 }
 
@@ -489,7 +486,7 @@ public class Interpreter implements Eval
             for (Pattern fa : fnArgs) {
                 fnArgVals.add(eval(fa, context, frame));
             }
-            return ((AbstractFunction) fn).applyTo(fnArgVals.toArray());
+            return ((StandardFunction) fn).applyVar(fnArgVals.toArray());
         }
         
         
@@ -545,6 +542,11 @@ public class Interpreter implements Eval
 
         static class InterpretedModule extends Module
             {
+
+                public InterpretedModule(Environment<Symbol, Object> env) {
+                    super(env);
+                    // TODO Auto-generated constructor stub
+                }
             }
             
             

@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 src/antlr/Vitry.g 2011-02-05 22:06:17
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 src/antlr/Vitry.g 2011-02-07 00:32:02
 // See src/antlr/Vitry.g        
 package vitry.runtime.parse;
 
@@ -260,7 +260,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: delim, expr
+                    // elements: expr, delim
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1185,7 +1185,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: Op, apply
+                    // elements: apply, Op
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1307,7 +1307,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: f, Op, e
+                    // elements: f, e, Op
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1581,7 +1581,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: inline, left
+                    // elements: left, inline
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1666,7 +1666,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: inline, assign
+                    // elements: assign, inline
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1860,7 +1860,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: assign, expr
+                    // elements: expr, assign
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1946,7 +1946,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: expr, expr, inline
+                    // elements: expr, inline, expr
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -2223,7 +2223,7 @@ public class VitryParser extends Parser {
 
 
             // AST REWRITE
-            // elements: expr, left
+            // elements: left, expr
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -2736,7 +2736,7 @@ public class VitryParser extends Parser {
 
 
             // AST REWRITE
-            // elements: declarations, exports, imports, moduleName
+            // elements: imports, declarations, moduleName, exports
             // token labels: 
             // rule labels: retval
             // token list labels: exports
@@ -3219,7 +3219,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: expr, left
+                    // elements: left, expr
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 

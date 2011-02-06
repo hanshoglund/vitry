@@ -37,6 +37,7 @@ public class Tagged extends BasePattern implements Destructible
             this.val = val;
             this.tag = tag;
         }
+        
 
         public Pattern getValue() {
             return val;
@@ -51,11 +52,11 @@ public class Tagged extends BasePattern implements Destructible
         }
 
         public boolean eq(Tagged o) {
-            return (this == o) || (val.eqFor(o.val) && tag.equals(o.tag));
+            return (this == o) || (tag.equals(o.tag) && (val.eqFor(o.val)));
         }
         
         public boolean match(Tagged o) {
-            return (this == o) || (val.eqFor(o.val) && tag.equals(o.tag));
+            return (this == o) || (tag.equals(o.tag) && (val.eqFor(o.val)));
         }
 
         public boolean eqFor(Pattern o) {
@@ -69,6 +70,7 @@ public class Tagged extends BasePattern implements Destructible
         public String toString() {
             return val.toString();
         }
+        
         
         
         // Java stuff

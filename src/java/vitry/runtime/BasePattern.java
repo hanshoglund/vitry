@@ -29,15 +29,27 @@ abstract public class BasePattern implements Pattern
             return false;
         }
 
+        public boolean eq(Tagged o) {
+            return false;
+        }
+
         public boolean eq(Product o) {
             return false;
         }
 
-        public boolean eq(Union o) {
+        public boolean eq(Function o) {
+            return false;
+        }
+
+        public boolean eq(List o) {
             return false;
         }
 
         public boolean eq(Set o) {
+            return false;
+        }
+
+        public boolean eq(Union o) {
             return false;
         }
 
@@ -46,10 +58,6 @@ abstract public class BasePattern implements Pattern
         }
 
         public boolean eq(Type o) {
-            return false;
-        }
-
-        public boolean eq(Tagged o) {
             return false;
         }
 
@@ -62,15 +70,27 @@ abstract public class BasePattern implements Pattern
             return false;
         }
 
+        public boolean match(Tagged p) {
+            return false;
+        }
+
         public boolean match(Product p) {
             return false;
         }
 
-        public boolean match(Union p) {
+        public boolean match(Function p) {
+            return false;
+        }
+
+        public boolean match(List p) {
             return false;
         }
 
         public boolean match(Set p) {
+            return false;
+        }
+
+        public boolean match(Union p) {
             return false;
         }
 
@@ -81,10 +101,6 @@ abstract public class BasePattern implements Pattern
         }
 
         public boolean match(Type p) {
-            return false;
-        }
-
-        public boolean match(Tagged p) {
             return false;
         }
 

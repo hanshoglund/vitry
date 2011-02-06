@@ -10,9 +10,6 @@ import org.antlr.runtime.RecognitionException;
 import vitry.runtime.Eval;
 import vitry.runtime.Interpreter;
 import vitry.runtime.Pattern;
-import vitry.runtime.Eval.Prerequisites;
-import vitry.runtime.misc.Utils;
-import vitry.runtime.parse.PatternTree;
 import vitry.runtime.parse.PatternTreeAdaptor;
 import vitry.runtime.parse.VitryLexer;
 import vitry.runtime.parse.VitryParser;
@@ -32,7 +29,6 @@ public class EvalFoo
         public static void main(String[] args) {
 
             Eval interpreter = new Interpreter();
-            Prerequisites pre = new Eval.Prerequisites(null, null, null);
             
             VitryLexer lexer = null;
             try {
@@ -47,7 +43,7 @@ public class EvalFoo
             try {
                 Pattern expr = (Pattern) parser.expr().getTree();
                 System.out.println("Tree : " + expr);
-                Object val = interpreter.eval(expr, pre);
+                Object val = interpreter.eval(expr);
                 System.out.println("Value: " + val);
                 System.out.println("Class: " + val.getClass());
 

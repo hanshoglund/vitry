@@ -25,7 +25,8 @@ import org.antlr.runtime.tree.CommonTree;
 
 import vitry.runtime.Function;
 import vitry.runtime.Atom;
-import vitry.runtime.AbstractFunction;
+import vitry.runtime.List;
+import vitry.runtime.StandardFunction;
 import vitry.runtime.Intersection;
 import vitry.runtime.InvocationError;
 import vitry.runtime.Pattern;
@@ -50,15 +51,18 @@ import vitry.runtime.struct.SequenceIterator;
 public class PatternTree extends CommonTree implements Product
     {
 
-        private final Product delegee         = new SimpleProduct(this);
-        
-        private Sequence<Pattern> childSeq         = null;
-        private boolean generatedSeq          = false;
+        private final Product delegee      = new SimpleProduct(this);
+
+        private Sequence<Pattern> childSeq = null;
+
+        private boolean generatedSeq       = false;
 
         
         public PatternTree(Token payload) {
             super(payload);
         }
+
+        
         
         public Pattern head() {
             if (!generatedSeq) generateSeq();
@@ -80,6 +84,12 @@ public class PatternTree extends CommonTree implements Product
             }
         }
         
+        public Iterator<Pattern> iterator() {
+            return new SequenceIterator<Pattern>(this);
+        }
+
+
+
         public boolean hasPayload() {
             return token != null;
         }
@@ -94,7 +104,6 @@ public class PatternTree extends CommonTree implements Product
         
         
         
-        
         private void generateSeq() {
             
             if (children != null) {
@@ -103,7 +112,7 @@ public class PatternTree extends CommonTree implements Product
                     new IterableSequence<Pattern>(
                             Utils.<Iterable<Pattern>>unsafe(this.children));
                 
-                this.childSeq = new MapSequence<Pattern,Pattern>(new AbstractFunction(1){
+                this.childSeq = new MapSequence<Pattern,Pattern>(new StandardFunction(1){
                     
                     // Replace singletons with their contained token
                     public Object apply(Object o) throws InvocationError {
@@ -121,49 +130,13 @@ public class PatternTree extends CommonTree implements Product
         private VitryToken wrap(Token t) {
             return new VitryToken(t);
         }
-
-        public Iterator<Pattern> iterator() {
-            return new SequenceIterator<Pattern>(this);
-        }
         
         
-
-
+        
         // Delegate rest of implementation
-
-        public String toString() {
-            return delegee.toString();
-        }
-
-
-
-        public boolean match(Object o) {
-            return delegee.match(o);
-        }
-
-
-        public boolean eq(Object o) {
-            return delegee.eq(o);
-        }
-
-
-        public Pattern first() {
-            return delegee.first();
-        }
-
-
-        public Pattern second() {
-            return delegee.second();
-        }
-
 
         public Sequence<Pattern> cons(Pattern head) {
             return delegee.cons(head);
-        }
-
-
-        public boolean match(Tagged o) {
-            return delegee.match(o);
         }
 
 
@@ -172,18 +145,23 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public boolean match(Product p) {
-            return delegee.match(p);
+        public boolean eq(Function p) {
+            return delegee.eq(p);
         }
 
 
-        public boolean eq(Tagged o) {
+        public boolean eq(Intersection o) {
             return delegee.eq(o);
         }
 
 
-        public boolean match(Union p) {
-            return delegee.match(p);
+        public boolean eq(List p) {
+            return delegee.eq(p);
+        }
+
+
+        public boolean eq(Object o) {
+            return delegee.eq(o);
         }
 
 
@@ -192,32 +170,12 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public boolean match(Set p) {
-            return delegee.match(p);
-        }
-
-
-        public boolean eq(Union o) {
-            return delegee.eq(o);
-        }
-
-
-        public boolean match(Intersection p) {
-            return delegee.match(p);
-        }
-
-
         public boolean eq(Set o) {
             return delegee.eq(o);
         }
 
 
-        public boolean match(Type p) {
-            return delegee.match(p);
-        }
-
-
-        public boolean eq(Intersection o) {
+        public boolean eq(Tagged o) {
             return delegee.eq(o);
         }
 
@@ -227,9 +185,18 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
+        public boolean eq(Union o) {
+            return delegee.eq(o);
+        }
+
 
         public boolean eqFor(Pattern o) {
             return delegee.eqFor(o);
+        }
+
+
+        public Pattern first() {
+            return delegee.first();
         }
 
 
@@ -243,7 +210,58 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
+        public boolean match(Function p) {
+            return delegee.match(p);
+        }
+
+
+        public boolean match(Intersection p) {
+            return delegee.match(p);
+        }
+
+
+        public boolean match(List p) {
+            return delegee.match(p);
+        }
+
+
+        public boolean match(Object o) {
+            return delegee.match(o);
+        }
+
+
+        public boolean match(Product p) {
+            return delegee.match(p);
+        }
+
+
+        public boolean match(Set p) {
+            return delegee.match(p);
+        }
+
+
+        public boolean match(Tagged o) {
+            return delegee.match(o);
+        }
+
+
+        public boolean match(Type p) {
+            return delegee.match(p);
+        }
+
+        public boolean match(Union p) {
+            return delegee.match(p);
+        }
+
         public boolean matchFor(Pattern p) {
             return delegee.matchFor(p);
+        }
+
+        public Pattern second() {
+            return delegee.second();
+        }
+
+        public String toString() {
+            return delegee.toString();
         }
     }

@@ -20,7 +20,10 @@ package vitry.runtime;
 
 import vitry.runtime.struct.Sequence;
 
-
+/**
+ * Implemented by destructible values. The standard destructor functions 
+ * simply call destruct().
+ */
 public interface Destructible
     {
         boolean canDestruct();
