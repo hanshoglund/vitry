@@ -7,8 +7,8 @@
  * at your option) any later version.
  * 
  * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * but WITHOUT ANY WAR'}'NTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICU'{'R PU')'OSE.  See the
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
@@ -77,12 +77,11 @@ left
  * Delimited, quoted or atomic
  */
 delim [boolean rs]
-    : '(' inline[rs]? ')'                          -> ^(Par inline?)
-    | '[' inline[rs]? ']'                          -> ^(Bra inline?)
-    | '{' inline[rs]? '}'                          -> ^(Ang inline?)
-    | '`' Op                                       -> ^(Quote Op)
-    // TODO quoted delimiters/ops, i.e. `(+)
-    | '`' delim[rs]                                -> ^(Quote delim)
+    : '(' inline[rs]? ')'       -> ^(Par inline?)
+    | '[' inline[rs]? ']'       -> ^(Bra inline?)
+    | '{' inline[rs]? '}'       -> ^(Ang inline?)
+    | '`' Op                    -> ^(Quote Op)
+    | '`' delim[rs]             -> ^(Quote delim)
     | atom
     ;   
 
@@ -99,22 +98,33 @@ atom
  */
 inline [boolean rs]
     : {$rs}? inlineRight
-    | (Op apply?)+                                 -> ^(Ops ^(Op apply?)+)
+    | (Op) => Op
+    | (Op apply)+                                  -> ^(Ops ^(Op apply?)+)
     | (apply Op) => e+=apply (Op f+=apply?)+       -> ^(Ops $e ^(Op $f)+)
     | apply
     ;                      
 
 /*    
  * Strictly right-side special forms
+ *
+ * TODO For now, we allow any delimiter for these expressions, however none
+ * of them emit context. Is this confusing?
+ * 
+ * We should probably restrict to proper individual pairs, i.e. forbid
+ * expressions such as (let [x=1} x)
  */
 inlineRight
-    : 'fn' '(' left* ')' inline[true]              -> ^(Fn left* inline)
-    | 'let' '(' assign* ')' inline[true]           -> ^(Let assign* inline)
-    | 'loop' '(' assign* ')' inline[true]          -> ^(Loop assign* inline)
-    | 'do' '(' assign* ')' expr*                   -> ^(Do assign* expr*)
-    | 'if' expr expr 'else'? inline[true]          -> ^(If expr expr inline)
-    | 'match' v=expr '(' (c+=left e+=expr)* ')'    -> ^(Match $v ^($c $e)*)
-    | 'recur' expr*         			   -> ^(Recur expr*)
+    : 'fn'   '(' left*   ')' inline[true]              -> ^(Fn left* inline)
+    | 'fn'   '[' left*   ']' inline[true]              -> ^(Fn left* inline)
+    | 'let'  '(' assign* ')' inline[true]              -> ^(Let assign* inline)
+    | 'let'  '[' assign* ']' inline[true]              -> ^(Let assign* inline)
+    | 'loop' '(' assign* ')' inline[true]              -> ^(Loop assign* inline)
+    | 'loop' '[' assign* ']' inline[true]              -> ^(Loop assign* inline)
+    | 'do'   '(' assign* ')' expr*                     -> ^(Do assign* expr*)
+    | 'do'   '[' assign* ']' expr*                     -> ^(Do assign* expr*)
+    | 'match' v=expr '(' (c+=left e+=expr)* ')'        -> ^(Match $v ^($c $e)*)    
+    | 'if' expr expr 'else'? inline[true]              -> ^(If expr expr inline)
+    | 'recur' expr*         			       -> ^(Recur expr*)
     ;
 
 assign
@@ -136,23 +146,23 @@ apply
  * TODO
  */
 
-module 
-    : 'module' moduleName ('(' exports+=Symbol* ')')?
-      ('import' imports+=moduleName*)*
-      ( '(' declarations+=moduleDecl ')' )*
-    -> ^(Module moduleName ^($exports)* ^($imports)* ^($declarations)*)
-    ;
-    
-moduleDecl
-    : 'type'    '(' assign* ')'                -> ^(TypeDecl assign*)
-    | 'implicit' '(' (expr expr)* ')'           -> ^(ImplicitDecl ^(expr expr)*)
-    | Symbol    '(' left* ')' '=' inline[true] -> ^(FnDecl Symbol left+ inline)
-    | left '=' expr                              -> ^(MemberDecl left expr)
-    ;
-    
-moduleName :
-    Symbol ('.' Symbol)* -> ^(Symbol Symbol+)
-    ; 
+// module 
+//     : 'module' moduleName ('(' exports+=Symbol* ')')?
+//       ('import' imports+=moduleName*)*
+//       ( '(' declarations+=moduleDecl ')' )*
+//     -> ^(Module moduleName ^($exports)* ^($imports)* ^($declarations)*)
+//     ;
+//     
+// moduleDecl
+//     : 'type'    '(' assign* ')'                -> ^(TypeDecl assign*)
+//     | 'implicit' '(' (expr expr)* ')'           -> ^(ImplicitDecl ^(expr expr)*)
+//     | Symbol    '(' left* ')' '=' inline[true] -> ^(FnDecl Symbol left+ inline)
+//     | left '=' expr                              -> ^(MemberDecl left expr)
+//     ;
+//     
+// moduleName :
+//     Symbol ('.' Symbol)* -> ^(Symbol Symbol+)
+//     ; 
     
 
 

@@ -1,0 +1,47 @@
+
+
+
+Contextual syntax - "How do things evaluate"?
+
+
+=====================================================================
+             |          Quoted           |        Unquoted          |
+             |    Left     |    Right    |    Left    |    Right    |
+=====================================================================
+Number       | value       | value       | value      | value       |
+String       | value       | value       | value      | value       |
+Symbol       | symbol      | symbol      | assign     | lookup      |
+()           | symbol ()   | symbol ()   | assign     | lookup      |
+(+)          | symbol (+)  | symbol (+)  | assign     | lookup      |
++            | symbol (+)**| symbol (+)**| -          | -           |
+Application  | -           | -           | apply*     | apply       |
+=====================================================================
+
+*If the funtion is reversible, apply reverse, otherwise apply
+** According to delimiter, i.e (+), [+] or {+}
+
+Thus the following holds:
+
+    1, `1, ``1 are equivalent
+    "foo", `"foo", ``"foo" are equivalent
+                    
+    foo gives value
+    `foo gives symbol
+
+    () gives value
+    `() gives symbol
+    
+    (+) gives value
+    (`+) give symbol (+)
+    POSSIBILITY: `(+) gives symbol `(+)
+    
+    + is invalid
+    `+ gives symbol (+) {+} or [+] according to context
+
+    (1 + 2) is rewritten, i.e. to ((+) 1 2)
+    
+    
+    
+    `+ gives value of (+) etc
+    `(+) gives value of (+)
+    `(+)

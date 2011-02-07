@@ -603,10 +603,7 @@ public class VitryRuntime
         static {
             prelude.define( Symbol.intern("()"),       nil );
             prelude.define( Symbol.intern("[]"),       nil );
-            prelude.define( Symbol.intern("{}"),       nil );
-            prelude.define( Symbol.intern("`()"),      nil );
-            prelude.define( Symbol.intern("`[]"),      nil );
-            prelude.define( Symbol.intern("`{}"),      bottom );
+            prelude.define( Symbol.intern("{}"),       bottom );
             prelude.define( Symbol.intern("nil"),      nil );
             prelude.define( Symbol.intern("=="),       eq );
             prelude.define( Symbol.intern("eq"),       eq );

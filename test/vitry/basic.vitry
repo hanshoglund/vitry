@@ -18,17 +18,17 @@ true
 (if false 1 0)
 (if nil 1 0)            
         
-(let (foo=`foo) foo)
-(let (true=false) true)
-(let (true=false) `true)
+(let [foo  = `foo]  foo)
+(let [true = false] true)
+(let [true = false] `true)
 
--- Functionn creation and application
+-- Function creation and application
 (fn (x) x)
 ((fn (x) x) 3)
                                     
 -- Delayed evaluation
-(let (f=(fn (x y) add x y)) f 1 2)
-(let (f=(fn (x y) add x y)) (f 1) 2)
+(let [f = (fn (x y) add x y)] f 1 2)
+(let [f = (fn (x y) add x y)] (f 1) 2)
 
 
 -- Operators 

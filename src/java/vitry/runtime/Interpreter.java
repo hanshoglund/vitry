@@ -30,10 +30,9 @@ import java.math.BigInteger;
 import java.util.Iterator;
 
 import vitry.runtime.misc.Utils;
-import vitry.runtime.parse.VitryTokenTypes;
 import vitry.runtime.parse.VitryParser;
 import vitry.runtime.parse.VitryToken;
-import vitry.runtime.struct.ArraySequence;
+import vitry.runtime.parse.VitryTokenTypes;
 import vitry.runtime.struct.Sequence;
 import vitry.runtime.struct.Sequences;
 
@@ -209,7 +208,7 @@ public class Interpreter implements Eval
 
                     case OP:
                         // Operators depend on delimiter context
-                        if (context.lookup(QUOTED) == TRUE) {
+                        if (context.lookup(SIDE) == LEFT || context.lookup(QUOTED) == TRUE) {
                             return parseOperator( op, context.lookup(DELIMITER) );  
                         } else {
                             return frame.lookup( parseOperator( op, context.lookup(DELIMITER) ));   
@@ -217,15 +216,11 @@ public class Interpreter implements Eval
 
 
                     case SYM:
-                        if (context.lookup(SIDE) == LEFT) {
+                        if (context.lookup(SIDE) == LEFT || context.lookup(QUOTED) == TRUE ) {
                             return parseSymbol(op);
                         } else {
-                            if (context.lookup(QUOTED) == TRUE) {
-                                return parseSymbol(op);
-                            } else {
-                                return frame.lookup( parseSymbol(op) );
-                            }                            
-                        }
+                            return frame.lookup(parseSymbol(op));
+                        }                            
 
                       
 
@@ -234,42 +229,51 @@ public class Interpreter implements Eval
                      */
                                                                
                     case Par:
-                        context = context.extend(DELIMITER, PAR)
-                                         .define(QUOTED, FALSE);
-                        
-                        expr = args.head();
-                        
-                        if (frame.lookup(PAR) != VitryRuntime.nil) {
-                            Object value = eval(expr, context, frame);
-                            return ((Function) frame.lookup(PAR)).apply(value);
-                        } 
-                        else continue;
+                        if (args == null) {
+                            if (context.lookup(SIDE) == LEFT || context.lookup(QUOTED) == TRUE ) {
+                                return PAR;
+                            } else {
+                                return frame.lookup(PAR);                                
+                            }
+                        } else {
+                            context = context.extend(DELIMITER, PAR)
+                                             .define(QUOTED, FALSE);
+                            
+                            expr = args.head();
+                            continue;
+                        }
                         
 
                     case Bra:
-                        context = context.extend(DELIMITER, BRA)
-                                         .define(QUOTED, FALSE);
-                        
-                        expr = args.head();
-                        
-                        if (frame.lookup(BRA) != VitryRuntime.nil) {
-                            Object value = eval(expr, context, frame);
-                            return ((Function) frame.lookup(BRA)).apply(value);
-                        } 
-                        else continue;
+                        if (args == null) {
+                            if (context.lookup(SIDE) == LEFT || context.lookup(QUOTED) == TRUE ) {
+                                return BRA;
+                            } else {
+                                return frame.lookup(BRA);                                
+                            }
+                        } else {
+                            context = context.extend(DELIMITER, BRA)
+                                             .define(QUOTED, FALSE);
+                            
+                            expr = args.head();
+                            continue;
+                        }
                         
                         
                     case Ang:
-                        context = context.define(DELIMITER, ANG)
-                                         .define(QUOTED, FALSE);
-                        
-                        expr = args.head();
-                        
-                        if (frame.lookup(ANG) != VitryRuntime.nil) {
-                            Object value = eval(expr, context, frame);
-                            return ((Function) frame.lookup(ANG)).apply(value);
-                        } 
-                        else continue;
+                        if (args == null) {
+                            if (context.lookup(SIDE) == LEFT || context.lookup(QUOTED) == TRUE ) {
+                                return ANG;
+                            } else {
+                                return frame.lookup(ANG);                                
+                            }
+                        } else {
+                            context = context.extend(DELIMITER, ANG)
+                                             .define(QUOTED, FALSE);
+                            
+                            expr = args.head();
+                            continue;
+                        }
                         
                              
                     case Module:
