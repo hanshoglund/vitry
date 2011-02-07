@@ -1,0 +1,35 @@
+See
+http://blogs.sun.com/jrose/entry/symbolic_freedom_in_the_vm
+
+
+Guidelines:                              
+    - Directory names are composed of a-z A-Z 0-9 
+    - Class file names are composed of a-z A-Z 0-9 $ and _
+        - Ends with .class                   
+    - Let / be the directory separator
+    
+    
+     $002B.class
+
+
+
+
+
+Hans.Test.Foo
+    bar
+
+Hans.Test
+    foo
+
+
+Vitry.Prelude
+    id
+    const
+    (+)
+    (-)
+    
+    
+
+
+    
+    

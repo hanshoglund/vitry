@@ -113,8 +113,7 @@
 	    generate-antlr, 
 	    compile-src, 
 	    compile-test, 
-	    compile-js, 
-	    doc" 
+	    compile-js" 
 	    description="">
 	</target>
 

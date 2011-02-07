@@ -82,11 +82,7 @@ delim [boolean rs]
     | '{' inline[rs]? '}'       -> ^(Ang inline?)
     | '`' Op                    -> ^(Quote Op)
     | '`' delim[rs]             -> ^(Quote delim)
-    | atom
-    ;   
-
-atom
-    : Symbol
+    | Symbol
     | Natural
     | Float
     | Complex
@@ -95,23 +91,22 @@ atom
 
 /*    
  * Inline, that is operator expression, application or special form
+ *
+ * TODO Support postfix operators?
  */
 inline [boolean rs]
     : {$rs}? inlineRight
-    | (Op) => Op
-    | (Op apply)+                                  -> ^(Ops ^(Op apply?)+)
-    | (apply Op) => e+=apply (Op f+=apply?)+       -> ^(Ops $e ^(Op $f)+)
+    | (Op (')' | ']' | '}')) => Op
+    | (Op apply)+                                       -> ^(Ops ^(Op apply)+)
+    | (apply Op) => e=apply (Op f+=apply)+              -> ^(Ops $e ^(Op $f)+)  
     | apply
     ;                      
 
 /*    
  * Strictly right-side special forms
  *
- * TODO For now, we allow any delimiter for these expressions, however none
- * of them emit context. Is this confusing?
- * 
- * We should probably restrict to proper individual pairs, i.e. forbid
- * expressions such as (let [x=1} x)
+ * TODO We use delimiters for these expressions, however none
+ * of these emit context. Is this confusing?
  */
 inlineRight
     : 'fn'   '(' left*   ')' inline[true]              -> ^(Fn left* inline)

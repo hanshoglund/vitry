@@ -19,7 +19,6 @@
 package vitry.runtime;
 
 
-
 /**
  * The eval operation.
  * 
@@ -38,6 +37,7 @@ public interface Eval
          *
          * If the given pattern evaluates to a module, a module is constructed and resolved before
          * it is returned. This may result in a LinkageError or TypeError.
+         * 
          * @param expr 
          *      Pattern to evaluate.
          * @throws ParseError
