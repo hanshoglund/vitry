@@ -75,12 +75,18 @@ implements Product
         public boolean matchFor(Pattern p) {
             return p.match(this);
         }
+        
+        public Product productMap(Function fn) {
+            return new SimpleProduct(this.map(fn));
+        }
+        
+        
 
 
         
 
         // Java stuff
-        
+
         public boolean equals(Object o) {
             if (o == this) return true;
             if (o instanceof Product) return eq((Product) o);

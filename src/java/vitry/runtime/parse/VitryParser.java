@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 src/antlr/Vitry.g 2011-02-08 02:31:58
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 src/antlr/Vitry.g 2011-02-08 03:47:34
 // See src/antlr/Vitry.g        
 package vitry.runtime.parse;
 
@@ -148,7 +148,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: expr, delim
+                    // elements: delim, expr
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -914,7 +914,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: Op, apply
+                    // elements: apply, Op
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -932,10 +932,10 @@ public class VitryParser extends Parser {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(Ops, "Ops"), root_1);
 
-                        if ( !(stream_Op.hasNext()||stream_apply.hasNext()) ) {
+                        if ( !(stream_apply.hasNext()||stream_Op.hasNext()) ) {
                             throw new RewriteEarlyExitException();
                         }
-                        while ( stream_Op.hasNext()||stream_apply.hasNext() ) {
+                        while ( stream_apply.hasNext()||stream_Op.hasNext() ) {
                             // src/antlr/Vitry.g:100:66: ^( Op apply )
                             {
                             Object root_2 = (Object)adaptor.nil();
@@ -947,8 +947,8 @@ public class VitryParser extends Parser {
                             }
 
                         }
-                        stream_Op.reset();
                         stream_apply.reset();
+                        stream_Op.reset();
 
                         adaptor.addChild(root_0, root_1);
                         }
@@ -1012,7 +1012,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: Op, f, e
+                    // elements: e, Op, f
                     // token labels: 
                     // rule labels: retval, e
                     // token list labels: 
@@ -1285,7 +1285,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: inline, left
+                    // elements: left, inline
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1455,7 +1455,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: inline, assign
+                    // elements: assign, inline
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1540,7 +1540,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: inline, assign
+                    // elements: assign, inline
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1625,7 +1625,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: inline, assign
+                    // elements: assign, inline
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1819,7 +1819,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: expr, assign
+                    // elements: assign, expr
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -2035,7 +2035,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: c, e, v
+                    // elements: v, c, e
                     // token labels: 
                     // rule labels: v, retval
                     // token list labels: 

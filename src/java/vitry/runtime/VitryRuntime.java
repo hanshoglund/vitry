@@ -120,6 +120,7 @@ public class VitryRuntime
             preludeFixities.define(Symbol.intern("(%)"), new Fixity(Symbol.intern("(%)"), 7, true));
             preludeFixities.define(Symbol.intern("(+)"), new Fixity(Symbol.intern("(+)"), 6, true));
             preludeFixities.define(Symbol.intern("(-)"), new Fixity(Symbol.intern("(-)"), 6, true));
+            preludeFixities.define(Symbol.intern("($)"), new Fixity(Symbol.intern("($)"), 0, false));
         }
 
 

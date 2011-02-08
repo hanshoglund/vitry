@@ -1,0 +1,76 @@
+
+Invariants
+
+    S-Expr := Value | (Op, S-Expr)
+    T-Expr := (Op, Value) | (Op, S-Expr)
+    
+    We are rewriting a list of Value and T-Expr into an S-Expr.
+    
+    After each step we will have a list of Value, T-Expr and S-Expr.
+    
+    When the list contains a single S-Expr we are done.
+
+
+
+
+
+Same precedence
+
+a (+ b) (+ c) =>
+(+ a b) (+ c) =>
+(+ (+ a b) c)
+
+(- a) (+ b) (- c) =>
+(+ (- a) b) (- c) =>
+(- (+ (- a) b) c)
+
+
+
+Same precedence
+Right-associative
+
+a (+ b) (+ c) =>
+a (+) (+ b c) => a (+ (+ b c)) =>
+(+ a (+ b c))
+
+(- a) (+ b) (- c) =>
+(- a) (+) (- b c) => (- a) (+ (- b c)) =>
+(-) (+ a (- b c)) => (- (+ a (- b c)))
+
+                                                 
+Different precedence
+Highest precedence left-associative
+
+a (+ b) (* c) (* d) (- e) =>
+a (+) (* b c) (* d) (- e) => a (+ (* b c)) (* d) (- e) =>
+a (+) (* (* b c) d) (- e) => a (+ (* (* b c) d)) (- e) =>
+(+ a (* (* b c) d)) (- e) =>
+(- (+ a (* (* b c) d)) e)    
+
+
+
+Different precedence/assoc
+infix left 1 +
+infix right 0 $
+
+
+1 $ 2 + 3 $ 4 $ 5 + 6
+
+1 ($ 2) (+ 3) ($ 4) ($ 5) (+ 6)
+1 ($ 2) (+ 3) ($ 4) ($ (+ 5 6))
+1 ($ (+ 2 3)) ($ 4) ($ (+ 5 6))
+1 ($ (+ 2 3)) ($ ($ 4 (+ 5 6)))
+1 ($ ($ (+ 2 3) ($ 4 (+ 5 6))))
+($ 1 ($ (+ 2 3) ($ 4 (+ 5 6))))
+
+1 $ ((2 + 3) $ (4 $ (5 + 6))) 
+1 $ (x $ (4 $ x)) 
+
+
+
+
+
+
+                     
+
+

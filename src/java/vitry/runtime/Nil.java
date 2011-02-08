@@ -89,6 +89,10 @@ public final class Nil extends Atom implements Product
         public SequenceIterator<Pattern> sequenceIterator() {
             return throwUnsupported();
         }
+        
+        public Product productMap(Function fn) {
+            return throwUnsupported();
+        }
 
         private <T> T throwUnsupported() {
             throw new UnsupportedOperationException("() has no members.");

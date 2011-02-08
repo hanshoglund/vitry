@@ -24,8 +24,6 @@ import static vitry.runtime.struct.Sequences.*;
 import java.math.BigInteger;
 import java.util.Iterator;
 
-import com.sun.xml.internal.rngom.digested.DDataPattern.Param;
-
 import vitry.runtime.misc.*;
 import vitry.runtime.parse.*;
 import vitry.runtime.struct.*;
@@ -41,44 +39,44 @@ public class Interpreter implements Eval
 
         // Token types
         
-        private static final int TYPE_OP      = VitryParser.Op;
-        private static final int TYPE_SYM     = VitryParser.Symbol;
-        private static final int TYPE_NAT     = VitryParser.Natural;
-        private static final int TYPE_FLOAT   = VitryParser.Float;
-        private static final int TYPE_COMPLEX = VitryParser.Complex;
-        private static final int TYPE_STRING  = VitryParser.String;
+        static final int TYPE_OP      = VitryParser.Op;
+        static final int TYPE_SYM     = VitryParser.Symbol;
+        static final int TYPE_NAT     = VitryParser.Natural;
+        static final int TYPE_FLOAT   = VitryParser.Float;
+        static final int TYPE_COMPLEX = VitryParser.Complex;
+        static final int TYPE_STRING  = VitryParser.String;
         
-        private static final int TYPE_ANG     = VitryParser.Ang;
-        private static final int TYPE_APPLY   = VitryParser.Apply;
-        private static final int TYPE_ASSIGN  = VitryParser.Assign;
-        private static final int TYPE_BRA     = VitryParser.Bra;
-        private static final int TYPE_DO      = VitryParser.Do;
-        private static final int TYPE_FN      = VitryParser.Fn;
-        private static final int TYPE_IF      = VitryParser.If;
-        private static final int TYPE_LEFT    = VitryParser.Left;
-        private static final int TYPE_LET     = VitryParser.Let;
-        private static final int TYPE_LOOP    = VitryParser.Loop;
-        private static final int TYPE_MATCH   = VitryParser.Match;
-        private static final int TYPE_MODULE  = VitryParser.Module;
-        private static final int TYPE_OPS     = VitryParser.Ops;
-        private static final int TYPE_PAR     = VitryParser.Par;
-        private static final int TYPE_QUOTE   = VitryParser.Quote;
-        private static final int TYPE_RECUR   = VitryParser.Recur;
-        private static final int TYPE_TYPE    = VitryParser.Type;
+        static final int TYPE_ANG     = VitryParser.Ang;
+        static final int TYPE_APPLY   = VitryParser.Apply;
+        static final int TYPE_ASSIGN  = VitryParser.Assign;
+        static final int TYPE_BRA     = VitryParser.Bra;
+        static final int TYPE_DO      = VitryParser.Do;
+        static final int TYPE_FN      = VitryParser.Fn;
+        static final int TYPE_IF      = VitryParser.If;
+        static final int TYPE_LEFT    = VitryParser.Left;
+        static final int TYPE_LET     = VitryParser.Let;
+        static final int TYPE_LOOP    = VitryParser.Loop;
+        static final int TYPE_MATCH   = VitryParser.Match;
+        static final int TYPE_MODULE  = VitryParser.Module;
+        static final int TYPE_OPS     = VitryParser.Ops;
+        static final int TYPE_PAR     = VitryParser.Par;
+        static final int TYPE_QUOTE   = VitryParser.Quote;
+        static final int TYPE_RECUR   = VitryParser.Recur;
+        static final int TYPE_TYPE    = VitryParser.Type;
 
         
         // Various identifiers
         
-        private static final Symbol DELIMITER = Symbol.intern("delimiter");
-        private static final Symbol SIDE      = Symbol.intern("side");
-        private static final Symbol QUOTED    = Symbol.intern("quoted");
-        private static final Symbol PAR       = Symbol.intern("()");
-        private static final Symbol BRA       = Symbol.intern("[]");
-        private static final Symbol ANG       = Symbol.intern("{}");
-        private static final Symbol LEFT      = Symbol.intern("left");
-        private static final Symbol RIGHT     = Symbol.intern("right");
-        private static final Symbol TRUE      = Symbol.intern("true");
-        private static final Symbol FALSE     = Symbol.intern("false");
+        static final Symbol DELIMITER = Symbol.intern("delimiter");
+        static final Symbol SIDE      = Symbol.intern("side");
+        static final Symbol QUOTED    = Symbol.intern("quoted");
+        static final Symbol PAR       = Symbol.intern("()");
+        static final Symbol BRA       = Symbol.intern("[]");
+        static final Symbol ANG       = Symbol.intern("{}");
+        static final Symbol LEFT      = Symbol.intern("left");
+        static final Symbol RIGHT     = Symbol.intern("right");
+        static final Symbol TRUE      = Symbol.intern("true");
+        static final Symbol FALSE     = Symbol.intern("false");
 
 
         // Context for semantic disambiguition
@@ -96,6 +94,9 @@ public class Interpreter implements Eval
         public boolean acceptsUserTokens() {
             return true;
         }
+        
+        
+        
         
         
         public Object eval
@@ -162,9 +163,10 @@ public class Interpreter implements Eval
                     if (isAcceptedToken(expr)) {
                         op  = expr;
                         ops = null;                            
-                    } else {
-                        op  = ((Product) expr).head();
-                        ops = ((Product) expr).tail();
+                    } else {           
+                        // TODO Seq<P>, not Product?
+                        op  = ((Sequence<Pattern>) expr).head();
+                        ops = ((Sequence<Pattern>) expr).tail();
                     }
                 } catch (Exception _) {
                     throw new ParseError("Unknown form: " 
@@ -184,7 +186,7 @@ public class Interpreter implements Eval
                 /*
                  * Process expr    
                  *         
-                 * Each case should
+                 * Each case should do one of:
                  *      1) update expr and continue
                  *      2) return
                  *      3) throw exception
@@ -221,8 +223,14 @@ public class Interpreter implements Eval
                         }
                                                                                      
                     
-                    // Brackets
-                    // TODO Allow syntax such as `(+) to parse as (`+) ?
+                    // Brackets      
+                    
+                    /*
+                     * The empty case is a symbol, while non-empty cases are context switches
+                     * They also reset quote context
+                     * 
+                     * TODO Allow syntax such as `(+) to parse as (`+) ?
+                     */
 
                     case TYPE_PAR:
                         if (ops == null) {
@@ -293,6 +301,13 @@ public class Interpreter implements Eval
                         
 
                     // Let, loop and do
+                        
+                    /*
+                     * These all involve the assign construct
+                     * All should push a new frame before evaluating their assignments,
+                     * then tail-call eval with the expression body so that this frame
+                     * is properly discarded upon return
+                     */
 
                     case TYPE_LET:
                         {
@@ -311,17 +326,20 @@ public class Interpreter implements Eval
 
                         // Store expr for recur
                         // Tail expr
+                        
 
                     case TYPE_RECUR:
                         throwNotSupported(); // TODO
 
                         // Tail recur expr
+                        
 
                     case TYPE_DO:
                         throwNotSupported(); // TODO
                         // Push a mutable env
                         // Eval
                         // Tail the last expr
+                        
 
                     case TYPE_ASSIGN:
                         {
@@ -422,9 +440,9 @@ public class Interpreter implements Eval
                         }
                         
                     case TYPE_OPS:
-                        {
-                            throwNotSupported(); //TODO
-                        }
+                        OperatorRewrite rw = new OperatorRewrite(fixities, context);
+                        expr = rw.rewrite(expr);
+                        continue;
                         
                     
                     // Branching
@@ -486,28 +504,28 @@ public class Interpreter implements Eval
 
 
         
-        private static boolean isSelfEvaluating(Pattern expr) {
+        static boolean isSelfEvaluating(Pattern expr) {
             return (expr instanceof Atom && !(expr instanceof VitryToken)) 
                 || !(expr instanceof Pattern);
         }
         
-        private static boolean isAcceptedToken(Pattern expr) {
+        static boolean isAcceptedToken(Pattern expr) {
             return expr instanceof VitryToken;
         }
         
-        private static BigInteger evalNat(Pattern expr) {
+        static BigInteger evalNat(Pattern expr) {
             return new BigInteger(expr.toString());
         }
 
-        private static Float evalFloat(Pattern expr) {
+        static Float evalFloat(Pattern expr) {
             return Float.valueOf(expr.toString());
         }
 
-        private static Object evalComplex(Pattern expr) {
+        static Object evalComplex(Pattern expr) {
             return throwComplex();
         }
         
-        private static Symbol evalOperator(Pattern expr, Symbol delimiter) {
+        static Symbol evalOperator(Pattern expr, Symbol delimiter) {
             if (delimiter == PAR) return Symbol.intern("(" + expr + ")");
             if (delimiter == BRA) return Symbol.intern("[" + expr + "]");
             if (delimiter == ANG) return Symbol.intern("{" + expr + "}");
@@ -515,11 +533,11 @@ public class Interpreter implements Eval
             return null;
         }
         
-        private static Symbol evalSymbol(Pattern expr) {
+        static Symbol evalSymbol(Pattern expr) {
             return Symbol.intern(expr.toString());
         }
 
-        private static String evalString(Pattern expr) {
+        static String evalString(Pattern expr) {
             String str = Utils.unescapeJava(expr.toString());
             return str.substring(1, str.length() - 1);
         }

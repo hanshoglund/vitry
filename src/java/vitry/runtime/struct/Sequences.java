@@ -104,6 +104,10 @@ public class Sequences
         public static <T> T third(Sequence<T> s) {
             return s.tail().tail().head();
         }
+        
+        public static <T> Sequence<T> printable(Sequence<T> s) {
+            return new PrintableSequence<T>(s);
+        }
 
 
         public static int length(Sequence<?> s) {

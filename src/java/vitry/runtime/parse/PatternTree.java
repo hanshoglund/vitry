@@ -268,4 +268,9 @@ public class PatternTree extends CommonTree implements Product
         public SequenceIterator<Pattern> sequenceIterator() {
             return delegee.sequenceIterator();
         }
+
+        public Product productMap(Function fn) {
+            return delegee.productMap(fn);
+        }
+        
     }

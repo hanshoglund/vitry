@@ -5,6 +5,7 @@ import vitry.runtime.HashEnvironment;
 import vitry.runtime.ParseError;
 import vitry.runtime.Pattern;
 import vitry.runtime.Symbol;
+import vitry.runtime.VitryError;
 
 
 /**
@@ -32,8 +33,8 @@ public class VitryTokenTypes
                 .define(Symbol.intern("Recur"), VitryParser.Recur)
                 .define(Symbol.intern("Type"), VitryParser.Type));
 
-        public static int parserTokenType(Pattern op) {
-            return ((VitryToken) op).getTokenType();
+        public static int parserTokenType(Pattern p) {
+            return ((VitryToken) p).getTokenType();
         }
 
         public static int symbolicTokenType(Pattern p) {
@@ -41,6 +42,18 @@ public class VitryTokenTypes
                 return SYMBOLIC_TOKENS.lookup(p);
             } catch (Exception e) {
                 throw new ParseError("Unknown form: " + p);
+            }
+        }
+        
+        public static int tokenType(Pattern p) {
+            try {
+                try {
+                    return parserTokenType(p);
+                } catch (Exception _) {
+                    return symbolicTokenType(p);
+                }
+            } catch (VitryError e) {
+                throw e;
             }
         }
     }

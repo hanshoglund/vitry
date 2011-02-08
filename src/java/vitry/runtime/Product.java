@@ -28,4 +28,6 @@ public interface Product extends Pattern, Sequence<Pattern>
         public Pattern first();
 
         public Pattern second();
+        
+        Product productMap(Function fn);
     }
