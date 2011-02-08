@@ -69,8 +69,10 @@ abstract public class InclusionPattern extends BasePattern implements Sequence<P
         }
         
         
+        
         // Java stuff
         
+
         public boolean equals(Object o) {
             if (o == this) return true;
 
@@ -85,6 +87,10 @@ abstract public class InclusionPattern extends BasePattern implements Sequence<P
         }
 
         public Iterator<Pattern> iterator() {
+            return new SequenceIterator<Pattern>(this);
+        }
+
+        public SequenceIterator<Pattern> sequenceIterator() {
             return new SequenceIterator<Pattern>(this);
         }
     }

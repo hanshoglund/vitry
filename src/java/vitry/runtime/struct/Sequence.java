@@ -32,4 +32,6 @@ public interface Sequence<T> extends Iterable<T>
         Sequence<T> cons(T head);
 
         <U> Sequence<U> map(Function fn);
+        
+        SequenceIterator<T> sequenceIterator();
     }

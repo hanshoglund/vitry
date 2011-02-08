@@ -32,7 +32,7 @@ abstract public class AbstractFunction extends ConstructionPattern implements Fu
         /**
          * Enclosing environment.
          */
-        private final Environment<Symbol, Object> env;
+        final Environment<Symbol, Object> env;
 
         private Pattern domain;
 
@@ -48,7 +48,11 @@ abstract public class AbstractFunction extends ConstructionPattern implements Fu
             this(scope.getEnvironment(), null, null);
         }
 
-        public AbstractFunction(Environment<Symbol, Object> env, Pattern domain,
+        protected AbstractFunction(Environment<Symbol, Object> env) {
+            this(env, null, null);
+        }
+        
+        protected AbstractFunction(Environment<Symbol, Object> env, Pattern domain,
                 Sequence<Pattern> range) {
             this.env = env;
             this.domain = domain;

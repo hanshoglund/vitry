@@ -107,6 +107,9 @@ public class Sequences
 
 
         public static int length(Sequence<?> s) {
+            if (s instanceof Finite)
+                return ((Finite<?>) s).length();
+                
             int length = 0;
             do {
                 length++;

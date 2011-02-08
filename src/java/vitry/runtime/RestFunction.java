@@ -25,11 +25,22 @@ import vitry.runtime.struct.Sequence;
 /**
  * Function with variable number of arguments.
  * 
- * All methods delegate to applyVar(Sequence<?>).
+ * All methods delegate to applyVar(Sequence)
  */
 public class RestFunction extends AbstractFunction
-    {
+    {    
+        public RestFunction() {
+            super();
+        }
 
+        public RestFunction(Scope scope) {
+            super(scope);
+        }
+
+        public RestFunction(Environment<Symbol, Object> env) {
+            super(env);
+        }
+        
         /**
          * Throws a NoImplementationException.
          */

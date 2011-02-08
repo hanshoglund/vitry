@@ -50,4 +50,12 @@ public class SequenceIterator<T> implements Iterator<T>
         public void remove() {
             throw new UnsupportedOperationException("Can not modify a Seq");
         }
+        
+        /**
+         * Returns a sequence of all remaining elements (its head is the
+         * first element returned by next etc).
+         */
+        public Sequence<T> currentSequence() {
+            return seq;
+        }
     }

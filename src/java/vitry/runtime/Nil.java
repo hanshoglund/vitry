@@ -23,6 +23,7 @@ import java.util.Iterator;
 import vitry.runtime.struct.MapSequence;
 import vitry.runtime.struct.PairSequence;
 import vitry.runtime.struct.Sequence;
+import vitry.runtime.struct.SequenceIterator;
 
 /**
  * The nil value, written as <code>()</code>.
@@ -85,7 +86,13 @@ public final class Nil extends Atom implements Product
             return throwUnsupported();
         }
 
+        public SequenceIterator<Pattern> sequenceIterator() {
+            return throwUnsupported();
+        }
+
         private <T> T throwUnsupported() {
             throw new UnsupportedOperationException("() has no members.");
         }
+        
+
     }

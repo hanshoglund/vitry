@@ -52,4 +52,8 @@ implements Sequence<Pattern>, Destructible
         public Iterator<Pattern> iterator() {
             return new SequenceIterator<Pattern>(this);
         }
+
+        public SequenceIterator<Pattern> sequenceIterator() {
+            return new SequenceIterator<Pattern>(this);
+        }
     }

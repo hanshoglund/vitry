@@ -26,9 +26,9 @@ true
 (fn (x) x)
 ((fn (x) x) 3)
                                     
--- Delayed evaluation
-(let [f = (fn (x y) add x y)] f 1 2)
-(let [f = (fn (x y) add x y)] (f 1) 2)
+-- Partial application
+((add 1) 2)
+(((fn [x y] add x y) 1) 2)
 
 
 -- Operators 

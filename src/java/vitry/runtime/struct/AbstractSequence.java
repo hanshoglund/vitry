@@ -21,6 +21,7 @@ package vitry.runtime.struct;
 import java.util.Iterator;
 
 import vitry.runtime.Function;
+import vitry.runtime.Pattern;
 
 
 abstract public class AbstractSequence<T> implements Sequence<T>
@@ -39,5 +40,9 @@ abstract public class AbstractSequence<T> implements Sequence<T>
 
         public boolean hasTail() {
             return this.tail() == null;
+        }
+
+        public SequenceIterator<T> sequenceIterator() {
+            return new SequenceIterator<T>(this);
         }
     }
