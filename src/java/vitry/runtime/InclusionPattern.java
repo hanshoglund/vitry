@@ -42,7 +42,7 @@ abstract public class InclusionPattern extends BasePattern implements Sequence<P
         }
 
         public boolean match(Set a) {
-            if (a == VitryRuntime.bottom) return true;
+            if (a == VitryRuntime.BOTTOM) return true;
             for (Pattern x : a)
                 if (!x.matchFor(this)) return false;
             return true;

@@ -307,18 +307,18 @@ public class Interpreter implements Eval
                         continue;
                         
                     case TYPE_LOOP:
-                        throwNotSupported();
+                        throwNotSupported(); // TODO
 
                         // Store expr for recur
                         // Tail expr
 
                     case TYPE_RECUR:
-                        throwNotSupported();
+                        throwNotSupported(); // TODO
 
                         // Tail recur expr
 
                     case TYPE_DO:
-                        throwNotSupported();
+                        throwNotSupported(); // TODO
                         // Push a mutable env
                         // Eval
                         // Tail the last expr
@@ -350,6 +350,9 @@ public class Interpreter implements Eval
                             int               numArgs = length(args);
 
                             if (fn instanceof InterpretedFunction) {
+                                
+                                // Interpreted call
+                             
                                 InterpretedFunction ifn = (InterpretedFunction) fn;
                                 int arity = ifn.getArity();
 
@@ -399,17 +402,29 @@ public class Interpreter implements Eval
                                 }
                                 assert (numArgs > arity); 
                                 {
-                                    throwNotSupported();                                    
-                                    
+                                    throwNotSupported();
+                                    // eval as above
+                                    // apply result to arg.currentSequence()
                                 }
                                 
                             } else {
-                                return applyDefault(fn, args, context, frame, fixities);
+                                
+                                // Standard call
+                                
+                                // Doubly-linked, should be faster than a sequence
+                                java.util.List<Object> vals = new java.util.LinkedList<Object>();
+                                
+                                for (Pattern arg : args) {
+                                    vals.add(eval(arg, context, frame, fixities));
+                                }
+                                return ((StandardFunction) fn).applyVar(vals.toArray());
                             }
                         }
                         
                     case TYPE_OPS:
-                        throwNotSupported();                        
+                        {
+                            throwNotSupported(); //TODO
+                        }
                         
                     
                     // Branching
@@ -446,15 +461,19 @@ public class Interpreter implements Eval
                     // Type restr/spec
                         
                     case TYPE_TYPE:
-                        throwNotSupported();
-
-                        
-                        if (context.lookup(SIDE) == LEFT) {
-                            // Eval value
-                            // Assert value corresponds to tag or throw TypeError                            
-                        } else {
-                            // Apply tag
-                            // Return value
+                        {
+                            throwNotSupported(); // TODO
+                            
+                            Object left = eval(Sequences.first(ops), context, frame, fixities);
+                            Object right = eval(Sequences.second(ops), context, frame, fixities);
+    
+                            if (context.lookup(SIDE) == LEFT) {
+                                // Eval value
+                                // Assert value corresponds to tag or throw TypeError                            
+                            } else {
+                                // Apply tag
+                                // Return value
+                            }
                         }
 
 
@@ -465,55 +484,6 @@ public class Interpreter implements Eval
             }
         }
 
-//        /**
-//         * Assign the parameters of the given function to the given arguments
-//         * in the given frame.
-//         */
-//        void assignArgs
-//            (
-//            InterpretedFunction         fn,
-//            Sequence<Pattern>           args, 
-//            Environment<Symbol, Symbol> context,
-//            Environment<Symbol, Object> frame,
-//            Environment<Symbol, Fixity> fixities
-//            )
-//        {    
-//            for (Iterator<Pattern> param = fn.params.iterator(), arg = args.iterator();
-//                 param.hasNext() && arg.hasNext();) 
-//            {
-//                Object name = eval(param.next(), context, frame, fixities);
-//                Object value = eval(arg.next(), context, frame, fixities);
-//                try {
-//                    frame.define((Symbol) name, value);
-//                } catch (ClassCastException e) {
-//                    throwAssignment(name);
-//                }
-//            }
-//        }
-
-        /**
-         * Call the given function using standard (non-interpreter) calling
-         * conventions.
-         */
-        Object applyDefault
-            (
-            Object fn,
-            Sequence<Pattern> args, 
-            Environment<Symbol, Symbol> context,
-            Environment<Symbol, Object> frame, 
-            Environment<Symbol, Fixity> fixities
-            )
-        {               
-            // Should be faster than a standard seq
-            java.util.List<Object> vals = new java.util.LinkedList<Object>();
-            
-            for (Pattern fa : args) {
-                vals.add(eval(fa, context, frame, fixities));
-            }
-            return ((StandardFunction) fn).applyVar(vals.toArray());
-        }
-
-        
 
         
         private static boolean isSelfEvaluating(Pattern expr) {
@@ -555,7 +525,8 @@ public class Interpreter implements Eval
         }
         
         
-
+        // Errors
+        
         private static <T> T throwAssignment(Object id) {
             throw new ParseError("Can not assign to non-symbol " + id);
         }
@@ -609,11 +580,8 @@ class InterpretedFunction extends RestFunction implements Arity
         public Object applyVar(Sequence<?> args, int length) {
             Environment<Symbol, Object> frame = this.getEnvironment().extend();
 
-            // assignArgs expect Patterns for args, but we receive Object
-            // Who is right?
+            // TODO adapt to standard CC
             
-//            interpr.assignArgs(this, args, Interpreter.STANDARD_CONTEXT, frame, fixities);
-//            return interpr.eval(expr, context, frame, fixities);
             return null;                                
         }
         

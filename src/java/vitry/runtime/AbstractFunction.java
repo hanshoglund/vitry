@@ -105,7 +105,10 @@ abstract public class AbstractFunction extends ConstructionPattern implements Fu
 
 
         public String toString() {
-            if (range == null) return domain.toString();
+            if (domain == null)
+                return super.toString();
+            if (range == null) 
+                return domain.toString();
             else
                 return domain.toString() + " -> " + range.toString();
         }

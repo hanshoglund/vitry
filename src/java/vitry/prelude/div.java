@@ -27,7 +27,7 @@ public class div extends StandardFunction
             
             if (a instanceof BigInteger)  {
                 if (b instanceof BigInteger)
-                    return ((BigInteger) a).add((BigInteger) b);
+                    return ((BigInteger) a).divide((BigInteger) b);
 
                 // TODO
                 return throwArithmetic();
