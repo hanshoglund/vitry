@@ -38,7 +38,6 @@ public class Tagged extends BasePattern implements Destructible
             this.tag = tag;
         }
         
-
         public Pattern getValue() {
             return val;
         }
@@ -47,8 +46,8 @@ public class Tagged extends BasePattern implements Destructible
             return tag;
         }
         
-        public Tagged retag(Type newTag) {
-            return new Tagged(val, newTag);
+        public Tagged retag(Type type) {
+            return type.tag(val);
         }
 
         public boolean eq(Tagged o) {

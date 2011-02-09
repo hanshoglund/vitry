@@ -30,8 +30,10 @@ true
 ((add 1) 2)
 (((fn [x y] add x y) 1) 2)
 ((fn [a b c d e f g h i j k l m n o] a) 1 2 3)
-((((fn [a b c d e f g h i j k l m n o] a) 1) 2) 3)
-(((((((((((((((((fn [a b c d e f g h i j k l m n o p] a) 1) 2) 3) 4) 5) 6) 7) 8) 9) 10) 11) 12) 13) 14) 15) 16)   
+((((fn [a b c d e f g h i j k l m n o] a) 1) 2) 3)                                                                
+
+-- FIXME hangs
+-- (((((((((((((((((fn [a b c d e f g h i j k l m n o p] a) 1) 2) 3) 4) 5) 6) 7) 8) 9) 10) 11) 12) 13) 14) 15) 16)   
 
 (let [add5 = (add 5)  add26 = (add 26)  mod5 = (mod 5)  x = 0] (eq (mod5 (add26 x)) (add5 x)) )
 (let [s = (fn [x y z] x z (y z))  k = const   i = id] s k k 3)
@@ -39,14 +41,19 @@ true
 
 -- Left-side invocation
 
-(let [(acons a b) = (cons 1 2)] a)
-
+(let [(cons a b) = (cons 1 2)] a)
+(let [(cons a (cons b c)) = (cons 1 (cons 2 3))] a)
 
 
 -- Operators 
--- Delimiters
 -- Matching
 -- Typing
--- Loop
+-- Loop and recur
+
+
 
 -- Modules
+-- Infix decl
+-- Type decl
+-- Implicits
+

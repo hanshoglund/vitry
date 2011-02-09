@@ -368,7 +368,7 @@ public class Interpreter implements Eval
                         final Sequence<Pattern> args = ops.tail();
                         final int               numArgs = length(args);
 
-                        if (context.lookup(SIDE) == LEFT) {
+                        if (context.lookup(SIDE) == LEFT && (fn instanceof InvertibleFunction)) {
                             final Environment<Symbol, Symbol> contextCs = context;
                             final Environment<Symbol, Object> frameCs = frame;
                             final Environment<Symbol, Fixity> fixitiesCs = fixities;
@@ -528,17 +528,26 @@ public class Interpreter implements Eval
                         
                     case TYPE_TYPE:
                         {
-                            throwNotSupported(); // TODO
+                            // TODO native types
                             
-                            Object left = eval(Sequences.first(ops), context, frame, fixities);
-                            Object right = eval(Sequences.second(ops), context, frame, fixities);
+                            Pattern left = (Pattern) eval(Sequences.first(ops), context, frame, fixities);
+                            Pattern right = (Pattern) eval(Sequences.second(ops), context, frame, fixities);
     
                             if (context.lookup(SIDE) == LEFT) {
-                                // Eval value
-                                // Assert value corresponds to tag or throw TypeError                            
+                                // TODO implement correct let behaviour with continuation?
+                                if (!left.matchFor(right))
+                                    throw new TypeError();
+                                else
+                                    return left;
                             } else {
-                                // Apply tag
-                                // Return value
+                                if (right instanceof Type)
+                                    return ((Type) right).tag(left);
+                                else {
+                                    // TODO create simplistic type or simply check?
+                                    if (!left.matchFor(right))
+                                        throw new TypeError();
+                                    return left;
+                                }
                             }
                         }
 

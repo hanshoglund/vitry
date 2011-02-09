@@ -30,5 +30,9 @@ public class TypeError extends VitryError
             super("Can not apply tag " + tag + " to " + v);
         }
 
+        public TypeError() {
+            super("");
+        }
+
         private static final long serialVersionUID = 3634069213260367204L;
     }

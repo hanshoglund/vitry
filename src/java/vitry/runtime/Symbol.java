@@ -29,10 +29,10 @@ public class Symbol extends Atom
     {
 
         public static Symbol intern(String name) {
-            if (table.containsKey(name)) return table.get(name);
+            if (symbols.containsKey(name)) return symbols.get(name);
             else {
                 Symbol sym = new Symbol(name);
-                table.put(name, sym);
+                symbols.put(name, sym);
                 return sym;
             }
         }
@@ -56,7 +56,7 @@ public class Symbol extends Atom
         private int                        cachedHashCode;
 
 
-        private static Map<String, Symbol> table             = new HashMap<String, Symbol>();
+        private static Map<String, Symbol> symbols             = new HashMap<String, Symbol>();
 
         private Symbol(String name) {
             this.name = name;

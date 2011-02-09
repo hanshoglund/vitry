@@ -18,14 +18,17 @@
  */
 package vitry.runtime;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.Sequence;
 
 
 public class Type extends BasePattern implements TypeExpr
     {
-        private final Pattern          pattern;
-        private final Symbol           name;
+        private final Pattern            pattern;
+        private final Symbol             name;
         private final Sequence<TypeExpr> vars;
 
         public Type(Pattern pattern, Symbol id, Sequence<TypeExpr> vars) {
@@ -33,6 +36,7 @@ public class Type extends BasePattern implements TypeExpr
             this.name = id;
             this.vars = vars;
         }
+        
 
         public Pattern getPattern() {
             return pattern;
@@ -46,48 +50,77 @@ public class Type extends BasePattern implements TypeExpr
             return vars;
         }
 
-        public Pattern tag(Pattern v) throws TypeError {
-            if (v.matchFor(pattern)) return new Tagged(v, this);
-            else throw new TypeError(this, v);
+        public Tagged tag(Pattern value) throws TypeError {
+            if (value instanceof Tagged)
+                return ((Tagged) value).retag(this);
+            
+            if (value.matchFor(this.pattern)) 
+                return new Tagged(value, this);
+            else
+                throw new TypeError(this, value);
         }
 
         
-        
-        
-        
-        
-        
-        
-        
-        // TODO eq match
-
-        public boolean matchFor(Pattern p) {
-            return p.match(this);
+        public boolean eq(Type o) {
+            return o == this ||
+                (o.pattern.eqFor(this.pattern)
+                    && o.name.eqFor(this.name)
+                    && o.vars.equals(this.vars)); // TODO seq equality?
         }
+
+        public boolean match(Tagged p) {
+            return p.getTag() == this;
+        }
+
+
+        public boolean match(Type p) {
+            return p.pattern.matchFor(this.pattern); // TODO ?
+        }
+
 
         public boolean eqFor(Pattern o) {
             return o.eq(this);
         }
 
-        public boolean canDestruct() {
-            if (pattern instanceof Destructible)
-                return ((Destructible) pattern).canDestruct();
-            return false;
+// TODO eq match
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        public boolean matchFor(Pattern p) {
+            return p.match(this);
         }
 
-        public Sequence<Pattern> destruct() {
-            if (pattern instanceof Destructible)
-                return ((Destructible) pattern).destruct();
-            throw new UnsupportedOperationException("Can not destruct " + pattern);
-        }
+
+//        public boolean canDestruct() {
+//            if (pattern instanceof Destructible)
+//                return ((Destructible) pattern).canDestruct();
+//            return false;
+//        }
+//
+//        public Sequence<Pattern> destruct() {
+//            if (pattern instanceof Destructible)
+//                return ((Destructible) pattern).destruct();
+//            throw new UnsupportedOperationException("Can not destruct " + this);
+//        }
 
         public String toString() {
-            return pattern.toString();
+            if (name != null)
+                return name.toString();
+            else
+                return pattern.toString();
         }
 
         public int hashCode() {
             int hash = this.getClass().hashCode();
+            hash = Utils.hash(hash, name);
             hash = Utils.hash(hash, pattern);
+            hash = Utils.hash(hash, vars);
             return hash;
         }
 
