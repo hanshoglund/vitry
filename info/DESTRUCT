@@ -1,0 +1,35 @@
+
+
+Problem: How to implement (recursive) destruction without
+changing eval semantics?
+
+Example:
+
+    eval "((b, c), d) = a"
+
+We see that the left-side contains a destructor.
+
+We have to evaluate a, then call eval for left side. We get back a function to which we
+pass a.
+
+That is:
+    eval "((b, c), d)" => f
+    
+What does f do?
+
+Destructures a into a seq a', then calls eval "(b, c)". It gets back a function g, to which
+it passes a'[0]. It then assigns d to a'[1].
+
+What does g do?
+
+Destructures a'[0] into a seq a'', then assigns b to a''[0] and c to a''[1].
+
+
+
+============================================================
+Changes to eval
+
+Assign must be changed to apply f to the right side instead of assigning.
+
+The case Apply/Right must be changed to return functions. The returned function simply destructures
+its input using the destructor, then mimicks the assign case for each member.

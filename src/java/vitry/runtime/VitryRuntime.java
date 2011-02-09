@@ -95,6 +95,10 @@ public class VitryRuntime
             prelude.define(Symbol.intern("id"), new id());
             prelude.define(Symbol.intern("const"), new const_());   
 
+            prelude.define(Symbol.intern("cons"), new cons());   
+            prelude.define(Symbol.intern("acons"), new acons());   
+
+            
             prelude.define(Symbol.intern("add"), new add());
             prelude.define(Symbol.intern("sub"), new sub());
             prelude.define(Symbol.intern("mul"), new mul());

@@ -31,7 +31,7 @@ public class InvertibleRestFunction extends RestFunction implements InvertibleFu
         public InvertibleRestFunction getInverse() {
             return new InvertibleRestFunction(){
 
-                public Object apply(Object a) throws InvocationError {
+                public Object invoke(Object a) throws InvocationError {
                     return this.applyInverse(a);
                 }
 

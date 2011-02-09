@@ -26,7 +26,7 @@ import vitry.runtime.struct.Sequence;
  */
 public interface InvertibleFunction extends Function
     {
-        Sequence<Object> applyVarInverse(Object a) throws InvocationError;
+        Sequence<?> applyVarInverse(Object a) throws InvocationError;
 
         Object applyInverse(Object a) throws InvocationError;
 

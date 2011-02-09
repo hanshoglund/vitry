@@ -343,16 +343,17 @@ public class Interpreter implements Eval
 
                     case TYPE_ASSIGN:
                         {
-                            Object id = eval(first(ops), context, frame, fixities);
-                            Object val = eval(second(ops), context, frame, fixities);
+                            Object left = eval(first(ops), context, frame, fixities);
+                            Object right = eval(second(ops), context, frame, fixities);
                             
-                            if (id instanceof DestructContinuation) {
-                                ((DestructContinuation) id).destruct(val);
+                            if (left instanceof AssignContinuation) {
+                                ((AssignContinuation) left).invoke(right, frame);
+                                
                             } else {                            
                                 try {
-                                    frame.define((Symbol) id, val);
+                                    frame.define((Symbol) left, right);
                                 } catch (ClassCastException e) {
-                                    throwAssignment(id);
+                                    throwAssignment(left);
                                 }
                             }
                             return null;
@@ -363,13 +364,54 @@ public class Interpreter implements Eval
                     // Application and infix ops
 
                     case TYPE_APPLY:
+                        final Object            fn   = eval(ops.head(), context.extend(SIDE, RIGHT), frame, fixities);
+                        final Sequence<Pattern> args = ops.tail();
+                        final int               numArgs = length(args);
+
                         if (context.lookup(SIDE) == LEFT) {
-                            // TODO
-                        
+                            final Environment<Symbol, Symbol> contextCs = context;
+                            final Environment<Symbol, Object> frameCs = frame;
+                            final Environment<Symbol, Fixity> fixitiesCs = fixities;
+                            
+                            return new AssignContinuation()
+                                {
+                                    public void invoke(Object value, Environment<Symbol, Object> frame) {
+                                        if (fn instanceof InvertibleFunction) {
+                                            InvertibleFunction ifn = (InvertibleFunction) fn;
+                                            
+                                            // TODO Should we invoke applyVar for single args ?
+                                            // Is this something that is dispatched by InvertibleFunction
+                                            
+                                            Sequence<?> vals = ifn.applyVarInverse(value);
+                                            
+                                            Iterator<Pattern> keyExprIt;
+                                            Iterator<?> valIt;
+                                            
+                                            for (keyExprIt = args.iterator(), valIt = vals.iterator();
+                                            keyExprIt.hasNext() && valIt.hasNext();) 
+                                            {
+                                                Object key = eval(keyExprIt.next(), contextCs, frameCs, fixitiesCs);
+                                                Object val = valIt.next();
+
+                                                if (key instanceof AssignContinuation) {
+                                                    ((AssignContinuation) key).invoke(val, frame);
+                                                    
+                                                } else {                            
+                                                    try {
+                                                        frame.define((Symbol) key, val);
+                                                    } catch (ClassCastException e) {
+                                                        throwAssignment(key);
+                                                    }
+                                                }                                                
+                                            }
+                                            
+                                        } else {
+                                            assert false;                                            
+                                        }
+                                    }
+                                };
+                                
                         } else {
-                            Object            fn   = eval(ops.head(), context, frame, fixities);
-                            Sequence<Pattern> args = ops.tail();
-                            int               numArgs = length(args);
 
                             if (fn instanceof InterpretedFunction) {
                                 
@@ -622,8 +664,8 @@ class InterpretedFunction extends RestFunction implements Arity
     }
 
 
-interface DestructContinuation {
-    public void destruct(Object value);
+interface AssignContinuation {
+    public void invoke(Object value, Environment<Symbol, Object> frame);
 }
 
 

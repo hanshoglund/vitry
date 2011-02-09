@@ -35,6 +35,12 @@ true
 
 (let [add5 = (add 5)  add26 = (add 26)  mod5 = (mod 5)  x = 0] (eq (mod5 (add26 x)) (add5 x)) )
 (let [s = (fn [x y z] x z (y z))  k = const   i = id] s k k 3)
+                 
+
+-- Left-side invocation
+
+(let [(acons a b) = (cons 1 2)] a)
+
 
 
 -- Operators 
