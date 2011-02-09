@@ -22,6 +22,7 @@ import static vitry.runtime.struct.Sequences.*;
 
 import vitry.runtime.misc.Utils;
 import vitry.runtime.parse.VitryToken;
+import vitry.runtime.parse.VitryTokenTypes;
 import vitry.runtime.struct.Sequence;
 import vitry.runtime.struct.SequenceIterator;
 import vitry.runtime.struct.SingleSequence;
@@ -84,7 +85,7 @@ class OperatorRewrite
                 pp = p;
                 p = it.next();
                 
-                if (!isShallow(p)) continue;
+                if (!isShallowOpTree(p)) continue;
                 Fixity f = getFixity(p);
                 if ( 
                      f != null && 
@@ -107,8 +108,8 @@ class OperatorRewrite
             Pattern hoist;
             Product insert, unify;
             
-            if ((preceding != null) && (preceding instanceof Sequence) && isShallow(preceding)) {
-                Class DEBUG3 = preceding.getClass();
+            if ((preceding != null) && (preceding instanceof Sequence) && isShallowOpTree(preceding)) {
+//                Class DEBUG3 = preceding.getClass();
                 hoist  = last((Product) preceding);
                 insert = s2p(cons(primary.head(), s2p(cons(hoist, primary.tail()))));
                 unify  = s2p(append(s2p(init((Sequence<Pattern>) preceding)), s2p(new SingleSequence(insert))));
@@ -128,16 +129,21 @@ class OperatorRewrite
         private Product s2p (Sequence<Pattern> s) {
             return new SimpleProduct(s);
         }
-        
+        private Sequence<Pattern> p2s (Pattern s) {
+            return (Sequence<Pattern>) s;
+        }        
         
         /**
          * Deep-walks a sequence of patterns and/or sequences and replaces
-         * all elements (...) with (Apply, ...).
+         * all elements (+,...) with (Apply,+,...).
          *
          * The returned sequences are all Products.
          */
         private Product treeToApply(Sequence<Pattern> seq) {
-            return (new SimpleProduct(cons(APPLY_TOKEN, seq.<Pattern>map(RECURSIVE_APPLY))));
+            if (isOperator(first(seq)))
+                return s2p(cons(APPLY_TOKEN, seq.<Pattern>map(RECURSIVE_APPLY)));
+            else
+                return s2p(seq);
         }                                       
         
         private Function RECURSIVE_APPLY = (new StandardFunction(1) {
@@ -150,13 +156,27 @@ class OperatorRewrite
                 }
             });
         
-        private boolean isShallow(Pattern p) {
+        private boolean isShallowOpTree(Pattern p) {
             if (p instanceof Sequence) {
-//                int DEBUG = length((Sequence<?>) p);
-                return length((Sequence<?>) p) <= 2;
+                int len = length((Sequence<?>) p);
+                switch (len) {
+                    case 1:
+                        // TODO
+                        return true;
+//                        return Interpreter.isSelfEvaluating(first((Sequence<Pattern>)p)) 
+//                        || Interpreter.isAcceptedToken(first((Sequence<Pattern>) p));
+                    case 2:
+                        return isOperator(first(p2s(p)));
+                    default:
+                        return false;
+                }
             }
             else
                 return true;
+        }
+
+        private boolean isOperator(Pattern p) {
+            return VitryTokenTypes.tokenType(p) == Interpreter.TYPE_OP;
         }
         
         /**

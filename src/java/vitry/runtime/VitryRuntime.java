@@ -51,19 +51,19 @@ public class VitryRuntime
         
 
 
-        public static final List     unique = (new List()
-                                                {
+        public static final List unique = (new List()
+            {
 
-                                                    public Pattern head() {
-                                                        return null;
-                                                        // TODO Auto-generated method stub
-                                                    }
+                public Pattern head() {
+                    return null;
+                    // TODO Auto-generated method stub
+                }
 
-                                                    public Sequence<Pattern> tail() {
-                                                        return null;
-                                                        // TODO Auto-generated method stub
-                                                    }
-                                                });
+                public Sequence<Pattern> tail() {
+                    return null;
+                    // TODO Auto-generated method stub
+                }
+            });
 
 
         public static Symbol toVitryBool(boolean a) {
@@ -112,6 +112,7 @@ public class VitryRuntime
             prelude.define(Symbol.intern("(/)"), prelude.lookup(Symbol.intern("div")));
             prelude.define(Symbol.intern("(%)"), prelude.lookup(Symbol.intern("mod")));
             prelude.define(Symbol.intern("(%%)"), prelude.lookup(Symbol.intern("modp")));
+            prelude.define(Symbol.intern("(,)"), prelude.lookup(Symbol.intern("cons")));
 
             prelude.define(Symbol.intern("quit"), new quit());
             prelude.define(Symbol.intern("unique"), unique);
@@ -121,12 +122,36 @@ public class VitryRuntime
 
         public static Environment<Symbol, Fixity> preludeFixities = new HashEnvironment<Symbol, Fixity>();
         static {
-            preludeFixities.define(Symbol.intern("(*)"), new Fixity(Symbol.intern("(*)"), 7, true));
-            preludeFixities.define(Symbol.intern("(/)"), new Fixity(Symbol.intern("(/)"), 7, true));
-            preludeFixities.define(Symbol.intern("(%)"), new Fixity(Symbol.intern("(%)"), 7, true));
-            preludeFixities.define(Symbol.intern("(+)"), new Fixity(Symbol.intern("(+)"), 6, true));
-            preludeFixities.define(Symbol.intern("(-)"), new Fixity(Symbol.intern("(-)"), 6, true));
-            preludeFixities.define(Symbol.intern("($)"), new Fixity(Symbol.intern("($)"), 0, false));
+            defineFixity("(.)",     11, false);
+            defineFixity("(^^)",    10, true);
+            defineFixity("(^)",     10, true);
+            defineFixity("(%)",     9, true);
+            defineFixity("(%%)",    9, true);
+            defineFixity("(/)",     9, true);
+            defineFixity("(*)",     9, true);
+            defineFixity("(-)",     8, true);
+            defineFixity("(+)",     8, true);
+            defineFixity("{|}",     7, true);
+            defineFixity("[,]",     6, true);
+            defineFixity("{,}",     6, true);
+            defineFixity("(,)",     6, true);
+            defineFixity("(<)",     5, true);
+            defineFixity("(<=)",    5, true);
+            defineFixity("(>=)",    5, true);
+            defineFixity("(>)",     5, true);
+            defineFixity("(/=)",    5, true);
+            defineFixity("(==)",    5, true);
+            defineFixity("(|)",     4, true); // associativity?
+            defineFixity("(&)",     4, true); // associativity?
+            defineFixity("(->)",    3, false);
+            defineFixity("(&&)",    2, false);
+            defineFixity("(||)",    1, false);
+            defineFixity("($!)",    0, true);
+            defineFixity("($)",     0, false);
+        }
+
+        private static void defineFixity(String name, int precedence, boolean left) {
+            preludeFixities.define(Symbol.intern(name), new Fixity(Symbol.intern(name), precedence, left));
         }
 
 

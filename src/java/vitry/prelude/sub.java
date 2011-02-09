@@ -3,14 +3,14 @@ package vitry.prelude;
 import java.math.BigInteger;
 
 import vitry.runtime.BigRational;
+import vitry.runtime.RestFunction;
 import vitry.runtime.StandardFunction;
 
-public class sub extends StandardFunction
+public class sub extends RestFunction
     {
+
         
-        public sub() {
-            super(2);
-        }
+        
         
 
         public Object apply(Object a, Object b) {
