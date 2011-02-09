@@ -28,7 +28,7 @@ public class UndefinedError extends BindingError
         private Environment<?,?> env;
 
         public UndefinedError(Object key, Environment<?, ?> env) {
-            super("Could not find key " + key + " in " + env);
+            super("Could not find key '" + key + "' in " + env);
             this.key = key;
             this.env = env;
         }

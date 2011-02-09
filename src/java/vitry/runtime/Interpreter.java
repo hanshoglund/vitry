@@ -147,8 +147,8 @@ public class Interpreter implements Eval
             while (true) {
                                                   
                 if (DEBUG) {
-                    String exprStr = expr.toString();
-                    Utils.nothing(exprStr);
+                    String DEBUG1 = expr.toString();
+                    Utils.nothing(DEBUG1);
                 }     
                 
                 if (isSelfEvaluating(expr)) return expr;    

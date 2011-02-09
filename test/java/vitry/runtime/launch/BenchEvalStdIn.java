@@ -16,8 +16,10 @@ import vitry.runtime.parse.VitryLexer;
 import vitry.runtime.parse.VitryParser;
 
 
-public class EvalStdIn
+public class BenchEvalStdIn
     {
+        static final Timer timer = new Timer();
+        
         public static void main(String[] args) {
 
             // Read lines from std in
@@ -42,13 +44,24 @@ public class EvalStdIn
                         VitryParser parser = new VitryParser(tokens);
                         parser.setTreeAdaptor(new PatternTreeAdaptor());
 
+                        timer.start();
                         Pattern expr = (Pattern) parser.expr().getTree();
-                        
-                        System.out.println("Tree : " + expr);
+                        timer.time();
+                        timer.report("Parsing");
+
+                        timer.start();
                         Object val = interpreter.eval(expr);
-                        System.out.println("Value: " + val);
-                        System.out.println("Class: " + val.getClass());
+                        timer.time();
+                        timer.report("Evaluation");
+
                         System.out.println();
+                        System.out.println("Tree : " + expr);
+                        System.out.println("Value: " + val);
+                        
+//                        System.out.println("Class: " + val.getClass());
+                        System.out.println();
+                    
+                    
                     } catch (Exception e) {
 //                        System.err.println(e.getClass().getName() + ": " + e.getMessage());
                         e.printStackTrace();

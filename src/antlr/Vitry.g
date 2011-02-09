@@ -23,6 +23,7 @@ grammar Vitry;
 options {     
   language = Java;
   output = AST;
+  memoize = true;
 }
 
 tokens {
