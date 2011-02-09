@@ -21,12 +21,8 @@ package vitry.runtime;
 import static vitry.runtime.struct.Sequences.*;
 import static vitry.runtime.Build.*;
 
-import java.util.Iterator;
-
 import vitry.runtime.misc.Utils;
-import vitry.runtime.parse.VitryParser;
 import vitry.runtime.parse.VitryToken;
-import vitry.runtime.parse.VitryTokenTypes;
 import vitry.runtime.struct.Sequence;
 import vitry.runtime.struct.SequenceIterator;
 
@@ -34,8 +30,15 @@ import vitry.runtime.struct.SequenceIterator;
  * Rewrites opererator-form syntax trees into application-form.
  * 
  * Input:
- *      (Ops a (+ b) ...)
- *      (Ops (+ b) ...)
+ *      A sequence of (Op, Expr)-tuples representing an unprocessed sequence
+ *      of operatator-value pairs. The first expression may be a single value.
+ *      (a (+ b) ...)
+ *      ((+ b) ...)
+ *      
+ * Output:
+ *      A single apply tree, possibly containing nested apply trees.
+ *      (Apply, (Par, +), a ...)
+ *      (Apply, (Par, +), b ...)
  */        
 class OperatorRewrite
     {
@@ -44,27 +47,20 @@ class OperatorRewrite
                 Environment<Symbol, Symbol> context) {
             this.fixities = fixities;
             this.context = context;
+            this.delimiter = context.lookup(Interpreter.DELIMITER);
         }
         final Environment<Symbol, Fixity> fixities;
         final Environment<Symbol, Symbol> context;
+        final Symbol delimiter;
+
         
-
-        public Pattern rewrite(Pattern input) {
-            Product p = (Product) input;
-            assert (p.head().matchFor(OPS_TOKEN));
-            return (Pattern) rewrite(p.tail());
-        }
-
-        public Sequence<Pattern> rewrite(Sequence<Pattern> seq) {
-            if (DEBUG) {                
-                String debugStr = printable(seq).toString();
-                Utils.nothing(debugStr);
-            }
+        public Product rewrite(Sequence<Pattern> seq) {
+            
             if (length(seq) == 1) {
-                // We have s-expr
-                // Convert all ops to apply and we are done
-                Object debug = treeToApply((Sequence<Pattern>) seq.head());
-                return treeToApply((Sequence<Pattern>) seq.head());
+                // Expression is in normal form
+                Object debug = treeToApply(seq);
+                Utils.nothing(debug);
+                return treeToApply(seq);
             }
             
             Pattern prim = null;
@@ -73,9 +69,11 @@ class OperatorRewrite
             int     max = -1;
             
             SequenceIterator<Pattern> it = seq.sequenceIterator();
-            for (Pattern p = null, pp = null; it.hasNext(); pp = p, p = it.next()) {
+            for (Pattern p = null, pp = null; it.hasNext();) {
+                pp = p;
+                p = it.next();
                 Fixity f = getFixity(p);
-                if (
+                if ( 
                      f != null && 
                      (
                        (f.getPrecedence() > max) 
@@ -106,30 +104,28 @@ class OperatorRewrite
          *
          * The returned sequences are all Products.
          */
-        private Sequence<Pattern> treeToApply(Sequence<Pattern> seq) {
-            return (new SimpleProduct(cons(
-                APPLY_TOKEN,
-                seq.<Pattern>map(
-                    new StandardFunction(1)
-                    {
-                        public Object apply(Object s) throws InvocationError {
-                            if (s instanceof Sequence) 
-                                return treeToApply(Utils.<Sequence<Pattern>>unsafe(s));
-                            else
-                                return s; 
-                        }
-                    }))));
-        }
+        private Product treeToApply(Sequence<Pattern> seq) {
+            return (new SimpleProduct(cons(APPLY_TOKEN, seq.<Pattern>map(RECURSIVE_APPLY))));
+        }                                       
+        
+        private Function RECURSIVE_APPLY = (new StandardFunction(1) {
+                public Object apply(Object s) throws InvocationError {
+                    if (s instanceof Sequence) {                                    
+                        return treeToApply(Utils.<Sequence<Pattern>>unsafe(s));
+                    } else {                                    
+                        return s; 
+                    }
+                }
+            });
         
         /**
          * If the given value is list on the form (Op, _), return the fixity of the operator.
          * Otherwise return null.
          */
         private Fixity getFixity(Pattern p) {
-            try {
-                Symbol s = Interpreter.evalOperator(((Sequence<Pattern>) p).head(), context.lookup(Interpreter.DELIMITER));
-                return fixities.lookup(s);
-            } catch (Exception _) {
+            if (p instanceof Sequence) {
+                Pattern op = Utils.<Sequence<Pattern>>unsafe(p).head();
+                return fixities.lookup(Interpreter.evalOperator(op, delimiter));
             }
             return null;
         }

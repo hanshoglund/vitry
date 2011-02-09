@@ -21,7 +21,7 @@ package vitry.runtime;
 /**
  * Represents the fixity of some operator.
  */
-public class Fixity
+public class Fixity extends ProductAdaptor
     {
         private final Symbol operator;
         private final int precedence;
@@ -41,5 +41,9 @@ public class Fixity
         }
         public boolean isLeft() {
             return left;
+        }
+
+        public Product asProduct() {
+            return new SimpleProduct(operator, precedence, left);
         }
     }

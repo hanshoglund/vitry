@@ -346,10 +346,14 @@ public class Interpreter implements Eval
                             Object id = eval(first(ops), context, frame, fixities);
                             Object val = eval(second(ops), context, frame, fixities);
                             
-                            try {
-                                frame.define((Symbol) id, val);
-                            } catch (ClassCastException e) {
-                                throwAssignment(id);
+                            if (id instanceof DestructContinuation) {
+                                ((DestructContinuation) id).destruct(val);
+                            } else {                            
+                                try {
+                                    frame.define((Symbol) id, val);
+                                } catch (ClassCastException e) {
+                                    throwAssignment(id);
+                                }
                             }
                             return null;
                         }
@@ -375,7 +379,8 @@ public class Interpreter implements Eval
                                 int arity = ifn.getArity();
 
                                 if (numArgs < arity) {
-                                    frame = ifn.getEnvironment().extend();
+                                    Environment<Symbol, Object> callFrame = frame;
+                                    frame = ifn.env.extend();
                                     
                                     SequenceIterator<Pattern> param;
                                     Iterator<Pattern> arg;
@@ -384,7 +389,7 @@ public class Interpreter implements Eval
                                     param.hasNext() && arg.hasNext();) 
                                     {
                                         Object name = eval(param.next(), STANDARD_CONTEXT, frame, ifn.fixities);
-                                        Object value = eval(arg.next(), STANDARD_CONTEXT, frame, ifn.fixities);
+                                        Object value = eval(arg.next(), STANDARD_CONTEXT, callFrame, ifn.fixities);
                                         try {
                                             frame.define((Symbol) name, value);
                                         } catch (ClassCastException e) {
@@ -401,14 +406,15 @@ public class Interpreter implements Eval
                                         );
                                 } 
                                 if (numArgs == arity) {
-                                    context = STANDARD_CONTEXT;                           
-                                    frame = ifn.getEnvironment().extend();
+                                    context = STANDARD_CONTEXT;
+                                    Environment<Symbol, Object> callFrame = frame;
+                                    frame = ifn.env.extend();
                                     
                                     for (Iterator<Pattern> param = ifn.params.iterator(), arg = args.iterator();
                                     param.hasNext() && arg.hasNext();) 
                                     {
                                         Object name = eval(param.next(), context, frame, fixities);
-                                        Object value = eval(arg.next(), context, frame, fixities);
+                                        Object value = eval(arg.next(), context, callFrame, fixities);
                                         try {
                                             frame.define((Symbol) name, value);
                                         } catch (ClassCastException e) {
@@ -441,7 +447,7 @@ public class Interpreter implements Eval
                         
                     case TYPE_OPS:
                         OperatorRewrite rw = new OperatorRewrite(fixities, context);
-                        expr = rw.rewrite(expr);
+                        expr = rw.rewrite(ops);
                         continue;
                         
                     
@@ -616,7 +622,9 @@ class InterpretedFunction extends RestFunction implements Arity
     }
 
 
-
+interface DestructContinuation {
+    public void destruct(Object value);
+}
 
 
 class InterpretedModule extends Module

@@ -2,12 +2,11 @@ package vitry.runtime.struct;
 
 import java.util.Iterator;
 
-import vitry.runtime.Function;
 import vitry.runtime.misc.Utils;
 
 
 /**
- * For debugging. Prints like a Lisp list.
+ * For debugging. Prints like a product.
  */
 public class PrintableSequence<T> extends AbstractSequence<T>
     {
@@ -42,8 +41,6 @@ public class PrintableSequence<T> extends AbstractSequence<T>
         }
 
         public String toString() {
-            return Utils.join(this, "(", " ", ")");
+            return Utils.join(this, "(", ", ", ")");
         }
-
-
     }

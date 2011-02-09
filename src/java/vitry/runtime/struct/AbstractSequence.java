@@ -21,7 +21,6 @@ package vitry.runtime.struct;
 import java.util.Iterator;
 
 import vitry.runtime.Function;
-import vitry.runtime.Pattern;
 
 
 abstract public class AbstractSequence<T> implements Sequence<T>
