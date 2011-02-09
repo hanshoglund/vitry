@@ -1,5 +1,5 @@
                  
-Move general info to NOTES, gradually move this stuff to tracker.
+Move general info to NOTES, gradually move other stuff to tracker.
 
 ==============================================================================
 
@@ -27,75 +27,11 @@ Move general info to NOTES, gradually move this stuff to tracker.
         - Retagging: OK if the old type includes the new ("narrowing conversion")
 
 
-
-
-- Runtime                                  
-    - The "VitrySystem" class provides static methods to create systems
-        - Thus Java primitives may use several systems on the same JVM
-
-    - A system is a set of loaded modules
-        - Each module is a callable that when called generates
-          a top environment containing functions/types/values
-        - The  class loader provides an internal "import" function 
-          that load other modules as needed, then copy the selected 
-          members to the importer.
-        - In case of recursive dependency, store incomplete modules,
-          set unresolvable field to null, and make reattempt.  
-    implementation:
-        The ModuleClassLoader can works like a persistent collection that
-        can "unload" modules, by manufacturing a version of itself in
-        which the unloaded module is not present. 
-          
-    - For the REPL, we actually replace the top-level for each command,
-      persistantly copying previous assignments. (Required to prevent
-      repeated assignments in the same command block).  
-        - Modules may not be defined on the REPL, however, fns and other
-          class generators may.
-        - To load callables generated on the REPL, we need to generate a dummy
-          class that automatically interprets some encapsulated code.
-      
-    implementation:      
-      
-      - A ModuleClassLoader can load modules (i.e. classes named $.class)
-        and resolve their bindings. Thus a MCL can easily encapsulate an
-        entire Vitry system.                     
-           - Classes may be loaded from the $CLASSPATH. To provide 
-             alternative ways of loading, simply hoist some custom CL
-             as parent of the  MCL instead of using the SystemCL.
-           - vitry.primitive should be available from the SystemCL         
-           - Standard Stack:
-            
-            JVM
-              BoostrapCL
-              ExtensionCL
-              SystemCL
-                class VitrySystem
-                  instance0          
-                    ...
-                    ModuleClassLoader
-                  ...
-                  instanceN
-           
-               - For the REPL ... ?
-
-    important:
-    - VitrySystem must not use *any* static state as this would be visible
-      from concurrently running systems.
-
-    
 - Functions
     - Extends vitry.p.Function
     - We use Java calling conventions (invokevirtual) by default
         - Others may be added for TCO, see Compiler
-    - Semantically, all functions are unary and curried
-    - Implementation-wise, however, the following invariants hold:
-        - A function is an object that inherits from vitry.p.Function
-        - A function has the following properties
-            - An environment
-            - Arity, defined by Function.arity()
-            - Type, defined by Function.type()
-            - Body, defined by Apply.apply()
-       
+    - Semantically, all functions are unary and curried       
 
 - Records
     - Straight tuples
@@ -107,7 +43,7 @@ Move general info to NOTES, gradually move this stuff to tracker.
           (_,_,key))
     - The record function can tag/retag values to support user-defined "keys"
     - As these tags are equivalent to the actual type of the value, they do not cause any problems when
-      the value is looked up
+      the value is used with the original type (see retagging)
 
 
 ====================================================================================================

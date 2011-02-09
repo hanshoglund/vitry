@@ -19,12 +19,12 @@
 package vitry.runtime;
 
 import static vitry.runtime.struct.Sequences.*;
-import static vitry.runtime.Build.*;
 
 import vitry.runtime.misc.Utils;
 import vitry.runtime.parse.VitryToken;
 import vitry.runtime.struct.Sequence;
 import vitry.runtime.struct.SequenceIterator;
+import vitry.runtime.struct.SingleSequence;
 
 /**
  * Rewrites opererator-form syntax trees into application-form.
@@ -54,24 +54,37 @@ class OperatorRewrite
         final Symbol delimiter;
 
         
+        @SuppressWarnings("unchecked")
         public Product rewrite(Sequence<Pattern> seq) {
+            String DEBUG = printable(seq).toString();
             
             if (length(seq) == 1) {
                 // Expression is in normal form
-                Object debug = treeToApply(seq);
-                Utils.nothing(debug);
-                return treeToApply(seq);
+                Object DEBUG2 = treeToApply((Sequence<Pattern>) seq.head());
+                Utils.nothing(DEBUG2);
+                return treeToApply((Sequence<Pattern>) seq.head());
             }
             
-            Pattern prim = null;
-            Pattern pred = null;
-            Sequence<Pattern> tail = null;
+            /*
+             * Find the leftmost or rightmost item of maximum precedence,
+             * based on the associativity of that element.
+             * 
+             * Also store its direct predecessor element, all other preceding elements,
+             * and all following elements.
+             */
+            
+            Sequence<Pattern> primary = null;
+            Pattern preceding = null;
+            Sequence<Pattern> before = null;
+            Sequence<Pattern> after = null;
             int     max = -1;
             
-            SequenceIterator<Pattern> it = seq.sequenceIterator();
+            SequenceIterator<Pattern> it = iterate(seq);
             for (Pattern p = null, pp = null; it.hasNext();) {
                 pp = p;
                 p = it.next();
+                
+                if (!isShallow(p)) continue;
                 Fixity f = getFixity(p);
                 if ( 
                      f != null && 
@@ -81,21 +94,40 @@ class OperatorRewrite
                      )
                    ) 
                 {
-                    prim = p;
-                    pred = pp;
-                    tail = it.currentSequence();
+                    primary = (Sequence<Pattern>) p;
+                    preceding = pp;
+                    before = (preceding == null ? null : untilElement(seq, preceding));
+                    after = it.following();
                     max = f.getPrecedence();
                 }
             }
-            if (prim == null) throw new ParseError("No fixity rules found");
+//            if (prim == null) throw new ParseError("Could not rewrite operators in " + (Product) seq);
+            assert ((primary != null));
             
-            // TODO
-            // Hoist from prim to pred
-            // Reinsert in original seq, how?
+            Pattern hoist;
+            Product insert, unify;
             
-            return null;
+            if ((preceding != null) && (preceding instanceof Sequence) && isShallow(preceding)) {
+                Class DEBUG3 = preceding.getClass();
+                hoist  = last((Product) preceding);
+                insert = s2p(cons(primary.head(), s2p(cons(hoist, primary.tail()))));
+                unify  = s2p(append(s2p(init((Sequence<Pattern>) preceding)), s2p(new SingleSequence(insert))));
+                
+            } else if (preceding != null){
+                hoist  = preceding;
+                insert = s2p(cons(primary.head(), s2p(cons(hoist, primary.tail()))));
+                unify  = insert;
+
+            } else {
+                unify = (Product) primary;
+            }
+            
+            return rewrite(s2p(append(before, cons(s2p(unify), after))));
         }
         
+        private Product s2p (Sequence<Pattern> s) {
+            return new SimpleProduct(s);
+        }
         
         
         /**
@@ -117,6 +149,15 @@ class OperatorRewrite
                     }
                 }
             });
+        
+        private boolean isShallow(Pattern p) {
+            if (p instanceof Sequence) {
+//                int DEBUG = length((Sequence<?>) p);
+                return length((Sequence<?>) p) <= 2;
+            }
+            else
+                return true;
+        }
         
         /**
          * If the given value is list on the form (Op, _), return the fixity of the operator.

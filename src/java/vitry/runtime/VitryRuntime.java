@@ -104,12 +104,14 @@ public class VitryRuntime
             prelude.define(Symbol.intern("mul"), new mul());
             prelude.define(Symbol.intern("div"), new div());
             prelude.define(Symbol.intern("mod"), new mod());
+            prelude.define(Symbol.intern("modp"), new modp());
 
             prelude.define(Symbol.intern("(+)"), prelude.lookup(Symbol.intern("add")));
             prelude.define(Symbol.intern("(-)"), prelude.lookup(Symbol.intern("sub")));
             prelude.define(Symbol.intern("(*)"), prelude.lookup(Symbol.intern("mul")));
             prelude.define(Symbol.intern("(/)"), prelude.lookup(Symbol.intern("div")));
             prelude.define(Symbol.intern("(%)"), prelude.lookup(Symbol.intern("mod")));
+            prelude.define(Symbol.intern("(%%)"), prelude.lookup(Symbol.intern("modp")));
 
             prelude.define(Symbol.intern("quit"), new quit());
             prelude.define(Symbol.intern("unique"), unique);

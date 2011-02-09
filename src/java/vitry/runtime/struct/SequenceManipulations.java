@@ -27,14 +27,15 @@ import java.util.WeakHashMap;
 import vitry.runtime.misc.Utils;
 
 
-/**
- * Basic sequence operations.
- *
- * TODO rewrite append, revappend, butlast etc in imperative style
+/*
+ * Attempt at let-polymorphic version of the methods in Sequences.
+ * 
+ * TODO If it is to work, generated sequences (singles, pairs etc) must be
+ * wrapped in S handlers.
  */
-public class Sequences
+public class SequenceManipulations<T, S extends Sequence<T>>
     {
-        private Sequences() {
+        private SequenceManipulations() {
         }
 
         private static final Map<Object, Object> memoizedLasts = new WeakHashMap<Object, Object>();
@@ -42,21 +43,21 @@ public class Sequences
         private static final Object[] EMPTY_OBJ_ARRAY = new Object[0];
 
 
-        public static <T> Sequence<T> cons(T x, Sequence<T> xs) {
-            if (xs == null) return (Sequence<T>) new SingleSequence<T>(x);
+        public S cons(T x, S xs) {
+            if (xs == null) return (S) new SingleSequence<T>(x);
             else
-                return (Sequence<T>) xs.cons(x);
+                return (S) xs.cons(x);
         }
 
-        public static <T> T head(Sequence<T> xs) {
+        public T head(S xs) {
             return xs.head();
         }
 
-        public static <T> Sequence<T> tail(Sequence<T> xs) {
-            return (Sequence<T>) xs.tail();
+        public S tail(S xs) {
+            return (S) xs.tail();
         }
 
-        public static <T> T last(Sequence<T> s) {
+        public T last(S s) {
             if (MEMOIZE_SEQS) {
                 Object m = memoizedLasts.get(s);
                 if (m != null) return Utils.<T> unsafe(m);
@@ -74,32 +75,31 @@ public class Sequences
             return r;
         }
 
-        public static <T> Sequence<T> init(Sequence<T> s) {
+        public S init(S s) {
             if (s.tail() == null) {
                 if (MEMOIZE_SEQS) {
                     memoizedLasts.put(s, s.head());
                 }
                 return null;
             } else {
-                return (Sequence<T>) cons(head(s), init(tail(s)));
+                return (S) cons(head(s), init(tail(s)));
             }
         }
 
-        public static <T> Sequence<T> until(Sequence<T> s, Sequence<T> t) {
+        public S until(S s, S t) {
             if (s == null || s == t) return null;
             else
-                return (Sequence<T>) cons(head(s), until(tail(s), t));
+                return (S) cons(head(s), until(tail(s), t));
         }
 
-        public static <T> Sequence<T> untilElement(Sequence<T> s, T e) {
-            if (s == null || s.head().equals(e)) 
-                return null;
+        public S untilElement(S s, T e) {
+            if (s == null || s.head().equals(e)) return null;
             else
-                return (Sequence<T>) cons(head(s), untilElement(tail(s), e));
+                return (S) cons(head(s), untilElement(tail(s), e));
         }
 
 
-        public static int length(Sequence<?> s) {
+        public int length(Sequence<?> s) {
             if (s instanceof Finite) return ((Finite<?>) s).length();
 
             int length = 0;
@@ -110,50 +110,50 @@ public class Sequences
             return length;
         }
 
-        public static <T> Sequence<T> reverse(Sequence<T> xs) {
-            return (Sequence<T>) reverseAppend(xs, null);
+        public S reverse(S xs) {
+            return (S) reverseAppend(xs, null);
         }
 
-        public static <T> Sequence<T> append(Sequence<T> xs, Sequence<T> ys) {
+        public S append(S xs, S ys) {
             if (xs == null) return ys;
             else
                 return cons(head(xs), append(tail(xs), ys));
         }
 
-        public static <T> Sequence<T> reverseAppend(Sequence<T> xs, Sequence<T> ys) {
+        public S reverseAppend(S xs, S ys) {
             if (xs == null) return ys;
             else
-                return (Sequence<T>) reverseAppend(xs.tail(), cons(xs.head(), ys));
+                return (S) reverseAppend((S) xs.tail(), cons(xs.head(), ys));
         }
 
-        public static <T> T first(Sequence<T> s) {
+        public T first(S s) {
             return s.head();
         }
 
-        public static <T> T second(Sequence<T> s) {
+        public T second(S s) {
             return s.tail().head();
         }
 
-        public static <T> T third(Sequence<T> s) {
+        public T third(S s) {
             return s.tail().tail().head();
         }
 
-        public static <T> T nth(Sequence<T> s, int i) {
+        public T nth(S s, int i) {
             for (int j = 0; j < i; j++)
                 s = tail(s);
             return s.head();
         }
 
-        public static <T> T nthLast(Sequence<T> s, int i) {
+        public T nthLast(S s, int i) {
             return nth(reverse(s), i);
         }
 
-        public static <T> Sequence<T> printable(Sequence<T> s) {
-            return (Sequence<T>) new PrintableSequence<T>(s);
+        public S printable(S s) {
+            return (S) new PrintableSequence<T>(s);
         }
 
 
-        public static Object[] toArray(Sequence<?> s) {
+        public Object[] toArray(Sequence<?> s) {
             if (s == null) return EMPTY_OBJ_ARRAY;
 
             Object[] a;
@@ -169,7 +169,7 @@ public class Sequences
             return a;
         }
 
-        public static <T> T[] toArray(Sequence<T> s, T[] dummy) {
+        public T[] toArray(S s, T[] dummy) {
             ArrayList<T> l = new ArrayList<T>();
             if (s == null) return l.toArray(dummy);
             do {
@@ -179,11 +179,11 @@ public class Sequences
             return l.toArray(dummy);
         }
 
-        public static <T> SequenceIterator<T> iterate(Sequence<T> s) {
+        public SequenceIterator<T> iterate(S s) {
             return new SequenceIterator<T>(s);
         }
 
-        public static <T> RewindableSequenceIterator<T> rewindableIterate(Sequence<T> s) {
+        public RewindableSequenceIterator<T> rewindableIterate(S s) {
             return new RewindableSequenceIterator<T>(iterate(s));
         }
 

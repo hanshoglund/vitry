@@ -29,7 +29,7 @@ abstract public class AbstractSequence<T> implements Sequence<T>
             return new PairSequence<T>(head, this);
         }
 
-        public <U> MapSequence<T, U> map(Function fn) {
+        public <U> Sequence<U> map(Function fn) {
             return new MapSequence<T, U>(fn, this);
         }
 
@@ -43,5 +43,11 @@ abstract public class AbstractSequence<T> implements Sequence<T>
 
         public SequenceIterator<T> sequenceIterator() {
             return new SequenceIterator<T>(this);
+        }
+        
+        
+        // DEBUG
+        public String toString() {
+            return Sequences.printable(this).toString();
         }
     }

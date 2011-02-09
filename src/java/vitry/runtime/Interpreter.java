@@ -294,7 +294,7 @@ public class Interpreter implements Eval
 
                     case TYPE_FN:
                         {
-                            Sequence<Pattern> params = butLast(ops);
+                            Sequence<Pattern> params = init(ops);
                             Pattern body = last(ops);   
                             return new InterpretedFunction(params, body, frame, fixities, this);
                         }
@@ -311,7 +311,7 @@ public class Interpreter implements Eval
 
                     case TYPE_LET:
                         {
-                            Sequence<Pattern> assignments = butLast(ops);
+                            Sequence<Pattern> assignments = init(ops);
                             expr = last(ops);
                             frame = frame.extend();
                             
@@ -440,7 +440,7 @@ public class Interpreter implements Eval
                                     }
                                     return new InterpretedFunction
                                         (
-                                        param.currentSequence(),  // Remaining parameters
+                                        param.following(),  // Remaining parameters
                                         ifn.body, 
                                         frame,                    // Updated frame
                                         ifn.fixities, 

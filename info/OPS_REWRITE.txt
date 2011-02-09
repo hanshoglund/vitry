@@ -1,17 +1,19 @@
 
 Invariants
 
-    S-Expr := Value | (Op, S-Expr)
-    T-Expr := (Op, Value) | (Op, S-Expr)
+    S-Expr := Value | (Op S-Expr)
+    T-Expr := (Op Value) | (Op S-Expr)
     
     We are rewriting a list of Value and T-Expr into an S-Expr.
     
-    After each step we will have a list of Value, T-Expr and S-Expr.
+    After each step we will have a list of Value T-Expr and S-Expr.
     
     When the list contains a single S-Expr we are done.
 
 
 
+(+ 2)
+(+ (2 3))
 
 
 Same precedence
@@ -54,7 +56,7 @@ infix left 1 +
 infix right 0 $
 
 
-1 $ 2 + 3 $ 4 $ 5 + 6
+(1 $ 2 + 3 $ 4 $ 5 + 6)
 
 1 ($ 2) (+ 3) ($ 4) ($ 5) (+ 6)
 1 ($ 2) (+ 3) ($ 4) ($ (+ 5 6))
@@ -68,9 +70,29 @@ infix right 0 $
 
 
 
+1 (+ 2) (+ 3)
+(+ 1 2)
+                   
 
-
-
+1 (+ 2) (* 3)
+1 (+ (* 2 3))
                      
 
+
+
+
+
+
+1 ($ 2) (+ 3) ($ 4) ($ 5) (+ 6)
+1 ($ 2) (+ 3) ($ 4) ($ (+ 5 6))
+1 ($ (+ 2 3)) ($ 4) ($ (+ 5 6))
+1 ($ (+ 2 3)) ($ 4) ($ (+ 5 6))
+
+1 ($ (+ 2 3)) ($ ($ 4 (+ 5 6)))
+1 ($ (+ 2 3)) ($ ($ 4 (+ 5 6)))
+
+1 ($ ($ (+ 2 3) ($ 4 (+ 5 6))))
+
+($ 1 ($ (+ 2 3) ($ 4 (+ 5 6))))
+($ 1 ($ (+ 2 3) ($ 4 (+ 5 6))))
 

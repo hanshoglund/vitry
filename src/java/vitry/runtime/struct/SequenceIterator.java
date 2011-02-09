@@ -29,7 +29,10 @@ import java.util.NoSuchElementException;
  */
 public class SequenceIterator<T> implements Iterator<T>
     {
-        private Sequence<T> seq;
+        /**
+         * Current sequence, or null if we are finished. Updated for each pass.
+         */
+        protected Sequence<T> seq;
 
         public SequenceIterator(Sequence<T> seq) {
             this.seq = seq;
@@ -48,14 +51,14 @@ public class SequenceIterator<T> implements Iterator<T>
         }
 
         public void remove() {
-            throw new UnsupportedOperationException("Can not modify a Seq");
+            throw new UnsupportedOperationException("Can not modify a Sequence");
         }
         
         /**
          * Returns a sequence of all remaining elements (its head is the
          * first element returned by next etc).
          */
-        public Sequence<T> currentSequence() {
+        public Sequence<T> following() {
             return seq;
         }
     }

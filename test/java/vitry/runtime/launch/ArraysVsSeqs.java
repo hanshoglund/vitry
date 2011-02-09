@@ -32,7 +32,7 @@ public class ArraysVsSeqs
             t.report("System.arraycopy");
 
             t.start();
-            butLast(os);
+            init(os);
             t.time();
             t.report("butLast");
 
