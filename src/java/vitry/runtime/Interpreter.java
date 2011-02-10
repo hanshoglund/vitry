@@ -55,13 +55,13 @@ public class Interpreter implements Eval
         static final int TYPE_IF      = VitryParser.If;
         static final int TYPE_LEFT    = VitryParser.Left;
         static final int TYPE_LET     = VitryParser.Let;
-        static final int TYPE_LOOP    = VitryParser.Loop;
+        // static final int TYPE_LOOP    = VitryParser.Loop;
         static final int TYPE_MATCH   = VitryParser.Match;
         static final int TYPE_MODULE  = VitryParser.Module;
         static final int TYPE_OPS     = VitryParser.Ops;
         static final int TYPE_PAR     = VitryParser.Par;
         static final int TYPE_QUOTE   = VitryParser.Quote;
-        static final int TYPE_RECUR   = VitryParser.Recur;
+        // static final int TYPE_RECUR   = VitryParser.Recur;
         static final int TYPE_TYPE    = VitryParser.Type;
 
         
@@ -320,18 +320,13 @@ public class Interpreter implements Eval
                             }
                         }
                         continue;
+
                         
-                    case TYPE_LOOP:
-                        throwNotSupported(); // TODO
-
-                        // Store expr for recur
-                        // Tail expr
-                        
-
-                    case TYPE_RECUR:
-                        throwNotSupported(); // TODO
-
-                        // Tail recur expr
+                    // case TYPE_LOOP:
+                    //     throwNotSupported();
+                    // 
+                    // case TYPE_RECUR:
+                    //     throwNotSupported();
                         
 
                     case TYPE_DO:

@@ -33,7 +33,7 @@ import vitry.runtime.struct.Sequence;
  *
  * Does not work for other Pattern instances other than Native.
  */
-public class NativeSet extends AbstractSet
+public final class NativeSet extends AbstractSet
     {
 
         private static final Map<Class<?>, Set> instanceMap = new WeakHashMap<Class<?>, Set>();

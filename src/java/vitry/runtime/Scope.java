@@ -19,7 +19,7 @@
 package vitry.runtime;
 
 
-interface Scope
+public interface Scope
     {
         public Environment<Symbol, Object> getEnvironment();
     }

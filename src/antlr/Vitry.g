@@ -28,22 +28,23 @@ options {
 
 tokens {
     Par; Bra; Ang;
+    Left; Quote;
     Module; Fn;
-    Let; Where; Assign; Left; Quote;
-    Apply; Type; If; Match; Loop; Recur; Do;
-    Ops; 
+    Let; Assign;
+//    Loop; Recur; 
+    Apply; Ops; If; Match; 
+    Do;
+    Type;
+     
        
     TypeDecl; ImplicitDecl; FnDecl; MemberDecl;
 }
 
 
-@header 
-{// See src/antlr/Vitry.g        
+@header {// See src/antlr/Vitry.g
 package vitry.runtime.parse;
 }
-
-@lexer::header 
-{// See src/antlr/Vitry.g
+@lexer::header {// See src/antlr/Vitry.g
 package vitry.runtime.parse;
 }                         
 
@@ -114,13 +115,13 @@ inlineRight
     | 'fn'   '[' left*   ']' inline[true]              -> ^(Fn left* inline)
     | 'let'  '(' assign* ')' inline[true]              -> ^(Let assign* inline)
     | 'let'  '[' assign* ']' inline[true]              -> ^(Let assign* inline)
-    | 'loop' '(' assign* ')' inline[true]              -> ^(Loop assign* inline)
-    | 'loop' '[' assign* ']' inline[true]              -> ^(Loop assign* inline)
+    // | 'loop' '(' assign* ')' inline[true]              -> ^(Loop assign* inline)
+    // | 'loop' '[' assign* ']' inline[true]              -> ^(Loop assign* inline)
     | 'do'   '(' assign* ')' expr*                     -> ^(Do assign* expr*)
     | 'do'   '[' assign* ']' expr*                     -> ^(Do assign* expr*)
     | 'match' v=expr '(' (c+=left e+=expr)* ')'        -> ^(Match $v ^($c $e)*)    
     | 'if' expr expr 'else'? inline[true]              -> ^(If expr expr inline)
-    | 'recur' expr*         			       -> ^(Recur expr*)
+    // | 'recur' expr*                                 -> ^(Recur expr*)
     ;
 
 assign

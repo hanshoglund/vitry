@@ -24,13 +24,13 @@ public class VitryTokenTypes
                 .define(Symbol.intern("If"), VitryParser.If)
                 .define(Symbol.intern("Left"), VitryParser.Left)
                 .define(Symbol.intern("Let"), VitryParser.Let)
-                .define(Symbol.intern("Loop"), VitryParser.Loop)
+                // .define(Symbol.intern("Loop"), VitryParser.Loop)
                 .define(Symbol.intern("Match"), VitryParser.Match)
                 .define(Symbol.intern("Module"), VitryParser.Module)
                 .define(Symbol.intern("Ops"), VitryParser.Ops)
                 .define(Symbol.intern("Par"), VitryParser.Par)
                 .define(Symbol.intern("Quote"), VitryParser.Quote)
-                .define(Symbol.intern("Recur"), VitryParser.Recur)
+                // .define(Symbol.intern("Recur"), VitryParser.Recur)
                 .define(Symbol.intern("Type"), VitryParser.Type));
 
         public static int parserTokenType(Pattern p) {
