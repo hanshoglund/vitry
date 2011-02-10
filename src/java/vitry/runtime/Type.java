@@ -54,7 +54,7 @@ public class Type extends BasePattern implements TypeExpr
             if (value instanceof Tagged)
                 return ((Tagged) value).retag(this);
             
-            if (value.matchFor(this.pattern)) 
+            if (value.matchFor(this)) 
                 return new Tagged(value, this);
             else
                 throw new TypeError(this, value);

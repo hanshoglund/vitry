@@ -15,9 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * See COPYING.txt for details.
- */          
- 
- 
+ */
 grammar Vitry;
 
 options {     
@@ -27,17 +25,26 @@ options {
 }
 
 tokens {
-    Par; Bra; Ang;
-    Left; Quote;
-    Module; Fn;
-    Let; Assign;
-//    Loop; Recur; 
-    Apply; Ops; If; Match; 
+    Par; 
+    Bra; 
+    Ang;    
+    Left; 
+    Quote;
+
+    Module; 
+    Fn;
+    Let; 
+    Assign;
+//    Loop; 
+//    Recur; 
+    Apply; 
+    Ops; If; 
+    Match; 
+    
     Do;
     Type;
-     
        
-    TypeDecl; ImplicitDecl; FnDecl; MemberDecl;
+    // TypeDecl; ImplicitDecl; FnDecl; MemberDecl;
 }
 
 
@@ -62,7 +69,7 @@ package vitry.runtime.parse;
  */
 
 expr    
-    : (delim[true] ':') => delim[true] ':' expr    -> ^(Type delim expr)
+    : (delim[true] ':') => delim[true] ':' expr   -> ^(Type delim expr)
     | delim[true]
     ; 
 
@@ -71,19 +78,19 @@ expr
  * Note that in a : b, b is always right-side
  */
 left   
-    : (delim[false] ':') => delim[false] ':' expr  -> ^(Left ^(Type delim expr))
-    | delim[false]                                 -> ^(Left delim)
+    : (delim[false] ':') => delim[false] ':' expr -> ^(Left ^(Type delim expr))
+    | delim[false]                                -> ^(Left delim)
     ;
 
 /* 
  * Delimited, quoted or atomic
  */
 delim [boolean rs]
-    : '(' inline[rs]? ')'       -> ^(Par inline?)
-    | '[' inline[rs]? ']'       -> ^(Bra inline?)
-    | '{' inline[rs]? '}'       -> ^(Ang inline?)
-    | '`' Op                    -> ^(Quote Op)
-    | '`' delim[rs]             -> ^(Quote delim)
+    : '(' inline[rs]? ')'  -> ^(Par inline?)
+    | '[' inline[rs]? ']'  -> ^(Bra inline?)
+    | '{' inline[rs]? '}'  -> ^(Ang inline?)
+    | '`' Op               -> ^(Quote Op)
+    | '`' delim[rs]        -> ^(Quote delim)
     | Symbol
     | Natural
     | Float
@@ -99,8 +106,8 @@ delim [boolean rs]
 inline [boolean rs]
     : {$rs}? inlineRight
     | (Op (')' | ']' | '}')) => Op
-    | (Op apply)+                                       -> ^(Ops ^(Op apply)+)
-    | (apply Op) => e=apply (Op f+=apply)+              -> ^(Ops $e ^(Op $f)+)  
+    | (Op apply)+                            -> ^(Ops ^(Op apply)+)
+    | (apply Op) => e=apply (Op f+=apply)+   -> ^(Ops $e ^(Op $f)+)  
     | apply
     ;                      
 
@@ -111,26 +118,26 @@ inline [boolean rs]
  * of these emit context. Is this confusing?
  */
 inlineRight
-    : 'fn'   '(' left*   ')' inline[true]              -> ^(Fn left* inline)
-    | 'fn'   '[' left*   ']' inline[true]              -> ^(Fn left* inline)
-    | 'let'  '(' assign* ')' inline[true]              -> ^(Let assign* inline)
-    | 'let'  '[' assign* ']' inline[true]              -> ^(Let assign* inline)
-    // | 'loop' '(' assign* ')' inline[true]              -> ^(Loop assign* inline)
-    // | 'loop' '[' assign* ']' inline[true]              -> ^(Loop assign* inline)
-    | 'do'   '(' assign* ')' expr*                     -> ^(Do assign* expr*)
-    | 'do'   '[' assign* ']' expr*                     -> ^(Do assign* expr*)
-    | 'match' v=expr '(' (c+=left e+=expr)* ')'        -> ^(Match $v ^($c $e)*)    
-    | 'if' expr expr 'else'? inline[true]              -> ^(If expr expr inline)
-    // | 'recur' expr*                                 -> ^(Recur expr*)
+    : 'fn'   '(' left*   ')' inline[true]        -> ^(Fn left* inline)
+    | 'fn'   '[' left*   ']' inline[true]        -> ^(Fn left* inline)
+    | 'let'  '(' assign* ')' inline[true]        -> ^(Let assign* inline)
+    | 'let'  '[' assign* ']' inline[true]        -> ^(Let assign* inline)
+    // | 'loop' '(' assign* ')' inline[true]        -> ^(Loop assign* inline)
+    // | 'loop' '[' assign* ']' inline[true]        -> ^(Loop assign* inline)
+    | 'do'   '(' assign* ')' expr*               -> ^(Do assign* expr*)
+    | 'do'   '[' assign* ']' expr*               -> ^(Do assign* expr*)
+    | 'match' v=expr '(' (c+=left e+=expr)* ')'  -> ^(Match $v ^($c $e)*)    
+    | 'if' expr expr 'else'? inline[true]        -> ^(If expr expr inline)
+    // | 'recur' expr*                              -> ^(Recur expr*)
     ;
 
 assign
-    : left '=' expr                                -> ^(Assign left expr)
+    : left '=' expr         -> ^(Assign left expr)
     ;
     
 
 apply
-    : (expr expr) => expr+                         -> ^(Apply expr+)
+    : (expr expr) => expr+  -> ^(Apply expr+)
     | expr
     ;
 

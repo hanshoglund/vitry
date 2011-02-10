@@ -341,8 +341,8 @@ public class Interpreter implements Eval
                             Object left = eval(first(ops), context, frame, fixities);
                             Object right = eval(second(ops), context, frame, fixities);
                             
-                            if (left instanceof AssignContinuation) {
-                                ((AssignContinuation) left).invoke(right, frame);
+                            if (left instanceof LeftContinuation) {
+                                ((LeftContinuation) left).invoke(right, frame);
                                 
                             } else {                            
                                 try {
@@ -368,7 +368,7 @@ public class Interpreter implements Eval
                             final Environment<Symbol, Object> frameCs = frame;
                             final Environment<Symbol, Fixity> fixitiesCs = fixities;
                             
-                            return new AssignContinuation()
+                            return new LeftContinuation()
                                 {
                                     public void invoke(Object value, Environment<Symbol, Object> frame) {
                                         if (fn instanceof InvertibleFunction) {
@@ -388,8 +388,8 @@ public class Interpreter implements Eval
                                                 Object key = eval(keyExprIt.next(), contextCs, frameCs, fixitiesCs);
                                                 Object val = valIt.next();
 
-                                                if (key instanceof AssignContinuation) {
-                                                    ((AssignContinuation) key).invoke(val, frame);
+                                                if (key instanceof LeftContinuation) {
+                                                    ((LeftContinuation) key).invoke(val, frame);
                                                     
                                                 } else {                            
                                                     try {
@@ -525,21 +525,37 @@ public class Interpreter implements Eval
                         {
                             // TODO native types
                             
-                            Pattern left = (Pattern) eval(Sequences.first(ops), context, frame, fixities);
-                            Pattern right = (Pattern) eval(Sequences.second(ops), context, frame, fixities);
+                            final Object left = eval(Sequences.first(ops), context, frame, fixities);
+                            final Pattern right = Native.wrap(eval(Sequences.second(ops), context.extend(SIDE, RIGHT), frame, fixities));
     
                             if (context.lookup(SIDE) == LEFT) {
-                                // TODO implement correct let behaviour with continuation?
-                                if (!left.matchFor(right))
-                                    throw new TypeError();
-                                else
-                                    return left;
+                                
+                                return new LeftContinuation() {
+                                    public void invoke(Object value, Environment<Symbol, Object> frame) {
+
+                                        // Check type
+                                        if (!Native.wrap(value).matchFor(right)) throw new TypeError();
+                                        
+                                        if (left instanceof LeftContinuation) {
+                                            // Left may be a destructuring or other type check
+                                            // It should do its work after we have verified the type of value
+                                            ((LeftContinuation) left).invoke(value, frame);
+                                        } else {
+                                            // Finish pending assignment
+                                            try {
+                                                frame.define((Symbol) left, value);
+                                            } catch (ClassCastException e) {
+                                                throwAssignment(left);
+                                            }
+                                        }
+                                    }
+                                };
+                                
                             } else {
                                 if (right instanceof Type)
-                                    return ((Type) right).tag(left);
+                                    return ((Type) right).tag(Native.wrap(left));
                                 else {
-                                    // TODO create simplistic type or simply check?
-                                    if (!left.matchFor(right))
+                                    if (!Native.wrap(left).matchFor(right))
                                         throw new TypeError();
                                     return left;
                                 }
@@ -667,8 +683,14 @@ class InterpretedFunction extends RestFunction implements Arity
         }
     }
 
-
-interface AssignContinuation {
+/**
+ * Represents an unfinished left-side computation. Callers passing left-expressions
+ * should check the returned value against this interface and react if it is
+ * received.
+ * 
+ * Typically pass in a right side value to be matched, destructured etc.
+ */
+interface LeftContinuation {
     public void invoke(Object value, Environment<Symbol, Object> frame);
 }
 

@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 src/antlr/Vitry.g 2011-02-10 22:39:56
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 src/antlr/Vitry.g 2011-02-10 23:13:16
 // See src/antlr/Vitry.g
 package vitry.runtime.parse;
 
@@ -14,48 +14,44 @@ import org.antlr.runtime.tree.*;
 
 public class VitryParser extends Parser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "Par", "Bra", "Ang", "Left", "Quote", "Module", "Fn", "Let", "Assign", "Apply", "Ops", "If", "Match", "Do", "Type", "TypeDecl", "ImplicitDecl", "FnDecl", "MemberDecl", "Op", "Symbol", "Natural", "Float", "Complex", "String", "Exponent", "Whitespace", "EscapeSeq", "HexDigit", "UnicodeEsc", "OctalEsc", "':'", "'('", "')'", "'['", "']'", "'{'", "'}'", "'`'", "'fn'", "'let'", "'do'", "'match'", "'if'", "'else'", "'='"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "Par", "Bra", "Ang", "Left", "Quote", "Module", "Fn", "Let", "Assign", "Apply", "Ops", "If", "Match", "Do", "Type", "Op", "Symbol", "Natural", "Float", "Complex", "String", "Exponent", "Whitespace", "EscapeSeq", "HexDigit", "UnicodeEsc", "OctalEsc", "':'", "'('", "')'", "'['", "']'", "'{'", "'}'", "'`'", "'fn'", "'let'", "'do'", "'match'", "'if'", "'else'", "'='"
     };
-    public static final int TypeDecl=19;
     public static final int Ops=14;
-    public static final int MemberDecl=22;
     public static final int Module=9;
-    public static final int Exponent=29;
+    public static final int Exponent=25;
     public static final int Quote=8;
     public static final int EOF=-1;
-    public static final int HexDigit=32;
+    public static final int HexDigit=28;
     public static final int Let=11;
     public static final int Assign=12;
     public static final int Left=7;
-    public static final int OctalEsc=34;
+    public static final int OctalEsc=30;
     public static final int Do=17;
-    public static final int UnicodeEsc=33;
+    public static final int UnicodeEsc=29;
     public static final int Ang=6;
     public static final int Bra=5;
-    public static final int Op=23;
-    public static final int Symbol=24;
-    public static final int String=28;
-    public static final int Whitespace=30;
+    public static final int Op=19;
+    public static final int Symbol=20;
+    public static final int String=24;
+    public static final int Whitespace=26;
     public static final int If=15;
     public static final int T__42=42;
     public static final int T__43=43;
     public static final int T__40=40;
     public static final int T__41=41;
-    public static final int FnDecl=21;
-    public static final int T__46=46;
-    public static final int T__47=47;
     public static final int T__44=44;
     public static final int Type=18;
     public static final int T__45=45;
-    public static final int Natural=25;
-    public static final int T__48=48;
-    public static final int T__49=49;
-    public static final int Complex=27;
+    public static final int Natural=21;
+    public static final int Complex=23;
     public static final int Apply=13;
-    public static final int ImplicitDecl=20;
-    public static final int Float=26;
-    public static final int EscapeSeq=31;
+    public static final int Float=22;
+    public static final int T__31=31;
+    public static final int T__32=32;
+    public static final int T__33=33;
+    public static final int T__34=34;
     public static final int T__35=35;
+    public static final int EscapeSeq=27;
     public static final int T__36=36;
     public static final int Match=16;
     public static final int T__37=37;
@@ -100,7 +96,7 @@ public class VitryParser extends Parser {
     };
 
     // $ANTLR start "expr"
-    // src/antlr/Vitry.g:64:1: expr : ( ( delim[true] ':' )=> delim[true] ':' expr -> ^( Type delim expr ) | delim[true] );
+    // src/antlr/Vitry.g:71:1: expr : ( ( delim[true] ':' )=> delim[true] ':' expr -> ^( Type delim expr ) | delim[true] );
     public final VitryParser.expr_return expr() throws RecognitionException {
         VitryParser.expr_return retval = new VitryParser.expr_return();
         retval.start = input.LT(1);
@@ -116,28 +112,28 @@ public class VitryParser extends Parser {
 
 
         Object char_literal2_tree=null;
-        RewriteRuleTokenStream stream_35=new RewriteRuleTokenStream(adaptor,"token 35");
+        RewriteRuleTokenStream stream_31=new RewriteRuleTokenStream(adaptor,"token 31");
         RewriteRuleSubtreeStream stream_expr=new RewriteRuleSubtreeStream(adaptor,"rule expr");
         RewriteRuleSubtreeStream stream_delim=new RewriteRuleSubtreeStream(adaptor,"rule delim");
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 1) ) { return retval; }
-            // src/antlr/Vitry.g:65:5: ( ( delim[true] ':' )=> delim[true] ':' expr -> ^( Type delim expr ) | delim[true] )
+            // src/antlr/Vitry.g:72:5: ( ( delim[true] ':' )=> delim[true] ':' expr -> ^( Type delim expr ) | delim[true] )
             int alt1=2;
             alt1 = dfa1.predict(input);
             switch (alt1) {
                 case 1 :
-                    // src/antlr/Vitry.g:65:7: ( delim[true] ':' )=> delim[true] ':' expr
+                    // src/antlr/Vitry.g:72:7: ( delim[true] ':' )=> delim[true] ':' expr
                     {
-                    pushFollow(FOLLOW_delim_in_expr249);
+                    pushFollow(FOLLOW_delim_in_expr264);
                     delim1=delim(true);
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_delim.add(delim1.getTree());
-                    char_literal2=(Token)match(input,35,FOLLOW_35_in_expr252); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_35.add(char_literal2);
+                    char_literal2=(Token)match(input,31,FOLLOW_31_in_expr267); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_31.add(char_literal2);
 
-                    pushFollow(FOLLOW_expr_in_expr254);
+                    pushFollow(FOLLOW_expr_in_expr269);
                     expr3=expr();
 
                     state._fsp--;
@@ -157,9 +153,9 @@ public class VitryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 65:52: -> ^( Type delim expr )
+                    // 72:51: -> ^( Type delim expr )
                     {
-                        // src/antlr/Vitry.g:65:55: ^( Type delim expr )
+                        // src/antlr/Vitry.g:72:54: ^( Type delim expr )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(Type, "Type"), root_1);
@@ -176,11 +172,11 @@ public class VitryParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // src/antlr/Vitry.g:66:7: delim[true]
+                    // src/antlr/Vitry.g:73:7: delim[true]
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_delim_in_expr275);
+                    pushFollow(FOLLOW_delim_in_expr289);
                     delim4=delim(true);
 
                     state._fsp--;
@@ -218,7 +214,7 @@ public class VitryParser extends Parser {
     };
 
     // $ANTLR start "left"
-    // src/antlr/Vitry.g:73:1: left : ( ( delim[false] ':' )=> delim[false] ':' expr -> ^( Left ^( Type delim expr ) ) | delim[false] -> ^( Left delim ) );
+    // src/antlr/Vitry.g:80:1: left : ( ( delim[false] ':' )=> delim[false] ':' expr -> ^( Left ^( Type delim expr ) ) | delim[false] -> ^( Left delim ) );
     public final VitryParser.left_return left() throws RecognitionException {
         VitryParser.left_return retval = new VitryParser.left_return();
         retval.start = input.LT(1);
@@ -234,28 +230,28 @@ public class VitryParser extends Parser {
 
 
         Object char_literal6_tree=null;
-        RewriteRuleTokenStream stream_35=new RewriteRuleTokenStream(adaptor,"token 35");
+        RewriteRuleTokenStream stream_31=new RewriteRuleTokenStream(adaptor,"token 31");
         RewriteRuleSubtreeStream stream_expr=new RewriteRuleSubtreeStream(adaptor,"rule expr");
         RewriteRuleSubtreeStream stream_delim=new RewriteRuleSubtreeStream(adaptor,"rule delim");
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 2) ) { return retval; }
-            // src/antlr/Vitry.g:74:5: ( ( delim[false] ':' )=> delim[false] ':' expr -> ^( Left ^( Type delim expr ) ) | delim[false] -> ^( Left delim ) )
+            // src/antlr/Vitry.g:81:5: ( ( delim[false] ':' )=> delim[false] ':' expr -> ^( Left ^( Type delim expr ) ) | delim[false] -> ^( Left delim ) )
             int alt2=2;
             alt2 = dfa2.predict(input);
             switch (alt2) {
                 case 1 :
-                    // src/antlr/Vitry.g:74:7: ( delim[false] ':' )=> delim[false] ':' expr
+                    // src/antlr/Vitry.g:81:7: ( delim[false] ':' )=> delim[false] ':' expr
                     {
-                    pushFollow(FOLLOW_delim_in_left308);
+                    pushFollow(FOLLOW_delim_in_left322);
                     delim5=delim(false);
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_delim.add(delim5.getTree());
-                    char_literal6=(Token)match(input,35,FOLLOW_35_in_left311); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_35.add(char_literal6);
+                    char_literal6=(Token)match(input,31,FOLLOW_31_in_left325); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_31.add(char_literal6);
 
-                    pushFollow(FOLLOW_expr_in_left313);
+                    pushFollow(FOLLOW_expr_in_left327);
                     expr7=expr();
 
                     state._fsp--;
@@ -275,14 +271,14 @@ public class VitryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 74:52: -> ^( Left ^( Type delim expr ) )
+                    // 81:51: -> ^( Left ^( Type delim expr ) )
                     {
-                        // src/antlr/Vitry.g:74:55: ^( Left ^( Type delim expr ) )
+                        // src/antlr/Vitry.g:81:54: ^( Left ^( Type delim expr ) )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(Left, "Left"), root_1);
 
-                        // src/antlr/Vitry.g:74:62: ^( Type delim expr )
+                        // src/antlr/Vitry.g:81:61: ^( Type delim expr )
                         {
                         Object root_2 = (Object)adaptor.nil();
                         root_2 = (Object)adaptor.becomeRoot((Object)adaptor.create(Type, "Type"), root_2);
@@ -302,9 +298,9 @@ public class VitryParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // src/antlr/Vitry.g:75:7: delim[false]
+                    // src/antlr/Vitry.g:82:7: delim[false]
                     {
-                    pushFollow(FOLLOW_delim_in_left336);
+                    pushFollow(FOLLOW_delim_in_left349);
                     delim8=delim(false);
 
                     state._fsp--;
@@ -324,9 +320,9 @@ public class VitryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 75:52: -> ^( Left delim )
+                    // 82:51: -> ^( Left delim )
                     {
-                        // src/antlr/Vitry.g:75:55: ^( Left delim )
+                        // src/antlr/Vitry.g:82:54: ^( Left delim )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(Left, "Left"), root_1);
@@ -370,7 +366,7 @@ public class VitryParser extends Parser {
     };
 
     // $ANTLR start "delim"
-    // src/antlr/Vitry.g:81:1: delim[boolean rs] : ( '(' ( inline[rs] )? ')' -> ^( Par ( inline )? ) | '[' ( inline[rs] )? ']' -> ^( Bra ( inline )? ) | '{' ( inline[rs] )? '}' -> ^( Ang ( inline )? ) | '`' Op -> ^( Quote Op ) | '`' delim[rs] -> ^( Quote delim ) | Symbol | Natural | Float | Complex | String );
+    // src/antlr/Vitry.g:88:1: delim[boolean rs] : ( '(' ( inline[rs] )? ')' -> ^( Par ( inline )? ) | '[' ( inline[rs] )? ']' -> ^( Bra ( inline )? ) | '{' ( inline[rs] )? '}' -> ^( Ang ( inline )? ) | '`' Op -> ^( Quote Op ) | '`' delim[rs] -> ^( Quote delim ) | Symbol | Natural | Float | Complex | String );
     public final VitryParser.delim_return delim(boolean rs) throws RecognitionException {
         VitryParser.delim_return retval = new VitryParser.delim_return();
         retval.start = input.LT(1);
@@ -414,40 +410,40 @@ public class VitryParser extends Parser {
         Object Float24_tree=null;
         Object Complex25_tree=null;
         Object String26_tree=null;
-        RewriteRuleTokenStream stream_42=new RewriteRuleTokenStream(adaptor,"token 42");
         RewriteRuleTokenStream stream_Op=new RewriteRuleTokenStream(adaptor,"token Op");
-        RewriteRuleTokenStream stream_41=new RewriteRuleTokenStream(adaptor,"token 41");
-        RewriteRuleTokenStream stream_40=new RewriteRuleTokenStream(adaptor,"token 40");
+        RewriteRuleTokenStream stream_32=new RewriteRuleTokenStream(adaptor,"token 32");
+        RewriteRuleTokenStream stream_35=new RewriteRuleTokenStream(adaptor,"token 35");
         RewriteRuleTokenStream stream_36=new RewriteRuleTokenStream(adaptor,"token 36");
-        RewriteRuleTokenStream stream_39=new RewriteRuleTokenStream(adaptor,"token 39");
+        RewriteRuleTokenStream stream_33=new RewriteRuleTokenStream(adaptor,"token 33");
+        RewriteRuleTokenStream stream_34=new RewriteRuleTokenStream(adaptor,"token 34");
         RewriteRuleTokenStream stream_37=new RewriteRuleTokenStream(adaptor,"token 37");
         RewriteRuleTokenStream stream_38=new RewriteRuleTokenStream(adaptor,"token 38");
         RewriteRuleSubtreeStream stream_inline=new RewriteRuleSubtreeStream(adaptor,"rule inline");
         RewriteRuleSubtreeStream stream_delim=new RewriteRuleSubtreeStream(adaptor,"rule delim");
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 3) ) { return retval; }
-            // src/antlr/Vitry.g:82:5: ( '(' ( inline[rs] )? ')' -> ^( Par ( inline )? ) | '[' ( inline[rs] )? ']' -> ^( Bra ( inline )? ) | '{' ( inline[rs] )? '}' -> ^( Ang ( inline )? ) | '`' Op -> ^( Quote Op ) | '`' delim[rs] -> ^( Quote delim ) | Symbol | Natural | Float | Complex | String )
+            // src/antlr/Vitry.g:89:5: ( '(' ( inline[rs] )? ')' -> ^( Par ( inline )? ) | '[' ( inline[rs] )? ']' -> ^( Bra ( inline )? ) | '{' ( inline[rs] )? '}' -> ^( Ang ( inline )? ) | '`' Op -> ^( Quote Op ) | '`' delim[rs] -> ^( Quote delim ) | Symbol | Natural | Float | Complex | String )
             int alt6=10;
             alt6 = dfa6.predict(input);
             switch (alt6) {
                 case 1 :
-                    // src/antlr/Vitry.g:82:7: '(' ( inline[rs] )? ')'
+                    // src/antlr/Vitry.g:89:7: '(' ( inline[rs] )? ')'
                     {
-                    char_literal9=(Token)match(input,36,FOLLOW_36_in_delim398); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_36.add(char_literal9);
+                    char_literal9=(Token)match(input,32,FOLLOW_32_in_delim410); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_32.add(char_literal9);
 
-                    // src/antlr/Vitry.g:82:11: ( inline[rs] )?
+                    // src/antlr/Vitry.g:89:11: ( inline[rs] )?
                     int alt3=2;
                     int LA3_0 = input.LA(1);
 
-                    if ( ((LA3_0>=Op && LA3_0<=String)||LA3_0==36||LA3_0==38||LA3_0==40||(LA3_0>=42 && LA3_0<=47)) ) {
+                    if ( ((LA3_0>=Op && LA3_0<=String)||LA3_0==32||LA3_0==34||LA3_0==36||(LA3_0>=38 && LA3_0<=43)) ) {
                         alt3=1;
                     }
                     switch (alt3) {
                         case 1 :
-                            // src/antlr/Vitry.g:82:11: inline[rs]
+                            // src/antlr/Vitry.g:89:11: inline[rs]
                             {
-                            pushFollow(FOLLOW_inline_in_delim400);
+                            pushFollow(FOLLOW_inline_in_delim412);
                             inline10=inline(rs);
 
                             state._fsp--;
@@ -459,8 +455,8 @@ public class VitryParser extends Parser {
 
                     }
 
-                    char_literal11=(Token)match(input,37,FOLLOW_37_in_delim404); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_37.add(char_literal11);
+                    char_literal11=(Token)match(input,33,FOLLOW_33_in_delim416); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_33.add(char_literal11);
 
 
 
@@ -476,14 +472,14 @@ public class VitryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 82:33: -> ^( Par ( inline )? )
+                    // 89:28: -> ^( Par ( inline )? )
                     {
-                        // src/antlr/Vitry.g:82:36: ^( Par ( inline )? )
+                        // src/antlr/Vitry.g:89:31: ^( Par ( inline )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(Par, "Par"), root_1);
 
-                        // src/antlr/Vitry.g:82:42: ( inline )?
+                        // src/antlr/Vitry.g:89:37: ( inline )?
                         if ( stream_inline.hasNext() ) {
                             adaptor.addChild(root_1, stream_inline.nextTree());
 
@@ -499,23 +495,23 @@ public class VitryParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // src/antlr/Vitry.g:83:7: '[' ( inline[rs] )? ']'
+                    // src/antlr/Vitry.g:90:7: '[' ( inline[rs] )? ']'
                     {
-                    char_literal12=(Token)match(input,38,FOLLOW_38_in_delim427); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_38.add(char_literal12);
+                    char_literal12=(Token)match(input,34,FOLLOW_34_in_delim434); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_34.add(char_literal12);
 
-                    // src/antlr/Vitry.g:83:11: ( inline[rs] )?
+                    // src/antlr/Vitry.g:90:11: ( inline[rs] )?
                     int alt4=2;
                     int LA4_0 = input.LA(1);
 
-                    if ( ((LA4_0>=Op && LA4_0<=String)||LA4_0==36||LA4_0==38||LA4_0==40||(LA4_0>=42 && LA4_0<=47)) ) {
+                    if ( ((LA4_0>=Op && LA4_0<=String)||LA4_0==32||LA4_0==34||LA4_0==36||(LA4_0>=38 && LA4_0<=43)) ) {
                         alt4=1;
                     }
                     switch (alt4) {
                         case 1 :
-                            // src/antlr/Vitry.g:83:11: inline[rs]
+                            // src/antlr/Vitry.g:90:11: inline[rs]
                             {
-                            pushFollow(FOLLOW_inline_in_delim429);
+                            pushFollow(FOLLOW_inline_in_delim436);
                             inline13=inline(rs);
 
                             state._fsp--;
@@ -527,8 +523,8 @@ public class VitryParser extends Parser {
 
                     }
 
-                    char_literal14=(Token)match(input,39,FOLLOW_39_in_delim433); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_39.add(char_literal14);
+                    char_literal14=(Token)match(input,35,FOLLOW_35_in_delim440); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_35.add(char_literal14);
 
 
 
@@ -544,14 +540,14 @@ public class VitryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 83:33: -> ^( Bra ( inline )? )
+                    // 90:28: -> ^( Bra ( inline )? )
                     {
-                        // src/antlr/Vitry.g:83:36: ^( Bra ( inline )? )
+                        // src/antlr/Vitry.g:90:31: ^( Bra ( inline )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(Bra, "Bra"), root_1);
 
-                        // src/antlr/Vitry.g:83:42: ( inline )?
+                        // src/antlr/Vitry.g:90:37: ( inline )?
                         if ( stream_inline.hasNext() ) {
                             adaptor.addChild(root_1, stream_inline.nextTree());
 
@@ -567,23 +563,23 @@ public class VitryParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // src/antlr/Vitry.g:84:7: '{' ( inline[rs] )? '}'
+                    // src/antlr/Vitry.g:91:7: '{' ( inline[rs] )? '}'
                     {
-                    char_literal15=(Token)match(input,40,FOLLOW_40_in_delim456); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_40.add(char_literal15);
+                    char_literal15=(Token)match(input,36,FOLLOW_36_in_delim458); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_36.add(char_literal15);
 
-                    // src/antlr/Vitry.g:84:11: ( inline[rs] )?
+                    // src/antlr/Vitry.g:91:11: ( inline[rs] )?
                     int alt5=2;
                     int LA5_0 = input.LA(1);
 
-                    if ( ((LA5_0>=Op && LA5_0<=String)||LA5_0==36||LA5_0==38||LA5_0==40||(LA5_0>=42 && LA5_0<=47)) ) {
+                    if ( ((LA5_0>=Op && LA5_0<=String)||LA5_0==32||LA5_0==34||LA5_0==36||(LA5_0>=38 && LA5_0<=43)) ) {
                         alt5=1;
                     }
                     switch (alt5) {
                         case 1 :
-                            // src/antlr/Vitry.g:84:11: inline[rs]
+                            // src/antlr/Vitry.g:91:11: inline[rs]
                             {
-                            pushFollow(FOLLOW_inline_in_delim458);
+                            pushFollow(FOLLOW_inline_in_delim460);
                             inline16=inline(rs);
 
                             state._fsp--;
@@ -595,8 +591,8 @@ public class VitryParser extends Parser {
 
                     }
 
-                    char_literal17=(Token)match(input,41,FOLLOW_41_in_delim462); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_41.add(char_literal17);
+                    char_literal17=(Token)match(input,37,FOLLOW_37_in_delim464); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_37.add(char_literal17);
 
 
 
@@ -612,14 +608,14 @@ public class VitryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 84:33: -> ^( Ang ( inline )? )
+                    // 91:28: -> ^( Ang ( inline )? )
                     {
-                        // src/antlr/Vitry.g:84:36: ^( Ang ( inline )? )
+                        // src/antlr/Vitry.g:91:31: ^( Ang ( inline )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(Ang, "Ang"), root_1);
 
-                        // src/antlr/Vitry.g:84:42: ( inline )?
+                        // src/antlr/Vitry.g:91:37: ( inline )?
                         if ( stream_inline.hasNext() ) {
                             adaptor.addChild(root_1, stream_inline.nextTree());
 
@@ -635,12 +631,12 @@ public class VitryParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // src/antlr/Vitry.g:85:7: '`' Op
+                    // src/antlr/Vitry.g:92:7: '`' Op
                     {
-                    char_literal18=(Token)match(input,42,FOLLOW_42_in_delim485); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_42.add(char_literal18);
+                    char_literal18=(Token)match(input,38,FOLLOW_38_in_delim482); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_38.add(char_literal18);
 
-                    Op19=(Token)match(input,Op,FOLLOW_Op_in_delim487); if (state.failed) return retval; 
+                    Op19=(Token)match(input,Op,FOLLOW_Op_in_delim484); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_Op.add(Op19);
 
 
@@ -657,9 +653,9 @@ public class VitryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 85:33: -> ^( Quote Op )
+                    // 92:28: -> ^( Quote Op )
                     {
-                        // src/antlr/Vitry.g:85:36: ^( Quote Op )
+                        // src/antlr/Vitry.g:92:31: ^( Quote Op )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(Quote, "Quote"), root_1);
@@ -675,12 +671,12 @@ public class VitryParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // src/antlr/Vitry.g:86:7: '`' delim[rs]
+                    // src/antlr/Vitry.g:93:7: '`' delim[rs]
                     {
-                    char_literal20=(Token)match(input,42,FOLLOW_42_in_delim522); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_42.add(char_literal20);
+                    char_literal20=(Token)match(input,38,FOLLOW_38_in_delim514); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_38.add(char_literal20);
 
-                    pushFollow(FOLLOW_delim_in_delim524);
+                    pushFollow(FOLLOW_delim_in_delim516);
                     delim21=delim(rs);
 
                     state._fsp--;
@@ -700,9 +696,9 @@ public class VitryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 86:33: -> ^( Quote delim )
+                    // 93:28: -> ^( Quote delim )
                     {
-                        // src/antlr/Vitry.g:86:36: ^( Quote delim )
+                        // src/antlr/Vitry.g:93:31: ^( Quote delim )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(Quote, "Quote"), root_1);
@@ -718,11 +714,11 @@ public class VitryParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // src/antlr/Vitry.g:87:7: Symbol
+                    // src/antlr/Vitry.g:94:7: Symbol
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    Symbol22=(Token)match(input,Symbol,FOLLOW_Symbol_in_delim553); if (state.failed) return retval;
+                    Symbol22=(Token)match(input,Symbol,FOLLOW_Symbol_in_delim540); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     Symbol22_tree = (Object)adaptor.create(Symbol22);
                     adaptor.addChild(root_0, Symbol22_tree);
@@ -731,11 +727,11 @@ public class VitryParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // src/antlr/Vitry.g:88:7: Natural
+                    // src/antlr/Vitry.g:95:7: Natural
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    Natural23=(Token)match(input,Natural,FOLLOW_Natural_in_delim561); if (state.failed) return retval;
+                    Natural23=(Token)match(input,Natural,FOLLOW_Natural_in_delim548); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     Natural23_tree = (Object)adaptor.create(Natural23);
                     adaptor.addChild(root_0, Natural23_tree);
@@ -744,11 +740,11 @@ public class VitryParser extends Parser {
                     }
                     break;
                 case 8 :
-                    // src/antlr/Vitry.g:89:7: Float
+                    // src/antlr/Vitry.g:96:7: Float
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    Float24=(Token)match(input,Float,FOLLOW_Float_in_delim569); if (state.failed) return retval;
+                    Float24=(Token)match(input,Float,FOLLOW_Float_in_delim556); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     Float24_tree = (Object)adaptor.create(Float24);
                     adaptor.addChild(root_0, Float24_tree);
@@ -757,11 +753,11 @@ public class VitryParser extends Parser {
                     }
                     break;
                 case 9 :
-                    // src/antlr/Vitry.g:90:7: Complex
+                    // src/antlr/Vitry.g:97:7: Complex
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    Complex25=(Token)match(input,Complex,FOLLOW_Complex_in_delim577); if (state.failed) return retval;
+                    Complex25=(Token)match(input,Complex,FOLLOW_Complex_in_delim564); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     Complex25_tree = (Object)adaptor.create(Complex25);
                     adaptor.addChild(root_0, Complex25_tree);
@@ -770,11 +766,11 @@ public class VitryParser extends Parser {
                     }
                     break;
                 case 10 :
-                    // src/antlr/Vitry.g:91:7: String
+                    // src/antlr/Vitry.g:98:7: String
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    String26=(Token)match(input,String,FOLLOW_String_in_delim585); if (state.failed) return retval;
+                    String26=(Token)match(input,String,FOLLOW_String_in_delim572); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     String26_tree = (Object)adaptor.create(String26);
                     adaptor.addChild(root_0, String26_tree);
@@ -811,7 +807,7 @@ public class VitryParser extends Parser {
     };
 
     // $ANTLR start "inline"
-    // src/antlr/Vitry.g:99:1: inline[boolean rs] : ({...}? inlineRight | ( Op ( ')' | ']' | '}' ) )=> Op | ( Op apply )+ -> ^( Ops ( ^( Op apply ) )+ ) | ( apply Op )=>e= apply ( Op f+= apply )+ -> ^( Ops $e ( ^( Op $f) )+ ) | apply );
+    // src/antlr/Vitry.g:106:1: inline[boolean rs] : ({...}? inlineRight | ( Op ( ')' | ']' | '}' ) )=> Op | ( Op apply )+ -> ^( Ops ( ^( Op apply ) )+ ) | ( apply Op )=>e= apply ( Op f+= apply )+ -> ^( Ops $e ( ^( Op $f) )+ ) | apply );
     public final VitryParser.inline_return inline(boolean rs) throws RecognitionException {
         VitryParser.inline_return retval = new VitryParser.inline_return();
         retval.start = input.LT(1);
@@ -838,12 +834,12 @@ public class VitryParser extends Parser {
         RewriteRuleSubtreeStream stream_apply=new RewriteRuleSubtreeStream(adaptor,"rule apply");
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 4) ) { return retval; }
-            // src/antlr/Vitry.g:100:5: ({...}? inlineRight | ( Op ( ')' | ']' | '}' ) )=> Op | ( Op apply )+ -> ^( Ops ( ^( Op apply ) )+ ) | ( apply Op )=>e= apply ( Op f+= apply )+ -> ^( Ops $e ( ^( Op $f) )+ ) | apply )
+            // src/antlr/Vitry.g:107:5: ({...}? inlineRight | ( Op ( ')' | ']' | '}' ) )=> Op | ( Op apply )+ -> ^( Ops ( ^( Op apply ) )+ ) | ( apply Op )=>e= apply ( Op f+= apply )+ -> ^( Ops $e ( ^( Op $f) )+ ) | apply )
             int alt9=5;
             alt9 = dfa9.predict(input);
             switch (alt9) {
                 case 1 :
-                    // src/antlr/Vitry.g:100:7: {...}? inlineRight
+                    // src/antlr/Vitry.g:107:7: {...}? inlineRight
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -851,7 +847,7 @@ public class VitryParser extends Parser {
                         if (state.backtracking>0) {state.failed=true; return retval;}
                         throw new FailedPredicateException(input, "inline", "$rs");
                     }
-                    pushFollow(FOLLOW_inlineRight_in_inline608);
+                    pushFollow(FOLLOW_inlineRight_in_inline595);
                     inlineRight27=inlineRight();
 
                     state._fsp--;
@@ -861,11 +857,11 @@ public class VitryParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // src/antlr/Vitry.g:101:7: ( Op ( ')' | ']' | '}' ) )=> Op
+                    // src/antlr/Vitry.g:108:7: ( Op ( ')' | ']' | '}' ) )=> Op
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    Op28=(Token)match(input,Op,FOLLOW_Op_in_inline634); if (state.failed) return retval;
+                    Op28=(Token)match(input,Op,FOLLOW_Op_in_inline621); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     Op28_tree = (Object)adaptor.create(Op28);
                     adaptor.addChild(root_0, Op28_tree);
@@ -874,9 +870,9 @@ public class VitryParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // src/antlr/Vitry.g:102:7: ( Op apply )+
+                    // src/antlr/Vitry.g:109:7: ( Op apply )+
                     {
-                    // src/antlr/Vitry.g:102:7: ( Op apply )+
+                    // src/antlr/Vitry.g:109:7: ( Op apply )+
                     int cnt7=0;
                     loop7:
                     do {
@@ -890,12 +886,12 @@ public class VitryParser extends Parser {
 
                         switch (alt7) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:102:8: Op apply
+                    	    // src/antlr/Vitry.g:109:8: Op apply
                     	    {
-                    	    Op29=(Token)match(input,Op,FOLLOW_Op_in_inline643); if (state.failed) return retval; 
+                    	    Op29=(Token)match(input,Op,FOLLOW_Op_in_inline630); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_Op.add(Op29);
 
-                    	    pushFollow(FOLLOW_apply_in_inline645);
+                    	    pushFollow(FOLLOW_apply_in_inline632);
                     	    apply30=apply();
 
                     	    state._fsp--;
@@ -929,9 +925,9 @@ public class VitryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 102:57: -> ^( Ops ( ^( Op apply ) )+ )
+                    // 109:46: -> ^( Ops ( ^( Op apply ) )+ )
                     {
-                        // src/antlr/Vitry.g:102:60: ^( Ops ( ^( Op apply ) )+ )
+                        // src/antlr/Vitry.g:109:49: ^( Ops ( ^( Op apply ) )+ )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(Ops, "Ops"), root_1);
@@ -940,7 +936,7 @@ public class VitryParser extends Parser {
                             throw new RewriteEarlyExitException();
                         }
                         while ( stream_apply.hasNext()||stream_Op.hasNext() ) {
-                            // src/antlr/Vitry.g:102:66: ^( Op apply )
+                            // src/antlr/Vitry.g:109:55: ^( Op apply )
                             {
                             Object root_2 = (Object)adaptor.nil();
                             root_2 = (Object)adaptor.becomeRoot(stream_Op.nextNode(), root_2);
@@ -963,15 +959,15 @@ public class VitryParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // src/antlr/Vitry.g:103:7: ( apply Op )=>e= apply ( Op f+= apply )+
+                    // src/antlr/Vitry.g:110:7: ( apply Op )=>e= apply ( Op f+= apply )+
                     {
-                    pushFollow(FOLLOW_apply_in_inline716);
+                    pushFollow(FOLLOW_apply_in_inline692);
                     e=apply();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_apply.add(e.getTree());
-                    // src/antlr/Vitry.g:103:29: ( Op f+= apply )+
+                    // src/antlr/Vitry.g:110:29: ( Op f+= apply )+
                     int cnt8=0;
                     loop8:
                     do {
@@ -985,12 +981,12 @@ public class VitryParser extends Parser {
 
                         switch (alt8) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:103:30: Op f+= apply
+                    	    // src/antlr/Vitry.g:110:30: Op f+= apply
                     	    {
-                    	    Op31=(Token)match(input,Op,FOLLOW_Op_in_inline719); if (state.failed) return retval; 
+                    	    Op31=(Token)match(input,Op,FOLLOW_Op_in_inline695); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_Op.add(Op31);
 
-                    	    pushFollow(FOLLOW_apply_in_inline723);
+                    	    pushFollow(FOLLOW_apply_in_inline699);
                     	    f=apply();
 
                     	    state._fsp--;
@@ -1028,9 +1024,9 @@ public class VitryParser extends Parser {
                     RewriteRuleSubtreeStream stream_e=new RewriteRuleSubtreeStream(adaptor,"rule e",e!=null?e.tree:null);
                     RewriteRuleSubtreeStream stream_f=new RewriteRuleSubtreeStream(adaptor,"token f",list_f);
                     root_0 = (Object)adaptor.nil();
-                    // 103:57: -> ^( Ops $e ( ^( Op $f) )+ )
+                    // 110:46: -> ^( Ops $e ( ^( Op $f) )+ )
                     {
-                        // src/antlr/Vitry.g:103:60: ^( Ops $e ( ^( Op $f) )+ )
+                        // src/antlr/Vitry.g:110:49: ^( Ops $e ( ^( Op $f) )+ )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(Ops, "Ops"), root_1);
@@ -1040,7 +1036,7 @@ public class VitryParser extends Parser {
                             throw new RewriteEarlyExitException();
                         }
                         while ( stream_Op.hasNext()||stream_f.hasNext() ) {
-                            // src/antlr/Vitry.g:103:69: ^( Op $f)
+                            // src/antlr/Vitry.g:110:58: ^( Op $f)
                             {
                             Object root_2 = (Object)adaptor.nil();
                             root_2 = (Object)adaptor.becomeRoot(stream_Op.nextNode(), root_2);
@@ -1063,11 +1059,11 @@ public class VitryParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // src/antlr/Vitry.g:104:7: apply
+                    // src/antlr/Vitry.g:111:7: apply
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_apply_in_inline765);
+                    pushFollow(FOLLOW_apply_in_inline730);
                     apply32=apply();
 
                     state._fsp--;
@@ -1105,7 +1101,7 @@ public class VitryParser extends Parser {
     };
 
     // $ANTLR start "inlineRight"
-    // src/antlr/Vitry.g:113:1: inlineRight : ( 'fn' '(' ( left )* ')' inline[true] -> ^( Fn ( left )* inline ) | 'fn' '[' ( left )* ']' inline[true] -> ^( Fn ( left )* inline ) | 'let' '(' ( assign )* ')' inline[true] -> ^( Let ( assign )* inline ) | 'let' '[' ( assign )* ']' inline[true] -> ^( Let ( assign )* inline ) | 'do' '(' ( assign )* ')' ( expr )* -> ^( Do ( assign )* ( expr )* ) | 'do' '[' ( assign )* ']' ( expr )* -> ^( Do ( assign )* ( expr )* ) | 'match' v= expr '(' (c+= left e+= expr )* ')' -> ^( Match $v ( ^( $c $e) )* ) | 'if' expr expr ( 'else' )? inline[true] -> ^( If expr expr inline ) );
+    // src/antlr/Vitry.g:120:1: inlineRight : ( 'fn' '(' ( left )* ')' inline[true] -> ^( Fn ( left )* inline ) | 'fn' '[' ( left )* ']' inline[true] -> ^( Fn ( left )* inline ) | 'let' '(' ( assign )* ')' inline[true] -> ^( Let ( assign )* inline ) | 'let' '[' ( assign )* ']' inline[true] -> ^( Let ( assign )* inline ) | 'do' '(' ( assign )* ')' ( expr )* -> ^( Do ( assign )* ( expr )* ) | 'do' '[' ( assign )* ']' ( expr )* -> ^( Do ( assign )* ( expr )* ) | 'match' v= expr '(' (c+= left e+= expr )* ')' -> ^( Match $v ( ^( $c $e) )* ) | 'if' expr expr ( 'else' )? inline[true] -> ^( If expr expr inline ) );
     public final VitryParser.inlineRight_return inlineRight() throws RecognitionException {
         VitryParser.inlineRight_return retval = new VitryParser.inlineRight_return();
         retval.start = input.LT(1);
@@ -1194,51 +1190,51 @@ public class VitryParser extends Parser {
         Object char_literal65_tree=null;
         Object string_literal66_tree=null;
         Object string_literal69_tree=null;
-        RewriteRuleTokenStream stream_48=new RewriteRuleTokenStream(adaptor,"token 48");
-        RewriteRuleTokenStream stream_45=new RewriteRuleTokenStream(adaptor,"token 45");
         RewriteRuleTokenStream stream_43=new RewriteRuleTokenStream(adaptor,"token 43");
         RewriteRuleTokenStream stream_44=new RewriteRuleTokenStream(adaptor,"token 44");
-        RewriteRuleTokenStream stream_47=new RewriteRuleTokenStream(adaptor,"token 47");
-        RewriteRuleTokenStream stream_46=new RewriteRuleTokenStream(adaptor,"token 46");
-        RewriteRuleTokenStream stream_36=new RewriteRuleTokenStream(adaptor,"token 36");
+        RewriteRuleTokenStream stream_42=new RewriteRuleTokenStream(adaptor,"token 42");
+        RewriteRuleTokenStream stream_41=new RewriteRuleTokenStream(adaptor,"token 41");
+        RewriteRuleTokenStream stream_32=new RewriteRuleTokenStream(adaptor,"token 32");
+        RewriteRuleTokenStream stream_40=new RewriteRuleTokenStream(adaptor,"token 40");
+        RewriteRuleTokenStream stream_35=new RewriteRuleTokenStream(adaptor,"token 35");
+        RewriteRuleTokenStream stream_33=new RewriteRuleTokenStream(adaptor,"token 33");
+        RewriteRuleTokenStream stream_34=new RewriteRuleTokenStream(adaptor,"token 34");
         RewriteRuleTokenStream stream_39=new RewriteRuleTokenStream(adaptor,"token 39");
-        RewriteRuleTokenStream stream_37=new RewriteRuleTokenStream(adaptor,"token 37");
-        RewriteRuleTokenStream stream_38=new RewriteRuleTokenStream(adaptor,"token 38");
         RewriteRuleSubtreeStream stream_assign=new RewriteRuleSubtreeStream(adaptor,"rule assign");
         RewriteRuleSubtreeStream stream_inline=new RewriteRuleSubtreeStream(adaptor,"rule inline");
         RewriteRuleSubtreeStream stream_expr=new RewriteRuleSubtreeStream(adaptor,"rule expr");
         RewriteRuleSubtreeStream stream_left=new RewriteRuleSubtreeStream(adaptor,"rule left");
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 5) ) { return retval; }
-            // src/antlr/Vitry.g:114:5: ( 'fn' '(' ( left )* ')' inline[true] -> ^( Fn ( left )* inline ) | 'fn' '[' ( left )* ']' inline[true] -> ^( Fn ( left )* inline ) | 'let' '(' ( assign )* ')' inline[true] -> ^( Let ( assign )* inline ) | 'let' '[' ( assign )* ']' inline[true] -> ^( Let ( assign )* inline ) | 'do' '(' ( assign )* ')' ( expr )* -> ^( Do ( assign )* ( expr )* ) | 'do' '[' ( assign )* ']' ( expr )* -> ^( Do ( assign )* ( expr )* ) | 'match' v= expr '(' (c+= left e+= expr )* ')' -> ^( Match $v ( ^( $c $e) )* ) | 'if' expr expr ( 'else' )? inline[true] -> ^( If expr expr inline ) )
+            // src/antlr/Vitry.g:121:5: ( 'fn' '(' ( left )* ')' inline[true] -> ^( Fn ( left )* inline ) | 'fn' '[' ( left )* ']' inline[true] -> ^( Fn ( left )* inline ) | 'let' '(' ( assign )* ')' inline[true] -> ^( Let ( assign )* inline ) | 'let' '[' ( assign )* ']' inline[true] -> ^( Let ( assign )* inline ) | 'do' '(' ( assign )* ')' ( expr )* -> ^( Do ( assign )* ( expr )* ) | 'do' '[' ( assign )* ']' ( expr )* -> ^( Do ( assign )* ( expr )* ) | 'match' v= expr '(' (c+= left e+= expr )* ')' -> ^( Match $v ( ^( $c $e) )* ) | 'if' expr expr ( 'else' )? inline[true] -> ^( If expr expr inline ) )
             int alt20=8;
             alt20 = dfa20.predict(input);
             switch (alt20) {
                 case 1 :
-                    // src/antlr/Vitry.g:114:7: 'fn' '(' ( left )* ')' inline[true]
+                    // src/antlr/Vitry.g:121:7: 'fn' '(' ( left )* ')' inline[true]
                     {
-                    string_literal33=(Token)match(input,43,FOLLOW_43_in_inlineRight806); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_43.add(string_literal33);
+                    string_literal33=(Token)match(input,39,FOLLOW_39_in_inlineRight771); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_39.add(string_literal33);
 
-                    char_literal34=(Token)match(input,36,FOLLOW_36_in_inlineRight810); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_36.add(char_literal34);
+                    char_literal34=(Token)match(input,32,FOLLOW_32_in_inlineRight775); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_32.add(char_literal34);
 
-                    // src/antlr/Vitry.g:114:18: ( left )*
+                    // src/antlr/Vitry.g:121:18: ( left )*
                     loop10:
                     do {
                         int alt10=2;
                         int LA10_0 = input.LA(1);
 
-                        if ( ((LA10_0>=Symbol && LA10_0<=String)||LA10_0==36||LA10_0==38||LA10_0==40||LA10_0==42) ) {
+                        if ( ((LA10_0>=Symbol && LA10_0<=String)||LA10_0==32||LA10_0==34||LA10_0==36||LA10_0==38) ) {
                             alt10=1;
                         }
 
 
                         switch (alt10) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:114:18: left
+                    	    // src/antlr/Vitry.g:121:18: left
                     	    {
-                    	    pushFollow(FOLLOW_left_in_inlineRight812);
+                    	    pushFollow(FOLLOW_left_in_inlineRight777);
                     	    left35=left();
 
                     	    state._fsp--;
@@ -1253,10 +1249,10 @@ public class VitryParser extends Parser {
                         }
                     } while (true);
 
-                    char_literal36=(Token)match(input,37,FOLLOW_37_in_inlineRight817); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_37.add(char_literal36);
+                    char_literal36=(Token)match(input,33,FOLLOW_33_in_inlineRight782); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_33.add(char_literal36);
 
-                    pushFollow(FOLLOW_inline_in_inlineRight819);
+                    pushFollow(FOLLOW_inline_in_inlineRight784);
                     inline37=inline(true);
 
                     state._fsp--;
@@ -1276,14 +1272,14 @@ public class VitryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 114:56: -> ^( Fn ( left )* inline )
+                    // 121:50: -> ^( Fn ( left )* inline )
                     {
-                        // src/antlr/Vitry.g:114:59: ^( Fn ( left )* inline )
+                        // src/antlr/Vitry.g:121:53: ^( Fn ( left )* inline )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(Fn, "Fn"), root_1);
 
-                        // src/antlr/Vitry.g:114:64: ( left )*
+                        // src/antlr/Vitry.g:121:58: ( left )*
                         while ( stream_left.hasNext() ) {
                             adaptor.addChild(root_1, stream_left.nextTree());
 
@@ -1300,30 +1296,30 @@ public class VitryParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // src/antlr/Vitry.g:115:7: 'fn' '[' ( left )* ']' inline[true]
+                    // src/antlr/Vitry.g:122:7: 'fn' '[' ( left )* ']' inline[true]
                     {
-                    string_literal38=(Token)match(input,43,FOLLOW_43_in_inlineRight852); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_43.add(string_literal38);
+                    string_literal38=(Token)match(input,39,FOLLOW_39_in_inlineRight811); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_39.add(string_literal38);
 
-                    char_literal39=(Token)match(input,38,FOLLOW_38_in_inlineRight856); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_38.add(char_literal39);
+                    char_literal39=(Token)match(input,34,FOLLOW_34_in_inlineRight815); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_34.add(char_literal39);
 
-                    // src/antlr/Vitry.g:115:18: ( left )*
+                    // src/antlr/Vitry.g:122:18: ( left )*
                     loop11:
                     do {
                         int alt11=2;
                         int LA11_0 = input.LA(1);
 
-                        if ( ((LA11_0>=Symbol && LA11_0<=String)||LA11_0==36||LA11_0==38||LA11_0==40||LA11_0==42) ) {
+                        if ( ((LA11_0>=Symbol && LA11_0<=String)||LA11_0==32||LA11_0==34||LA11_0==36||LA11_0==38) ) {
                             alt11=1;
                         }
 
 
                         switch (alt11) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:115:18: left
+                    	    // src/antlr/Vitry.g:122:18: left
                     	    {
-                    	    pushFollow(FOLLOW_left_in_inlineRight858);
+                    	    pushFollow(FOLLOW_left_in_inlineRight817);
                     	    left40=left();
 
                     	    state._fsp--;
@@ -1338,10 +1334,10 @@ public class VitryParser extends Parser {
                         }
                     } while (true);
 
-                    char_literal41=(Token)match(input,39,FOLLOW_39_in_inlineRight863); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_39.add(char_literal41);
+                    char_literal41=(Token)match(input,35,FOLLOW_35_in_inlineRight822); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_35.add(char_literal41);
 
-                    pushFollow(FOLLOW_inline_in_inlineRight865);
+                    pushFollow(FOLLOW_inline_in_inlineRight824);
                     inline42=inline(true);
 
                     state._fsp--;
@@ -1361,14 +1357,14 @@ public class VitryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 115:56: -> ^( Fn ( left )* inline )
+                    // 122:50: -> ^( Fn ( left )* inline )
                     {
-                        // src/antlr/Vitry.g:115:59: ^( Fn ( left )* inline )
+                        // src/antlr/Vitry.g:122:53: ^( Fn ( left )* inline )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(Fn, "Fn"), root_1);
 
-                        // src/antlr/Vitry.g:115:64: ( left )*
+                        // src/antlr/Vitry.g:122:58: ( left )*
                         while ( stream_left.hasNext() ) {
                             adaptor.addChild(root_1, stream_left.nextTree());
 
@@ -1385,30 +1381,30 @@ public class VitryParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // src/antlr/Vitry.g:116:7: 'let' '(' ( assign )* ')' inline[true]
+                    // src/antlr/Vitry.g:123:7: 'let' '(' ( assign )* ')' inline[true]
                     {
-                    string_literal43=(Token)match(input,44,FOLLOW_44_in_inlineRight898); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_44.add(string_literal43);
+                    string_literal43=(Token)match(input,40,FOLLOW_40_in_inlineRight851); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_40.add(string_literal43);
 
-                    char_literal44=(Token)match(input,36,FOLLOW_36_in_inlineRight901); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_36.add(char_literal44);
+                    char_literal44=(Token)match(input,32,FOLLOW_32_in_inlineRight854); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_32.add(char_literal44);
 
-                    // src/antlr/Vitry.g:116:18: ( assign )*
+                    // src/antlr/Vitry.g:123:18: ( assign )*
                     loop12:
                     do {
                         int alt12=2;
                         int LA12_0 = input.LA(1);
 
-                        if ( ((LA12_0>=Symbol && LA12_0<=String)||LA12_0==36||LA12_0==38||LA12_0==40||LA12_0==42) ) {
+                        if ( ((LA12_0>=Symbol && LA12_0<=String)||LA12_0==32||LA12_0==34||LA12_0==36||LA12_0==38) ) {
                             alt12=1;
                         }
 
 
                         switch (alt12) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:116:18: assign
+                    	    // src/antlr/Vitry.g:123:18: assign
                     	    {
-                    	    pushFollow(FOLLOW_assign_in_inlineRight903);
+                    	    pushFollow(FOLLOW_assign_in_inlineRight856);
                     	    assign45=assign();
 
                     	    state._fsp--;
@@ -1423,10 +1419,10 @@ public class VitryParser extends Parser {
                         }
                     } while (true);
 
-                    char_literal46=(Token)match(input,37,FOLLOW_37_in_inlineRight906); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_37.add(char_literal46);
+                    char_literal46=(Token)match(input,33,FOLLOW_33_in_inlineRight859); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_33.add(char_literal46);
 
-                    pushFollow(FOLLOW_inline_in_inlineRight908);
+                    pushFollow(FOLLOW_inline_in_inlineRight861);
                     inline47=inline(true);
 
                     state._fsp--;
@@ -1446,14 +1442,14 @@ public class VitryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 116:56: -> ^( Let ( assign )* inline )
+                    // 123:50: -> ^( Let ( assign )* inline )
                     {
-                        // src/antlr/Vitry.g:116:59: ^( Let ( assign )* inline )
+                        // src/antlr/Vitry.g:123:53: ^( Let ( assign )* inline )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(Let, "Let"), root_1);
 
-                        // src/antlr/Vitry.g:116:65: ( assign )*
+                        // src/antlr/Vitry.g:123:59: ( assign )*
                         while ( stream_assign.hasNext() ) {
                             adaptor.addChild(root_1, stream_assign.nextTree());
 
@@ -1470,30 +1466,30 @@ public class VitryParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // src/antlr/Vitry.g:117:7: 'let' '[' ( assign )* ']' inline[true]
+                    // src/antlr/Vitry.g:124:7: 'let' '[' ( assign )* ']' inline[true]
                     {
-                    string_literal48=(Token)match(input,44,FOLLOW_44_in_inlineRight941); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_44.add(string_literal48);
+                    string_literal48=(Token)match(input,40,FOLLOW_40_in_inlineRight888); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_40.add(string_literal48);
 
-                    char_literal49=(Token)match(input,38,FOLLOW_38_in_inlineRight944); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_38.add(char_literal49);
+                    char_literal49=(Token)match(input,34,FOLLOW_34_in_inlineRight891); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_34.add(char_literal49);
 
-                    // src/antlr/Vitry.g:117:18: ( assign )*
+                    // src/antlr/Vitry.g:124:18: ( assign )*
                     loop13:
                     do {
                         int alt13=2;
                         int LA13_0 = input.LA(1);
 
-                        if ( ((LA13_0>=Symbol && LA13_0<=String)||LA13_0==36||LA13_0==38||LA13_0==40||LA13_0==42) ) {
+                        if ( ((LA13_0>=Symbol && LA13_0<=String)||LA13_0==32||LA13_0==34||LA13_0==36||LA13_0==38) ) {
                             alt13=1;
                         }
 
 
                         switch (alt13) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:117:18: assign
+                    	    // src/antlr/Vitry.g:124:18: assign
                     	    {
-                    	    pushFollow(FOLLOW_assign_in_inlineRight946);
+                    	    pushFollow(FOLLOW_assign_in_inlineRight893);
                     	    assign50=assign();
 
                     	    state._fsp--;
@@ -1508,10 +1504,10 @@ public class VitryParser extends Parser {
                         }
                     } while (true);
 
-                    char_literal51=(Token)match(input,39,FOLLOW_39_in_inlineRight949); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_39.add(char_literal51);
+                    char_literal51=(Token)match(input,35,FOLLOW_35_in_inlineRight896); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_35.add(char_literal51);
 
-                    pushFollow(FOLLOW_inline_in_inlineRight951);
+                    pushFollow(FOLLOW_inline_in_inlineRight898);
                     inline52=inline(true);
 
                     state._fsp--;
@@ -1531,14 +1527,14 @@ public class VitryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 117:56: -> ^( Let ( assign )* inline )
+                    // 124:50: -> ^( Let ( assign )* inline )
                     {
-                        // src/antlr/Vitry.g:117:59: ^( Let ( assign )* inline )
+                        // src/antlr/Vitry.g:124:53: ^( Let ( assign )* inline )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(Let, "Let"), root_1);
 
-                        // src/antlr/Vitry.g:117:65: ( assign )*
+                        // src/antlr/Vitry.g:124:59: ( assign )*
                         while ( stream_assign.hasNext() ) {
                             adaptor.addChild(root_1, stream_assign.nextTree());
 
@@ -1555,30 +1551,30 @@ public class VitryParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // src/antlr/Vitry.g:120:7: 'do' '(' ( assign )* ')' ( expr )*
+                    // src/antlr/Vitry.g:127:7: 'do' '(' ( assign )* ')' ( expr )*
                     {
-                    string_literal53=(Token)match(input,45,FOLLOW_45_in_inlineRight994); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_45.add(string_literal53);
+                    string_literal53=(Token)match(input,41,FOLLOW_41_in_inlineRight935); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_41.add(string_literal53);
 
-                    char_literal54=(Token)match(input,36,FOLLOW_36_in_inlineRight998); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_36.add(char_literal54);
+                    char_literal54=(Token)match(input,32,FOLLOW_32_in_inlineRight939); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_32.add(char_literal54);
 
-                    // src/antlr/Vitry.g:120:18: ( assign )*
+                    // src/antlr/Vitry.g:127:18: ( assign )*
                     loop14:
                     do {
                         int alt14=2;
                         int LA14_0 = input.LA(1);
 
-                        if ( ((LA14_0>=Symbol && LA14_0<=String)||LA14_0==36||LA14_0==38||LA14_0==40||LA14_0==42) ) {
+                        if ( ((LA14_0>=Symbol && LA14_0<=String)||LA14_0==32||LA14_0==34||LA14_0==36||LA14_0==38) ) {
                             alt14=1;
                         }
 
 
                         switch (alt14) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:120:18: assign
+                    	    // src/antlr/Vitry.g:127:18: assign
                     	    {
-                    	    pushFollow(FOLLOW_assign_in_inlineRight1000);
+                    	    pushFollow(FOLLOW_assign_in_inlineRight941);
                     	    assign55=assign();
 
                     	    state._fsp--;
@@ -1593,25 +1589,25 @@ public class VitryParser extends Parser {
                         }
                     } while (true);
 
-                    char_literal56=(Token)match(input,37,FOLLOW_37_in_inlineRight1003); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_37.add(char_literal56);
+                    char_literal56=(Token)match(input,33,FOLLOW_33_in_inlineRight944); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_33.add(char_literal56);
 
-                    // src/antlr/Vitry.g:120:30: ( expr )*
+                    // src/antlr/Vitry.g:127:30: ( expr )*
                     loop15:
                     do {
                         int alt15=2;
                         int LA15_0 = input.LA(1);
 
-                        if ( ((LA15_0>=Symbol && LA15_0<=String)||LA15_0==36||LA15_0==38||LA15_0==40||LA15_0==42) ) {
+                        if ( ((LA15_0>=Symbol && LA15_0<=String)||LA15_0==32||LA15_0==34||LA15_0==36||LA15_0==38) ) {
                             alt15=1;
                         }
 
 
                         switch (alt15) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:120:30: expr
+                    	    // src/antlr/Vitry.g:127:30: expr
                     	    {
-                    	    pushFollow(FOLLOW_expr_in_inlineRight1005);
+                    	    pushFollow(FOLLOW_expr_in_inlineRight946);
                     	    expr57=expr();
 
                     	    state._fsp--;
@@ -1640,20 +1636,20 @@ public class VitryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 120:56: -> ^( Do ( assign )* ( expr )* )
+                    // 127:50: -> ^( Do ( assign )* ( expr )* )
                     {
-                        // src/antlr/Vitry.g:120:59: ^( Do ( assign )* ( expr )* )
+                        // src/antlr/Vitry.g:127:53: ^( Do ( assign )* ( expr )* )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(Do, "Do"), root_1);
 
-                        // src/antlr/Vitry.g:120:64: ( assign )*
+                        // src/antlr/Vitry.g:127:58: ( assign )*
                         while ( stream_assign.hasNext() ) {
                             adaptor.addChild(root_1, stream_assign.nextTree());
 
                         }
                         stream_assign.reset();
-                        // src/antlr/Vitry.g:120:72: ( expr )*
+                        // src/antlr/Vitry.g:127:66: ( expr )*
                         while ( stream_expr.hasNext() ) {
                             adaptor.addChild(root_1, stream_expr.nextTree());
 
@@ -1669,30 +1665,30 @@ public class VitryParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // src/antlr/Vitry.g:121:7: 'do' '[' ( assign )* ']' ( expr )*
+                    // src/antlr/Vitry.g:128:7: 'do' '[' ( assign )* ']' ( expr )*
                     {
-                    string_literal58=(Token)match(input,45,FOLLOW_45_in_inlineRight1046); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_45.add(string_literal58);
+                    string_literal58=(Token)match(input,41,FOLLOW_41_in_inlineRight981); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_41.add(string_literal58);
 
-                    char_literal59=(Token)match(input,38,FOLLOW_38_in_inlineRight1050); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_38.add(char_literal59);
+                    char_literal59=(Token)match(input,34,FOLLOW_34_in_inlineRight985); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_34.add(char_literal59);
 
-                    // src/antlr/Vitry.g:121:18: ( assign )*
+                    // src/antlr/Vitry.g:128:18: ( assign )*
                     loop16:
                     do {
                         int alt16=2;
                         int LA16_0 = input.LA(1);
 
-                        if ( ((LA16_0>=Symbol && LA16_0<=String)||LA16_0==36||LA16_0==38||LA16_0==40||LA16_0==42) ) {
+                        if ( ((LA16_0>=Symbol && LA16_0<=String)||LA16_0==32||LA16_0==34||LA16_0==36||LA16_0==38) ) {
                             alt16=1;
                         }
 
 
                         switch (alt16) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:121:18: assign
+                    	    // src/antlr/Vitry.g:128:18: assign
                     	    {
-                    	    pushFollow(FOLLOW_assign_in_inlineRight1052);
+                    	    pushFollow(FOLLOW_assign_in_inlineRight987);
                     	    assign60=assign();
 
                     	    state._fsp--;
@@ -1707,25 +1703,25 @@ public class VitryParser extends Parser {
                         }
                     } while (true);
 
-                    char_literal61=(Token)match(input,39,FOLLOW_39_in_inlineRight1055); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_39.add(char_literal61);
+                    char_literal61=(Token)match(input,35,FOLLOW_35_in_inlineRight990); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_35.add(char_literal61);
 
-                    // src/antlr/Vitry.g:121:30: ( expr )*
+                    // src/antlr/Vitry.g:128:30: ( expr )*
                     loop17:
                     do {
                         int alt17=2;
                         int LA17_0 = input.LA(1);
 
-                        if ( ((LA17_0>=Symbol && LA17_0<=String)||LA17_0==36||LA17_0==38||LA17_0==40||LA17_0==42) ) {
+                        if ( ((LA17_0>=Symbol && LA17_0<=String)||LA17_0==32||LA17_0==34||LA17_0==36||LA17_0==38) ) {
                             alt17=1;
                         }
 
 
                         switch (alt17) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:121:30: expr
+                    	    // src/antlr/Vitry.g:128:30: expr
                     	    {
-                    	    pushFollow(FOLLOW_expr_in_inlineRight1057);
+                    	    pushFollow(FOLLOW_expr_in_inlineRight992);
                     	    expr62=expr();
 
                     	    state._fsp--;
@@ -1754,20 +1750,20 @@ public class VitryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 121:56: -> ^( Do ( assign )* ( expr )* )
+                    // 128:50: -> ^( Do ( assign )* ( expr )* )
                     {
-                        // src/antlr/Vitry.g:121:59: ^( Do ( assign )* ( expr )* )
+                        // src/antlr/Vitry.g:128:53: ^( Do ( assign )* ( expr )* )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(Do, "Do"), root_1);
 
-                        // src/antlr/Vitry.g:121:64: ( assign )*
+                        // src/antlr/Vitry.g:128:58: ( assign )*
                         while ( stream_assign.hasNext() ) {
                             adaptor.addChild(root_1, stream_assign.nextTree());
 
                         }
                         stream_assign.reset();
-                        // src/antlr/Vitry.g:121:72: ( expr )*
+                        // src/antlr/Vitry.g:128:66: ( expr )*
                         while ( stream_expr.hasNext() ) {
                             adaptor.addChild(root_1, stream_expr.nextTree());
 
@@ -1783,36 +1779,36 @@ public class VitryParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // src/antlr/Vitry.g:122:7: 'match' v= expr '(' (c+= left e+= expr )* ')'
+                    // src/antlr/Vitry.g:129:7: 'match' v= expr '(' (c+= left e+= expr )* ')'
                     {
-                    string_literal63=(Token)match(input,46,FOLLOW_46_in_inlineRight1098); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_46.add(string_literal63);
+                    string_literal63=(Token)match(input,42,FOLLOW_42_in_inlineRight1027); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_42.add(string_literal63);
 
-                    pushFollow(FOLLOW_expr_in_inlineRight1102);
+                    pushFollow(FOLLOW_expr_in_inlineRight1031);
                     v=expr();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_expr.add(v.getTree());
-                    char_literal64=(Token)match(input,36,FOLLOW_36_in_inlineRight1104); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_36.add(char_literal64);
+                    char_literal64=(Token)match(input,32,FOLLOW_32_in_inlineRight1033); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_32.add(char_literal64);
 
-                    // src/antlr/Vitry.g:122:26: (c+= left e+= expr )*
+                    // src/antlr/Vitry.g:129:26: (c+= left e+= expr )*
                     loop18:
                     do {
                         int alt18=2;
                         int LA18_0 = input.LA(1);
 
-                        if ( ((LA18_0>=Symbol && LA18_0<=String)||LA18_0==36||LA18_0==38||LA18_0==40||LA18_0==42) ) {
+                        if ( ((LA18_0>=Symbol && LA18_0<=String)||LA18_0==32||LA18_0==34||LA18_0==36||LA18_0==38) ) {
                             alt18=1;
                         }
 
 
                         switch (alt18) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:122:27: c+= left e+= expr
+                    	    // src/antlr/Vitry.g:129:27: c+= left e+= expr
                     	    {
-                    	    pushFollow(FOLLOW_left_in_inlineRight1109);
+                    	    pushFollow(FOLLOW_left_in_inlineRight1038);
                     	    c=left();
 
                     	    state._fsp--;
@@ -1821,7 +1817,7 @@ public class VitryParser extends Parser {
                     	    if (list_c==null) list_c=new ArrayList();
                     	    list_c.add(c.getTree());
 
-                    	    pushFollow(FOLLOW_expr_in_inlineRight1113);
+                    	    pushFollow(FOLLOW_expr_in_inlineRight1042);
                     	    e=expr();
 
                     	    state._fsp--;
@@ -1839,8 +1835,8 @@ public class VitryParser extends Parser {
                         }
                     } while (true);
 
-                    char_literal65=(Token)match(input,37,FOLLOW_37_in_inlineRight1117); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_37.add(char_literal65);
+                    char_literal65=(Token)match(input,33,FOLLOW_33_in_inlineRight1046); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_33.add(char_literal65);
 
 
 
@@ -1858,17 +1854,17 @@ public class VitryParser extends Parser {
                     RewriteRuleSubtreeStream stream_e=new RewriteRuleSubtreeStream(adaptor,"token e",list_e);
                     RewriteRuleSubtreeStream stream_c=new RewriteRuleSubtreeStream(adaptor,"token c",list_c);
                     root_0 = (Object)adaptor.nil();
-                    // 122:56: -> ^( Match $v ( ^( $c $e) )* )
+                    // 129:50: -> ^( Match $v ( ^( $c $e) )* )
                     {
-                        // src/antlr/Vitry.g:122:59: ^( Match $v ( ^( $c $e) )* )
+                        // src/antlr/Vitry.g:129:53: ^( Match $v ( ^( $c $e) )* )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(Match, "Match"), root_1);
 
                         adaptor.addChild(root_1, stream_v.nextTree());
-                        // src/antlr/Vitry.g:122:70: ( ^( $c $e) )*
+                        // src/antlr/Vitry.g:129:64: ( ^( $c $e) )*
                         while ( stream_c.hasNext()||stream_e.hasNext() ) {
-                            // src/antlr/Vitry.g:122:70: ^( $c $e)
+                            // src/antlr/Vitry.g:129:64: ^( $c $e)
                             {
                             Object root_2 = (Object)adaptor.nil();
                             root_2 = (Object)adaptor.becomeRoot(stream_c.nextNode(), root_2);
@@ -1891,36 +1887,36 @@ public class VitryParser extends Parser {
                     }
                     break;
                 case 8 :
-                    // src/antlr/Vitry.g:123:7: 'if' expr expr ( 'else' )? inline[true]
+                    // src/antlr/Vitry.g:130:7: 'if' expr expr ( 'else' )? inline[true]
                     {
-                    string_literal66=(Token)match(input,47,FOLLOW_47_in_inlineRight1154); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_47.add(string_literal66);
+                    string_literal66=(Token)match(input,43,FOLLOW_43_in_inlineRight1077); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_43.add(string_literal66);
 
-                    pushFollow(FOLLOW_expr_in_inlineRight1156);
+                    pushFollow(FOLLOW_expr_in_inlineRight1079);
                     expr67=expr();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_expr.add(expr67.getTree());
-                    pushFollow(FOLLOW_expr_in_inlineRight1158);
+                    pushFollow(FOLLOW_expr_in_inlineRight1081);
                     expr68=expr();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_expr.add(expr68.getTree());
-                    // src/antlr/Vitry.g:123:22: ( 'else' )?
+                    // src/antlr/Vitry.g:130:22: ( 'else' )?
                     int alt19=2;
                     int LA19_0 = input.LA(1);
 
-                    if ( (LA19_0==48) ) {
+                    if ( (LA19_0==44) ) {
                         alt19=1;
                     }
                     switch (alt19) {
                         case 1 :
-                            // src/antlr/Vitry.g:123:22: 'else'
+                            // src/antlr/Vitry.g:130:22: 'else'
                             {
-                            string_literal69=(Token)match(input,48,FOLLOW_48_in_inlineRight1160); if (state.failed) return retval; 
-                            if ( state.backtracking==0 ) stream_48.add(string_literal69);
+                            string_literal69=(Token)match(input,44,FOLLOW_44_in_inlineRight1083); if (state.failed) return retval; 
+                            if ( state.backtracking==0 ) stream_44.add(string_literal69);
 
 
                             }
@@ -1928,7 +1924,7 @@ public class VitryParser extends Parser {
 
                     }
 
-                    pushFollow(FOLLOW_inline_in_inlineRight1163);
+                    pushFollow(FOLLOW_inline_in_inlineRight1086);
                     inline70=inline(true);
 
                     state._fsp--;
@@ -1948,9 +1944,9 @@ public class VitryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 123:56: -> ^( If expr expr inline )
+                    // 130:50: -> ^( If expr expr inline )
                     {
-                        // src/antlr/Vitry.g:123:59: ^( If expr expr inline )
+                        // src/antlr/Vitry.g:130:53: ^( If expr expr inline )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(If, "If"), root_1);
@@ -1996,7 +1992,7 @@ public class VitryParser extends Parser {
     };
 
     // $ANTLR start "assign"
-    // src/antlr/Vitry.g:127:1: assign : left '=' expr -> ^( Assign left expr ) ;
+    // src/antlr/Vitry.g:134:1: assign : left '=' expr -> ^( Assign left expr ) ;
     public final VitryParser.assign_return assign() throws RecognitionException {
         VitryParser.assign_return retval = new VitryParser.assign_return();
         retval.start = input.LT(1);
@@ -2010,24 +2006,24 @@ public class VitryParser extends Parser {
 
 
         Object char_literal72_tree=null;
-        RewriteRuleTokenStream stream_49=new RewriteRuleTokenStream(adaptor,"token 49");
+        RewriteRuleTokenStream stream_45=new RewriteRuleTokenStream(adaptor,"token 45");
         RewriteRuleSubtreeStream stream_left=new RewriteRuleSubtreeStream(adaptor,"rule left");
         RewriteRuleSubtreeStream stream_expr=new RewriteRuleSubtreeStream(adaptor,"rule expr");
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 6) ) { return retval; }
-            // src/antlr/Vitry.g:128:5: ( left '=' expr -> ^( Assign left expr ) )
-            // src/antlr/Vitry.g:128:7: left '=' expr
+            // src/antlr/Vitry.g:135:5: ( left '=' expr -> ^( Assign left expr ) )
+            // src/antlr/Vitry.g:135:7: left '=' expr
             {
-            pushFollow(FOLLOW_left_in_assign1211);
+            pushFollow(FOLLOW_left_in_assign1128);
             left71=left();
 
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_left.add(left71.getTree());
-            char_literal72=(Token)match(input,49,FOLLOW_49_in_assign1213); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_49.add(char_literal72);
+            char_literal72=(Token)match(input,45,FOLLOW_45_in_assign1130); if (state.failed) return retval; 
+            if ( state.backtracking==0 ) stream_45.add(char_literal72);
 
-            pushFollow(FOLLOW_expr_in_assign1215);
+            pushFollow(FOLLOW_expr_in_assign1132);
             expr73=expr();
 
             state._fsp--;
@@ -2047,9 +2043,9 @@ public class VitryParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 128:52: -> ^( Assign left expr )
+            // 135:29: -> ^( Assign left expr )
             {
-                // src/antlr/Vitry.g:128:55: ^( Assign left expr )
+                // src/antlr/Vitry.g:135:32: ^( Assign left expr )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(Assign, "Assign"), root_1);
@@ -2092,7 +2088,7 @@ public class VitryParser extends Parser {
     };
 
     // $ANTLR start "apply"
-    // src/antlr/Vitry.g:132:1: apply : ( ( expr expr )=> ( expr )+ -> ^( Apply ( expr )+ ) | expr );
+    // src/antlr/Vitry.g:139:1: apply : ( ( expr expr )=> ( expr )+ -> ^( Apply ( expr )+ ) | expr );
     public final VitryParser.apply_return apply() throws RecognitionException {
         VitryParser.apply_return retval = new VitryParser.apply_return();
         retval.start = input.LT(1);
@@ -2107,30 +2103,30 @@ public class VitryParser extends Parser {
         RewriteRuleSubtreeStream stream_expr=new RewriteRuleSubtreeStream(adaptor,"rule expr");
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 7) ) { return retval; }
-            // src/antlr/Vitry.g:133:5: ( ( expr expr )=> ( expr )+ -> ^( Apply ( expr )+ ) | expr )
+            // src/antlr/Vitry.g:140:5: ( ( expr expr )=> ( expr )+ -> ^( Apply ( expr )+ ) | expr )
             int alt22=2;
             alt22 = dfa22.predict(input);
             switch (alt22) {
                 case 1 :
-                    // src/antlr/Vitry.g:133:7: ( expr expr )=> ( expr )+
+                    // src/antlr/Vitry.g:140:7: ( expr expr )=> ( expr )+
                     {
-                    // src/antlr/Vitry.g:133:22: ( expr )+
+                    // src/antlr/Vitry.g:140:22: ( expr )+
                     int cnt21=0;
                     loop21:
                     do {
                         int alt21=2;
                         int LA21_0 = input.LA(1);
 
-                        if ( ((LA21_0>=Symbol && LA21_0<=String)||LA21_0==36||LA21_0==38||LA21_0==40||LA21_0==42) ) {
+                        if ( ((LA21_0>=Symbol && LA21_0<=String)||LA21_0==32||LA21_0==34||LA21_0==36||LA21_0==38) ) {
                             alt21=1;
                         }
 
 
                         switch (alt21) {
                     	case 1 :
-                    	    // src/antlr/Vitry.g:133:22: expr
+                    	    // src/antlr/Vitry.g:140:22: expr
                     	    {
-                    	    pushFollow(FOLLOW_expr_in_apply1286);
+                    	    pushFollow(FOLLOW_expr_in_apply1180);
                     	    expr74=expr();
 
                     	    state._fsp--;
@@ -2164,9 +2160,9 @@ public class VitryParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 133:52: -> ^( Apply ( expr )+ )
+                    // 140:29: -> ^( Apply ( expr )+ )
                     {
-                        // src/antlr/Vitry.g:133:55: ^( Apply ( expr )+ )
+                        // src/antlr/Vitry.g:140:32: ^( Apply ( expr )+ )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(Apply, "Apply"), root_1);
@@ -2189,11 +2185,11 @@ public class VitryParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // src/antlr/Vitry.g:134:7: expr
+                    // src/antlr/Vitry.g:141:7: expr
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_expr_in_apply1328);
+                    pushFollow(FOLLOW_expr_in_apply1199);
                     expr75=expr();
 
                     state._fsp--;
@@ -2227,15 +2223,15 @@ public class VitryParser extends Parser {
 
     // $ANTLR start synpred1_Vitry
     public final void synpred1_Vitry_fragment() throws RecognitionException {   
-        // src/antlr/Vitry.g:65:7: ( delim[true] ':' )
-        // src/antlr/Vitry.g:65:8: delim[true] ':'
+        // src/antlr/Vitry.g:72:7: ( delim[true] ':' )
+        // src/antlr/Vitry.g:72:8: delim[true] ':'
         {
-        pushFollow(FOLLOW_delim_in_synpred1_Vitry241);
+        pushFollow(FOLLOW_delim_in_synpred1_Vitry256);
         delim(true);
 
         state._fsp--;
         if (state.failed) return ;
-        match(input,35,FOLLOW_35_in_synpred1_Vitry244); if (state.failed) return ;
+        match(input,31,FOLLOW_31_in_synpred1_Vitry259); if (state.failed) return ;
 
         }
     }
@@ -2243,15 +2239,15 @@ public class VitryParser extends Parser {
 
     // $ANTLR start synpred2_Vitry
     public final void synpred2_Vitry_fragment() throws RecognitionException {   
-        // src/antlr/Vitry.g:74:7: ( delim[false] ':' )
-        // src/antlr/Vitry.g:74:8: delim[false] ':'
+        // src/antlr/Vitry.g:81:7: ( delim[false] ':' )
+        // src/antlr/Vitry.g:81:8: delim[false] ':'
         {
-        pushFollow(FOLLOW_delim_in_synpred2_Vitry300);
+        pushFollow(FOLLOW_delim_in_synpred2_Vitry314);
         delim(false);
 
         state._fsp--;
         if (state.failed) return ;
-        match(input,35,FOLLOW_35_in_synpred2_Vitry303); if (state.failed) return ;
+        match(input,31,FOLLOW_31_in_synpred2_Vitry317); if (state.failed) return ;
 
         }
     }
@@ -2259,11 +2255,11 @@ public class VitryParser extends Parser {
 
     // $ANTLR start synpred3_Vitry
     public final void synpred3_Vitry_fragment() throws RecognitionException {   
-        // src/antlr/Vitry.g:101:7: ( Op ( ')' | ']' | '}' ) )
-        // src/antlr/Vitry.g:101:8: Op ( ')' | ']' | '}' )
+        // src/antlr/Vitry.g:108:7: ( Op ( ')' | ']' | '}' ) )
+        // src/antlr/Vitry.g:108:8: Op ( ')' | ']' | '}' )
         {
-        match(input,Op,FOLLOW_Op_in_synpred3_Vitry617); if (state.failed) return ;
-        if ( input.LA(1)==37||input.LA(1)==39||input.LA(1)==41 ) {
+        match(input,Op,FOLLOW_Op_in_synpred3_Vitry604); if (state.failed) return ;
+        if ( input.LA(1)==33||input.LA(1)==35||input.LA(1)==37 ) {
             input.consume();
             state.errorRecovery=false;state.failed=false;
         }
@@ -2280,15 +2276,15 @@ public class VitryParser extends Parser {
 
     // $ANTLR start synpred4_Vitry
     public final void synpred4_Vitry_fragment() throws RecognitionException {   
-        // src/antlr/Vitry.g:103:7: ( apply Op )
-        // src/antlr/Vitry.g:103:8: apply Op
+        // src/antlr/Vitry.g:110:7: ( apply Op )
+        // src/antlr/Vitry.g:110:8: apply Op
         {
-        pushFollow(FOLLOW_apply_in_synpred4_Vitry707);
+        pushFollow(FOLLOW_apply_in_synpred4_Vitry683);
         apply();
 
         state._fsp--;
         if (state.failed) return ;
-        match(input,Op,FOLLOW_Op_in_synpred4_Vitry709); if (state.failed) return ;
+        match(input,Op,FOLLOW_Op_in_synpred4_Vitry685); if (state.failed) return ;
 
         }
     }
@@ -2296,15 +2292,15 @@ public class VitryParser extends Parser {
 
     // $ANTLR start synpred5_Vitry
     public final void synpred5_Vitry_fragment() throws RecognitionException {   
-        // src/antlr/Vitry.g:133:7: ( expr expr )
-        // src/antlr/Vitry.g:133:8: expr expr
+        // src/antlr/Vitry.g:140:7: ( expr expr )
+        // src/antlr/Vitry.g:140:8: expr expr
         {
-        pushFollow(FOLLOW_expr_in_synpred5_Vitry1279);
+        pushFollow(FOLLOW_expr_in_synpred5_Vitry1173);
         expr();
 
         state._fsp--;
         if (state.failed) return ;
-        pushFollow(FOLLOW_expr_in_synpred5_Vitry1281);
+        pushFollow(FOLLOW_expr_in_synpred5_Vitry1175);
         expr();
 
         state._fsp--;
@@ -2399,9 +2395,9 @@ public class VitryParser extends Parser {
     static final String DFA1_eofS =
         "\14\uffff";
     static final String DFA1_minS =
-        "\1\30\11\0\2\uffff";
+        "\1\24\11\0\2\uffff";
     static final String DFA1_maxS =
-        "\1\52\11\0\2\uffff";
+        "\1\46\11\0\2\uffff";
     static final String DFA1_acceptS =
         "\12\uffff\1\1\1\2";
     static final String DFA1_specialS =
@@ -2452,7 +2448,7 @@ public class VitryParser extends Parser {
             this.transition = DFA1_transition;
         }
         public String getDescription() {
-            return "64:1: expr : ( ( delim[true] ':' )=> delim[true] ':' expr -> ^( Type delim expr ) | delim[true] );";
+            return "71:1: expr : ( ( delim[true] ':' )=> delim[true] ':' expr -> ^( Type delim expr ) | delim[true] );";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -2606,9 +2602,9 @@ public class VitryParser extends Parser {
     static final String DFA2_eofS =
         "\14\uffff";
     static final String DFA2_minS =
-        "\1\30\11\0\2\uffff";
+        "\1\24\11\0\2\uffff";
     static final String DFA2_maxS =
-        "\1\52\11\0\2\uffff";
+        "\1\46\11\0\2\uffff";
     static final String DFA2_acceptS =
         "\12\uffff\1\1\1\2";
     static final String DFA2_specialS =
@@ -2659,7 +2655,7 @@ public class VitryParser extends Parser {
             this.transition = DFA2_transition;
         }
         public String getDescription() {
-            return "73:1: left : ( ( delim[false] ':' )=> delim[false] ':' expr -> ^( Left ^( Type delim expr ) ) | delim[false] -> ^( Left delim ) );";
+            return "80:1: left : ( ( delim[false] ':' )=> delim[false] ':' expr -> ^( Left ^( Type delim expr ) ) | delim[false] -> ^( Left delim ) );";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -2813,9 +2809,9 @@ public class VitryParser extends Parser {
     static final String DFA6_eofS =
         "\14\uffff";
     static final String DFA6_minS =
-        "\1\30\3\uffff\1\27\7\uffff";
+        "\1\24\3\uffff\1\23\7\uffff";
     static final String DFA6_maxS =
-        "\1\52\3\uffff\1\52\7\uffff";
+        "\1\46\3\uffff\1\46\7\uffff";
     static final String DFA6_acceptS =
         "\1\uffff\1\1\1\2\1\3\1\uffff\1\6\1\7\1\10\1\11\1\12\1\4\1\5";
     static final String DFA6_specialS =
@@ -2867,7 +2863,7 @@ public class VitryParser extends Parser {
             this.transition = DFA6_transition;
         }
         public String getDescription() {
-            return "81:1: delim[boolean rs] : ( '(' ( inline[rs] )? ')' -> ^( Par ( inline )? ) | '[' ( inline[rs] )? ']' -> ^( Bra ( inline )? ) | '{' ( inline[rs] )? '}' -> ^( Ang ( inline )? ) | '`' Op -> ^( Quote Op ) | '`' delim[rs] -> ^( Quote delim ) | Symbol | Natural | Float | Complex | String );";
+            return "88:1: delim[boolean rs] : ( '(' ( inline[rs] )? ')' -> ^( Par ( inline )? ) | '[' ( inline[rs] )? ']' -> ^( Bra ( inline )? ) | '{' ( inline[rs] )? '}' -> ^( Ang ( inline )? ) | '`' Op -> ^( Quote Op ) | '`' delim[rs] -> ^( Quote delim ) | Symbol | Natural | Float | Complex | String );";
         }
     }
     static final String DFA9_eotS =
@@ -2875,9 +2871,9 @@ public class VitryParser extends Parser {
     static final String DFA9_eofS =
         "\24\uffff";
     static final String DFA9_minS =
-        "\1\27\5\uffff\12\0\4\uffff";
+        "\1\23\5\uffff\12\0\4\uffff";
     static final String DFA9_maxS =
-        "\1\57\5\uffff\12\0\4\uffff";
+        "\1\53\5\uffff\12\0\4\uffff";
     static final String DFA9_acceptS =
         "\1\uffff\1\1\16\uffff\1\2\1\3\1\4\1\5";
     static final String DFA9_specialS =
@@ -2936,7 +2932,7 @@ public class VitryParser extends Parser {
             this.transition = DFA9_transition;
         }
         public String getDescription() {
-            return "99:1: inline[boolean rs] : ({...}? inlineRight | ( Op ( ')' | ']' | '}' ) )=> Op | ( Op apply )+ -> ^( Ops ( ^( Op apply ) )+ ) | ( apply Op )=>e= apply ( Op f+= apply )+ -> ^( Ops $e ( ^( Op $f) )+ ) | apply );";
+            return "106:1: inline[boolean rs] : ({...}? inlineRight | ( Op ( ')' | ']' | '}' ) )=> Op | ( Op apply )+ -> ^( Ops ( ^( Op apply ) )+ ) | ( apply Op )=>e= apply ( Op f+= apply )+ -> ^( Ops $e ( ^( Op $f) )+ ) | apply );";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -3105,9 +3101,9 @@ public class VitryParser extends Parser {
     static final String DFA20_eofS =
         "\14\uffff";
     static final String DFA20_minS =
-        "\1\53\3\44\10\uffff";
+        "\1\47\3\40\10\uffff";
     static final String DFA20_maxS =
-        "\1\57\3\46\10\uffff";
+        "\1\53\3\42\10\uffff";
     static final String DFA20_acceptS =
         "\4\uffff\1\7\1\10\1\1\1\2\1\3\1\4\1\5\1\6";
     static final String DFA20_specialS =
@@ -3157,7 +3153,7 @@ public class VitryParser extends Parser {
             this.transition = DFA20_transition;
         }
         public String getDescription() {
-            return "113:1: inlineRight : ( 'fn' '(' ( left )* ')' inline[true] -> ^( Fn ( left )* inline ) | 'fn' '[' ( left )* ']' inline[true] -> ^( Fn ( left )* inline ) | 'let' '(' ( assign )* ')' inline[true] -> ^( Let ( assign )* inline ) | 'let' '[' ( assign )* ']' inline[true] -> ^( Let ( assign )* inline ) | 'do' '(' ( assign )* ')' ( expr )* -> ^( Do ( assign )* ( expr )* ) | 'do' '[' ( assign )* ']' ( expr )* -> ^( Do ( assign )* ( expr )* ) | 'match' v= expr '(' (c+= left e+= expr )* ')' -> ^( Match $v ( ^( $c $e) )* ) | 'if' expr expr ( 'else' )? inline[true] -> ^( If expr expr inline ) );";
+            return "120:1: inlineRight : ( 'fn' '(' ( left )* ')' inline[true] -> ^( Fn ( left )* inline ) | 'fn' '[' ( left )* ']' inline[true] -> ^( Fn ( left )* inline ) | 'let' '(' ( assign )* ')' inline[true] -> ^( Let ( assign )* inline ) | 'let' '[' ( assign )* ']' inline[true] -> ^( Let ( assign )* inline ) | 'do' '(' ( assign )* ')' ( expr )* -> ^( Do ( assign )* ( expr )* ) | 'do' '[' ( assign )* ']' ( expr )* -> ^( Do ( assign )* ( expr )* ) | 'match' v= expr '(' (c+= left e+= expr )* ')' -> ^( Match $v ( ^( $c $e) )* ) | 'if' expr expr ( 'else' )? inline[true] -> ^( If expr expr inline ) );";
         }
     }
     static final String DFA22_eotS =
@@ -3165,9 +3161,9 @@ public class VitryParser extends Parser {
     static final String DFA22_eofS =
         "\14\uffff";
     static final String DFA22_minS =
-        "\1\30\11\0\2\uffff";
+        "\1\24\11\0\2\uffff";
     static final String DFA22_maxS =
-        "\1\52\11\0\2\uffff";
+        "\1\46\11\0\2\uffff";
     static final String DFA22_acceptS =
         "\12\uffff\1\1\1\2";
     static final String DFA22_specialS =
@@ -3218,7 +3214,7 @@ public class VitryParser extends Parser {
             this.transition = DFA22_transition;
         }
         public String getDescription() {
-            return "132:1: apply : ( ( expr expr )=> ( expr )+ -> ^( Apply ( expr )+ ) | expr );";
+            return "139:1: apply : ( ( expr expr )=> ( expr )+ -> ^( Apply ( expr )+ ) | expr );";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -3369,95 +3365,95 @@ public class VitryParser extends Parser {
     }
  
 
-    public static final BitSet FOLLOW_delim_in_expr249 = new BitSet(new long[]{0x0000000800000000L});
-    public static final BitSet FOLLOW_35_in_expr252 = new BitSet(new long[]{0x000005501F000000L});
-    public static final BitSet FOLLOW_expr_in_expr254 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_delim_in_expr275 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_delim_in_left308 = new BitSet(new long[]{0x0000000800000000L});
-    public static final BitSet FOLLOW_35_in_left311 = new BitSet(new long[]{0x000005501F000000L});
-    public static final BitSet FOLLOW_expr_in_left313 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_delim_in_left336 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_36_in_delim398 = new BitSet(new long[]{0x0000FD701F800000L});
-    public static final BitSet FOLLOW_inline_in_delim400 = new BitSet(new long[]{0x0000002000000000L});
-    public static final BitSet FOLLOW_37_in_delim404 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_38_in_delim427 = new BitSet(new long[]{0x0000FDD01F800000L});
-    public static final BitSet FOLLOW_inline_in_delim429 = new BitSet(new long[]{0x0000008000000000L});
-    public static final BitSet FOLLOW_39_in_delim433 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_40_in_delim456 = new BitSet(new long[]{0x0000FF501F800000L});
-    public static final BitSet FOLLOW_inline_in_delim458 = new BitSet(new long[]{0x0000020000000000L});
-    public static final BitSet FOLLOW_41_in_delim462 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_42_in_delim485 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_Op_in_delim487 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_42_in_delim522 = new BitSet(new long[]{0x000005501F000000L});
-    public static final BitSet FOLLOW_delim_in_delim524 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_Symbol_in_delim553 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_Natural_in_delim561 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_Float_in_delim569 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_Complex_in_delim577 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_String_in_delim585 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_inlineRight_in_inline608 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_Op_in_inline634 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_Op_in_inline643 = new BitSet(new long[]{0x000005501F000000L});
-    public static final BitSet FOLLOW_apply_in_inline645 = new BitSet(new long[]{0x0000000000800002L});
-    public static final BitSet FOLLOW_apply_in_inline716 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_Op_in_inline719 = new BitSet(new long[]{0x000005501F000000L});
-    public static final BitSet FOLLOW_apply_in_inline723 = new BitSet(new long[]{0x0000000000800002L});
-    public static final BitSet FOLLOW_apply_in_inline765 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_43_in_inlineRight806 = new BitSet(new long[]{0x0000001000000000L});
-    public static final BitSet FOLLOW_36_in_inlineRight810 = new BitSet(new long[]{0x000005701F000000L});
-    public static final BitSet FOLLOW_left_in_inlineRight812 = new BitSet(new long[]{0x000005701F000000L});
-    public static final BitSet FOLLOW_37_in_inlineRight817 = new BitSet(new long[]{0x0000FD501F800000L});
-    public static final BitSet FOLLOW_inline_in_inlineRight819 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_43_in_inlineRight852 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_38_in_inlineRight856 = new BitSet(new long[]{0x000005D01F000000L});
-    public static final BitSet FOLLOW_left_in_inlineRight858 = new BitSet(new long[]{0x000005D01F000000L});
-    public static final BitSet FOLLOW_39_in_inlineRight863 = new BitSet(new long[]{0x0000FD501F800000L});
-    public static final BitSet FOLLOW_inline_in_inlineRight865 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_44_in_inlineRight898 = new BitSet(new long[]{0x0000001000000000L});
-    public static final BitSet FOLLOW_36_in_inlineRight901 = new BitSet(new long[]{0x000005701F000000L});
-    public static final BitSet FOLLOW_assign_in_inlineRight903 = new BitSet(new long[]{0x000005701F000000L});
-    public static final BitSet FOLLOW_37_in_inlineRight906 = new BitSet(new long[]{0x0000FD501F800000L});
-    public static final BitSet FOLLOW_inline_in_inlineRight908 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_44_in_inlineRight941 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_38_in_inlineRight944 = new BitSet(new long[]{0x000005D01F000000L});
-    public static final BitSet FOLLOW_assign_in_inlineRight946 = new BitSet(new long[]{0x000005D01F000000L});
-    public static final BitSet FOLLOW_39_in_inlineRight949 = new BitSet(new long[]{0x0000FD501F800000L});
-    public static final BitSet FOLLOW_inline_in_inlineRight951 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_45_in_inlineRight994 = new BitSet(new long[]{0x0000001000000000L});
-    public static final BitSet FOLLOW_36_in_inlineRight998 = new BitSet(new long[]{0x000005701F000000L});
-    public static final BitSet FOLLOW_assign_in_inlineRight1000 = new BitSet(new long[]{0x000005701F000000L});
-    public static final BitSet FOLLOW_37_in_inlineRight1003 = new BitSet(new long[]{0x000005501F000002L});
-    public static final BitSet FOLLOW_expr_in_inlineRight1005 = new BitSet(new long[]{0x000005501F000002L});
-    public static final BitSet FOLLOW_45_in_inlineRight1046 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_38_in_inlineRight1050 = new BitSet(new long[]{0x000005D01F000000L});
-    public static final BitSet FOLLOW_assign_in_inlineRight1052 = new BitSet(new long[]{0x000005D01F000000L});
-    public static final BitSet FOLLOW_39_in_inlineRight1055 = new BitSet(new long[]{0x000005501F000002L});
-    public static final BitSet FOLLOW_expr_in_inlineRight1057 = new BitSet(new long[]{0x000005501F000002L});
-    public static final BitSet FOLLOW_46_in_inlineRight1098 = new BitSet(new long[]{0x000005501F000000L});
-    public static final BitSet FOLLOW_expr_in_inlineRight1102 = new BitSet(new long[]{0x0000001000000000L});
-    public static final BitSet FOLLOW_36_in_inlineRight1104 = new BitSet(new long[]{0x000005701F000000L});
-    public static final BitSet FOLLOW_left_in_inlineRight1109 = new BitSet(new long[]{0x000005501F000000L});
-    public static final BitSet FOLLOW_expr_in_inlineRight1113 = new BitSet(new long[]{0x000005701F000000L});
-    public static final BitSet FOLLOW_37_in_inlineRight1117 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_47_in_inlineRight1154 = new BitSet(new long[]{0x000005501F000000L});
-    public static final BitSet FOLLOW_expr_in_inlineRight1156 = new BitSet(new long[]{0x000005501F000000L});
-    public static final BitSet FOLLOW_expr_in_inlineRight1158 = new BitSet(new long[]{0x0001FD501F800000L});
-    public static final BitSet FOLLOW_48_in_inlineRight1160 = new BitSet(new long[]{0x0000FD501F800000L});
-    public static final BitSet FOLLOW_inline_in_inlineRight1163 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_left_in_assign1211 = new BitSet(new long[]{0x0002000000000000L});
-    public static final BitSet FOLLOW_49_in_assign1213 = new BitSet(new long[]{0x000005501F000000L});
-    public static final BitSet FOLLOW_expr_in_assign1215 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_expr_in_apply1286 = new BitSet(new long[]{0x000005501F000002L});
-    public static final BitSet FOLLOW_expr_in_apply1328 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_delim_in_synpred1_Vitry241 = new BitSet(new long[]{0x0000000800000000L});
-    public static final BitSet FOLLOW_35_in_synpred1_Vitry244 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_delim_in_synpred2_Vitry300 = new BitSet(new long[]{0x0000000800000000L});
-    public static final BitSet FOLLOW_35_in_synpred2_Vitry303 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_Op_in_synpred3_Vitry617 = new BitSet(new long[]{0x000002A000000000L});
-    public static final BitSet FOLLOW_set_in_synpred3_Vitry619 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_apply_in_synpred4_Vitry707 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_Op_in_synpred4_Vitry709 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_expr_in_synpred5_Vitry1279 = new BitSet(new long[]{0x000005501F000000L});
-    public static final BitSet FOLLOW_expr_in_synpred5_Vitry1281 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_delim_in_expr264 = new BitSet(new long[]{0x0000000080000000L});
+    public static final BitSet FOLLOW_31_in_expr267 = new BitSet(new long[]{0x0000005501F00000L});
+    public static final BitSet FOLLOW_expr_in_expr269 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_delim_in_expr289 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_delim_in_left322 = new BitSet(new long[]{0x0000000080000000L});
+    public static final BitSet FOLLOW_31_in_left325 = new BitSet(new long[]{0x0000005501F00000L});
+    public static final BitSet FOLLOW_expr_in_left327 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_delim_in_left349 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_32_in_delim410 = new BitSet(new long[]{0x00000FD701F80000L});
+    public static final BitSet FOLLOW_inline_in_delim412 = new BitSet(new long[]{0x0000000200000000L});
+    public static final BitSet FOLLOW_33_in_delim416 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_34_in_delim434 = new BitSet(new long[]{0x00000FDD01F80000L});
+    public static final BitSet FOLLOW_inline_in_delim436 = new BitSet(new long[]{0x0000000800000000L});
+    public static final BitSet FOLLOW_35_in_delim440 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_36_in_delim458 = new BitSet(new long[]{0x00000FF501F80000L});
+    public static final BitSet FOLLOW_inline_in_delim460 = new BitSet(new long[]{0x0000002000000000L});
+    public static final BitSet FOLLOW_37_in_delim464 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_38_in_delim482 = new BitSet(new long[]{0x0000000000080000L});
+    public static final BitSet FOLLOW_Op_in_delim484 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_38_in_delim514 = new BitSet(new long[]{0x0000005501F00000L});
+    public static final BitSet FOLLOW_delim_in_delim516 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_Symbol_in_delim540 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_Natural_in_delim548 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_Float_in_delim556 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_Complex_in_delim564 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_String_in_delim572 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_inlineRight_in_inline595 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_Op_in_inline621 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_Op_in_inline630 = new BitSet(new long[]{0x0000005501F00000L});
+    public static final BitSet FOLLOW_apply_in_inline632 = new BitSet(new long[]{0x0000000000080002L});
+    public static final BitSet FOLLOW_apply_in_inline692 = new BitSet(new long[]{0x0000000000080000L});
+    public static final BitSet FOLLOW_Op_in_inline695 = new BitSet(new long[]{0x0000005501F00000L});
+    public static final BitSet FOLLOW_apply_in_inline699 = new BitSet(new long[]{0x0000000000080002L});
+    public static final BitSet FOLLOW_apply_in_inline730 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_39_in_inlineRight771 = new BitSet(new long[]{0x0000000100000000L});
+    public static final BitSet FOLLOW_32_in_inlineRight775 = new BitSet(new long[]{0x0000005701F00000L});
+    public static final BitSet FOLLOW_left_in_inlineRight777 = new BitSet(new long[]{0x0000005701F00000L});
+    public static final BitSet FOLLOW_33_in_inlineRight782 = new BitSet(new long[]{0x00000FD501F80000L});
+    public static final BitSet FOLLOW_inline_in_inlineRight784 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_39_in_inlineRight811 = new BitSet(new long[]{0x0000000400000000L});
+    public static final BitSet FOLLOW_34_in_inlineRight815 = new BitSet(new long[]{0x0000005D01F00000L});
+    public static final BitSet FOLLOW_left_in_inlineRight817 = new BitSet(new long[]{0x0000005D01F00000L});
+    public static final BitSet FOLLOW_35_in_inlineRight822 = new BitSet(new long[]{0x00000FD501F80000L});
+    public static final BitSet FOLLOW_inline_in_inlineRight824 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_40_in_inlineRight851 = new BitSet(new long[]{0x0000000100000000L});
+    public static final BitSet FOLLOW_32_in_inlineRight854 = new BitSet(new long[]{0x0000005701F00000L});
+    public static final BitSet FOLLOW_assign_in_inlineRight856 = new BitSet(new long[]{0x0000005701F00000L});
+    public static final BitSet FOLLOW_33_in_inlineRight859 = new BitSet(new long[]{0x00000FD501F80000L});
+    public static final BitSet FOLLOW_inline_in_inlineRight861 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_40_in_inlineRight888 = new BitSet(new long[]{0x0000000400000000L});
+    public static final BitSet FOLLOW_34_in_inlineRight891 = new BitSet(new long[]{0x0000005D01F00000L});
+    public static final BitSet FOLLOW_assign_in_inlineRight893 = new BitSet(new long[]{0x0000005D01F00000L});
+    public static final BitSet FOLLOW_35_in_inlineRight896 = new BitSet(new long[]{0x00000FD501F80000L});
+    public static final BitSet FOLLOW_inline_in_inlineRight898 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_41_in_inlineRight935 = new BitSet(new long[]{0x0000000100000000L});
+    public static final BitSet FOLLOW_32_in_inlineRight939 = new BitSet(new long[]{0x0000005701F00000L});
+    public static final BitSet FOLLOW_assign_in_inlineRight941 = new BitSet(new long[]{0x0000005701F00000L});
+    public static final BitSet FOLLOW_33_in_inlineRight944 = new BitSet(new long[]{0x0000005501F00002L});
+    public static final BitSet FOLLOW_expr_in_inlineRight946 = new BitSet(new long[]{0x0000005501F00002L});
+    public static final BitSet FOLLOW_41_in_inlineRight981 = new BitSet(new long[]{0x0000000400000000L});
+    public static final BitSet FOLLOW_34_in_inlineRight985 = new BitSet(new long[]{0x0000005D01F00000L});
+    public static final BitSet FOLLOW_assign_in_inlineRight987 = new BitSet(new long[]{0x0000005D01F00000L});
+    public static final BitSet FOLLOW_35_in_inlineRight990 = new BitSet(new long[]{0x0000005501F00002L});
+    public static final BitSet FOLLOW_expr_in_inlineRight992 = new BitSet(new long[]{0x0000005501F00002L});
+    public static final BitSet FOLLOW_42_in_inlineRight1027 = new BitSet(new long[]{0x0000005501F00000L});
+    public static final BitSet FOLLOW_expr_in_inlineRight1031 = new BitSet(new long[]{0x0000000100000000L});
+    public static final BitSet FOLLOW_32_in_inlineRight1033 = new BitSet(new long[]{0x0000005701F00000L});
+    public static final BitSet FOLLOW_left_in_inlineRight1038 = new BitSet(new long[]{0x0000005501F00000L});
+    public static final BitSet FOLLOW_expr_in_inlineRight1042 = new BitSet(new long[]{0x0000005701F00000L});
+    public static final BitSet FOLLOW_33_in_inlineRight1046 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_43_in_inlineRight1077 = new BitSet(new long[]{0x0000005501F00000L});
+    public static final BitSet FOLLOW_expr_in_inlineRight1079 = new BitSet(new long[]{0x0000005501F00000L});
+    public static final BitSet FOLLOW_expr_in_inlineRight1081 = new BitSet(new long[]{0x00001FD501F80000L});
+    public static final BitSet FOLLOW_44_in_inlineRight1083 = new BitSet(new long[]{0x00000FD501F80000L});
+    public static final BitSet FOLLOW_inline_in_inlineRight1086 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_left_in_assign1128 = new BitSet(new long[]{0x0000200000000000L});
+    public static final BitSet FOLLOW_45_in_assign1130 = new BitSet(new long[]{0x0000005501F00000L});
+    public static final BitSet FOLLOW_expr_in_assign1132 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_apply1180 = new BitSet(new long[]{0x0000005501F00002L});
+    public static final BitSet FOLLOW_expr_in_apply1199 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_delim_in_synpred1_Vitry256 = new BitSet(new long[]{0x0000000080000000L});
+    public static final BitSet FOLLOW_31_in_synpred1_Vitry259 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_delim_in_synpred2_Vitry314 = new BitSet(new long[]{0x0000000080000000L});
+    public static final BitSet FOLLOW_31_in_synpred2_Vitry317 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_Op_in_synpred3_Vitry604 = new BitSet(new long[]{0x0000002A00000000L});
+    public static final BitSet FOLLOW_set_in_synpred3_Vitry606 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_apply_in_synpred4_Vitry683 = new BitSet(new long[]{0x0000000000080000L});
+    public static final BitSet FOLLOW_Op_in_synpred4_Vitry685 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_synpred5_Vitry1173 = new BitSet(new long[]{0x0000005501F00000L});
+    public static final BitSet FOLLOW_expr_in_synpred5_Vitry1175 = new BitSet(new long[]{0x0000000000000002L});
 
 }

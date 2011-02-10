@@ -70,6 +70,13 @@ public final class NativeSet extends AbstractSet
             return false;
         }
         
+        public boolean match(Set a) {
+            // iff a <: this
+            if (a instanceof NativeSet)
+                return this.javaClass.isAssignableFrom(((NativeSet) a).javaClass);
+            return false;
+        }
+
         public boolean eq(Product o) {
             return false;
         }
