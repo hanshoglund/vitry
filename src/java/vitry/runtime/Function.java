@@ -27,6 +27,8 @@ public interface Function extends Sequence<Pattern>
         
         public Object applyVar(Sequence<?> args) throws InvocationError;        
         
+        public Object applyVar(Object[] array);
+
         Object apply(Object a0) throws InvocationError;
 
         Object apply(Object a0, Object a1) throws InvocationError;

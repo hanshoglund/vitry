@@ -483,7 +483,7 @@ public class Interpreter implements Eval
                                 for (Pattern arg : args) {
                                     vals.add(eval(arg, context, frame, fixities));
                                 }
-                                return ((StandardFunction) fn).applyVar(vals.toArray());
+                                return ((Function) fn).applyVar(vals.toArray());
                             }
                         }
                         

@@ -47,7 +47,8 @@ fn (x) x
 
 let [add5 = (add 5)  add26 = (add 26)  mod5 = (mod 5)  x = 0] (eq (mod5 (add26 x)) (add5 x)) 
 let [s = (fn [x y z] x z (y z))  k = const   i = id] s k k 3
-                 
+                                         
+(id id id id id id id id id id id id id id id id id id id id id id id id)
 
 -- Left-side invocation
 
@@ -55,10 +56,17 @@ let [(cons a b) = (cons 1 2)] a
 let [(cons a (cons b c)) = (cons 1 (cons 2 3))] a
 
 
--- Operators 
+-- Operators
+1 + 2 + 3
+1 + 2 * 5
+(7 % 5, (add 0) 1)
+-1
+
 -- Matching
 -- Typing
--- Loop and recur
+-- Loop and recur 
+loop [i = 1] if (i < 100) (recur (succ i)) else i
+
 
 
 

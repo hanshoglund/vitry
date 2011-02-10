@@ -5,13 +5,36 @@ import java.math.BigInteger;
 import vitry.runtime.BigRational;
 import vitry.runtime.RestFunction;
 import vitry.runtime.StandardFunction;
+import vitry.runtime.struct.Sequence;
+import vitry.runtime.struct.Sequences;
 
 public class sub extends RestFunction
     {
+        
+        public Object applyVar(Sequence<?> args) {
+            return applyVar(Sequences.toArray(args));
+        }
+        
+        public Object applyVar(Object[] args) {
+            switch (args.length) {
+                case 1:
+                    return negate(args[0]);
+                case 2:
+                    return apply(args[0], args[1]);
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
 
-        
-        
-        
+        private Object negate(Object v) {
+            if (v instanceof BigRational)
+                return ((BigRational) v).negate();
+            if (v instanceof BigInteger)
+                return ((BigInteger) v).negate();
+            if (v instanceof Float)
+                return ((Float) v).floatValue() * -1;
+            return throwArithmetic();
+        }
 
         public Object apply(Object a, Object b) {
             
