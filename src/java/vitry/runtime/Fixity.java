@@ -19,31 +19,37 @@
 package vitry.runtime;
 
 /**
- * Represents the fixity of some operator.
+ * Represents operator fixity.
  */
 public class Fixity extends ProductAdaptor
     {
-        private final Symbol operator;
         private final int precedence;
-        private final boolean left;        
+        private final boolean assoc;
+        private final boolean gathering;
         
-        public Fixity(Symbol operator, int precedence, boolean left) {
-            this.operator = operator;
+        public Fixity(int precedence, boolean assoc) {
+            this(precedence, assoc, false);
+        }
+        
+        public Fixity(int precedence, boolean assoc, boolean gathering) {
             this.precedence = precedence;
-            this.left = left;
+            this.assoc = assoc;
+            this.gathering = gathering;
         }
         
-        public Symbol getOperator() {
-            return operator;
-        }
         public int getPrecedence() {
             return precedence;
         }
-        public boolean isLeft() {
-            return left;
+        
+        public boolean getAssociativity() {
+            return assoc;
+        }
+
+        public boolean isGathering() {
+            return gathering;
         }
 
         public Product asProduct() {
-            return new SimpleProduct(operator, precedence, left);
+            return new SimpleProduct(precedence, assoc);
         }
     }

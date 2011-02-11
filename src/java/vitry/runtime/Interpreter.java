@@ -70,6 +70,7 @@ public class Interpreter implements Eval
         static final Symbol DELIMITER = Symbol.intern("delimiter");
         static final Symbol SIDE      = Symbol.intern("side");
         static final Symbol QUOTED    = Symbol.intern("quoted");
+        static final Symbol MUTABLE   = Symbol.intern("mutable");
         static final Symbol PAR       = Symbol.intern("()");
         static final Symbol BRA       = Symbol.intern("[]");
         static final Symbol ANG       = Symbol.intern("{}");
@@ -84,7 +85,8 @@ public class Interpreter implements Eval
         static final Environment<Symbol, Symbol> STANDARD_CONTEXT = (new HashEnvironment<Symbol, Symbol>()
             .define( DELIMITER , PAR    )
             .define( SIDE      , RIGHT  )
-            .define( QUOTED    , FALSE  ));        
+            .define( QUOTED    , FALSE  )
+            .define( MUTABLE   , FALSE  ));        
                 
                 
         public boolean acceptsParserTokens() {
@@ -331,9 +333,7 @@ public class Interpreter implements Eval
 
                     case TYPE_DO:
                         throwNotSupported(); // TODO
-                        // Push a mutable env
-                        // Eval
-                        // Tail the last expr
+                        // Set context to mutable, then eval assigns
                         
 
                     case TYPE_ASSIGN:

@@ -96,7 +96,7 @@ public class VitryRuntime
             prelude.define(Symbol.intern("const"), new const_());   
 
             // Test constructor
-            prelude.define(Symbol.intern("cons"), new cons());   
+            prelude.define(Symbol.intern("product"), new product());   
 
             
             prelude.define(Symbol.intern("add"), new add());
@@ -112,7 +112,7 @@ public class VitryRuntime
             prelude.define(Symbol.intern("(/)"), prelude.lookup(Symbol.intern("div")));
             prelude.define(Symbol.intern("(%)"), prelude.lookup(Symbol.intern("mod")));
             prelude.define(Symbol.intern("(%%)"), prelude.lookup(Symbol.intern("modp")));
-            prelude.define(Symbol.intern("(,)"), prelude.lookup(Symbol.intern("cons")));
+            prelude.define(Symbol.intern("(,)"), prelude.lookup(Symbol.intern("product")));
 
             prelude.define(Symbol.intern("quit"), new quit());
             prelude.define(Symbol.intern("unique"), unique);
@@ -122,36 +122,35 @@ public class VitryRuntime
 
         public static Environment<Symbol, Fixity> preludeFixities = new HashEnvironment<Symbol, Fixity>();
         static {
-            defineFixity("(.)",     11, false);
-            defineFixity("(^^)",    10, true);
-            defineFixity("(^)",     10, true);
-            defineFixity("(%)",     9, true);
-            defineFixity("(%%)",    9, true);
-            defineFixity("(/)",     9, true);
-            defineFixity("(*)",     9, true);
-            defineFixity("(-)",     8, true);
-            defineFixity("(+)",     8, true);
-            defineFixity("{|}",     7, true);
-            defineFixity("[,]",     6, true);
-            defineFixity("{,}",     6, true);
-            defineFixity("(,)",     6, true);
-            defineFixity("(<)",     5, true);
-            defineFixity("(<=)",    5, true);
-            defineFixity("(>=)",    5, true);
-            defineFixity("(>)",     5, true);
-            defineFixity("(/=)",    5, true);
-            defineFixity("(==)",    5, true);
-            defineFixity("(|)",     4, true); // associativity?
-            defineFixity("(&)",     4, true); // associativity?
-            defineFixity("(->)",    3, false);
-            defineFixity("(&&)",    2, false);
-            defineFixity("(||)",    1, false);
-            defineFixity("($!)",    0, true);
-            defineFixity("($)",     0, false);
+            defineFixity("(.)",     12, false, true); // gathering?
+            defineFixity("(^^)",    10, true, false);
+            defineFixity("(^)",     10, true, false);
+            defineFixity("(%)",     9, true, false);
+            defineFixity("(%%)",    9, true, false);
+            defineFixity("(/)",     9, true, false);
+            defineFixity("(*)",     9, true, false);
+            defineFixity("(-)",     8, true, false);
+            defineFixity("(+)",     8, true, false);
+            defineFixity("(<)",     6, true, false);
+            defineFixity("(<=)",    6, true, false);
+            defineFixity("(>=)",    6, true, false);
+            defineFixity("(>)",     6, true, false);
+            defineFixity("(/=)",    6, true, false);
+            defineFixity("(==)",    6, true, false);
+            defineFixity("[,]",     5, true, true);
+            defineFixity("{,}",     5, true, true);
+            defineFixity("(,)",     5, true, true);
+            defineFixity("(|)",     4, true, false); // associativity?
+            defineFixity("(&)",     4, true, false); // associativity?
+            defineFixity("(->)",    3, false, false);
+            defineFixity("(&&)",    2, false, false);
+            defineFixity("(||)",    1, false, false);
+            defineFixity("($!)",    0, true, false);
+            defineFixity("($)",     0, false, false);
         }
 
-        private static void defineFixity(String name, int precedence, boolean left) {
-            preludeFixities.define(Symbol.intern(name), new Fixity(Symbol.intern(name), precedence, left));
+        private static void defineFixity(String name, int precedence, boolean assoc, boolean gathering) {
+            preludeFixities.define(Symbol.intern(name), new Fixity(precedence, assoc, gathering));
         }
 
 

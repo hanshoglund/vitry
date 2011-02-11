@@ -58,6 +58,7 @@ class OperatorRewrite
         @SuppressWarnings("unchecked")
         public Product rewrite(Sequence<Pattern> seq) {
             String DEBUG = printable(seq).toString();
+            Utils.nothing(null);
             
             if (length(seq) == 1) {
                 // Expression is in normal form
@@ -85,13 +86,17 @@ class OperatorRewrite
                 pp = p;
                 p = it.next();
                 
-                if (!isShallowOpTree(p)) continue;
+                // Only consider non-processed operator trees
+                // If the first value is non-processed, use the second
+                boolean shallowOpTree = isShallowOpTree(p);
+                if (pp == null || !shallowOpTree) continue;
+                
                 Fixity f = getFixity(p);
                 if ( 
                      f != null && 
                      (
                        (f.getPrecedence() > max) 
-                       || (f.getPrecedence() == max && !f.isLeft())
+                       || (f.getPrecedence() == max && !f.getAssociativity())
                      )
                    ) 
                 {
@@ -102,37 +107,45 @@ class OperatorRewrite
                     max = f.getPrecedence();
                 }
             }
-//            if (prim == null) throw new ParseError("Could not rewrite operators in " + (Product) seq);
-            assert ((primary != null));
+            if (primary == null && preceding != null) throw new ParseError("Could not rewrite operators in " + seq);
+//            assert ((primary != null));
             
             Pattern hoist;
-            Product insert, unify;
+            Product insert, unify = null;
             
-            if ((preceding != null) && (preceding instanceof Sequence) && isShallowOpTree(preceding)) {
-//                Class DEBUG3 = preceding.getClass();
-                hoist  = last((Product) preceding);
-                insert = s2p(cons(primary.head(), s2p(cons(hoist, primary.tail()))));
-                unify  = s2p(append(s2p(init((Sequence<Pattern>) preceding)), s2p(new SingleSequence(insert))));
-                
-            } else if (preceding != null){
-                hoist  = preceding;
-                insert = s2p(cons(primary.head(), s2p(cons(hoist, primary.tail()))));
-                unify  = insert;
+            if (sameOp(primary, preceding) && getFixity(primary).isGathering()) {
+                // Gathering operator, just concatenate
+                unify = s2p(append(p2s(preceding), primary.tail()));
 
+            } else if (isShallowOpTree(preceding) && length(p2s(preceding)) <= 2) {
+                // Both preceding and primary are unprocessed
+                // Hoist and reinsert
+                // (append (init preceding, ((insert (last preceding) primary) . nil)))
+                hoist = last((Product) preceding);
+                insert = insert(hoist, primary);
+                unify = s2p(append(s2p(init(p2s(preceding))),
+                        s2p(single((Pattern) insert))));
             } else {
-                unify = (Product) primary;
+                // Primary is processed or non-op expression
+                // Simply insert
+                insert = insert(preceding, primary);
+                unify = insert;
             }
-            
+
             return rewrite(s2p(append(before, cons(s2p(unify), after))));
         }
-        
-        private Product s2p (Sequence<Pattern> s) {
-            return new SimpleProduct(s);
+
+        private Product insert(Pattern hoist, Sequence<Pattern> primary) {
+            return s2p(cons(primary.head(), s2p(cons(hoist, primary.tail()))));
         }
-        private Sequence<Pattern> p2s (Pattern s) {
-            return (Sequence<Pattern>) s;
-        }        
-        
+
+        private boolean sameOp(Sequence<Pattern> primary, Pattern preceding) {
+            if (preceding instanceof Sequence) {
+                return ((Sequence) preceding).head().toString().equals(primary.head().toString());
+            }
+            return false;
+        }
+
         /**
          * Deep-walks a sequence of patterns and/or sequences and replaces
          * all elements (+,...) with (Apply,+,...).
@@ -149,30 +162,37 @@ class OperatorRewrite
         private Function RECURSIVE_APPLY = (new StandardFunction(1) {
                 public Object apply(Object s) throws InvocationError {
                     if (s instanceof Sequence) {                                    
-                        return treeToApply(Utils.<Sequence<Pattern>>unsafe(s));
+                        return treeToApply((Sequence<Pattern>) s);
                     } else {                                    
                         return s; 
                     }
                 }
             });
         
+        /**
+         * Returns whether this is a sequence of length => 2, whose first element
+         * is an operator and whose remaining elements are not sequences whose first
+         * element is an operator.
+         */
         private boolean isShallowOpTree(Pattern p) {
             if (p instanceof Sequence) {
-                int len = length((Sequence<?>) p);
-                switch (len) {
-                    case 1:
-                        // TODO
-                        return true;
-//                        return Interpreter.isSelfEvaluating(first((Sequence<Pattern>)p)) 
-//                        || Interpreter.isAcceptedToken(first((Sequence<Pattern>) p));
-                    case 2:
-                        return isOperator(first(p2s(p)));
-                    default:
-                        return false;
-                }
-            }
-            else
+                Sequence<Pattern> s = p2s(p);
+                
+                if (length(s) < 2) return false;
+                if (!isOperator(first(s))) return false;
+                
                 return true;
+//                return foldl(new StandardFunction(1){
+//                    public Object apply(Object a, Object b) throws InvocationError {
+//                        if (!(Boolean) a) return false;
+//                        if (b instanceof Sequence) {
+//                            return !isOperator(first((Sequence<Pattern>)b));
+//                        }
+//                        return true;
+//                    }
+//                }, true, s.tail());
+            }
+            return false;
         }
 
         private boolean isOperator(Pattern p) {
@@ -185,12 +205,26 @@ class OperatorRewrite
          */
         private Fixity getFixity(Pattern p) {
             if (p instanceof Sequence) {
-                Pattern op = Utils.<Sequence<Pattern>>unsafe(p).head();
-                return fixities.lookup(Interpreter.evalOperator(op, delimiter));
+                return getFixity((Sequence<Pattern>) p);
             }
             return null;
         }
 
+        private Fixity getFixity(Sequence<Pattern> p) {
+            return fixities.lookup(Interpreter.evalOperator(p.head(), delimiter));
+        }
+
+        private boolean equalOps(Object primaryOp, Object hoistOp) {
+            return hoistOp.toString().equals(primaryOp.toString());
+        }
+
+        private Product s2p (Sequence<Pattern> s) {
+            return new SimpleProduct(s);
+        }
+
+        private Sequence<Pattern> p2s (Pattern s) {
+            return (Sequence<Pattern>) s;
+        }
         private static final VitryToken OPS_TOKEN = new VitryToken("Ops");
         private static final Symbol APPLY_TOKEN = Symbol.intern("Apply");
 

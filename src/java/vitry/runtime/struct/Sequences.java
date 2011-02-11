@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import vitry.runtime.Function;
 import vitry.runtime.misc.Utils;
 
 
@@ -41,6 +42,9 @@ public class Sequences
 
         private static final Object[] EMPTY_OBJ_ARRAY = new Object[0];
 
+        public static <T> Sequence<T> single(T x) {
+            return new SingleSequence<T>(x);
+        }
 
         public static <T> Sequence<T> cons(T x, Sequence<T> xs) {
             if (xs == null) return (Sequence<T>) new SingleSequence<T>(x);
@@ -150,6 +154,15 @@ public class Sequences
 
         public static <T> Sequence<T> printable(Sequence<T> s) {
             return (Sequence<T>) new PrintableSequence<T>(s);
+        }
+        
+        public static <U, T> U foldl(Function fn, U init, Sequence<T> s) {
+            U res = init;
+            while (s != null) {
+                res = (U) fn.apply(init, s.head());
+                s = s.tail();
+            }
+            return res;
         }
 
 

@@ -24,8 +24,8 @@ import vitry.runtime.struct.Sequences;
 
 public class InvertibleRestFunction extends RestFunction implements InvertibleFunction
     {
-        public Sequence<Object> applyVarInverse(Object a) throws InvocationError {
-            return null;
+        public Sequence<?> applyVarInverse(Object a) throws InvocationError {
+            throw new NoImplementationException();
         }
 
         public InvertibleRestFunction getInverse() {
