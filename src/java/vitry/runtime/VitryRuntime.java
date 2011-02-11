@@ -169,19 +169,19 @@ public class VitryRuntime
             return Symbol.intern(new String(str));
         }
 
-        public static Pattern product(Object... args) {
+        public static Product product(Object... args) {
             return new SimpleProduct(args);
         }
 
-        public static Pattern set(Object... args) {
+        public static Set set(Object... args) {
             return new SimpleSet(args);
         }
 
-        public static Pattern union(Object... args) {
+        public static Union union(Object... args) {
             return new SimpleUnion(args);
         }
 
-        public static Pattern intersection(Object... args) {
+        public static Intersection intersection(Object... args) {
             return new SimpleIntersection(args);
         }
 

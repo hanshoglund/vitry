@@ -25,7 +25,6 @@ import vitry.runtime.parse.VitryToken;
 import vitry.runtime.parse.VitryTokenTypes;
 import vitry.runtime.struct.Sequence;
 import vitry.runtime.struct.SequenceIterator;
-import vitry.runtime.struct.SingleSequence;
 
 /**
  * Rewrites opererator-form syntax trees into application-form.
@@ -88,7 +87,7 @@ class OperatorRewrite
                 
                 // Only consider non-processed operator trees
                 // If the first value is non-processed, use the second
-                boolean shallowOpTree = isShallowOpTree(p);
+                boolean shallowOpTree = isOpTree(p);
                 if (pp == null || !shallowOpTree) continue;
                 
                 Fixity f = getFixity(p);
@@ -117,7 +116,7 @@ class OperatorRewrite
                 // Gathering operator, just concatenate
                 unify = s2p(append(p2s(preceding), primary.tail()));
 
-            } else if (isShallowOpTree(preceding) && length(p2s(preceding)) <= 2) {
+            } else if (isOpTree(preceding) && isShallow(preceding) && length(p2s(preceding)) <= 2) {
                 // Both preceding and primary are unprocessed
                 // Hoist and reinsert
                 // (append (init preceding, ((insert (last preceding) primary) . nil)))
@@ -135,70 +134,10 @@ class OperatorRewrite
             return rewrite(s2p(append(before, cons(s2p(unify), after))));
         }
 
-        private Product insert(Pattern hoist, Sequence<Pattern> primary) {
+        private static Product insert(Pattern hoist, Sequence<Pattern> primary) {
             return s2p(cons(primary.head(), s2p(cons(hoist, primary.tail()))));
         }
 
-        private boolean sameOp(Sequence<Pattern> primary, Pattern preceding) {
-            if (preceding instanceof Sequence) {
-                return ((Sequence) preceding).head().toString().equals(primary.head().toString());
-            }
-            return false;
-        }
-
-        /**
-         * Deep-walks a sequence of patterns and/or sequences and replaces
-         * all elements (+,...) with (Apply,+,...).
-         *
-         * The returned sequences are all Products.
-         */
-        private Product treeToApply(Sequence<Pattern> seq) {
-            if (isOperator(first(seq)))
-                return s2p(cons(APPLY_TOKEN, seq.<Pattern>map(RECURSIVE_APPLY)));
-            else
-                return s2p(seq);
-        }                                       
-        
-        private Function RECURSIVE_APPLY = (new StandardFunction(1) {
-                public Object apply(Object s) throws InvocationError {
-                    if (s instanceof Sequence) {                                    
-                        return treeToApply((Sequence<Pattern>) s);
-                    } else {                                    
-                        return s; 
-                    }
-                }
-            });
-        
-        /**
-         * Returns whether this is a sequence of length => 2, whose first element
-         * is an operator and whose remaining elements are not sequences whose first
-         * element is an operator.
-         */
-        private boolean isShallowOpTree(Pattern p) {
-            if (p instanceof Sequence) {
-                Sequence<Pattern> s = p2s(p);
-                
-                if (length(s) < 2) return false;
-                if (!isOperator(first(s))) return false;
-                
-                return true;
-//                return foldl(new StandardFunction(1){
-//                    public Object apply(Object a, Object b) throws InvocationError {
-//                        if (!(Boolean) a) return false;
-//                        if (b instanceof Sequence) {
-//                            return !isOperator(first((Sequence<Pattern>)b));
-//                        }
-//                        return true;
-//                    }
-//                }, true, s.tail());
-            }
-            return false;
-        }
-
-        private boolean isOperator(Pattern p) {
-            return VitryTokenTypes.tokenType(p) == Interpreter.TYPE_OP;
-        }
-        
         /**
          * If the given value is list on the form (Op, _), return the fixity of the operator.
          * Otherwise return null.
@@ -214,15 +153,82 @@ class OperatorRewrite
             return fixities.lookup(Interpreter.evalOperator(p.head(), delimiter));
         }
 
-        private boolean equalOps(Object primaryOp, Object hoistOp) {
+        /**
+         * Deep-walks a sequence of patterns and/or sequences and replaces
+         * all elements (+,...) with (Apply,+,...).
+         *
+         * The returned sequences are all Products.
+         */
+        private static Product treeToApply(Sequence<Pattern> seq) {
+            if (isOperator(first(seq)))
+                return s2p(cons(APPLY_TOKEN, seq.<Pattern>map(RECURSIVE_APPLY)));
+            else
+                return s2p(seq);
+        }                                       
+        
+        private static Function RECURSIVE_APPLY = (new StandardFunction(1) {
+                public Object apply(Object s) throws InvocationError {
+                    if (s instanceof Sequence) {                                    
+                        return treeToApply((Sequence<Pattern>) s);
+                    } else {                                    
+                        return s; 
+                    }
+                }
+            });
+        
+        /**
+         * Returns whether this is a sequence of length => 2, whose first element
+         * is an operator and whose remaining elements are not sequences whose first
+         * element is an operator.
+         */
+        private static boolean isOpTree(Pattern p) {
+            if (p instanceof Sequence) {
+                Sequence<Pattern> s = p2s(p);
+                
+                if (length(s) < 2) return false;
+                if (!isOperator(first(s))) return false;
+                
+                return true;
+            }
+            return false;
+        }
+        
+        private static boolean isShallow(Pattern p) {
+            if (p instanceof Sequence) {
+                Sequence<Pattern> s = p2s(p);
+                return foldl(new StandardFunction(1){
+                    public Object apply(Object a, Object b) throws InvocationError {
+                        if (!(Boolean) a) return false;
+                        if (b instanceof Sequence) {
+                            return !isOperator(first((Sequence<Pattern>)b));
+                        }
+                        return true;
+                    }
+                }, true, s.tail());
+            }
+            return false;
+        }
+
+        private static boolean isOperator(Pattern p) {
+            return VitryTokenTypes.tokenType(p) == Interpreter.TYPE_OP;
+        }
+
+        private static boolean sameOp(Sequence<Pattern> primary, Pattern preceding) {
+            if (preceding instanceof Sequence) {
+                return ((Sequence) preceding).head().toString().equals(primary.head().toString());
+            }
+            return false;
+        }
+
+        private static boolean equalOps(Object primaryOp, Object hoistOp) {
             return hoistOp.toString().equals(primaryOp.toString());
         }
 
-        private Product s2p (Sequence<Pattern> s) {
+        private static Product s2p (Sequence<Pattern> s) {
             return new SimpleProduct(s);
         }
 
-        private Sequence<Pattern> p2s (Pattern s) {
+        private static Sequence<Pattern> p2s (Pattern s) {
             return (Sequence<Pattern>) s;
         }
         private static final VitryToken OPS_TOKEN = new VitryToken("Ops");

@@ -572,28 +572,28 @@ public class Interpreter implements Eval
 
 
         
-        static boolean isSelfEvaluating(Pattern expr) {
+        static final boolean isSelfEvaluating(Pattern expr) {
             return (expr instanceof Atom && !(expr instanceof VitryToken)) 
                 || !(expr instanceof Pattern);
         }
         
-        static boolean isAcceptedToken(Pattern expr) {
+        static final boolean isAcceptedToken(Pattern expr) {
             return expr instanceof VitryToken;
         }
         
-        static BigInteger evalNat(Pattern expr) {
+        static final BigInteger evalNat(Pattern expr) {
             return new BigInteger(expr.toString());
         }
 
-        static Float evalFloat(Pattern expr) {
+        static final Float evalFloat(Pattern expr) {
             return Float.valueOf(expr.toString());
         }
 
-        static Object evalComplex(Pattern expr) {
+        static final Object evalComplex(Pattern expr) {
             return throwComplex();
         }
         
-        static Symbol evalOperator(Pattern expr, Symbol delimiter) {
+        static final Symbol evalOperator(Pattern expr, Symbol delimiter) {
             if (delimiter == PAR) return Symbol.intern("(" + expr + ")");
             if (delimiter == BRA) return Symbol.intern("[" + expr + "]");
             if (delimiter == ANG) return Symbol.intern("{" + expr + "}");
@@ -601,11 +601,11 @@ public class Interpreter implements Eval
             return null;
         }
         
-        static Symbol evalSymbol(Pattern expr) {
+        static final Symbol evalSymbol(Pattern expr) {
             return Symbol.intern(expr.toString());
         }
 
-        static String evalString(Pattern expr) {
+        static final String evalString(Pattern expr) {
             String str = Utils.unescapeJava(expr.toString());
             return str.substring(1, str.length() - 1);
         }
@@ -629,7 +629,7 @@ public class Interpreter implements Eval
 
 
 
-class InterpretedFunction extends RestFunction implements Arity
+final class InterpretedFunction extends RestFunction implements Arity
     {
         /**
          * Param and body expressions
@@ -683,6 +683,18 @@ class InterpretedFunction extends RestFunction implements Arity
         }
     }
 
+final class InterpretedModule extends Module
+{
+
+    public InterpretedModule(Environment<Symbol, Object> env) {
+        super(env);
+        // TODO Auto-generated constructor stub
+    }
+}
+
+
+
+
 /**
  * Represents an unfinished left-side computation. Callers passing left-expressions
  * should check the returned value against this interface and react if it is
@@ -693,14 +705,4 @@ class InterpretedFunction extends RestFunction implements Arity
 interface LeftContinuation {
     public void invoke(Object value, Environment<Symbol, Object> frame);
 }
-
-
-class InterpretedModule extends Module
-    {
-
-        public InterpretedModule(Environment<Symbol, Object> env) {
-            super(env);
-            // TODO Auto-generated constructor stub
-        }
-    }
     

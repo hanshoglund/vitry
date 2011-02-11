@@ -142,14 +142,14 @@ public class Sequences
             return s.tail().tail().head();
         }
 
-        public static <T> T nth(Sequence<T> s, int i) {
+        public static <T> T index(Sequence<T> s, int i) {
             for (int j = 0; j < i; j++)
                 s = tail(s);
             return s.head();
         }
 
         public static <T> T nthLast(Sequence<T> s, int i) {
-            return nth(reverse(s), i);
+            return index(reverse(s), i);
         }
 
         public static <T> Sequence<T> printable(Sequence<T> s) {
