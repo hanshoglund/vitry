@@ -18,7 +18,11 @@
  */
 package vitry.runtime;
 
-
+/**
+ * Implements run-time modules.
+ *
+ * @author Hans Höglund
+ */
 public class Module implements Scope
     {
 

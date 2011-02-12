@@ -18,15 +18,20 @@
  */
 package vitry.runtime;
 
+import vitry.runtime.error.*;
+
 /**
- * A set of bindings possibly referencing an enclosing parent environment.
+ * A set of bindings possibly referencing an enclosing parent
+ * environment.
  * 
- * This interface supports both persistent (immutable) and non-persistent
- * (mutable) environments. For persistent environments the define operation
- * is indentical to extend and never throws an exception. For non-persistent 
- * implementations define may be used to add bindings, but not to override
- * previous bindings. The assoc operation is used to mutate non-persistent 
- * environments explicitly.
+ * This interface supports both persistent (immutable) and 
+ * non-persistent (mutable) environments. For persistent environments
+ * the define operation is indentical to extend and never throws an
+ * exception. For non-persistent implementations define may be used
+ * to add bindings, but not to override previous bindings. The assoc
+ * operation is used to mutate non-persistent environments explicitly.
+ *
+ * @author Hans Höglund
  */
 public interface Environment<K, V>
     {

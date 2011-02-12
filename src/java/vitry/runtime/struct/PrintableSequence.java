@@ -2,7 +2,7 @@ package vitry.runtime.struct;
 
 import java.util.Iterator;
 
-import vitry.runtime.misc.Utils;
+import vitry.runtime.util.Utils;
 
 
 /**

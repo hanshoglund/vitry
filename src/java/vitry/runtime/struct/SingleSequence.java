@@ -20,7 +20,7 @@ package vitry.runtime.struct;
 
 
 
-public class SingleSequence<T> extends AbstractSequence<T> implements Finite<T>
+class SingleSequence<T> extends AbstractSequence<T> implements Finite<T>
     {
         
         private final T obj;

@@ -16,35 +16,23 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
+package vitry.runtime.error;
 
 /**
- * Thrown to indicate a problem related to a binding operation.
+ * Indicates all language errors.
+ *
+ * The runtime classes may of course also throw general exceptions such as 
+ * ClassCastException etc. These should be considered implementation bugs.
  */
-public class BindingError extends VitryError
+abstract public class VitryError extends RuntimeException
     {
-        private Object key;
+        private static final long serialVersionUID = 1L;
 
-        private Object env;
-
-        public BindingError(Object key, Environment<?, ?> env) {
-            super("Key " + key + " already defined in " + env);
-            this.key = key;
-            this.env = env;
-        }
-
-        BindingError(String string) {
+        public VitryError(String string) {
             super(string);
         }
 
-        public Object getKey() {
-            return key;
+        public VitryError(String string, Throwable cause) {
+            super(string, cause);
         }
-
-
-        public Object getEnv() {
-            return env;
-        }
-
-        private static final long serialVersionUID = 472453313488024837L;
     }

@@ -16,23 +16,21 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
+package vitry.runtime.error;
+
 
 /**
- * Indicates all language errors.
- *
- * The runtime classes may of course also throw general exceptions such as 
- * ClassCastException etc. These should be considered implementation bugs.
+ * Thrown to indicate a problem related to function invocation.
  */
-abstract public class VitryError extends RuntimeException
+public class InvocationError extends VitryError
     {
-        private static final long serialVersionUID = 1L;
-
-        public VitryError(String string) {
+        public InvocationError(String string) {
             super(string);
         }
 
-        public VitryError(String string, Throwable cause) {
+        public InvocationError(String string, Throwable cause) {
             super(string, cause);
         }
+        
+        private static final long serialVersionUID = -6117454140018535837L;
     }

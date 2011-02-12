@@ -18,11 +18,13 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.misc.Utils;
+import vitry.runtime.util.*;
 
 
 abstract public class Intersection extends InclusionPattern
     {
+       // Eq and match
+
         public boolean match(Object o) {
             if (o instanceof Pattern) throw new IllegalArgumentException();
             for (Pattern x : this)
@@ -61,6 +63,8 @@ abstract public class Intersection extends InclusionPattern
         public boolean matchFor(Pattern p) {
             return p.match(this);
         }
+        
+        // Java stuff
 
         public String toString() {
             return Utils.join(this, "(", " & ", ")");

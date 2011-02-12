@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import vitry.runtime.Function;
-import vitry.runtime.misc.Utils;
+import vitry.runtime.util.Utils;
 
 
 /**

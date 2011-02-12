@@ -18,41 +18,48 @@
  */
 package vitry.runtime;
 
+import vitry.runtime.error.*;
 
 /**
  * The eval operation.
  * 
- * Expects a atomic values or a an expression tree. Atomic values evaluate to themselves.
- * Tokens representing atomic values evaluate to the value represented. 
- * Compound structures evaluate as the expression they represent.
+ * Expects a atomic values or a an expression tree. Atomic values 
+ * evaluate to themselves. Tokens representing atomic values evaluate
+ * to the value represented. Compound structures evaluate as the 
+ * expression they represent.
+ *
+ * @author Hans Höglund
  */
 public interface Eval
-    {
+  {
 
-        /**
-         * Evaluate the given pattern.
-         *
-         * If the given value is an atomic value, return it. Otherwise, interpret it as a Vitry syntax 
-         * tree and return its value. This may result in a ParseError.
-         *
-         * If the given pattern evaluates to a module, a module is constructed and resolved before
-         * it is returned. This may result in a LinkageError or TypeError.
-         * 
-         * @param expr 
-         *      Pattern to evaluate.
-         * @throws ParseError
-         * @throws LinkageError
-         */
-        public Object eval(Pattern expr) throws ParseError, LinkageError, TypeError;
+    /**
+     * Evaluate the given pattern.
+     *
+     * If the given value is an atomic value, return it. Otherwise, 
+     * interpret it as a Vitry syntax tree and return its value. This 
+     * may result in a ParseError.
+     *
+     * If the given pattern evaluates to a module, a module is 
+     * constructed and resolved before it is returned. This may result in
+     * a ResolveError or TypeError.
+     * 
+     * @param expr 
+     *      Pattern to evaluate.
+     * 
+     * @throws ParseError
+     * @throws ResolveError
+     */
+    public Object eval(Pattern expr) throws ParseError, ResolveError, TypeError;
+    
+    /**
+     * Whether this eval method accepts parser-generated tokens.
+     */
+    public boolean acceptsParserTokens();
+    
+    /**
+     * Whether this eval method accepts symbolic tokens.
+     */
+    public boolean acceptsUserTokens();   
         
-        /**
-         * Whether this eval method accepts parser-generated tokens.
-         */
-        public boolean acceptsParserTokens();
-
-        /**
-         * Whether this eval method accepts symbolic tokens.
-         */
-        public boolean acceptsUserTokens();
-        
-    }
+  }

@@ -17,10 +17,10 @@
  * See COPYING.txt for details.
  */
 package vitry.runtime;
+     
 
 abstract public class Atom extends BasePattern
     {
-        
         public boolean eq(Atom o) {
             return this.equals(o);
         }

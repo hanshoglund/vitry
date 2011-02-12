@@ -16,47 +16,29 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
+package vitry.runtime.util;
+
+import vitry.runtime.Arity;
 
 /**
- * The top type, written as <code>_</code>.
+ * Static methods to check function arguments.
+ * 
+ * All throw IllegalArgumentException upon failure.
  */
-public final class Any extends Atom
+public class Checks
     {
-        /**
-         * Initiated in runtime.
-         */
-        Any() {}
-
-        public boolean eq(Atom o) {
-            return o == this;
+        private Checks() {
         }
 
-        public boolean match(Atom o) {
-            return true;
+        public static void checkArity(Arity a, int arity) {
+            if (a.getArity() != arity)
+                throw new IllegalArgumentException("Function must have arity " + arity);
         }
 
-        public boolean match(Product p) {
-            return true;
-        }
-
-        public boolean match(Union p) {
-            return true;
-        }
-
-        public boolean match(Set p) {
-            return true;
-        }
-
-        public boolean match(Intersection p) {
-            return true;
-        }
-
-        public boolean match(Type p) {
-            return true;
-        }
-
-        public String toString() {
-            return "_";
+        public static void checkNotNull(Object... args) {
+            for (Object o : args) {
+                if (o == null)
+                    throw new IllegalArgumentException("Excepted non-null argument");
+            }
         }
     }

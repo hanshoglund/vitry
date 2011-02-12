@@ -18,12 +18,16 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.misc.Utils;
+import vitry.runtime.error.*;
+import vitry.runtime.util.*;
+import vitry.runtime.struct.*;
 
 /**         
- * Base environment. Implements non-stack consuming lookup.
+ * Base environment.
+ *
+ * @author Hans Höglund
  */
-abstract public class AbstractEnvironment<K, V> implements Environment<K, V>
+abstract class AbstractEnvironment<K, V> implements Environment<K, V>
     {
 
         private final Environment<K, V> parent;

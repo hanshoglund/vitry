@@ -18,6 +18,7 @@
  */
 package vitry.runtime;
 
+import vitry.runtime.error.InvocationError;
 import vitry.runtime.struct.Sequence;
 import vitry.runtime.struct.Sequences;
 
@@ -30,6 +31,8 @@ import vitry.runtime.struct.Sequences;
  * application or reapply their results.
  * 
  * The applyVar() method delegates to apply().
+ *
+ * @author Hans Höglund
  */
 abstract public class StandardFunction extends AbstractFunction implements Arity
     {

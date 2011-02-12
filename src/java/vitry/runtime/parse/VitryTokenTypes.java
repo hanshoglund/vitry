@@ -2,10 +2,10 @@ package vitry.runtime.parse;
 
 import vitry.runtime.Environment;
 import vitry.runtime.HashEnvironment;
-import vitry.runtime.ParseError;
 import vitry.runtime.Pattern;
 import vitry.runtime.Symbol;
-import vitry.runtime.VitryError;
+import vitry.runtime.error.ParseError;
+import vitry.runtime.error.VitryError;
 
 
 /**

@@ -18,9 +18,9 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.struct.Sequence;
-import vitry.runtime.struct.Sequences;
-
+import vitry.runtime.error.*;
+import vitry.runtime.struct.*;
+                              
 
 public class InvertibleRestFunction extends RestFunction implements InvertibleFunction
     {

@@ -21,12 +21,13 @@ package vitry.runtime;
 import java.util.Iterator;
 
 /**
- * Base implementation, relying on a sequence.
+ * Implements native lists.
+ *
+ * @author Hans Höglund
  */
 abstract public class List extends ConstructionPattern
     {
 
-        
         public InvertibleFunction structor() {
             return null;
         }
@@ -40,6 +41,9 @@ abstract public class List extends ConstructionPattern
             return null;
             // TODO Auto-generated method stub
         }
+        
+        
+        // Eq and match
 
         public boolean eqFor(Pattern o) {
             return false;
@@ -50,4 +54,9 @@ abstract public class List extends ConstructionPattern
             return false;
             // TODO Auto-generated method stub
         }
+        
+        
+        // Java stuff
+        
+        
     }

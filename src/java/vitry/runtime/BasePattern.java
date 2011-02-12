@@ -17,6 +17,7 @@
  * See COPYING.txt for details.
  */
 package vitry.runtime;
+                                      
 
 abstract public class BasePattern implements Pattern
     {

@@ -1,7 +1,7 @@
 package vitry.prelude;
 
-import vitry.runtime.InvocationError;
 import vitry.runtime.StandardFunction;
+import vitry.runtime.error.InvocationError;
 
 public class quit extends StandardFunction
     {

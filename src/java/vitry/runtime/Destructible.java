@@ -18,12 +18,11 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.struct.Sequence;
+import vitry.runtime.error.*;
+import vitry.runtime.util.*;
+import vitry.runtime.struct.*;
 
-/**
- * Implemented by destructible values. The standard destructor functions 
- * simply call destruct().
- */
+
 public interface Destructible
     {
         boolean canDestruct();

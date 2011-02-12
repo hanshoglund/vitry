@@ -23,11 +23,4 @@ import vitry.runtime.struct.Sequence;
 
 public interface Product extends Pattern, Sequence<Pattern>
     {
-        // Provide fast access to pair
-        
-        public Pattern first();
-
-        public Pattern second();
-        
-        Product productMap(Function fn);
     }

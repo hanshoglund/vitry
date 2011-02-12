@@ -22,8 +22,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Standard symbols.
- * No namespaces, we use disjunct top-level modules instead.
+ * Standard symbols. Note that Vitry symbols does not have 
+ * namespaces, they are simply unique refences accessed by name.
+ *
+ * @author Hans Höglund
  */
 public class Symbol extends Atom
     {
@@ -36,6 +38,8 @@ public class Symbol extends Atom
                 return sym;
             }
         }
+
+        // Eq, string and hashCode
 
         public String toString() {
             return name;
@@ -56,9 +60,12 @@ public class Symbol extends Atom
         private int                        cachedHashCode;
 
 
-        private static Map<String, Symbol> symbols             = new HashMap<String, Symbol>();
-
         private Symbol(String name) {
             this.name = name;
         }
+
+        /**
+         * Global symbol table
+         */
+        private static Map<String, Symbol> symbols = new HashMap<String, Symbol>();
     }

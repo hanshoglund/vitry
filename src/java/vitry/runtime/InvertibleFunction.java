@@ -18,11 +18,13 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.struct.Sequence;
-
+import vitry.runtime.error.*;
+import vitry.runtime.struct.*;
 
 /**
  * A function with a known inverse.
+ *
+ * @author Hans Höglund
  */
 public interface InvertibleFunction extends Function
     {

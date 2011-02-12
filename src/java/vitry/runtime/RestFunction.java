@@ -18,6 +18,7 @@
  */
 package vitry.runtime;
 
+import vitry.runtime.error.InvocationError;
 import vitry.runtime.struct.ArraySequence;
 import vitry.runtime.struct.Sequence;
 
@@ -26,6 +27,8 @@ import vitry.runtime.struct.Sequence;
  * Function with variable number of arguments.
  * 
  * All methods delegate to applyVar(Sequence)
+ *
+ * @author Hans Höglund
  */
 public class RestFunction extends AbstractFunction
     {    

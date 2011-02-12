@@ -24,15 +24,19 @@ import static vitry.runtime.struct.Sequences.*;
 import java.math.BigInteger;
 import java.util.Iterator;
 
-import vitry.runtime.misc.*;
+import vitry.runtime.error.*;
 import vitry.runtime.parse.*;
 import vitry.runtime.struct.*;
+import vitry.runtime.util.*;
+                                
 
 /**
  * Standard interpreter.
  * 
- * This implementation optimizes tail calls to interpreted functions, but not
- * to compiled functions.
+ * This implementation optimizes tail calls to interpreted functions, 
+ * but not to compiled functions.
+ *
+ * @author Hans Höglund
  */
 public class Interpreter implements Eval 
     {                
@@ -55,13 +59,11 @@ public class Interpreter implements Eval
         static final int TYPE_IF      = VitryParser.If;
         static final int TYPE_LEFT    = VitryParser.Left;
         static final int TYPE_LET     = VitryParser.Let;
-        // static final int TYPE_LOOP    = VitryParser.Loop;
         static final int TYPE_MATCH   = VitryParser.Match;
         static final int TYPE_MODULE  = VitryParser.Module;
         static final int TYPE_OPS     = VitryParser.Ops;
         static final int TYPE_PAR     = VitryParser.Par;
         static final int TYPE_QUOTE   = VitryParser.Quote;
-        // static final int TYPE_RECUR   = VitryParser.Recur;
         static final int TYPE_TYPE    = VitryParser.Type;
 
         
@@ -110,8 +112,8 @@ public class Interpreter implements Eval
                 (
                 expr, 
                 STANDARD_CONTEXT,
-                VitryRuntime.prelude,
-                VitryRuntime.preludeFixities);
+                VitryRuntime.getPrelude(),
+                VitryRuntime.getPreludeFixities());
         }
         
 
@@ -483,8 +485,9 @@ public class Interpreter implements Eval
                         }
                         
                     case TYPE_OPS:
-                        OperatorRewrite rw = new OperatorRewrite(fixities, context);
-                        expr = rw.rewrite(ops);
+                        throwNotSupported();
+//                        OperatorRewrite rw = new OperatorRewrite(fixities, context);
+//                        expr = rw.rewrite(ops);
                         continue;
                         
                     

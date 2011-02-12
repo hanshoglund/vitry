@@ -16,7 +16,9 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
+package vitry.runtime.error;
+
+import vitry.runtime.Environment;
 
 /**
  * Thrown to indicate failed lookup of some binding.

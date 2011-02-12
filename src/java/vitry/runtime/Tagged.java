@@ -1,5 +1,4 @@
 /*
-
  * Vitry, copyright (C) Hans Hoglund 2011
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -19,13 +18,15 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.Sequence;
+import vitry.runtime.util.Utils;
 
 /**
  * Implements tagged values.
  *
- * (Used for runtime type information.)
+ * TODO do something special with Native/NativeSet etc etc to avoid double wrapping
+ *
+ * @author Hans Höglund
  */
 public class Tagged extends BasePattern implements Destructible
     {
@@ -49,6 +50,9 @@ public class Tagged extends BasePattern implements Destructible
         public Tagged retag(Type type) {
             return type.tag(val);
         }
+        
+        
+        // Eq and match
 
         public boolean eq(Tagged o) {
             return (this == o) || (tag.equals(o.tag) && (val.eqFor(o.val)));
@@ -87,12 +91,10 @@ public class Tagged extends BasePattern implements Destructible
         }
 
         public boolean canDestruct() {
-            return false;
-            // TODO Auto-generated method stub
+            return (val instanceof Destructible) && ((Destructible) val).canDestruct();
         }
 
         public Sequence<Pattern> destruct() {
-            return null;
-            // TODO Auto-generated method stub
+            return ((Destructible) val).destruct();
         }        
     }

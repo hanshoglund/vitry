@@ -16,20 +16,37 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
+package vitry.runtime.error;
+
+import vitry.runtime.Environment;
 
 /**
- * Thrown to indicate a problem related to function invocation.
+ * Thrown to indicate a problem related to a binding operation.
  */
-public class InvocationError extends VitryError
+public class BindingError extends VitryError
     {
-        public InvocationError(String string) {
+        private Object key;
+
+        private Object env;
+
+        public BindingError(Object key, Environment<?, ?> env) {
+            super("Key " + key + " already defined in " + env);
+            this.key = key;
+            this.env = env;
+        }
+
+        BindingError(String string) {
             super(string);
         }
 
-        public InvocationError(String string, Throwable cause) {
-            super(string, cause);
+        public Object getKey() {
+            return key;
         }
-        
-        private static final long serialVersionUID = -6117454140018535837L;
+
+
+        public Object getEnv() {
+            return env;
+        }
+
+        private static final long serialVersionUID = 472453313488024837L;
     }

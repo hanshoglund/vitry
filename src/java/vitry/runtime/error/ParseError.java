@@ -16,7 +16,8 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
+package vitry.runtime.error;
+
 
 public class ParseError extends VitryError
     {

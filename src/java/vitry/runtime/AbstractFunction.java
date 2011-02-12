@@ -20,13 +20,14 @@ package vitry.runtime;
 
 import vitry.runtime.struct.Sequence;
 
-
 /**
- * This class implements most aspects of a function, except how it is applied. 
- * Requires scope upon construction, however domain and range are mutable to 
- * allow for type inference. 
+ * This class implements most aspects of a function, except how
+ * it is applied. Requires scope upon construction, however domain
+ * and range are mutable to allow for type inference.
+ *
+ * @author Hans Höglund 
  */
-abstract public class AbstractFunction extends ConstructionPattern implements Function, Scope, TypableFunction
+abstract class AbstractFunction extends ConstructionPattern implements Function, Scope, TypableFunction
     {
 
         /**
@@ -41,7 +42,7 @@ abstract public class AbstractFunction extends ConstructionPattern implements Fu
         
 
         public AbstractFunction() {
-            this(VitryRuntime.prelude, null, null);
+            this(VitryRuntime.getPrelude(), null, null);
         }
 
         public AbstractFunction(Scope scope) {

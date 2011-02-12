@@ -16,7 +16,7 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime.misc;
+package vitry.runtime.util;
 
 import java.io.File;
 import java.net.MalformedURLException;

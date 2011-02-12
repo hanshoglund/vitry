@@ -21,12 +21,14 @@ package vitry.runtime;
 import java.util.HashMap;
 import java.util.Map;
 
-import vitry.runtime.misc.Utils;
-import vitry.runtime.struct.Sequence;
+import vitry.runtime.error.*;
+import vitry.runtime.struct.*;
+import vitry.runtime.util.*;
 
 
 public class Type extends BasePattern implements TypeExpr
     {
+        
         private final Pattern            pattern;
         private final Symbol             name;
         private final Sequence<TypeExpr> vars;
@@ -54,60 +56,41 @@ public class Type extends BasePattern implements TypeExpr
             if (value instanceof Tagged)
                 return ((Tagged) value).retag(this);
             
-            if (value.matchFor(this)) 
+            if (value.matchFor(this)) {
+                // TODO memoize to speed up equality checks
                 return new Tagged(value, this);
-            else
+            } else {                    
                 throw new TypeError(this, value);
+            }
         }
 
+        // Eq and match      
         
         public boolean eq(Type o) {
-            return o == this ||
+            return (o == this ||
                 (o.pattern.eqFor(this.pattern)
                     && o.name.eqFor(this.name)
-                    && o.vars.equals(this.vars)); // TODO seq equality?
+                    && o.vars.equals(this.vars))); // TODO seq equality?
         }
 
         public boolean match(Tagged p) {
             return p.getTag() == this;
         }
 
-
         public boolean match(Type p) {
-            return p.pattern.matchFor(this.pattern); // TODO ?
+            return p.pattern.matchFor(this.pattern); // TODO correct ?
         }
-
 
         public boolean eqFor(Pattern o) {
             return o.eq(this);
         }
-
-// TODO eq match
-        
-        
-        
-        
-        
-        
-        
-        
         
         public boolean matchFor(Pattern p) {
             return p.match(this);
         }
-
-
-//        public boolean canDestruct() {
-//            if (pattern instanceof Destructible)
-//                return ((Destructible) pattern).canDestruct();
-//            return false;
-//        }
-//
-//        public Sequence<Pattern> destruct() {
-//            if (pattern instanceof Destructible)
-//                return ((Destructible) pattern).destruct();
-//            throw new UnsupportedOperationException("Can not destruct " + this);
-//        }
+                
+        
+        // Java stuff
 
         public String toString() {
             if (name != null)

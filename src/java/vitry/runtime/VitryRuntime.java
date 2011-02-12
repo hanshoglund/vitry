@@ -19,144 +19,242 @@
 package vitry.runtime;
 
 import java.math.BigInteger;
+import java.util.Iterator;
+import java.util.Properties;
 
 import vitry.prelude.*;
 import vitry.runtime.struct.*;
 
 
 /**
- * This class encapsulates the runtime system. 
- *
- * TODO
+ * Runtime system for the Vitry programming language.
  * 
  * @author Hans Höglund
  */
-public class VitryRuntime
+public final class VitryRuntime 
     {
 
-        public static final Nil      NIL    = new Nil();
-        public static final Bottom   BOTTOM = new Bottom();
-        public static final Any      ANY    = new Any();
-        public static final Symbol   TRUE   = Symbol.intern("true");
-        public static final Symbol   FALSE  = Symbol.intern("false");
-        public static final Type     BOOL   = symType("bool", new SimpleUnion(TRUE, FALSE));
+        public static final Nil         NIL             = new Nil();
+        public static final Bottom      BOTTOM          = new Bottom();
+        public static final Any         ANY             = new Any();
+        public static final Symbol      TRUE            = Symbol.intern("true");
+        public static final Symbol      FALSE           = Symbol.intern("false");                                                        
+        public static final Set         NAT             = NativeSet.forClass(BigInteger.class);
+        public static final Set         INT             = NativeSet.forClass(BigInteger.class);
+        public static final Set         RAT             = NativeSet.forClass(BigRational.class);
+        public static final Set         FLOAT           = NativeSet.forClass(Float.class);
+        public static final Set         DOUBLE          = NativeSet.forClass(Double.class);
+        public static final Set         STR             = NativeSet.forClass(String.class); 
+        // TODO boolean etc                                                                                
+        static final int                MIN_ARITY       = 1;
+        static final int                MAX_ARITY       = 0xf;
 
-        public static final Set      NAT    = NativeSet.forClass(BigInteger.class);
-        public static final Set      INT    = NativeSet.forClass(BigInteger.class);
-        public static final Set      RAT    = NativeSet.forClass(BigRational.class);
-        public static final Set      FLOAT  = NativeSet.forClass(Float.class);
-        public static final Set      DOUBLE = NativeSet.forClass(Double.class);
-        public static final Set      STR    = NativeSet.forClass(String.class);
+        
+        // Prelude
+        
+        private static final Environment<Symbol, Object> prelude = new HashEnvironment<Symbol, Object>();
+        private static final Environment<Symbol, Fixity> preludeFixities = new HashEnvironment<Symbol, Fixity>();
+
+        static {
+            def("()",                   NIL);
+            def("[]",                   NIL);
+            def("{}",                   BOTTOM);
+            def("nil",                  NIL);
+            def("eq",                   new eq());
+            def("==",                   "eq");
+            def("true",                 TRUE);
+            def("false",                FALSE);
+            def("int",                  INT);
+            def("nat",                  NAT);
+            def("rat",                  RAT);
+            def("float",                FLOAT);
+            def("double",               DOUBLE);
+            def("str",                  STR);
+            
+            def("id",                   new id());
+            def("const",                new const_());   
+            def("product",              new product());   
+            def("add",                  new add());
+            def("sub",                  new sub());
+            def("mul",                  new mul());
+            def("div",                  new div());
+            def("mod",                  new mod());
+            def("modp",                 new modp());
+
+            def("(+)",                  "add");
+            def("(-)",                  "sub");
+            def("(*)",                  "mul");
+            def("(/)",                  "div");
+            def("(%)",                  "mod");
+            def("(%%)",                 "modp");
+            def("(,)",                  "product");
+
+            def("quit",                 new quit());
+            def("arity",                new arity());
+
+            
+            defFix("(.)",               12, false, true );   // gathering?
+            defFix("(^^)",              10, true,  false);
+            defFix("(^)",               10, true,  false);
+            defFix("(%)",               9,  true,  false);
+            defFix("(%%)",              9,  true,  false);
+            defFix("(/)",               9,  true,  false);
+            defFix("(*)",               9,  true,  false);
+            defFix("(-)",               8,  true,  false);
+            defFix("(+)",               8,  true,  false);
+            defFix("(<)",               6,  true,  false);
+            defFix("(<=)",              6,  true,  false);
+            defFix("(>=)",              6,  true,  false);
+            defFix("(>)",               6,  true,  false);
+            defFix("(/=)",              6,  true,  false);
+            defFix("(==)",              6,  true,  false);
+            defFix("[,]",               5,  true,  true);
+            defFix("{,}",               5,  true,  true);
+            defFix("(,)",               5,  true,  true);
+            defFix("(|)",               4,  true,  false);  // assoc?
+            defFix("(&)",               4,  true,  false);  // assoc?
+            defFix("(->)",              3,  false, false);
+            defFix("(&&)",              2,  false, false);
+            defFix("(||)",              1,  false, false);
+            defFix("($!)",              0,  true,  false);
+            defFix("($)",               0,  false, false);
+        }
+        
+
+        
+        private final Properties  systemProperties;
+
+        private ClassLoader classLoader;
+        
+        private Eval       interpreter;
+        
+        private BigInteger uniqueState = BigInteger.valueOf(0x2177375305f7L);
         
         
+        public VitryRuntime
+            (
+            Properties systemProperties, 
+            ClassLoader classLoader,
+            Eval interpreter
+            ) 
+        {
+            this.systemProperties = systemProperties;
+            this.classLoader = classLoader;
+            this.interpreter = interpreter;
+            this.uniqueState = uniqueState;
+        }
+
+        
+        
+        
+        // Static accessors
+        
+
+        public Properties getSystemProperties() {
+            return systemProperties;
+        }
+
+        public ClassLoader getClassLoader() {
+            return classLoader;
+        }
+
+        public Eval getInterpreter() {
+            return interpreter;
+        }
+
+        public BigInteger getUniqueState() {
+            return uniqueState;
+        }
+
+        public void setClassLoader(ClassLoader classLoader) {
+            this.classLoader = classLoader;
+        }
+
+        public void setInterpreter(Eval interpreter) {
+            this.interpreter = interpreter;
+        }
+
+        public static Environment<Symbol, Object> getPrelude() {
+            return prelude;
+        }
+
+        public static Environment<Symbol, Fixity> getPreludeFixities() {
+            return preludeFixities;
+        }
+        
+        
+        
+        // General construction and conversion
+        
+        
+        public static Product product(Sequence<Pattern> args) {
+            return new ForwardingProduct(args);
+        }
+
+        public static Set set(Sequence<Pattern> args) {
+            return new ForwardingSet(args);
+        }
+
+        public static Union union(Sequence<Pattern> args) {
+            return new ForwardingUnion(args);
+        }
+
+        public static Intersection intersection(Sequence<Pattern> args) {
+            return new ForwardingIntersection(args);
+        }
+
+        
+        public static Product productOf(Object... args) {
+            return new ForwardingProduct(Native.wrap(new ArraySequence<Object>(args)));
+        }
+        
+        public static Set setOf(Object... args) {
+            return new ForwardingSet(Native.wrap(new ArraySequence<Object>(args)));
+        }
+        
+        public static Union unionOf(Object... args) {
+            return new ForwardingUnion(Native.wrap(new ArraySequence<Object>(args)));
+        }
+        
 
 
-        public static final List unique = (new List()
-            {
+        // General construction and conversion
+        
+        
+        public static Intersection intersectionOf(Object... args) {
+            return new ForwardingIntersection(Native.wrap(new ArraySequence<Object>(args)));
+        }
 
-                public Pattern head() {
-                    return null;
-                    // TODO Auto-generated method stub
-                }
 
-                public Sequence<Pattern> tail() {
-                    return null;
-                    // TODO Auto-generated method stub
-                }
-            });
 
 
         public static Symbol toVitryBool(boolean a) {
             return a ? TRUE : FALSE;
         }
-
-        public static Type symType(String name, Pattern pattern) {
-            return new Type(pattern, Symbol.intern(name), null);
+        
+        public static boolean toJavaBool(Symbol a) {
+            return a != FALSE;
         }
+        
+        
+        
+        
+         
+        // Support code
 
-
-        static Environment<Symbol, Object>        prelude         = new HashEnvironment<Symbol, Object>();
-        static {
-            prelude.define(Symbol.intern("()"), NIL);
-            prelude.define(Symbol.intern("[]"), NIL);
-            prelude.define(Symbol.intern("{}"), BOTTOM);
-            prelude.define(Symbol.intern("nil"), NIL);
-            prelude.define(Symbol.intern("=="), new eq());
-            prelude.define(Symbol.intern("eq"), prelude.lookup(Symbol.intern("==")));
-            prelude.define(Symbol.intern("bool"), BOOL);
-            prelude.define(Symbol.intern("true"), TRUE);
-            prelude.define(Symbol.intern("false"), FALSE);
-            prelude.define(Symbol.intern("int"), INT);
-            prelude.define(Symbol.intern("nat"), NAT);
-            prelude.define(Symbol.intern("rat"), RAT);
-            prelude.define(Symbol.intern("float"), FLOAT);
-            prelude.define(Symbol.intern("double"), DOUBLE);
-            prelude.define(Symbol.intern("str"), STR);
-            prelude.define(Symbol.intern("id"), new id());
-            prelude.define(Symbol.intern("const"), new const_());   
-
-            // Test constructor
-            prelude.define(Symbol.intern("product"), new product());   
-
-            
-            prelude.define(Symbol.intern("add"), new add());
-            prelude.define(Symbol.intern("sub"), new sub());
-            prelude.define(Symbol.intern("mul"), new mul());
-            prelude.define(Symbol.intern("div"), new div());
-            prelude.define(Symbol.intern("mod"), new mod());
-            prelude.define(Symbol.intern("modp"), new modp());
-
-            prelude.define(Symbol.intern("(+)"), prelude.lookup(Symbol.intern("add")));
-            prelude.define(Symbol.intern("(-)"), prelude.lookup(Symbol.intern("sub")));
-            prelude.define(Symbol.intern("(*)"), prelude.lookup(Symbol.intern("mul")));
-            prelude.define(Symbol.intern("(/)"), prelude.lookup(Symbol.intern("div")));
-            prelude.define(Symbol.intern("(%)"), prelude.lookup(Symbol.intern("mod")));
-            prelude.define(Symbol.intern("(%%)"), prelude.lookup(Symbol.intern("modp")));
-            prelude.define(Symbol.intern("(,)"), prelude.lookup(Symbol.intern("product")));
-
-            prelude.define(Symbol.intern("quit"), new quit());
-            prelude.define(Symbol.intern("unique"), unique);
-            prelude.define(Symbol.intern("arity"), new arity());
+        private static void def(String name, Object val) {
+            prelude.define(Symbol.intern(name), val);
+        }            
+        
+        private static Object alias(String name) {
+            return prelude.lookup(Symbol.intern(name));
         }
-
-
-        public static Environment<Symbol, Fixity> preludeFixities = new HashEnvironment<Symbol, Fixity>();
-        static {
-            defineFixity("(.)",     12, false, true); // gathering?
-            defineFixity("(^^)",    10, true, false);
-            defineFixity("(^)",     10, true, false);
-            defineFixity("(%)",     9, true, false);
-            defineFixity("(%%)",    9, true, false);
-            defineFixity("(/)",     9, true, false);
-            defineFixity("(*)",     9, true, false);
-            defineFixity("(-)",     8, true, false);
-            defineFixity("(+)",     8, true, false);
-            defineFixity("(<)",     6, true, false);
-            defineFixity("(<=)",    6, true, false);
-            defineFixity("(>=)",    6, true, false);
-            defineFixity("(>)",     6, true, false);
-            defineFixity("(/=)",    6, true, false);
-            defineFixity("(==)",    6, true, false);
-            defineFixity("[,]",     5, true, true);
-            defineFixity("{,}",     5, true, true);
-            defineFixity("(,)",     5, true, true);
-            defineFixity("(|)",     4, true, false); // associativity?
-            defineFixity("(&)",     4, true, false); // associativity?
-            defineFixity("(->)",    3, false, false);
-            defineFixity("(&&)",    2, false, false);
-            defineFixity("(||)",    1, false, false);
-            defineFixity("($!)",    0, true, false);
-            defineFixity("($)",     0, false, false);
-        }
-
-        private static void defineFixity(String name, int precedence, boolean assoc, boolean gathering) {
+        
+        private static void defFix(String name, int precedence, boolean assoc, boolean gathering) {
             preludeFixities.define(Symbol.intern(name), new Fixity(precedence, assoc, gathering));
         }
-
-
-        private static BigInteger uniqueState = BigInteger.valueOf(0x2177375305f7L);
-
-        public static Symbol unique() {
+        
+        private Symbol nextUnique() {
             byte[] val = uniqueState.toByteArray();
             char[] str = new char[val.length / 2 + 1];
             for (int i = 0; i < val.length; i += 2) {
@@ -168,27 +266,261 @@ public class VitryRuntime
             uniqueState = uniqueState.add(BigInteger.ONE);
             return Symbol.intern(new String(str));
         }
-
-        public static Product product(Object... args) {
-            return new SimpleProduct(args);
-        }
-
-        public static Set set(Object... args) {
-            return new SimpleSet(args);
-        }
-
-        public static Union union(Object... args) {
-            return new SimpleUnion(args);
-        }
-
-        public static Intersection intersection(Object... args) {
-            return new SimpleIntersection(args);
-        }
-
-
-        static final int MIN_ARITY = 1;
-
-        static final int MAX_ARITY = 0xf;
-
-
     }
+
+
+
+// Built-in types
+
+
+class Any extends Atom
+    {
+        Any() {}
+
+        public boolean eq(Atom o) {
+            return o == this;
+        }
+
+        public boolean match(Atom o) {
+            return true;
+        }
+
+        public boolean match(Product p) {
+            return true;
+        }
+
+        public boolean match(Union p) {
+            return true;
+        }
+
+        public boolean match(Set p) {
+            return true;
+        }
+
+        public boolean match(Intersection p) {
+            return true;
+        }
+
+        public boolean match(Type p) {
+            return true;
+        }
+
+        public String toString() {
+            return "_";
+        }
+    }
+
+
+class Bottom extends AbstractSet
+    {
+        Bottom() {}
+
+        public boolean eq(Set o) {
+            return o == this;
+        }
+
+        public String toString() {
+            return "{}";
+        }
+
+        public int hashCode() {
+            return -1;
+        }
+
+        public boolean hasTail() {
+            return false;
+        }
+
+        public Pattern head() {
+            return throwUnsupported();
+        }
+
+        public Sequence<Pattern> tail() {
+            return null;
+        }       
+        
+        private <T> T throwUnsupported() {
+            throw new UnsupportedOperationException("{} has no members.");
+        }
+    }
+
+
+final class Nil extends Atom implements Product
+    {
+        Nil() {}
+
+        public boolean eq(Atom o) {
+            return o == this;
+        }
+
+        public String toString() {
+            return "()";
+        }
+
+        public Sequence<Pattern> cons(Pattern head) {
+            return new PairSequence<Pattern>(head, this);
+        }
+
+        public <U> MapSequence<Pattern, U> map(Function fn) {
+            return new MapSequence<Pattern, U>(fn, this);
+        }
+
+        public boolean isCompound() {
+            return false;
+        }
+
+        public boolean hasTail() {
+            return false;
+        }
+
+        // Rest of interface unsupported...
+
+        public Product first() {
+            return throwUnsupported();
+        }
+
+        public Product second() {
+            return throwUnsupported();
+        }
+
+        public Pattern head() {
+            return throwUnsupported();
+        }
+
+        public Sequence<Pattern> tail() {
+            return throwUnsupported();
+        }
+
+        public Iterator<Pattern> iterator() {
+            return throwUnsupported();
+        }
+
+        public Sequence<Pattern> destruct() {
+            return throwUnsupported();
+        }
+
+        public InvertibleFunction structor() {
+            return throwUnsupported();
+        }
+
+        public SequenceIterator<Pattern> sequenceIterator() {
+            return throwUnsupported();
+        }
+        
+        public Product productMap(Function fn) {
+            return throwUnsupported();
+        }
+
+        private <T> T throwUnsupported() {
+            throw new UnsupportedOperationException("() has no members.");
+        }
+    }
+
+
+
+// Core type delegators
+
+class ForwardingIntersection extends Intersection
+{
+    Sequence<Pattern> elements;
+    
+    public ForwardingIntersection(Sequence<Pattern> elements) {
+        this.elements = elements;
+    }
+
+    public Iterator<Pattern> iterator() {
+        return elements.iterator();
+    }
+
+    public Pattern head() {
+        return elements.head();
+    }
+
+    public Sequence<Pattern> tail() {
+        return elements.tail();
+    }
+    
+    public boolean hasTail() {
+        return elements.hasTail();
+    }
+}
+
+class ForwardingProduct extends AbstractProduct
+{
+    Sequence<Pattern> elements;
+    
+    public ForwardingProduct(Sequence<Pattern> elements) {
+        this.elements = elements;
+    }
+
+    public Iterator<Pattern> iterator() {
+        return elements.iterator();
+    }
+
+    public Pattern head() {
+        return elements.head();
+    }
+
+    public Sequence<Pattern> tail() {
+        return elements.tail();
+    }
+
+    public boolean hasTail() {
+        return elements.hasTail();
+    }
+}
+
+class ForwardingSet extends AbstractSet
+{
+    Sequence<Pattern> elements;
+
+    public ForwardingSet(Sequence<Pattern> elements) {
+        this.elements = elements;
+    }
+    
+    public Iterator<Pattern> iterator() {
+        return elements.iterator();
+    }
+
+    public Pattern head() {
+        return elements.head();
+    }
+
+    public Sequence<Pattern> tail() {
+        return elements.tail();
+    }
+    
+    public boolean hasTail() {
+        return elements.hasTail();
+    }
+}
+
+class ForwardingUnion extends Union
+{
+    Sequence<Pattern> elements;
+
+    public ForwardingUnion(Sequence<Pattern> elements) {
+        this.elements = elements;
+    }
+
+    public Iterator<Pattern> iterator() {
+        return elements.iterator();
+    }
+
+    public Pattern head() {
+        return elements.head();
+    }
+
+    public Sequence<Pattern> tail() {
+        return elements.tail();
+    }
+
+    public boolean hasTail() {
+        return elements.hasTail();
+    }
+}
+
+
+
+
+

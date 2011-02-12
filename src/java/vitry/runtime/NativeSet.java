@@ -24,6 +24,7 @@ import java.util.WeakHashMap;
 
 import vitry.runtime.struct.MapSequence;
 import vitry.runtime.struct.Sequence;
+     
 
 /**
  * A set of host values, defined by a class or interface. 
@@ -32,6 +33,8 @@ import vitry.runtime.struct.Sequence;
  * host type. Subclasses behave as expected. 
  *
  * Does not work for other Pattern instances other than Native.
+ *
+ * @author Hans Höglund
  */
 public final class NativeSet extends AbstractSet
     {
@@ -54,12 +57,15 @@ public final class NativeSet extends AbstractSet
             return obj;
         }
 
+
+        
+        // Eq and match
+
         public boolean eq(Set o) {
             if (o == this) return true;
             if (o instanceof NativeSet) return ((NativeSet) o).javaClass == this.javaClass;
             return false;
         }
-
 
         public boolean match(Object o) {
             return javaClass.isAssignableFrom(o.getClass());
@@ -93,8 +99,11 @@ public final class NativeSet extends AbstractSet
         public boolean matchFor(Pattern p) {
             return p.match(this);
         }
+        
+        
 
         // Throw on enumeration
+        
         // TODO implement this using an interface EnumerableNativeType + registration?
 
         public Pattern head() {

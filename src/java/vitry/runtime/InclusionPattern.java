@@ -20,11 +20,8 @@ package vitry.runtime;
 
 import java.util.Iterator;
 
-import vitry.runtime.misc.Utils;
-import vitry.runtime.struct.PairSequence;
-import vitry.runtime.struct.MapSequence;
-import vitry.runtime.struct.Sequence;
-import vitry.runtime.struct.SequenceIterator;
+import vitry.runtime.struct.*;
+import vitry.runtime.util.Utils;
 
 
 abstract public class InclusionPattern extends BasePattern implements Sequence<Pattern>
@@ -71,7 +68,6 @@ abstract public class InclusionPattern extends BasePattern implements Sequence<P
         
         
         // Java stuff
-        
 
         public boolean equals(Object o) {
             if (o == this) return true;

@@ -18,6 +18,7 @@
  */
 package vitry.runtime;
 
+import vitry.runtime.error.InvocationError;
 import vitry.runtime.struct.MapSequence;
 import vitry.runtime.struct.Sequence;
 
@@ -29,6 +30,7 @@ import vitry.runtime.struct.Sequence;
  *
  * Wrapping mutable objects is not recommended.
  *
+ * @author Hans Höglund
  */
 public final class Native extends Atom
     {
@@ -61,15 +63,15 @@ public final class Native extends Atom
                 return new Native(o);
         }
 
-        /**
-         * Applies {@link #wrap(Object)} to the given values.
-         */
-        public static Pattern[] wrap(Object... values) {
-            Pattern[] values2 = new Pattern[values.length];
-            for (int i = 0; i < values.length; ++i)
-                values2[i] = wrap(values[i]);
-            return values2;
-        }
+//        /**
+//         * Applies {@link #wrap(Object)} to the given values.
+//         */
+//        public static Pattern[] wrap(Object... values) {
+//            Pattern[] values2 = new Pattern[values.length];
+//            for (int i = 0; i < values.length; ++i)
+//                values2[i] = wrap(values[i]);
+//            return values2;
+//        }
 
         /**
          * Applies {@link #wrap(Object)} lazily to the given seq.

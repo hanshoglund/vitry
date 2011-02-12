@@ -20,16 +20,20 @@ package vitry.runtime;
 
 import java.util.HashMap;
 
+import vitry.runtime.error.BindingError;
 
 /**
  * A basic non-persistent environment.
+ *
+ * @author Hans Höglund
  */
 public class HashEnvironment<K, V> extends AbstractEnvironment<K, V>
     {
         private final HashMap<K, V> bindings = new HashMap<K, V>();
-
+        
         
         public HashEnvironment() {
+            super();
         }
 
         public HashEnvironment(Environment<K, V> env) {
@@ -66,7 +70,4 @@ public class HashEnvironment<K, V> extends AbstractEnvironment<K, V>
             bindings.put(key, val);
             return this;
         }
-        
-        
-
     }

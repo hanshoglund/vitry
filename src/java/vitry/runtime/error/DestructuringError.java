@@ -1,7 +1,4 @@
-package vitry.prelude;
-
-import vitry.runtime.VitryError;
-
+package vitry.runtime.error;
 
 public class DestructuringError extends VitryError
     {

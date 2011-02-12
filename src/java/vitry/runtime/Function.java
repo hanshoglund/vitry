@@ -18,8 +18,8 @@
  */
 package vitry.runtime;
 
+import vitry.runtime.error.InvocationError;
 import vitry.runtime.struct.Sequence;
-
 
 
 public interface Function extends Sequence<Pattern>

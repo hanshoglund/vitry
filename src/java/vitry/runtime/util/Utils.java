@@ -16,13 +16,13 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime.misc;
+package vitry.runtime.util;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import vitry.runtime.ParseError;
+import vitry.runtime.error.ParseError;
 
 
 public class Utils

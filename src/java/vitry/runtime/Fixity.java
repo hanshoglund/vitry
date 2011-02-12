@@ -19,9 +19,15 @@
 package vitry.runtime;
 
 /**
- * Represents operator fixity.
+ * Represents operator fixity (including precedence associcativity 
+ * and binding style).
+ *
+ * Gathering operators are resolved to n-ary function calls when 
+ * repeated.
+ *
+ * @author Hans Höglund
  */
-public class Fixity extends ProductAdaptor
+public class Fixity
     {
         private final int precedence;
         private final boolean assoc;
@@ -47,9 +53,5 @@ public class Fixity extends ProductAdaptor
 
         public boolean isGathering() {
             return gathering;
-        }
-
-        public Product asProduct() {
-            return new SimpleProduct(precedence, assoc);
         }
     }

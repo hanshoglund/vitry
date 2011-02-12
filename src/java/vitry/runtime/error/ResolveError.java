@@ -16,16 +16,17 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
+package vitry.runtime.error;
 
 
-public class LinkageError extends VitryError
+
+public class ResolveError extends VitryError
     {
-        private LinkageError(String string, Throwable cause) {
+        private ResolveError(String string, Throwable cause) {
             super(string, cause);
         }
 
-        private LinkageError(String string) {
+        private ResolveError(String string) {
             super(string);
         }
 

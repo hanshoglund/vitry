@@ -7,11 +7,11 @@ import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 
-import vitry.runtime.misc.Utils;
 import vitry.runtime.parse.PatternTree;
 import vitry.runtime.parse.PatternTreeAdaptor;
 import vitry.runtime.parse.VitryLexer;
 import vitry.runtime.parse.VitryParser;
+import vitry.runtime.util.Utils;
 
 
 /**

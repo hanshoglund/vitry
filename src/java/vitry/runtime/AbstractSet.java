@@ -18,10 +18,12 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.misc.Utils;
+import vitry.runtime.error.*;
+import vitry.runtime.util.*;
+import vitry.runtime.struct.*;                                 
 
 
-abstract public class AbstractSet extends InclusionPattern implements Set
+abstract class AbstractSet extends InclusionPattern implements Set
     {
         public boolean match(Object o) {
             if (o instanceof Pattern) throw new IllegalArgumentException();
@@ -61,11 +63,11 @@ abstract public class AbstractSet extends InclusionPattern implements Set
         }
 
         public Pattern union(Set b) {
-            return new SimpleUnion(this, b);
+            return VitryRuntime.unionOf(this, b);
         }
 
         public Pattern intersection(Set b) {
-            return new SimpleIntersection(this, b);
+            return VitryRuntime.intersectionOf(this, b);
         }
         
         

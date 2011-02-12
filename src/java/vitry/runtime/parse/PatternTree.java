@@ -23,24 +23,24 @@ import java.util.Iterator;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 
-import vitry.runtime.Function;
 import vitry.runtime.Atom;
-import vitry.runtime.List;
-import vitry.runtime.StandardFunction;
+import vitry.runtime.Function;
 import vitry.runtime.Intersection;
-import vitry.runtime.InvocationError;
+import vitry.runtime.List;
 import vitry.runtime.Pattern;
 import vitry.runtime.Product;
 import vitry.runtime.Set;
-import vitry.runtime.SimpleProduct;
+import vitry.runtime.StandardFunction;
 import vitry.runtime.Tagged;
 import vitry.runtime.Type;
 import vitry.runtime.Union;
-import vitry.runtime.misc.Utils;
+import vitry.runtime.VitryRuntime;
+import vitry.runtime.error.InvocationError;
 import vitry.runtime.struct.IterableSequence;
 import vitry.runtime.struct.MapSequence;
 import vitry.runtime.struct.Sequence;
 import vitry.runtime.struct.SequenceIterator;
+import vitry.runtime.util.Utils;
 
 
 /**
@@ -51,7 +51,7 @@ import vitry.runtime.struct.SequenceIterator;
 public class PatternTree extends CommonTree implements Product
     {
 
-        private final Product delegee      = new SimpleProduct(this);
+        private final Product delegee      = VitryRuntime.product(this);
 
         private Sequence<Pattern> childSeq = null;
 
@@ -194,12 +194,6 @@ public class PatternTree extends CommonTree implements Product
             return delegee.eqFor(o);
         }
 
-
-        public Pattern first() {
-            return delegee.first();
-        }
-
-
         public <U> Sequence<U> map(Function fn) {
             return delegee.map(fn);
         }
@@ -257,10 +251,6 @@ public class PatternTree extends CommonTree implements Product
             return delegee.matchFor(p);
         }
 
-        public Pattern second() {
-            return delegee.second();
-        }
-
         public String toString() {
             return delegee.toString();
         }
@@ -269,8 +259,5 @@ public class PatternTree extends CommonTree implements Product
             return delegee.sequenceIterator();
         }
 
-        public Product productMap(Function fn) {
-            return delegee.productMap(fn);
-        }
         
     }

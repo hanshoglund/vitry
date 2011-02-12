@@ -18,25 +18,20 @@
  */
 package vitry.runtime;
 
-import java.util.Iterator;
-
-import vitry.runtime.misc.Utils;
-import vitry.runtime.struct.Sequence;
-import vitry.runtime.struct.SequenceIterator;
+import vitry.runtime.error.*;
+import vitry.runtime.util.*;
+import vitry.runtime.struct.*;
 
 /**
  * Base implementation, relying on a sequence.
  * 
- * For the reified block types, we have to override the Sequence methods to adapt
- * traversal to the generated accessors.
+ * For the reified block types, we have to override the sequence
+ * methods to adapt traversal to the generated accessors.
+ *
+ * @author Hans Höglund
  */
-abstract public class AbstractProduct extends ConstructionPattern 
-implements Product
+abstract class AbstractProduct extends ConstructionPattern implements Product
     {
-        
-        public InvertibleFunction structor() {
-            return null;
-        }
         
         public boolean eq(Product o) {
             Sequence<Pattern> left = o;
@@ -76,15 +71,7 @@ implements Product
             return p.match(this);
         }
         
-        public Product productMap(Function fn) {
-            return new SimpleProduct(this.map(fn));
-        }
         
-        
-
-
-        
-
         // Java stuff
 
         public boolean equals(Object o) {
@@ -98,25 +85,8 @@ implements Product
         }
 
 
-        public Iterator<Pattern> iterator() {
-            return new SequenceIterator<Pattern>(this);
-        }
-
         public String toString() {
             return Utils.join(this, "(", ", ", ")");
-        }
-        
-        
-        // Accessors
-
-        public Pattern first() {
-            return this.head();
-        }
-
-        public Pattern second() {
-            return this.tail().head();
-//            Seq<Pattern> tail = this.tail();
-//            return (tail == null ? null : tail.head());
         }
         
         protected <T> T throwUnsupported() {

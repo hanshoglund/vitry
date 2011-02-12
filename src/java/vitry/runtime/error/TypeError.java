@@ -16,18 +16,26 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
+package vitry.runtime.error;
+
+import vitry.runtime.Pattern;
+import vitry.runtime.Type;
 
 /**
- * Thrown to indicate matching errors.
+ * Thrown to indicate a typing error.
+ *
+ * TODO
  */
-public class MatchingError extends VitryError
+public class TypeError extends VitryError
     {
 
-        public MatchingError(Object value) {
-            super("No viable alternative for " + value);
+        public TypeError(Type tag, Pattern v) {
+            super("Can not apply tag " + tag + " to " + v);
         }
 
-        private static final long serialVersionUID = 2898202248351761101L;
+        public TypeError() {
+            super("");
+        }
 
+        private static final long serialVersionUID = 3634069213260367204L;
     }

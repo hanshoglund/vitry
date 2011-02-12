@@ -16,42 +16,19 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime;
+package vitry.runtime.error;
 
-import vitry.runtime.struct.Sequence;
 
 /**
- * The bottom type, a.k.a. the empty set.
+ * Thrown to indicate matching errors.
  */
-public final class Bottom extends AbstractSet
+public class MatchingError extends VitryError
     {
-        Bottom() {}
 
-        public boolean eq(Set o) {
-            return o == this;
+        public MatchingError(Object value) {
+            super("No viable alternative for " + value);
         }
 
-        public String toString() {
-            return "{}";
-        }
+        private static final long serialVersionUID = 2898202248351761101L;
 
-        public int hashCode() {
-            return -1;
-        }
-
-        public boolean hasTail() {
-            return false;
-        }
-
-        public Pattern head() {
-            return throwUnsupported();
-        }
-
-        public Sequence<Pattern> tail() {
-            return null;
-        }       
-        
-        private <T> T throwUnsupported() {
-            throw new UnsupportedOperationException("{} has no members.");
-        }
     }

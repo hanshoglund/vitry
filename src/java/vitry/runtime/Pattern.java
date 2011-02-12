@@ -18,7 +18,11 @@
  */
 package vitry.runtime;
 
-
+/**
+ * Represents basic matching logic.
+ *
+ * @author Hans Höglund
+ */
 public interface Pattern
     {
         boolean eq(Object o);
@@ -60,10 +64,10 @@ public interface Pattern
         boolean match(Intersection p);
 
         boolean match(Type p);
+                           
+                           
+        // Main dispatchers
         
-        /*
-         * Dispatch methods
-         */
         boolean eqFor(Pattern o);
 
         boolean matchFor(Pattern p);

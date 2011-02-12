@@ -1,11 +1,8 @@
 package vitry.prelude;
 
-import vitry.runtime.Destructible;
-import vitry.runtime.InvertibleRestFunction;
-import vitry.runtime.InvocationError;
-import vitry.runtime.Pattern;
-import vitry.runtime.SimpleProduct;
-import vitry.runtime.struct.Sequence;
+import vitry.runtime.*;
+import vitry.runtime.error.*;
+import vitry.runtime.struct.*;
 
 
 public class product extends InvertibleRestFunction
@@ -17,7 +14,9 @@ public class product extends InvertibleRestFunction
         }
 
         public Object applyVar(Sequence<?> args) {
-            return new SimpleProduct((Sequence<Pattern>)args);
+            // TODO temporary hack, find something more efficient
+//            return VitryRuntime.product((Sequence<?>) args);
+            return VitryRuntime.productOf(Sequences.toArray(args));
         }
 
         private <T> T throwDestructuring() {
