@@ -19,29 +19,25 @@
 package vitry.runtime.struct;
 
 
+public class Pair<T> extends AbstractSequence<T>
+    {        
+        private T head;
+        private Sequence<T> tail;
 
-class SingleSequence<T> extends AbstractSequence<T> implements Finite<T>
-    {
-        
-        private final T obj;
-        
-        public SingleSequence(T obj) {
-            this.obj = obj;
+        public Pair(T head, Sequence<T> tail) {
+            this.head = head;
+            this.tail = tail;
         }
 
         public T head() {
-            return obj;
+            return head;
         }
 
         public Sequence<T> tail() {
-            return null;
-        }
-
-        public int length() {
-            return 1;
+            return tail;
         }
 
         public boolean hasTail() {
-            return false;
+            return tail != null;
         }
     }

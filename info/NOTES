@@ -1,6 +1,14 @@
 
 
 
+Old notes, probably not up to date...
+
+
+****
+
+
+
+
 ANTLR command:
     java -cp lib/*:bin org.antlr.Tool -fo src/java/vitry/runtime/parse/  src/grammar/Vitry.g 
           

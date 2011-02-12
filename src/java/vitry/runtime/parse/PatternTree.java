@@ -130,14 +130,23 @@ public class PatternTree extends CommonTree implements Product
         private VitryToken wrap(Token t) {
             return new VitryToken(t);
         }
-        
-        
+
+
         
         // Delegate rest of implementation
 
-        public Sequence<Pattern> cons(Pattern head) {
-            return delegee.cons(head);
+        
+
+        public boolean eq(Object o) {
+            return delegee.eq(o);
         }
+
+
+
+        public Product mapProduct(Function fn) {
+            return delegee.mapProduct(fn);
+        }
+
 
 
         public boolean eq(Atom o) {
@@ -145,34 +154,11 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public boolean eq(Function p) {
-            return delegee.eq(p);
+
+        public Product cons(Pattern p) {
+            return delegee.cons(p);
         }
 
-
-        public boolean eq(Intersection o) {
-            return delegee.eq(o);
-        }
-
-
-        public boolean eq(List p) {
-            return delegee.eq(p);
-        }
-
-
-        public boolean eq(Object o) {
-            return delegee.eq(o);
-        }
-
-
-        public boolean eq(Product o) {
-            return delegee.eq(o);
-        }
-
-
-        public boolean eq(Set o) {
-            return delegee.eq(o);
-        }
 
 
         public boolean eq(Tagged o) {
@@ -180,9 +166,41 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public boolean eq(Type o) {
+
+        public boolean eq(Product o) {
             return delegee.eq(o);
         }
+
+
+
+        public <U> Sequence<U> map(Function fn) {
+            return delegee.map(fn);
+        }
+
+
+
+        public boolean eq(Function p) {
+            return delegee.eq(p);
+        }
+
+
+
+        public boolean eq(List p) {
+            return delegee.eq(p);
+        }
+
+
+
+        public SequenceIterator<Pattern> sequenceIterator() {
+            return delegee.sequenceIterator();
+        }
+
+
+
+        public boolean eq(Set o) {
+            return delegee.eq(o);
+        }
+
 
 
         public boolean eq(Union o) {
@@ -190,33 +208,17 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public boolean eqFor(Pattern o) {
-            return delegee.eqFor(o);
-        }
 
-        public <U> Sequence<U> map(Function fn) {
-            return delegee.map(fn);
+        public boolean eq(Intersection o) {
+            return delegee.eq(o);
         }
 
 
-        public boolean match(Atom o) {
-            return delegee.match(o);
+
+        public boolean eq(Type o) {
+            return delegee.eq(o);
         }
 
-
-        public boolean match(Function p) {
-            return delegee.match(p);
-        }
-
-
-        public boolean match(Intersection p) {
-            return delegee.match(p);
-        }
-
-
-        public boolean match(List p) {
-            return delegee.match(p);
-        }
 
 
         public boolean match(Object o) {
@@ -224,14 +226,11 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public boolean match(Product p) {
-            return delegee.match(p);
+
+        public boolean match(Atom o) {
+            return delegee.match(o);
         }
 
-
-        public boolean match(Set p) {
-            return delegee.match(p);
-        }
 
 
         public boolean match(Tagged o) {
@@ -239,25 +238,59 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        public boolean match(Type p) {
+
+        public boolean match(Product p) {
             return delegee.match(p);
         }
+
+
+
+        public boolean match(Function p) {
+            return delegee.match(p);
+        }
+
+
+
+        public boolean match(List p) {
+            return delegee.match(p);
+        }
+
+
+
+        public boolean match(Set p) {
+            return delegee.match(p);
+        }
+
+
 
         public boolean match(Union p) {
             return delegee.match(p);
         }
 
+
+
+        public boolean match(Intersection p) {
+            return delegee.match(p);
+        }
+
+
+
+        public boolean match(Type p) {
+            return delegee.match(p);
+        }
+
+
+
+        public boolean eqFor(Pattern o) {
+            return delegee.eqFor(o);
+        }
+
+
+
         public boolean matchFor(Pattern p) {
             return delegee.matchFor(p);
         }
-
-        public String toString() {
-            return delegee.toString();
-        }
-
-        public SequenceIterator<Pattern> sequenceIterator() {
-            return delegee.sequenceIterator();
-        }
+        
 
         
     }

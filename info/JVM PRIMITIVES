@@ -1,0 +1,89 @@
+
+
+JVM implementation in relation to other possibilities?
+ 
+
+
+*****
+Vitry
+
+- Based on functions and structors
+    - Functions are unary
+    - Structors are (generally) variadic
+- Sequences (lists, products etc) are created and destucted by structors
+- There are top-level polymorphic methods for dealing with sequences
+- Sequences, random-access lookup etc can be reified
+                      
+- Standard numbers and symbols
+- Top-level arithmetic
+
+
+*****
+
+JVM
+
+Basic abstraction units (interfaces):
+
+    Function<F,T>
+        Callable, n-ary where 1 <= n <= 16 or variadic
+        This is to support constructors
+    
+    Sequence<T>
+        Linked reference structure with head and tail    
+    
+    Finite
+        Seq with known length
+    
+    Lookup  
+        Seq with random access
+    
+    Environment<K,V>
+        Linked set of bindings
+        Implemented by hashtables etc.
+    
+    InvertibleFunction<F,T>
+        Inverse callable (n-ary or variadic etc)
+    
+    Pattern
+        Overloads eqFor and matchFor to dispatch matching on different types of patterns
+        Such types are reprented by subclasses
+        
+
+Concrete classes:
+    - VitryRuntime
+        facade class                       
+        static init of prelude (unmodifiable)            
+            REPL and script entry points (as prelude functions)
+            prelude types, fixities and implicits
+        system state (interpreter, active threads, loaded modules)
+    
+    - Implementation of environment
+    - Runtime module
+    - Implementations of function with partial application
+    - Interpreter
+    
+    - ANTLR bridge (vitry.runtime.parse)    
+        
+    - Sequence implementations (vitry.struct):
+        - Pair/single nodes
+        - Array/iterable adapter
+        - Mapped version
+        
+
+Caveats:
+
+  - For interop we need
+      String <-> str
+      java.lang.Number <-> num
+      java.lang.Float <-> float
+
+   - But we should get rid of these once we have proper type reconstruction
+      java.lang.BigInteger <-> nat
+      java.lang.BigRational <-> nat
+
+
+  - Patterns passed through seq library must be properly decorated, i.e. product conses should be products etc
+
+
+   
+        

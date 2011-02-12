@@ -20,9 +20,10 @@ package vitry.runtime;
 
 import java.util.Iterator;
 
-import vitry.runtime.error.*;
-import vitry.runtime.util.*;
-import vitry.runtime.struct.*;
+import vitry.runtime.struct.MapSequence;
+import vitry.runtime.struct.Pair;
+import vitry.runtime.struct.Sequence;
+import vitry.runtime.struct.SequenceIterator;
 
 
 abstract public class ConstructionPattern extends BasePattern implements Sequence<Pattern>, Destructible
@@ -39,7 +40,7 @@ abstract public class ConstructionPattern extends BasePattern implements Sequenc
         }
 
         public Sequence<Pattern> cons(Pattern head) {
-            return new PairSequence<Pattern>(head, this);
+            return new Pair<Pattern>(head, this);
         }
 
         public <U> Sequence<U> map(Function fn) {

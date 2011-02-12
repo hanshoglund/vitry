@@ -44,12 +44,12 @@ public class InvertibleRestFunction extends RestFunction implements InvertibleFu
                 }
 
                 public Sequence<Object> applyVarInverse(Object a) throws InvocationError {
-                    return Sequences.cons(this.applyVar(Sequences.cons(a, null)), null);
+                    return Sequences.cons(this.applyVar(Sequences.single(a)), null);
                 }
             };
         }
 
         public Object applyInverse(Object a) throws InvocationError {
-            return applyVarInverse(Sequences.cons(a, null));
+            return applyVarInverse(Sequences.single(a));
         }
     }

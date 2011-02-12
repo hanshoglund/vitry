@@ -1,15 +1,4 @@
 
-Invariants
-
-    S-Expr := Value | (Op S-Expr)
-    T-Expr := (Op Value) | (Op S-Expr)
-    
-    We are rewriting a list of Value and T-Expr into an S-Expr.
-    
-    After each step we will have a list of Value T-Expr and S-Expr.
-    
-    When the list contains a single S-Expr we are done.
-
 
 
 (+ 2)

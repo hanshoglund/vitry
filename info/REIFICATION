@@ -1,35 +1,30 @@
 
 
-
-
-The reification system of provides adresses the subtle problem of structural representation in the core language. Functional programming languages are generally shrinkable to a core language consisting of lambda calculus and typing logic. This is also the case with Vitry, whose core language is a lambda calculus with pattern composition and decomposition. Therefore the underlying representation of patterns is hidden from the user.
+The reification system of provides adresses the subtle problem of structural representation in the core language. Functional programming languages are generally shrinkable to a core language consisting of lambda calculus and typing logic. This is also the case with Vitry, whose core language is a lambda calculus with built-in pattern constructors and destructors. Therefore the underlying representation of patterns is not accessible in the language by default.
                                          
-Reificitation is a facility to reimplement the core data types of Vitry in terms of its own data structures. The system was designed to preserve invariants on core types, thus providing the user with explicit control over performance and memory, while not affecting the semantics.
+Reificitation is a facility to reimplement the core data types in terms of its own data structures, providing the user with explicit control over performance and memory, while not affecting the semantics.
 
 Vitry provides reification of all its core data types including:
     - Tuples and products
-    - Sets
-    - Unions
-    - Intersections
+    - Sets, unions and intersections
     - Lists
-    - Function types
     
-One benefit of the reification system is that Vitry may be bootstrapped using naive implementations of all these structures. Better implementations may then be written as general purpose data types in the language itself; these may also be used in a library fashion whenever explicit structural representation is required, or when the semantics of the core types are too restricted.
+Vitry may thus be bootstrapped using naive implementations of all these structures. Other implementations may then be written as general purpose data types in the language itself; these may also be used in a library fashion whenever explicit structural representation is required, or when the semantics of the core types are too restricted.
 
 
-Basic concepts of this library:
+Basic concepts :
     - Protocols provides procedural reification (interface/type class-style).
       The various protocols represent basic computation models (sequential,
       paralell, associative etc).
-    - Blocks provides contagious, dynamically allocated memory (objects).
+    - Blocks provides dynamically allocated memory (C structs/JVM objects etc).
     - Structors (constructors/destructors) rewrite products to block-based
       structures and vice versa based on the inductive notation "...".
-      Structors are expressed through pattern matching the structure.
+      Structors are expressed through pattern matching.
 
 
 Protocols
 
-The seq and par protocols represent sequential and parallel computation. Based on Guy Steele's "Organizing functional code for parallel execution". 
+The seq and par protocols represent sequential and parallel computation.
 
 Runtime library uses of seq and par:
     - Pattern matching
@@ -45,28 +40,15 @@ seq protocol:
         (cons (first a) (rest a)) == a
     
 par protocol:  
-    item      : par a -> a
-    node      : a -> par a
-    split     : par a -> (par a -> par a -> b) -> b
-    conc      : par a -> par a -> par a
-    null      : par a?
-    singleton : par a?
-
-    where 
-        (list (item a)) == a
-        (split a (fn (left right) (conc left right))) == a
-
-queue protocol:
-    min     : queue a -> a
-    merge   : queue a -> queue a -> queue a
-               
+    TODO
 
 
-The rand protocol specifies basic random access.
+The lookup protocol specifies basic random access.
 
-Runtime library uses of rand:
+Runtime library uses of lookup:
     - Records
-
+    - Environments (top-level, let and fn)
+    
 rand protocol:
     nth : rand a -> nat -> a
 
@@ -113,25 +95,3 @@ Conceptual examples:
 
 
 
-
-
-
-
-
-
-
-t  := v 
-    | t t 
-    | \t.t 
-    | t,t...t
-    | \(t,t..t).t
-     
-P  := t?
-    | {t ...}
-    | (P | P)
-    | (P & P)
-    | t' -> T
-   
-t' := T
-    | ∀X.t
-    

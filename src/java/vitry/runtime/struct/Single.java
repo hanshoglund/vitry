@@ -18,16 +18,30 @@
  */
 package vitry.runtime.struct;
 
-import vitry.runtime.Product;
 
-/**
- * Generatates concrete <em>n</em>-tuples.
- */
-public class BlockGenerator
+
+class Single<T> extends AbstractSequence<T> implements Finite<T>
     {
         
-        public static Product generate(int n) {
-            throw new UnsupportedOperationException("Not implemented");
+        private final T obj;
+        
+        public Single(T obj) {
+            this.obj = obj;
         }
 
+        public T head() {
+            return obj;
+        }
+
+        public Sequence<T> tail() {
+            return null;
+        }
+
+        public int length() {
+            return 1;
+        }
+
+        public boolean hasTail() {
+            return false;
+        }
     }

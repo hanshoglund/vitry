@@ -1,0 +1,28 @@
+
+
+
+
+The plan?
+
+
+
+- Write basic RT and interpreter in Java
+- Write basic FFI
+
+- Port interpreter (meta-circular)
+    - Experiment with typing?
+- Rewrite as bytecode compiler                
+- Replace selected runtime functionality with code generation
+- Add reification etc         
+
+- Porting
+    - What is the minimal RT?
+    - What for interop?
+        - Consider:
+            - JVM (Clojure, Scala, Rhino, Kawa)
+            - Lisps: SBLC, Chicken-scheme
+            - Haskell
+            - Objective-C
+            - Native code
+        
+    - New backend: LLVM/JVM/neko/simplisit C core?

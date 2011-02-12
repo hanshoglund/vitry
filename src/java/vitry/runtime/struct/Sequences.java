@@ -43,11 +43,11 @@ public class Sequences
         private static final Object[] EMPTY_OBJ_ARRAY = new Object[0];
 
         public static <T> Sequence<T> single(T x) {
-            return new SingleSequence<T>(x);
+            return new Single<T>(x);
         }
 
         public static <T> Sequence<T> cons(T x, Sequence<T> xs) {
-            if (xs == null) return (Sequence<T>) new SingleSequence<T>(x);
+            if (xs == null) return (Sequence<T>) new Single<T>(x);
             else
                 return (Sequence<T>) xs.cons(x);
         }
@@ -159,7 +159,7 @@ public class Sequences
         public static <U, T> U foldl(Function fn, U init, Sequence<T> s) {
             U res = init;
             while (s != null) {
-                res = (U) fn.apply(init, s.head());
+                res = Utils.<U>unsafe(fn.apply(init, s.head()));
                 s = s.tail();
             }
             return res;
@@ -183,7 +183,7 @@ public class Sequences
         }
 
         public static <T> T[] toArray(Sequence<T> s, T[] dummy) {
-            ArrayList<T> l = new ArrayList<T>();
+            java.util.List<T> l = new java.util.LinkedList<T>();
             if (s == null) return l.toArray(dummy);
             do {
                 l.add(s.head());

@@ -26,7 +26,7 @@ import vitry.runtime.Function;
 abstract public class AbstractSequence<T> implements Sequence<T>
     {
         public Sequence<T> cons(T head) {
-            return new PairSequence<T>(head, this);
+            return new Pair<T>(head, this);
         }
 
         public <U> Sequence<U> map(Function fn) {

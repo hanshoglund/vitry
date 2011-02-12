@@ -1,7 +1,6 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 src/antlr/Vitry.g 2011-02-12 02:51:33
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 src/antlr/Vitry.g 2011-02-12 05:45:31
 // See src/antlr/Vitry.g
 package vitry.runtime.parse;
-
 
 import org.antlr.runtime.*;
 import java.util.Stack;
@@ -12,6 +11,7 @@ import java.util.HashMap;
 
 import org.antlr.runtime.tree.*;
 
+@SuppressWarnings("unchecked")
 public class VitryParser extends Parser {
     public static final String[] tokenNames = new String[] {
         "<invalid>", "<EOR>", "<DOWN>", "<UP>", "Par", "Bra", "Ang", "Left", "Quote", "Module", "Fn", "Let", "Assign", "Apply", "Ops", "If", "Match", "Do", "Type", "Op", "Symbol", "Natural", "Float", "Complex", "String", "Exponent", "Whitespace", "EscapeSeq", "HexDigit", "UnicodeEsc", "OctalEsc", "':'", "'('", "')'", "'['", "']'", "'{'", "'}'", "'`'", "'fn'", "'let'", "'do'", "'match'", "'if'", "'else'", "'='"

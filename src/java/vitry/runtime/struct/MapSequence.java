@@ -53,16 +53,7 @@ public class MapSequence<A, B> extends AbstractSequence<B>
             A head = input.head();
 
             if (head == null) return null;
-
-            try {
-                // Either returns or throw an InvocationException
-                return Utils.<B>unsafe(fn.apply(head));
-                
-            } catch (InvocationError e) {
-                throw new InvocationError(
-                        "MapIterator faild to convert value " 
-                        + head + " using " + fn, e);
-           }
+            return Utils.<B>unsafe(fn.apply(head));
         }
 
         public Sequence<B> tail() {
@@ -96,22 +87,7 @@ class MapIterator<T> implements Iterator<T>
         }
         
         public T next() {
-            Object next = null;
-            try {
-                // Either next suceeds so that next is set to return value, 
-                // or we catch and rethrow a NoSuchElementException
-                next = input.next();
-
-                // Either returns or throw an InvocationException
-                return Utils.<T>unsafe(fn.apply(next));
-
-            } catch (NoSuchElementException e) {
-                throw e;
-            } catch (InvocationError e) {
-                throw new InvocationError(
-                        "MapIterator faild to convert value " 
-                        + next+ " using " + fn, e);
-            }
+            return Utils.<T>unsafe(fn.apply(input.next()));
         }
 
         public void remove() {

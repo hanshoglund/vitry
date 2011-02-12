@@ -1,0 +1,44 @@
+
+
+
+
+
+
+Future strategy for fast aribtrary precision N and R
+
+
+Every function on the form
+    (a0...ai, nat, a..i+2..aN)
+
+is compiled to
+    (a0...ai, int, int[], int, a..i+4..aN)
+
+Calls are adjusted similarly.
+
+
+
+
+Values n < 2^32 are represented as
+    n:int, null:int[]
+    
+Values n >= 2^32 are represented as
+    sign:0, magn:int[], size:int
+    
+    
+    
+Use gnu.java.math.MPN as backend ?
+Is this compatible with fast rational number options?
+
+
+
+
+
+
+bool              
+word8 <- (byte, byte, byte, byte, byte, byte, byte, byte)
+word16 <- (byte, byte, byte, byte, byte, byte, byte, byte, byte, byte, byte, byte, byte, byte, byte, byte)
+char = word16
+symbol <- [char]
+str <- [char]
+nat <- (size, [char], len)
+rat <- (size, [char], len)

@@ -18,9 +18,9 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.error.*;
-import vitry.runtime.util.*;
-import vitry.runtime.struct.*;
+import static vitry.runtime.VitryRuntime.product;
+import vitry.runtime.struct.Sequence;
+import vitry.runtime.util.Utils;
 
 /**
  * Base implementation, relying on a sequence.
@@ -72,7 +72,19 @@ abstract class AbstractProduct extends ConstructionPattern implements Product
         }
         
         
+        
+        
+        
+        
         // Java stuff
+
+        public Product mapProduct(Function fn) {
+            return product(super.<Pattern>map(fn));
+        }
+
+        public Product cons(Pattern head) {
+            return product(super.cons(head));
+        }
 
         public boolean equals(Object o) {
             if (o == this) return true;

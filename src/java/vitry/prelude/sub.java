@@ -4,7 +4,6 @@ import java.math.BigInteger;
 
 import vitry.runtime.BigRational;
 import vitry.runtime.RestFunction;
-import vitry.runtime.StandardFunction;
 import vitry.runtime.struct.Sequence;
 import vitry.runtime.struct.Sequences;
 

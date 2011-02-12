@@ -23,4 +23,8 @@ import vitry.runtime.struct.Sequence;
 
 public interface Product extends Pattern, Sequence<Pattern>
     {
+        Product mapProduct(Function fn);
+
+        Product cons(Pattern p);
+        
     }

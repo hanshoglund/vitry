@@ -18,26 +18,16 @@
  */
 package vitry.runtime.struct;
 
+import vitry.runtime.Product;
 
-public class PairSequence<T> extends AbstractSequence<T>
-    {        
-        private T head;
-        private Sequence<T> tail;
-
-        public PairSequence(T head, Sequence<T> tail) {
-            this.head = head;
-            this.tail = tail;
+/**
+ * Generatates concrete <em>n</em>-tuples.
+ */
+public class Blocks
+    {
+        
+        public static Product generate(int n) {
+            throw new UnsupportedOperationException("Not implemented");
         }
 
-        public T head() {
-            return head;
-        }
-
-        public Sequence<T> tail() {
-            return tail;
-        }
-
-        public boolean hasTail() {
-            return tail != null;
-        }
     }

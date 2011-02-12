@@ -18,11 +18,14 @@
  */
 package vitry.runtime;
 
+import static vitry.runtime.VitryRuntime.product;
+
 import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.Properties;
 
 import vitry.prelude.*;
+import vitry.runtime.error.UndefinedError;
 import vitry.runtime.struct.*;
 
 
@@ -141,7 +144,6 @@ public final class VitryRuntime
             this.systemProperties = systemProperties;
             this.classLoader = classLoader;
             this.interpreter = interpreter;
-            this.uniqueState = uniqueState;
         }
 
         
@@ -177,32 +179,55 @@ public final class VitryRuntime
         public static Environment<Symbol, Object> getPrelude() {
             return prelude;
         }
-
+        
         public static Environment<Symbol, Fixity> getPreludeFixities() {
             return preludeFixities;
         }
+
+
+
+        
+        // Prelude accessors
+        
+        public static Environment<Symbol, Object> newTopLevelEnvironment() {
+            return prelude.extend();
+        }
+        
+        public Object getPreludeValue(Symbol key) throws UndefinedError {
+            return prelude.lookup(key);
+        }
+        
+        public static Object getPreludeValue(String key) throws UndefinedError {
+            return prelude.lookup(Symbol.intern(key));
+        }
+        
+        
+        
         
         
         
         // General construction and conversion
         
         
-        public static Product product(Sequence<Pattern> args) {
-            return new ForwardingProduct(args);
+        public static Product product(Sequence<Pattern> s) {
+            if (s instanceof Product) return (Product) s;
+            return new ForwardingProduct(s);
         }
 
-        public static Set set(Sequence<Pattern> args) {
-            return new ForwardingSet(args);
+        public static Set set(Sequence<Pattern> s) {
+            if (s instanceof Set) return (Set) s;
+            return new ForwardingSet(s);
         }
 
-        public static Union union(Sequence<Pattern> args) {
-            return new ForwardingUnion(args);
+        public static Union union(Sequence<Pattern> s) {
+            if (s instanceof Union) return (Union) s;
+            return new ForwardingUnion(s);
         }
 
-        public static Intersection intersection(Sequence<Pattern> args) {
-            return new ForwardingIntersection(args);
+        public static Intersection intersection(Sequence<Pattern> s) {
+            if (s instanceof Intersection) return (Intersection) s;
+            return new ForwardingIntersection(s);
         }
-
         
         public static Product productOf(Object... args) {
             return new ForwardingProduct(Native.wrap(new ArraySequence<Object>(args)));
@@ -215,11 +240,6 @@ public final class VitryRuntime
         public static Union unionOf(Object... args) {
             return new ForwardingUnion(Native.wrap(new ArraySequence<Object>(args)));
         }
-        
-
-
-        // General construction and conversion
-        
         
         public static Intersection intersectionOf(Object... args) {
             return new ForwardingIntersection(Native.wrap(new ArraySequence<Object>(args)));
@@ -357,8 +377,8 @@ final class Nil extends Atom implements Product
             return "()";
         }
 
-        public Sequence<Pattern> cons(Pattern head) {
-            return new PairSequence<Pattern>(head, this);
+        public Product cons(Pattern head) {
+            return product(new Pair<Pattern>(head, this));
         }
 
         public <U> MapSequence<Pattern, U> map(Function fn) {
@@ -374,20 +394,17 @@ final class Nil extends Atom implements Product
         }
 
         // Rest of interface unsupported...
-
-        public Product first() {
-            return throwUnsupported();
-        }
-
-        public Product second() {
-            return throwUnsupported();
-        }
+        
 
         public Pattern head() {
             return throwUnsupported();
         }
 
-        public Sequence<Pattern> tail() {
+        public Product tail() {
+            return throwUnsupported();
+        }
+
+        public SequenceIterator<Pattern> sequenceIterator() {
             return throwUnsupported();
         }
 
@@ -395,127 +412,119 @@ final class Nil extends Atom implements Product
             return throwUnsupported();
         }
 
-        public Sequence<Pattern> destruct() {
-            return throwUnsupported();
-        }
-
-        public InvertibleFunction structor() {
-            return throwUnsupported();
-        }
-
-        public SequenceIterator<Pattern> sequenceIterator() {
-            return throwUnsupported();
-        }
-        
-        public Product productMap(Function fn) {
+        public Product mapProduct(Function fn) {
             return throwUnsupported();
         }
 
         private <T> T throwUnsupported() {
             throw new UnsupportedOperationException("() has no members.");
         }
+
     }
 
 
 
 // Core type delegators
 
+class ForwardingProduct extends AbstractProduct
+    {
+        Sequence<Pattern> elements;
+
+        public ForwardingProduct(Sequence<Pattern> elements) {
+            this.elements = elements;
+        }
+
+        public final Iterator<Pattern> iterator() {
+            return elements.iterator();
+        }
+
+        final  public Pattern head() {
+            return elements.head();
+        }
+
+        public final Product tail() {
+            return product(elements.tail());
+        }
+
+        public final boolean hasTail() {
+            return elements.hasTail();
+        }
+    }
+
+
+class ForwardingSet extends AbstractSet
+    {
+        Sequence<Pattern> elements;
+
+        public ForwardingSet(Sequence<Pattern> elements) {
+            this.elements = elements;
+        }
+
+        public final Iterator<Pattern> iterator() {
+            return elements.iterator();
+        }
+
+        public final Pattern head() {
+            return elements.head();
+        }
+
+        public final Sequence<Pattern> tail() {
+            return elements.tail();
+        }
+
+        public final boolean hasTail() {
+            return elements.hasTail();
+        }
+    }
+
+
+class ForwardingUnion extends Union
+    {
+        Sequence<Pattern> elements;
+
+        public ForwardingUnion(Sequence<Pattern> elements) {
+            this.elements = elements;
+        }
+
+        public final Iterator<Pattern> iterator() {
+            return elements.iterator();
+        }
+
+        public final Pattern head() {
+            return elements.head();
+        }
+
+        public final Sequence<Pattern> tail() {
+            return elements.tail();
+        }
+
+        public final boolean hasTail() {
+            return elements.hasTail();
+        }
+    }
+
+
 class ForwardingIntersection extends Intersection
-{
-    Sequence<Pattern> elements;
+    {
+        Sequence<Pattern> elements;
     
     public ForwardingIntersection(Sequence<Pattern> elements) {
         this.elements = elements;
     }
-
-    public Iterator<Pattern> iterator() {
+    
+    public final Iterator<Pattern> iterator() {
         return elements.iterator();
     }
-
-    public Pattern head() {
+    
+    public final Pattern head() {
         return elements.head();
     }
-
-    public Sequence<Pattern> tail() {
+    
+    public final Sequence<Pattern> tail() {
         return elements.tail();
     }
     
-    public boolean hasTail() {
-        return elements.hasTail();
-    }
-}
-
-class ForwardingProduct extends AbstractProduct
-{
-    Sequence<Pattern> elements;
-    
-    public ForwardingProduct(Sequence<Pattern> elements) {
-        this.elements = elements;
-    }
-
-    public Iterator<Pattern> iterator() {
-        return elements.iterator();
-    }
-
-    public Pattern head() {
-        return elements.head();
-    }
-
-    public Sequence<Pattern> tail() {
-        return elements.tail();
-    }
-
-    public boolean hasTail() {
-        return elements.hasTail();
-    }
-}
-
-class ForwardingSet extends AbstractSet
-{
-    Sequence<Pattern> elements;
-
-    public ForwardingSet(Sequence<Pattern> elements) {
-        this.elements = elements;
-    }
-    
-    public Iterator<Pattern> iterator() {
-        return elements.iterator();
-    }
-
-    public Pattern head() {
-        return elements.head();
-    }
-
-    public Sequence<Pattern> tail() {
-        return elements.tail();
-    }
-    
-    public boolean hasTail() {
-        return elements.hasTail();
-    }
-}
-
-class ForwardingUnion extends Union
-{
-    Sequence<Pattern> elements;
-
-    public ForwardingUnion(Sequence<Pattern> elements) {
-        this.elements = elements;
-    }
-
-    public Iterator<Pattern> iterator() {
-        return elements.iterator();
-    }
-
-    public Pattern head() {
-        return elements.head();
-    }
-
-    public Sequence<Pattern> tail() {
-        return elements.tail();
-    }
-
-    public boolean hasTail() {
+    public final boolean hasTail() {
         return elements.hasTail();
     }
 }

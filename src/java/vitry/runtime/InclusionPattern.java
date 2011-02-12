@@ -58,7 +58,7 @@ abstract public class InclusionPattern extends BasePattern implements Sequence<P
         }
         
         public Sequence<Pattern> cons(Pattern head) {
-            return new PairSequence<Pattern>(head, this);
+            return new Pair<Pattern>(head, this);
         }
 
         public <U> MapSequence<Pattern, U> map(Function fn) {

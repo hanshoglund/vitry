@@ -18,12 +18,9 @@
  */
 package vitry.runtime;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import vitry.runtime.error.*;
-import vitry.runtime.struct.*;
-import vitry.runtime.util.*;
+import vitry.runtime.error.TypeError;
+import vitry.runtime.struct.Sequence;
+import vitry.runtime.util.Utils;
 
 
 public class Type extends BasePattern implements TypeExpr
