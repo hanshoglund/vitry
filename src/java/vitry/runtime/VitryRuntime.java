@@ -62,8 +62,8 @@ public final class VitryRuntime
 
         static {
             def("()",                   NIL);
-            def("[]",                   NIL);
-            def("{}",                   BOTTOM);
+            def("[]",                   productOf(NIL, new list()));
+            def("{}",                   productOf(BOTTOM, new set()));
             def("_",                    ANY);
             def("nil",                  NIL);
             def("true",                 TRUE);
@@ -555,7 +555,7 @@ final class Bottom extends AbstractSet
     }
 
 
-final class Nil extends Atom implements Product, Finite<Pattern>
+final class Nil extends Atom implements Finite<Pattern>
     {
         Nil() {}
 
@@ -568,6 +568,7 @@ final class Nil extends Atom implements Product, Finite<Pattern>
         }
 
         public Product cons(Pattern head) {
+            // TODO product by default?
             return product(new Pair<Pattern>(head, this));
         }
 
@@ -575,12 +576,12 @@ final class Nil extends Atom implements Product, Finite<Pattern>
             return new MapSequence<Pattern, U>(fn, this);
         }
 
-        public boolean isCompound() {
-            return false;
-        }
-
         public boolean hasTail() {
             return false;
+        }
+        
+        public int length() {
+            return 0;
         }
 
         // Rest of interface unsupported...
@@ -593,40 +594,35 @@ final class Nil extends Atom implements Product, Finite<Pattern>
         public Product tail() {
             return throwUnsupported();
         }
-        
+
         public Iterator<Pattern> iterator() {
             return NilIterator.INSTANCE;
         }
 
         public SequenceIterator<Pattern> sequenceIterator() {
-            return throwUnsupported();
-        }
-
-        public Product mapProduct(Function fn) {
-            return throwUnsupported();
+            return NilIterator.INSTANCE;
         }
 
         private <T> T throwUnsupported() {
             throw new UnsupportedOperationException("() has no members.");
         }
 
-        public int length() {
-            return 0;
-        }
-
     }
 
 
-class NilIterator implements Iterator
+class NilIterator extends SequenceIterator<Pattern>
     {
-        static final Iterator INSTANCE = new NilIterator();
-        private NilIterator(){}
+        static final SequenceIterator<Pattern> INSTANCE = new NilIterator();
+        
+        private NilIterator(){
+            super(VitryRuntime.NIL);
+        }
 
         public boolean hasNext() {
             return false;
         }
 
-        public Object next() {
+        public Pattern next() {
             return throwUnsupported();
         }
 
@@ -637,7 +633,6 @@ class NilIterator implements Iterator
         private <T> T throwUnsupported() {
             throw new UnsupportedOperationException("() has no members.");
         }
-
     }
 
 

@@ -215,8 +215,7 @@ class OperatorRewrite
          */
         private static boolean isOperator(Object o) {
             if (o instanceof Pattern) {                
-                return VitryTokenTypes.tokenType((Pattern) o) 
-                    == Interpreter.TYPE_OP;
+                return VitryTokenTypes.tokenType((Pattern) o) == Interpreter.TYPE_OP;
             } 
             return false;
         }

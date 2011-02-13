@@ -132,20 +132,20 @@ public class Interpreter implements Eval
                 )
         throws ParseError, LinkageError, TypeError {
                              
-            /*
+            /**
              * Expr head or null
              */
-            Pattern op;
+            Pattern exprOp;
             
-            /*
+            /**
              * Expr tail or null
              */
-            Sequence<Pattern> ops;
+            Sequence<Pattern> exprOps;
             
-            /*
-             * Type of head
+            /**
+             * Type of expr head
              */
-            int type;
+            int exprType;
 
             
             while (true) {
@@ -165,11 +165,11 @@ public class Interpreter implements Eval
                  */
                 try {
                     if (isAcceptedToken(expr)) {
-                        op  = expr;
-                        ops = null;                            
+                        exprOp  = expr;
+                        exprOps = null;                            
                     } else {           
-                        op  = ((Sequence<Pattern>) expr).head();
-                        ops = ((Sequence<Pattern>) expr).tail();
+                        exprOp  = ((Sequence<Pattern>) expr).head();
+                        exprOps = ((Sequence<Pattern>) expr).tail();
                     }
                 } catch (Exception _) {
                     throw new ParseError("Unknown form: " 
@@ -177,9 +177,9 @@ public class Interpreter implements Eval
                 }
                 try {
                     try {
-                        type = VitryTokenTypes.parserTokenType(op);
+                        exprType = VitryTokenTypes.parserTokenType(exprOp);
                     } catch (Exception _) {
-                        type = VitryTokenTypes.symbolicTokenType(op);
+                        exprType = VitryTokenTypes.symbolicTokenType(exprOp);
                     }
                 } catch (VitryError e) {
                     throw e;
@@ -194,34 +194,34 @@ public class Interpreter implements Eval
                  *      3) throw exception
                  */         
                         
-                switch (type) {
+                switch (exprType) {
                                                    
                     case TYPE_NAT: 
-                        return evalNat(op);
+                        return evalNat(exprOp);
                     
                     case TYPE_FLOAT: 
-                        return evalFloat(op);
+                        return evalFloat(exprOp);
                         
                     case TYPE_COMPLEX: 
-                        return evalComplex(op);
+                        return evalComplex(exprOp);
 
                     case TYPE_STRING: 
-                        return evalString(op);
+                        return evalString(exprOp);
                         
                     
                     case TYPE_OP:
                         if (context.lookup(SIDE) == LEFT || context.lookup(QUOTED) == TRUE) {
-                            return evalOperator( op, context.lookup(DELIMITER) );  
+                            return evalOperator( exprOp, context.lookup(DELIMITER) );  
                         } else {
-                            return frame.lookup( evalOperator( op, context.lookup(DELIMITER) ));   
+                            return frame.lookup( evalOperator( exprOp, context.lookup(DELIMITER) ));   
                         }
                         
                     
                     case TYPE_SYM:
                         if (context.lookup(SIDE) == LEFT || context.lookup(QUOTED) == TRUE ) {
-                            return evalSymbol(op);
+                            return evalSymbol(exprOp);
                         } else {
-                            return frame.lookup(evalSymbol(op));
+                            return frame.lookup(evalSymbol(exprOp));
                         }
                                                                                      
                     
@@ -235,41 +235,95 @@ public class Interpreter implements Eval
                      */
 
                     case TYPE_PAR:
-                        if (ops == null) {
+                        if (exprOps == null) {
+                            // Nullary case
                             if (context.lookup(SIDE) == LEFT || context.lookup(QUOTED) == TRUE ) {
                                 return PAR;
                             } else {
-                                return frame.lookup(PAR);                                
+                                Object bra = frame.lookup(PAR);
+                                if (bra instanceof Product) {
+                                    return Sequences.first((Product) bra);
+                                } else {
+                                    return bra;
+                                }
+                            }
+                        } else if (!isOpsExpr(exprOps.head())) {
+                            // Unary case
+                            Object bra = frame.lookup(PAR);
+                            if (bra instanceof Product) {
+                                Pattern f = Sequences.second((Product) bra);
+                                return ((Function) f).apply(exprOps.head());
+                            } else {
+                                context = context.extend(DELIMITER, PAR).define(QUOTED, FALSE);
+                                expr = exprOps.head();
+                                continue;
                             }
                         } else {
+                            // n-ary case, n > 1 
                             context = context.extend(DELIMITER, PAR).define(QUOTED, FALSE);
-                            expr = ops.head();
+                            expr = exprOps.head();
                             continue;
                         }
                         
                     case TYPE_BRA:
-                        if (ops == null) {
+                        if (exprOps == null) {
+                            // Nullary case
                             if (context.lookup(SIDE) == LEFT || context.lookup(QUOTED) == TRUE ) {
                                 return BRA;
                             } else {
-                                return frame.lookup(BRA);                                
+                                Object bra = frame.lookup(BRA);
+                                if (bra instanceof Product) {
+                                    return Sequences.first((Product) bra);
+                                } else {
+                                    return bra;
+                                }
+                            }
+                        } else if (!isOpsExpr(exprOps.head())) {
+                            // Unary case
+                            Object bra = frame.lookup(BRA);
+                            if (bra instanceof Product) {
+                                Pattern f = Sequences.second((Product) bra);
+                                return ((Function) f).apply(exprOps.head());
+                            } else {
+                                context = context.extend(DELIMITER, BRA).define(QUOTED, FALSE);
+                                expr = exprOps.head();
+                                continue;
                             }
                         } else {
+                            // n-ary case, n > 1 
                             context = context.extend(DELIMITER, BRA).define(QUOTED, FALSE);
-                            expr = ops.head();
+                            expr = exprOps.head();
                             continue;
                         }
                         
                     case TYPE_ANG:
-                        if (ops == null) {
+                        if (exprOps == null) {
+                            // Nullary case
                             if (context.lookup(SIDE) == LEFT || context.lookup(QUOTED) == TRUE ) {
                                 return ANG;
                             } else {
-                                return frame.lookup(ANG);                                
+                                Object bra = frame.lookup(ANG);
+                                if (bra instanceof Product) {
+                                    return Sequences.first((Product) bra);
+                                } else {
+                                    return bra;
+                                }
+                            }
+                        } else if (!isOpsExpr(exprOps.head())) {
+                            // Unary case
+                            Object bra = frame.lookup(ANG);
+                            if (bra instanceof Product) {
+                                Pattern f = Sequences.second((Product) bra);
+                                return ((Function) f).apply(exprOps.head());
+                            } else {
+                                context = context.extend(DELIMITER, ANG).define(QUOTED, FALSE);
+                                expr = exprOps.head();
+                                continue;
                             }
                         } else {
+                            // n-ary case, n > 1 
                             context = context.extend(DELIMITER, ANG).define(QUOTED, FALSE);
-                            expr = ops.head();
+                            expr = exprOps.head();
                             continue;
                         }
                        
@@ -278,12 +332,12 @@ public class Interpreter implements Eval
 
                     case TYPE_LEFT:
                         context = context.extend(SIDE, LEFT);
-                        expr = ops.head();
+                        expr = exprOps.head();
                         continue;
 
                     case TYPE_QUOTE:
                         context = context.extend(QUOTED, TRUE);
-                        expr = ops.head();
+                        expr = exprOps.head();
                         continue;
                         
                     
@@ -296,8 +350,8 @@ public class Interpreter implements Eval
 
                     case TYPE_FN:
                         {
-                            Sequence<Pattern> params = init(ops);
-                            Pattern body = last(ops);   
+                            Sequence<Pattern> params = init(exprOps);
+                            Pattern body = last(exprOps);   
                             return new InterpretedFunction(params, body, frame, fixities, this);
                         }
                         
@@ -313,8 +367,8 @@ public class Interpreter implements Eval
 
                     case TYPE_LET:
                         {
-                            Sequence<Pattern> assignments = init(ops);
-                            expr = last(ops);
+                            Sequence<Pattern> assignments = init(exprOps);
+                            expr = last(exprOps);
                             frame = frame.extend();
                             
                             for (Pattern a : assignments) {
@@ -338,8 +392,8 @@ public class Interpreter implements Eval
 
                     case TYPE_ASSIGN:
                         {
-                            Object left = eval(first(ops), context, frame, fixities);
-                            Object right = eval(second(ops), context, frame, fixities);
+                            Object left = eval(first(exprOps), context, frame, fixities);
+                            Object right = eval(second(exprOps), context, frame, fixities);
                             
                             if (left instanceof LeftContinuation) {
                                 ((LeftContinuation) left).invoke(right, frame);
@@ -359,8 +413,8 @@ public class Interpreter implements Eval
                     // Application and infix ops
 
                     case TYPE_APPLY:
-                        final Object            fn   = eval(ops.head(), context.extend(SIDE, RIGHT), frame, fixities);
-                        final Sequence<Pattern> args = ops.tail();
+                        final Object            fn   = eval(exprOps.head(), context.extend(SIDE, RIGHT), frame, fixities);
+                        final Sequence<Pattern> args = exprOps.tail();
                         final int               numArgs = length(args);
 
                         if (context.lookup(SIDE) == LEFT && (fn instanceof InvertibleFunction)) {
@@ -484,7 +538,7 @@ public class Interpreter implements Eval
                         
                     case TYPE_OPS:
                         OperatorRewrite rw = new OperatorRewrite(fixities, context);
-                        expr = rw.rewrite(ops);
+                        expr = rw.rewrite(exprOps);
                         continue;
                         
                     
@@ -492,11 +546,11 @@ public class Interpreter implements Eval
 
                     case TYPE_IF:
                         {
-                            Object condition = eval(Sequences.first(ops), context, frame, fixities);    
+                            Object condition = eval(Sequences.first(exprOps), context, frame, fixities);    
                             if (! (condition.equals(FALSE)) ) {
-                                expr = Sequences.second(ops);
+                                expr = Sequences.second(exprOps);
                             } else {
-                                expr = Sequences.third(ops);
+                                expr = Sequences.third(exprOps);
                             }
                             continue;
                         }
@@ -525,8 +579,8 @@ public class Interpreter implements Eval
                         {
                             // TODO native types
                             
-                            final Object left = eval(Sequences.first(ops), context, frame, fixities);
-                            final Pattern right = Native.wrap(eval(Sequences.second(ops), context.extend(SIDE, RIGHT), frame, fixities));
+                            final Object left = eval(Sequences.first(exprOps), context, frame, fixities);
+                            final Pattern right = Native.wrap(eval(Sequences.second(exprOps), context.extend(SIDE, RIGHT), frame, fixities));
     
                             if (context.lookup(SIDE) == LEFT) {
                                 
@@ -564,7 +618,7 @@ public class Interpreter implements Eval
 
 
                     default:
-                        throw new ParseError("Unkown form '" + op + "' in tree " 
+                        throw new ParseError("Unkown form '" + exprOp + "' in tree " 
                             + Utils.limit(expr.toString(), TRACE_LIMIT));
                 }
             }
@@ -580,6 +634,26 @@ public class Interpreter implements Eval
         static final boolean isAcceptedToken(Pattern expr) {
             return expr instanceof VitryToken;
         }
+        
+        // Note: NOT the same as the predicate in rewriting (which checks for Op, not Ops)
+        private static boolean isOpsExpr(Pattern p) {
+            if (p instanceof Sequence) {
+                Sequence<?> s = (Sequence<?>) p;
+                
+                if (length(s) < 2) return false;
+                if (!isOps(first(s))) return false;
+                
+                return true;
+            }
+            return false;
+        }
+        private static boolean isOps(Object o) {
+            if (o instanceof Pattern) {                
+                return VitryTokenTypes.tokenType((Pattern) o) == Interpreter.TYPE_OPS;
+            } 
+            return false;
+        }
+
         
         static final BigInteger evalNat(Pattern expr) {
             return new BigInteger(expr.toString());
