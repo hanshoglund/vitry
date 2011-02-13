@@ -53,12 +53,8 @@ public class BenchEvalStdIn
                         Object val = interpreter.eval(expr);
                         timer.time();
                         timer.report("Evaluation");
-
-                        System.out.println();
-                        System.out.println("Tree : " + expr);
                         System.out.println("Value: " + val);
                         
-//                        System.out.println("Class: " + val.getClass());
                         System.out.println();
                     
                     

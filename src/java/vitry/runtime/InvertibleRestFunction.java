@@ -20,7 +20,7 @@ package vitry.runtime;
 
 import vitry.runtime.error.*;
 import vitry.runtime.struct.*;
-                              
+
 
 public class InvertibleRestFunction extends RestFunction implements InvertibleFunction
     {
@@ -29,27 +29,29 @@ public class InvertibleRestFunction extends RestFunction implements InvertibleFu
         }
 
         public InvertibleRestFunction getInverse() {
-            return new InvertibleRestFunction(){
-
-                public Object invoke(Object a) throws InvocationError {
-                    return this.applyInverse(a);
-                }
-
-                public Object applyInverse(Object a) throws InvocationError {
-                    return this.apply(a);
-                }
-
-                public Object applyVar(Sequence<?> args) {
-                    return this.applyVarInverse(args.head()).head();
-                }
-
-                public Sequence<Object> applyVarInverse(Object a) throws InvocationError {
-                    return Sequences.cons(this.applyVar(Sequences.single(a)), null);
-                }
-            };
+            return new Inv();
         }
 
         public Object applyInverse(Object a) throws InvocationError {
             return applyVarInverse(Sequences.single(a));
+        }
+
+        private final class Inv extends InvertibleRestFunction
+        {
+            public Object apply(Object a) throws InvocationError {
+                return InvertibleRestFunction.this.applyInverse(a);
+            }
+        
+            public Object applyInverse(Object a) throws InvocationError {
+                return InvertibleRestFunction.this.apply(a);
+            }
+        
+            public Object applyVar(Sequence<?> args) {
+                return InvertibleRestFunction.this.applyVarInverse(args.head()).head();
+            }
+        
+            public Sequence<Object> applyVarInverse(Object a) throws InvocationError {
+                return Sequences.cons(InvertibleRestFunction.this.applyVar(Sequences.single(a)), null);
+            }
         }
     }

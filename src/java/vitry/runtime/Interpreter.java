@@ -168,8 +168,8 @@ public class Interpreter implements Eval
                         exprOp  = expr;
                         exprOps = null;                            
                     } else {           
-                        exprOp  = ((Sequence<Pattern>) expr).head();
-                        exprOps = ((Sequence<Pattern>) expr).tail();
+                        exprOp  = Utils.<Sequence<Pattern>>unsafe(expr).head();
+                        exprOps = Utils.<Sequence<Pattern>>unsafe(expr).tail();
                     }
                 } catch (Exception _) {
                     throw new ParseError("Unknown form: " 
@@ -231,6 +231,7 @@ public class Interpreter implements Eval
                      * The empty case is a symbol, while non-empty cases are context switches
                      * They also reset quote context
                      * 
+                     * TODO Factor out common code
                      * TODO Allow syntax such as `(+) to parse as (`+) ?
                      */
 
@@ -250,10 +251,31 @@ public class Interpreter implements Eval
                         } else if (!isOpsExpr(exprOps.head())) {
                             // Unary case
                             Object bra = frame.lookup(PAR);
+                            
                             if (bra instanceof Product) {
-                                Pattern f = Sequences.second((Product) bra);
-                                Object val = eval(exprOps.head(), context, frame, fixities);
-                                return ((Function) f).apply(val);
+                                final Function f = (Function) Sequences.second((Product) bra);
+                                final Object content = eval(exprOps.head(), context, frame, fixities);
+
+                                if (context.lookup(SIDE) == LEFT && f instanceof InvertibleFunction) {
+                                    return new LeftContinuation(){
+                                        public void invoke(Object val, Environment<Symbol, Object> frame) {
+                                            Object contentVal = ((InvertibleFunction) f).applyVarInverse(val).head();
+                                            if (content instanceof LeftContinuation) {
+                                                ((LeftContinuation) content).invoke(contentVal, frame);
+                                            } else {
+                                                try {
+                                                    frame.define((Symbol) content, contentVal);
+                                                } catch (ClassCastException e) {
+                                                    throwAssignment(content);
+                                                }
+                                            }
+                                        }
+                                    };                                    
+                                    
+                                } else {                                    
+                                    return f.apply(content);
+                                }
+                            
                             } else {
                                 context = context.extend(DELIMITER, PAR).define(QUOTED, FALSE);
                                 expr = exprOps.head();
@@ -282,10 +304,31 @@ public class Interpreter implements Eval
                         } else if (!isOpsExpr(exprOps.head())) {
                             // Unary case
                             Object bra = frame.lookup(BRA);
+                            
                             if (bra instanceof Product) {
-                                Pattern f = Sequences.second((Product) bra);
-                                Object val = eval(exprOps.head(), context, frame, fixities);
-                                return ((Function) f).apply(val);
+                                final Function f = (Function) Sequences.second((Product) bra);
+                                final Object content = eval(exprOps.head(), context, frame, fixities);
+
+                                if (context.lookup(SIDE) == LEFT && f instanceof InvertibleFunction) {
+                                    return new LeftContinuation(){
+                                        public void invoke(Object val, Environment<Symbol, Object> frame) {
+                                            Object contentVal = ((InvertibleFunction) f).applyVarInverse(val).head();
+                                            if (content instanceof LeftContinuation) {
+                                                ((LeftContinuation) content).invoke(contentVal, frame);
+                                            } else {
+                                                try {
+                                                    frame.define((Symbol) content, contentVal);
+                                                } catch (ClassCastException e) {
+                                                    throwAssignment(content);
+                                                }
+                                            }
+                                        }
+                                    };                                    
+                                    
+                                } else {                                    
+                                    return f.apply(content);
+                                }
+                            
                             } else {
                                 context = context.extend(DELIMITER, BRA).define(QUOTED, FALSE);
                                 expr = exprOps.head();
@@ -314,10 +357,31 @@ public class Interpreter implements Eval
                         } else if (!isOpsExpr(exprOps.head())) {
                             // Unary case
                             Object bra = frame.lookup(ANG);
+                            
                             if (bra instanceof Product) {
-                                Pattern f = Sequences.second((Product) bra);
-                                Object val = eval(exprOps.head(), context, frame, fixities);
-                                return ((Function) f).apply(val);
+                                final Function f = (Function) Sequences.second((Product) bra);
+                                final Object content = eval(exprOps.head(), context, frame, fixities);
+
+                                if (context.lookup(SIDE) == LEFT && f instanceof InvertibleFunction) {
+                                    return new LeftContinuation(){
+                                        public void invoke(Object val, Environment<Symbol, Object> frame) {
+                                            Object contentVal = ((InvertibleFunction) f).applyVarInverse(val).head();
+                                            if (content instanceof LeftContinuation) {
+                                                ((LeftContinuation) content).invoke(contentVal, frame);
+                                            } else {
+                                                try {
+                                                    frame.define((Symbol) content, contentVal);
+                                                } catch (ClassCastException e) {
+                                                    throwAssignment(content);
+                                                }
+                                            }
+                                        }
+                                    };                                    
+                                    
+                                } else {                                    
+                                    return f.apply(content);
+                                }
+                            
                             } else {
                                 context = context.extend(DELIMITER, ANG).define(QUOTED, FALSE);
                                 expr = exprOps.head();
@@ -380,13 +444,6 @@ public class Interpreter implements Eval
                         }
                         continue;
 
-                        
-                    // case TYPE_LOOP:
-                    //     throwNotSupported();
-                    // 
-                    // case TYPE_RECUR:
-                    //     throwNotSupported();
-                        
 
                     case TYPE_DO:
                         throwNotSupported(); // TODO
@@ -430,9 +487,6 @@ public class Interpreter implements Eval
                                     public void invoke(Object value, Environment<Symbol, Object> frame) {
                                         if (fn instanceof InvertibleFunction) {
                                             InvertibleFunction ifn = (InvertibleFunction) fn;
-                                            
-                                            // TODO Should we invoke applyVar for single args ?
-                                            // Is this something that is dispatched by InvertibleFunction
                                             
                                             Sequence<?> vals = ifn.applyVarInverse(value);
                                             
@@ -492,9 +546,9 @@ public class Interpreter implements Eval
                                     }
                                     return new InterpretedFunction
                                         (
-                                        param.following(),  // Remaining parameters
+                                        param.following(),      // Remaining parameters
                                         ifn.body, 
-                                        frame,                    // Updated frame
+                                        frame,                  // Updated frame
                                         ifn.fixities, 
                                         ifn.interpr
                                         );

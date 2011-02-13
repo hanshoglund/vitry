@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 src/antlr/Vitry.g 2011-02-13 19:39:44
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 src/antlr/Vitry.g 2011-02-13 21:33:14
 // See src/antlr/Vitry.g
 package vitry.runtime.parse;
 
@@ -914,7 +914,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: apply, Op
+                    // elements: Op, apply
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -932,10 +932,10 @@ public class VitryParser extends Parser {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(Ops, "Ops"), root_1);
 
-                        if ( !(stream_apply.hasNext()||stream_Op.hasNext()) ) {
+                        if ( !(stream_Op.hasNext()||stream_apply.hasNext()) ) {
                             throw new RewriteEarlyExitException();
                         }
-                        while ( stream_apply.hasNext()||stream_Op.hasNext() ) {
+                        while ( stream_Op.hasNext()||stream_apply.hasNext() ) {
                             // src/antlr/Vitry.g:109:55: ^( Op apply )
                             {
                             Object root_2 = (Object)adaptor.nil();
@@ -947,8 +947,8 @@ public class VitryParser extends Parser {
                             }
 
                         }
-                        stream_apply.reset();
                         stream_Op.reset();
+                        stream_apply.reset();
 
                         adaptor.addChild(root_0, root_1);
                         }
@@ -1012,7 +1012,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: e, f, Op
+                    // elements: Op, f, e
                     // token labels: 
                     // rule labels: retval, e
                     // token list labels: 
@@ -1032,10 +1032,10 @@ public class VitryParser extends Parser {
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(Ops, "Ops"), root_1);
 
                         adaptor.addChild(root_1, stream_e.nextTree());
-                        if ( !(stream_f.hasNext()||stream_Op.hasNext()) ) {
+                        if ( !(stream_Op.hasNext()||stream_f.hasNext()) ) {
                             throw new RewriteEarlyExitException();
                         }
-                        while ( stream_f.hasNext()||stream_Op.hasNext() ) {
+                        while ( stream_Op.hasNext()||stream_f.hasNext() ) {
                             // src/antlr/Vitry.g:110:58: ^( Op $f)
                             {
                             Object root_2 = (Object)adaptor.nil();
@@ -1047,8 +1047,8 @@ public class VitryParser extends Parser {
                             }
 
                         }
-                        stream_f.reset();
                         stream_Op.reset();
+                        stream_f.reset();
 
                         adaptor.addChild(root_0, root_1);
                         }
@@ -1261,7 +1261,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: left, inline
+                    // elements: inline, left
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1625,7 +1625,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: assign, expr
+                    // elements: expr, assign
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1739,7 +1739,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: expr, assign
+                    // elements: assign, expr
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1841,7 +1841,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: c, e, v
+                    // elements: v, c, e
                     // token labels: 
                     // rule labels: v, retval
                     // token list labels: 
@@ -1933,7 +1933,7 @@ public class VitryParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: expr, inline, expr
+                    // elements: expr, expr, inline
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -2032,7 +2032,7 @@ public class VitryParser extends Parser {
 
 
             // AST REWRITE
-            // elements: left, expr
+            // elements: expr, left
             // token labels: 
             // rule labels: retval
             // token list labels: 
