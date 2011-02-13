@@ -15,7 +15,7 @@ public class eq extends StandardFunction
         public Object apply(Object a, Object b) {
             if (b instanceof Pattern) {
                 if (a instanceof Pattern) { 
-                    return toVitryBool( ((Atom) a).eqFor((Pattern) b)); 
+                    return toVitryBool( ((Pattern) a).eqFor((Pattern) b)); 
                 }
                 return toVitryBool( ((Pattern) b).eq(a));
             }

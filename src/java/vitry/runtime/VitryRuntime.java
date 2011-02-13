@@ -68,7 +68,7 @@ public final class VitryRuntime
             def("nil",                  NIL);
             def("true",                 TRUE);
             def("false",                FALSE);
-            def("bool",                 null);
+            def("bool",                 unionOf(TRUE, FALSE));
             def("nat",                  NAT);
             def("int",                  INT);
             def("rat",                  RAT);
@@ -80,9 +80,9 @@ public final class VitryRuntime
             
             def("(,)",                  new product());
             def("[,]",                  NIL);
-            def("{,}",                  NIL);
-            def("(|)",                  NIL);
-            def("(&)",                  NIL);
+            def("{,}",                  new set());
+            def("(|)",                  new union());
+            def("(&)",                  new intersection());
             def("(->)",                 NIL);
             def("(<->)",                NIL);
             def("(<-)",                 NIL);
@@ -99,12 +99,12 @@ public final class VitryRuntime
             def("pred",                 NIL);
             def("min",                  NIL);
             def("max",                  NIL);
-            def("==",                   alias("eq"));
-            def("/=",                   alias("neq"));
-            def("<",                    alias("lt"));
-            def("<=",                   alias("lte"));
-            def("=>",                   alias("gte"));
-            def(">",                    alias("gt"));
+            def("(==)",                 alias("eq"));
+            def("(/=)",                 alias("neq"));
+            def("(<)",                  alias("lt"));
+            def("(<=)",                 alias("lte"));
+            def("(=>)",                 alias("gte"));
+            def("(>)",                  alias("gt"));
             def("and",                  NIL);
             def("or",                   NIL);
             def("not",                  NIL);
@@ -531,8 +531,12 @@ final class Bottom extends AbstractSet
         }
 
         public Sequence<Pattern> tail() {
-            return null;
-        }       
+            return throwUnsupported();
+        } 
+        
+        public Iterator<Pattern> iterator() {
+            return NilIterator.INSTANCE;
+        }
         
         private <T> T throwUnsupported() {
             throw new UnsupportedOperationException("{} has no members.");
@@ -578,12 +582,12 @@ final class Nil extends Atom implements Product, Finite<Pattern>
         public Product tail() {
             return throwUnsupported();
         }
-
-        public SequenceIterator<Pattern> sequenceIterator() {
-            return throwUnsupported();
+        
+        public Iterator<Pattern> iterator() {
+            return NilIterator.INSTANCE;
         }
 
-        public Iterator<Pattern> iterator() {
+        public SequenceIterator<Pattern> sequenceIterator() {
             return throwUnsupported();
         }
 
@@ -595,9 +599,32 @@ final class Nil extends Atom implements Product, Finite<Pattern>
             throw new UnsupportedOperationException("() has no members.");
         }
 
-
         public int length() {
             return 0;
+        }
+
+    }
+
+
+class NilIterator implements Iterator
+    {
+        static final Iterator INSTANCE = new NilIterator();
+        private NilIterator(){}
+
+        public boolean hasNext() {
+            return false;
+        }
+
+        public Object next() {
+            return throwUnsupported();
+        }
+
+        public void remove() {
+            throwUnsupported();
+        }
+
+        private <T> T throwUnsupported() {
+            throw new UnsupportedOperationException("() has no members.");
         }
 
     }

@@ -5,20 +5,20 @@ load("~/macbook/Vitry/test/js/equationalLogicJava.js");
 importPackage(Packages.vitry.runtime);
 
 
-let fact = Packages.vitry.runtime.misc.StaticFactoryMethods;
+let fact = Packages.vitry.runtime.VitryRuntime;
 
-P = fact.product;
-S = fact.set;
-U = fact.union;
-I = fact.intersection;
-T = fact.type;
-F = fact.functionType;
+P = fact.productOf;
+S = fact.setOf;
+U = fact.unionOf;
+I = fact.intersectionOf;
+// T = fact.type;
+// F = fact.functionType;
 
 s = Symbol.intern;
 //l = (function(a) new ListType(a));
-nil = Vitry.nil;
-bot = Vitry.bottom;
-any = Vitry.any;
+nil = VitryRuntime.NIL;
+bot = VitryRuntime.BOTTOM;
+any = VitryRuntime.ANY;
 
 a = s("a");
 b = s("b");
@@ -119,8 +119,8 @@ test = function() {
   
   
   print();
-  printMatches(F(a,b), F(a,any));
-  printMatches(F(a,P(a,b)), F(a,U(P(a,b),P(c,d))));
+  // printMatches(F(a,b), F(a,any));
+  // printMatches(F(a,P(a,b)), F(a,U(P(a,b),P(c,d))));
 
   printMatches(I(a, b), I(a, b));
   printMatches(I(a, a), I(a, U(a, b)));
@@ -140,7 +140,7 @@ test = function() {
   print("true with rewriting semantics:");
   printMatches(U(P(a, a), P(a, b)), P(a, U(a, b)));
   printMatches(P(a, U(a, b)), U(P(a, a), P(a, b)));
-  printMatches(F(a,F(b,c)), F(a,U(F(b,c), F(b,a))));
+  // printMatches(F(a,F(b,c)), F(a,U(F(b,c), F(b,a))));
 
 
   print();

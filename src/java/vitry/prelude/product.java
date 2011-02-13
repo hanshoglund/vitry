@@ -14,8 +14,6 @@ public class product extends InvertibleRestFunction
         }
 
         public Object applyVar(Sequence<?> args) {
-            // TODO temporary hack, find something more efficient
-//            return VitryRuntime.product((Sequence<?>) args);
             return VitryRuntime.productOf(Sequences.toArray(args));
         }
 
