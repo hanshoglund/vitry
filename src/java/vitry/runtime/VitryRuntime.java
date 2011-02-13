@@ -38,7 +38,6 @@ import vitry.runtime.util.ModuleClassLoader;
 public final class VitryRuntime     
     {
     
-
         public static final Nil         NIL             = new Nil();
         public static final Bottom      BOTTOM          = new Bottom();
         public static final Any         ANY             = new Any();
@@ -79,12 +78,23 @@ public final class VitryRuntime
             def("char",                 CHAR);
             def("str",                  STR);
             
+            def("(,)",                  new product());
+            def("[,]",                  NIL);
+            def("{,}",                  NIL);
+            def("(|)",                  NIL);
+            def("(&)",                  NIL);
+            def("(->)",                 NIL);
+            def("(<->)",                NIL);
+            def("(<-)",                 NIL);
+                        
             def("eq",                   new eq());
             def("neq",                  NIL);
             def("lt",                   NIL);
             def("lte",                  NIL);
             def("gte",                  NIL);
             def("gt",                   NIL);
+            def("succ",                 NIL);
+            def("pred",                 NIL);
             def("min",                  NIL);
             def("max",                  NIL);
             def("==",                   alias("eq"));
@@ -93,6 +103,9 @@ public final class VitryRuntime
             def("<=",                   alias("lte"));
             def("=>",                   alias("gte"));
             def(">",                    alias("gt"));
+            def("and",                  NIL);
+            def("or",                   NIL);
+            def("not",                  NIL);
                           
             def("arity",                new arity());
             def("id",                   new id());
@@ -103,17 +116,6 @@ public final class VitryRuntime
             def("flip",                 NIL);            
             def("(./)",                 alias("compose"));            
             def("(.\\)",                alias("follow"));            
-
-            def("(,)",                  new product());
-            def("[,]",                  NIL);
-            def("{,}",                  NIL);
-                 
-            def("succ",                 NIL);
-            def("pred",                 NIL);
-                             
-
-            def("not",                  NIL);
-
                
             def("add",                  new add());
             def("sub",                  new sub());
@@ -156,7 +158,50 @@ public final class VitryRuntime
             def("isEven",               NIL);
             def("isPrime",              NIL);
             
+            // head        : [a] -> a
+            // tail        : [a] -> [a]
+            // last        : [a] -> a
+            // init        : [a] -> [a]
+            // cons        : a, [a] -> a
             
+            def("head",                 NIL);
+            def("tail",                 NIL);
+            def("last",                 NIL);
+            def("init",                 NIL);
+            def("prepend",              NIL);
+            def("append",               NIL);
+            
+            def("length",               NIL);
+            def("rank",                 NIL);
+            def("isEmpty",              NIL);
+            def("isSingle",             NIL);
+
+            def("nth",                  NIL);
+            def("map",                  NIL);
+            def("apply",                NIL);
+            def("foldl",                NIL);
+            def("foldr",                NIL);
+            def("concat",               NIL);
+            
+            def("insert",               NIL);
+            def("substr",               NIL);
+            def("subseq",               NIL);
+            def("drop",                 NIL);
+            def("take",                 NIL);
+            def("remove",               NIL);
+            def("retain",               NIL);
+            
+            def("reverse",              NIL);
+            def("revappend",            NIL);
+            def("sort",                 NIL);
+            def("search",               NIL);
+            def("shuffle",              NIL);
+            def("permute",              NIL);
+            def("partition",            NIL);
+
+            def("some",                 NIL);
+            def("every",                NIL);
+            def("none",                 NIL);
 
             def("now",                  NIL);
 
@@ -169,7 +214,22 @@ public final class VitryRuntime
             def("load",                 NIL);
             def("version",              NIL);
             def("quit",                 new quit());
-
+            
+            // Alpha - to be replaced
+            def("openFile",             NIL);
+            def("closeFile",            NIL);
+            def("readFile",             NIL);
+            def("writeFile",            NIL);
+            
+            // Alpha - JVM interop
+            def("host",                 NIL);
+            def("class",                NIL);
+            def("method",               NIL);
+            def("fieldGet",             NIL);
+            def("fieldPut",             NIL);
+            def("classOf",              NIL);
+            def("methodsOf",            NIL);
+            def("fieldsOf",             NIL);            
             
             defFix("(.)",               12, false, true );   // gathering?
             defFix("(^^)",              10, true,  false);
