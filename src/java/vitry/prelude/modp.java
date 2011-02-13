@@ -4,13 +4,11 @@ import vitry.runtime.StandardFunction;
 
 public class modp extends StandardFunction
     {
-        /**
-         */
         public modp() {
             super(2);
         }
 
         public Object apply(Object a, Object b) {
-            return null; // TODO
+            throw new UnsupportedOperationException(); // TODO
         }
     }

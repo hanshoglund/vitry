@@ -18,7 +18,7 @@
  */
 package vitry.runtime.struct;
 
-import static vitry.runtime.Build.MEMOIZE_SEQS;
+import static vitry.runtime.Build.MEMOIZE_SEQUENCESS;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -30,26 +30,26 @@ import vitry.runtime.util.Utils;
 
 /**
  * Basic sequence operations.
- *
- * TODO rewrite append, revappend, butlast etc in imperative style
  */
 public class Sequences
     {
-        private Sequences() {
-        }
+        private Sequences() {}
 
         private static final Map<Object, Object> memoizedLasts = new WeakHashMap<Object, Object>();
 
         private static final Object[] EMPTY_OBJ_ARRAY = new Object[0];
+        
+        
 
         public static <T> Sequence<T> single(T x) {
-            return new Single<T>(x);
+            return cons(x, null);
         }
 
         public static <T> Sequence<T> cons(T x, Sequence<T> xs) {
-            if (xs == null) return (Sequence<T>) new Single<T>(x);
+            if (xs == null)
+                return new Single<T>(x);
             else
-                return (Sequence<T>) xs.cons(x);
+                return xs.cons(x);
         }
 
         public static <T> T head(Sequence<T> xs) {
@@ -57,22 +57,20 @@ public class Sequences
         }
 
         public static <T> Sequence<T> tail(Sequence<T> xs) {
-            return (Sequence<T>) xs.tail();
+            return xs.tail();
         }
 
         public static <T> T last(Sequence<T> s) {
-            if (MEMOIZE_SEQS) {
+            if (MEMOIZE_SEQUENCESS) {
                 Object m = memoizedLasts.get(s);
                 if (m != null) return Utils.<T> unsafe(m);
             }
-
             while (s.tail() != null) {
                 s = tail(s);
             }
-
             T r = s.head();
 
-            if (MEMOIZE_SEQS) {
+            if (MEMOIZE_SEQUENCESS) {
                 memoizedLasts.put(s, r);
             }
             return r;
@@ -80,32 +78,32 @@ public class Sequences
 
         public static <T> Sequence<T> init(Sequence<T> s) {
             if (s.tail() == null) {
-                if (MEMOIZE_SEQS) {
+                if (MEMOIZE_SEQUENCESS) {
                     memoizedLasts.put(s, s.head());
                 }
                 return null;
             } else {
-                return (Sequence<T>) cons(head(s), init(tail(s)));
+                return cons(head(s), init(tail(s)));
             }
         }
 
         public static <T> Sequence<T> until(Sequence<T> s, Sequence<T> t) {
-            if (s == null || s == t) return null;
+            if (s == null || s == t) 
+                return null;
             else
-                return (Sequence<T>) cons(head(s), until(tail(s), t));
+                return cons(head(s), until(tail(s), t));
         }
 
         public static <T> Sequence<T> untilElement(Sequence<T> s, T e) {
             if (s == null || s.head().equals(e)) 
                 return null;
             else
-                return (Sequence<T>) cons(head(s), untilElement(tail(s), e));
+                return cons(head(s), untilElement(tail(s), e));
         }
 
 
         public static int length(Sequence<?> s) {
             if (s instanceof Finite) return ((Finite<?>) s).length();
-
             int length = 0;
             do {
                 length++;
@@ -115,17 +113,19 @@ public class Sequences
         }
 
         public static <T> Sequence<T> reverse(Sequence<T> xs) {
-            return (Sequence<T>) reverseAppend(xs, null);
+            return reverseAppend(xs, null);
         }
 
         public static <T> Sequence<T> append(Sequence<T> xs, Sequence<T> ys) {
-            if (xs == null) return ys;
+            if (xs == null) 
+                return ys;
             else
                 return cons(head(xs), append(tail(xs), ys));
         }
 
         public static <T> Sequence<T> reverseAppend(Sequence<T> xs, Sequence<T> ys) {
-            if (xs == null) return ys;
+            if (xs == null)
+                return ys;
             else
                 return (Sequence<T>) reverseAppend(xs.tail(), cons(xs.head(), ys));
         }
@@ -152,10 +152,6 @@ public class Sequences
             return index(reverse(s), i);
         }
 
-        public static <T> Sequence<T> printable(Sequence<T> s) {
-            return (Sequence<T>) new PrintableSequence<T>(s);
-        }
-        
         public static <U, T> U foldl(Function fn, U init, Sequence<T> s) {
             U res = init;
             while (s != null) {
@@ -164,16 +160,36 @@ public class Sequences
             }
             return res;
         }
+        
+        public static <U, T> U foldr(Function fn, U init, Sequence<T> s) {
+            U res = init;
+            while (s != null) {
+                res = Utils.<U>unsafe(fn.apply(s.head(), init));
+                s = s.tail();
+            }
+            return res;
+        }
 
+        public static <T> Sequence<T> printable(Sequence<T> s) {
+            return new PrintableSequence<T>(s);
+        }
+
+        public static <T> SequenceIterator<T> iterate(Sequence<T> s) {
+            return new SequenceIterator<T>(s);
+        }
+
+        public static <T> RewindableSequenceIterator<T> rewindableIterate(Sequence<T> s) {
+            return new RewindableSequenceIterator<T>(iterate(s));
+        }
 
         public static Object[] toArray(Sequence<?> s) {
             if (s == null) return EMPTY_OBJ_ARRAY;
-
+        
             Object[] a;
             if (s instanceof Finite) a = new Object[ ((Finite<?>) s).length()];
             else
                 a = new Object[length(s)];
-
+        
             int i = 0;
             do {
                 a[i++] = s.head();
@@ -191,23 +207,4 @@ public class Sequences
             } while (s != null);
             return l.toArray(dummy);
         }
-
-        public static <T> SequenceIterator<T> iterate(Sequence<T> s) {
-            return new SequenceIterator<T>(s);
-        }
-
-        public static <T> RewindableSequenceIterator<T> rewindableIterate(Sequence<T> s) {
-            return new RewindableSequenceIterator<T>(iterate(s));
-        }
-
-
-        // public static void main(String[] args) {
-        //            Pattern p = FactoryMethods.product(1, 2, 3, 4, 5);
-        //            System.out.println(new SimpleProduct(butLast((Sequence<Pattern>) p)));
-        //            System.out.println(last((Sequence<?>) p)); 
-
-        // ArraySequence<Pattern> s = new ArraySequence<Pattern>(new Pattern[]{ VitryRuntime.nil, VitryRuntime.true_ });
-        // Sequence<Pattern> s2 = revappend(s, s);
-        // System.out.println(new SimpleProduct((Sequence<Pattern>) s2));
-        // }
     }

@@ -20,6 +20,8 @@ package vitry.runtime.struct;
 
 import java.util.Iterator;
 
+import vitry.runtime.util.ArrayIterator;
+
 /**
  * Adapts an array as a sequence. Mutating the array is not recommended.
  */

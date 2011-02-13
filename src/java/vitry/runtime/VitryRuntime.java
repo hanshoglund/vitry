@@ -27,6 +27,7 @@ import java.util.Properties;
 import vitry.prelude.*;
 import vitry.runtime.error.UndefinedError;
 import vitry.runtime.struct.*;
+import vitry.runtime.util.ModuleClassLoader;
 
 
 /**
@@ -34,8 +35,9 @@ import vitry.runtime.struct.*;
  * 
  * @author Hans Höglund
  */
-public final class VitryRuntime 
+public final class VitryRuntime     
     {
+    
 
         public static final Nil         NIL             = new Nil();
         public static final Bottom      BOTTOM          = new Bottom();
@@ -47,13 +49,14 @@ public final class VitryRuntime
         public static final Set         RAT             = NativeSet.forClass(BigRational.class);
         public static final Set         FLOAT           = NativeSet.forClass(Float.class);
         public static final Set         DOUBLE          = NativeSet.forClass(Double.class);
+        public static final Set         COMPLEX         = null;
+        public static final Set         CHAR            = NativeSet.forClass(Character.class);
         public static final Set         STR             = NativeSet.forClass(String.class); 
         // TODO boolean etc                                                                                
         static final int                MIN_ARITY       = 1;
         static final int                MAX_ARITY       = 0xf;
 
         
-        // Prelude
         
         private static final Environment<Symbol, Object> prelude = new HashEnvironment<Symbol, Object>();
         private static final Environment<Symbol, Fixity> preludeFixities = new HashEnvironment<Symbol, Fixity>();
@@ -62,38 +65,110 @@ public final class VitryRuntime
             def("()",                   NIL);
             def("[]",                   NIL);
             def("{}",                   BOTTOM);
+            def("_",                    ANY);
             def("nil",                  NIL);
-            def("eq",                   new eq());
-            def("==",                   "eq");
             def("true",                 TRUE);
             def("false",                FALSE);
-            def("int",                  INT);
+            def("bool",                 null);
             def("nat",                  NAT);
+            def("int",                  INT);
             def("rat",                  RAT);
             def("float",                FLOAT);
             def("double",               DOUBLE);
+            def("complex",              COMPLEX);
+            def("char",                 CHAR);
             def("str",                  STR);
             
+            def("eq",                   new eq());
+            def("neq",                  NIL);
+            def("lt",                   NIL);
+            def("lte",                  NIL);
+            def("gte",                  NIL);
+            def("gt",                   NIL);
+            def("min",                  NIL);
+            def("max",                  NIL);
+            def("==",                   alias("eq"));
+            def("/=",                   alias("neq"));
+            def("<",                    alias("lt"));
+            def("<=",                   alias("lte"));
+            def("=>",                   alias("gte"));
+            def(">",                    alias("gt"));
+                          
+            def("arity",                new arity());
             def("id",                   new id());
             def("const",                new const_());   
-            def("product",              new product());   
+            def("compose",              NIL);
+            def("follow",               NIL);
+            def("power",                NIL);
+            def("flip",                 NIL);            
+            def("(./)",                 alias("compose"));            
+            def("(.\\)",                alias("follow"));            
+
+            def("(,)",                  new product());
+            def("[,]",                  NIL);
+            def("{,}",                  NIL);
+                 
+            def("succ",                 NIL);
+            def("pred",                 NIL);
+                             
+
+            def("not",                  NIL);
+
+               
             def("add",                  new add());
             def("sub",                  new sub());
             def("mul",                  new mul());
             def("div",                  new div());
             def("mod",                  new mod());
             def("modp",                 new modp());
+            def("negate",               new neg());
+            def("abs",                  NIL);
+            def("signum",               NIL);
+            def("exp",                  new pow());
+            def("sqrt",                 NIL);
+            def("log",                  NIL);
+            def("logn",                 NIL);
+            def("ln",                   NIL);
+            def("sin",                  NIL);
+            def("tan",                  NIL);
+            def("cos",                  NIL);
+            def("asin",                 NIL);
+            def("atan",                 NIL);
+            def("acos",                 NIL);
+            def("round",                NIL);
+            def("ceil",                 NIL);
+            def("floor",                NIL);
+            def("recip",                NIL);
+            def("sum",                  NIL);
+            def("prod",                 NIL);
+            def("gcd",                  NIL);
+            def("lcm",                  NIL);
+            def("(+)",                  alias("add"));
+            def("(-)",                  alias("sub"));
+            def("(*)",                  alias("mul"));
+            def("(/)",                  alias("div"));
+            def("(%)",                  alias("mod"));
+            def("(%%)",                 alias("modp"));
+            def("(^)",                  alias("exp"));
+            
+            def("isNegative",           NIL);
+            def("isOdd",                NIL);
+            def("isEven",               NIL);
+            def("isPrime",              NIL);
+            
+            
 
-            def("(+)",                  "add");
-            def("(-)",                  "sub");
-            def("(*)",                  "mul");
-            def("(/)",                  "div");
-            def("(%)",                  "mod");
-            def("(%%)",                 "modp");
-            def("(,)",                  "product");
+            def("now",                  NIL);
 
+            def("read",                 NIL);
+            def("eval",                 NIL);
+            def("print",                NIL);
+            def("error",                NIL);
+            
+            def("require",              NIL);
+            def("load",                 NIL);
+            def("version",              NIL);
             def("quit",                 new quit());
-            def("arity",                new arity());
 
             
             defFix("(.)",               12, false, true );   // gathering?
@@ -124,14 +199,31 @@ public final class VitryRuntime
         }
         
 
-        
+        /**
+         * Used to determine classpath etc.
+         */
         private final Properties  systemProperties;
-
+                          
+        /**
+         * Used to load modules.
+         */
         private ClassLoader classLoader;
-        
+                                      
+        /**
+         * Loaded modules.
+         */
+        private Sequence<Module> modules;
+                                          
+        /**
+         * Used to execute interpreted code.
+         */
         private Eval       interpreter;
-        
+           
+        /**
+         * This is for the gensym facility.
+         */
         private BigInteger uniqueState = BigInteger.valueOf(0x2177375305f7L);
+
         
         
         public VitryRuntime
@@ -293,7 +385,7 @@ public final class VitryRuntime
 // Built-in types
 
 
-class Any extends Atom
+final class Any extends Atom
     {
         Any() {}
 
@@ -331,7 +423,7 @@ class Any extends Atom
     }
 
 
-class Bottom extends AbstractSet
+final class Bottom extends AbstractSet
     {
         Bottom() {}
 
@@ -426,15 +518,15 @@ final class Nil extends Atom implements Product
 
 // Core type delegators
 
-class ForwardingProduct extends AbstractProduct
+final class ForwardingProduct extends AbstractProduct
     {
-        Sequence<Pattern> elements;
+        final Sequence<Pattern> elements;
 
         public ForwardingProduct(Sequence<Pattern> elements) {
             this.elements = elements;
         }
 
-        public final Iterator<Pattern> iterator() {
+        public Iterator<Pattern> iterator() {
             return elements.iterator();
         }
 
@@ -442,93 +534,92 @@ class ForwardingProduct extends AbstractProduct
             return elements.head();
         }
 
-        public final Product tail() {
+        public Product tail() {
             return product(elements.tail());
         }
 
-        public final boolean hasTail() {
+        public boolean hasTail() {
             return elements.hasTail();
         }
     }
 
 
-class ForwardingSet extends AbstractSet
+final class ForwardingSet extends AbstractSet
     {
-        Sequence<Pattern> elements;
+        final Sequence<Pattern> elements;
 
         public ForwardingSet(Sequence<Pattern> elements) {
             this.elements = elements;
         }
 
-        public final Iterator<Pattern> iterator() {
+        public Iterator<Pattern> iterator() {
             return elements.iterator();
         }
 
-        public final Pattern head() {
+        public Pattern head() {
             return elements.head();
         }
 
-        public final Sequence<Pattern> tail() {
+        public Sequence<Pattern> tail() {
             return elements.tail();
         }
 
-        public final boolean hasTail() {
+        public boolean hasTail() {
             return elements.hasTail();
         }
     }
 
 
-class ForwardingUnion extends Union
+final class ForwardingUnion extends Union
     {
-        Sequence<Pattern> elements;
+        final Sequence<Pattern> elements;
 
         public ForwardingUnion(Sequence<Pattern> elements) {
             this.elements = elements;
         }
 
-        public final Iterator<Pattern> iterator() {
+        public Iterator<Pattern> iterator() {
             return elements.iterator();
         }
 
-        public final Pattern head() {
+        public Pattern head() {
             return elements.head();
         }
 
-        public final Sequence<Pattern> tail() {
+        public Sequence<Pattern> tail() {
             return elements.tail();
         }
 
-        public final boolean hasTail() {
+        public boolean hasTail() {
             return elements.hasTail();
         }
     }
 
 
-class ForwardingIntersection extends Intersection
+final class ForwardingIntersection extends Intersection
     {
-        Sequence<Pattern> elements;
-    
-    public ForwardingIntersection(Sequence<Pattern> elements) {
-        this.elements = elements;
-    }
-    
-    public final Iterator<Pattern> iterator() {
-        return elements.iterator();
-    }
-    
-    public final Pattern head() {
-        return elements.head();
-    }
-    
-    public final Sequence<Pattern> tail() {
-        return elements.tail();
-    }
-    
-    public final boolean hasTail() {
-        return elements.hasTail();
-    }
-}
+        final Sequence<Pattern> elements;
 
+        public ForwardingIntersection(Sequence<Pattern> elements) {
+            this.elements = elements;
+        }
+
+        public Iterator<Pattern> iterator() {
+            return elements.iterator();
+        }
+
+        public Pattern head() {
+            return elements.head();
+        }
+
+        public Sequence<Pattern> tail() {
+            return elements.tail();
+        }
+
+        public boolean hasTail() {
+            return elements.hasTail();
+        }
+    }
 
 
 

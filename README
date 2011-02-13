@@ -1,20 +1,25 @@
-Vitry by Hans Höglund
-
-Pre-alpha, not usable
-
-Vitry is a functional programming language and an environment for
-representation and manipulation of music. Features an infix syntax and a
-simple, expressive type system. Represented music can be output in a 
-variety of formats, transcribed to musical notation or used as control
-data for sound synthesis.
-
-Targets the JVM, works on Windows, Linux and OS X.
 
 
-Instructions
+================================================================================
+Vitry v0.1.0
+================================================================================
 
-  Build 
+A functional programming language and an environment for representation
+and manipulation of music. Features an infix syntax and a simple, expressive
+type system.
+
+Download: https://github.com/hanshoglund/vitry
+Discussion: http://vitry.983786.n3.nabble.com
+Bugs: https://github.com/hanshoglund/vitry/issues                                                                            
+
+
+Requirements
+    Java 1.6
+    Apache Ant
+
+Build using
     $ ant
 
-  Run 
+Run using
     $ ./vitry.sh
+    

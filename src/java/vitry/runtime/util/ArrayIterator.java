@@ -16,7 +16,7 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime.struct;
+package vitry.runtime.util;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -50,6 +50,6 @@ public class ArrayIterator<T> implements Iterator<T>
         }
 
         public void remove() {
-            throw new UnsupportedOperationException("Can not remove from an ArrayIterator");
+            throw new UnsupportedOperationException("Can not remove from array");
         }
     }

@@ -25,24 +25,25 @@ import vitry.runtime.Function;
 
 abstract public class AbstractSequence<T> implements Sequence<T>
     {
+
+        public Iterator<T> iterator() {
+            return new SequenceIterator<T>(this);
+        }
+
+        public SequenceIterator<T> sequenceIterator() {
+            return new SequenceIterator<T>(this);
+        }
+        
+        public boolean hasTail() {
+            return this.tail() == null;
+        }
+
         public Sequence<T> cons(T head) {
             return new Pair<T>(head, this);
         }
 
         public <U> Sequence<U> map(Function fn) {
             return new MapSequence<T, U>(fn, this);
-        }
-
-        public Iterator<T> iterator() {
-            return new SequenceIterator<T>(this);
-        }
-
-        public boolean hasTail() {
-            return this.tail() == null;
-        }
-
-        public SequenceIterator<T> sequenceIterator() {
-            return new SequenceIterator<T>(this);
         }
         
         
