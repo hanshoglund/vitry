@@ -26,7 +26,7 @@ public class ResolveError extends VitryError
             super(string, cause);
         }
 
-        private ResolveError(String string) {
+        public ResolveError(String string) {
             super(string);
         }
 

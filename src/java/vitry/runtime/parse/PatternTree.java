@@ -51,7 +51,7 @@ import vitry.runtime.util.Utils;
 public class PatternTree extends CommonTree implements Product
     {
 
-        private final Product delegee      = VitryRuntime.product(this);
+        private final Product delegee      = VitryRuntime.productUnsafe(this);
 
         private Sequence<Pattern> childSeq = null;
 
@@ -290,6 +290,14 @@ public class PatternTree extends CommonTree implements Product
         public boolean matchFor(Pattern p) {
             return delegee.matchFor(p);
         }
+
+
+
+        public String toString() {
+            return delegee.toString();
+        }
+        
+        
         
 
         

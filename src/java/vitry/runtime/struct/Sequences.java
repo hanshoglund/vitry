@@ -18,13 +18,14 @@
  */
 package vitry.runtime.struct;
 
-import static vitry.runtime.Build.MEMOIZE_SEQUENCESS;
+import static vitry.runtime.Build.MEMOIZE_SEQUENCES;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.WeakHashMap;
 
 import vitry.runtime.Function;
+import vitry.runtime.VitryRuntime;
 import vitry.runtime.util.Utils;
 
 
@@ -39,6 +40,9 @@ public class Sequences
 
         private static final Object[] EMPTY_OBJ_ARRAY = new Object[0];
         
+        public static boolean isNil(Sequence<?> s) {
+            return s == null || s == VitryRuntime.NIL;
+        }
         
 
         public static <T> Sequence<T> single(T x) {
@@ -46,7 +50,7 @@ public class Sequences
         }
 
         public static <T> Sequence<T> cons(T x, Sequence<T> xs) {
-            if (xs == null)
+            if (isNil(xs))
                 return new Single<T>(x);
             else
                 return xs.cons(x);
@@ -61,24 +65,24 @@ public class Sequences
         }
 
         public static <T> T last(Sequence<T> s) {
-            if (MEMOIZE_SEQUENCESS) {
+            if (MEMOIZE_SEQUENCES) {
                 Object m = memoizedLasts.get(s);
                 if (m != null) return Utils.<T> unsafe(m);
             }
-            while (s.tail() != null) {
+            while (!isNil(s.tail())) {
                 s = tail(s);
             }
             T r = s.head();
 
-            if (MEMOIZE_SEQUENCESS) {
+            if (MEMOIZE_SEQUENCES) {
                 memoizedLasts.put(s, r);
             }
             return r;
         }
 
         public static <T> Sequence<T> init(Sequence<T> s) {
-            if (s.tail() == null) {
-                if (MEMOIZE_SEQUENCESS) {
+            if (isNil(s.tail())) {
+                if (MEMOIZE_SEQUENCES) {
                     memoizedLasts.put(s, s.head());
                 }
                 return null;
@@ -88,14 +92,14 @@ public class Sequences
         }
 
         public static <T> Sequence<T> until(Sequence<T> s, Sequence<T> t) {
-            if (s == null || s == t) 
+            if (isNil(s) || s == t) 
                 return null;
             else
                 return cons(head(s), until(tail(s), t));
         }
 
         public static <T> Sequence<T> untilElement(Sequence<T> s, T e) {
-            if (s == null || s.head().equals(e)) 
+            if (isNil(s) || s.head().equals(e)) 
                 return null;
             else
                 return cons(head(s), untilElement(tail(s), e));
@@ -108,7 +112,7 @@ public class Sequences
             do {
                 length++;
                 s = s.tail();
-            } while (s != null);
+            } while (!isNil(s));
             return length;
         }
 
@@ -117,17 +121,17 @@ public class Sequences
         }
 
         public static <T> Sequence<T> append(Sequence<T> xs, Sequence<T> ys) {
-            if (xs == null) 
+            if (isNil(xs)) 
                 return ys;
             else
                 return cons(head(xs), append(tail(xs), ys));
         }
 
         public static <T> Sequence<T> reverseAppend(Sequence<T> xs, Sequence<T> ys) {
-            if (xs == null)
+            if (isNil(xs))
                 return ys;
             else
-                return (Sequence<T>) reverseAppend(xs.tail(), cons(xs.head(), ys));
+                return reverseAppend(xs.tail(), cons(xs.head(), ys));
         }
 
         public static <T> T first(Sequence<T> s) {
@@ -154,8 +158,8 @@ public class Sequences
 
         public static <U, T> U foldl(Function fn, U init, Sequence<T> s) {
             U res = init;
-            while (s != null) {
-                res = Utils.<U>unsafe(fn.apply(init, s.head()));
+            while (!isNil(s)) {
+                res = Utils.<U>unsafe(fn.apply(res, s.head()));
                 s = s.tail();
             }
             return res;
@@ -163,8 +167,8 @@ public class Sequences
         
         public static <U, T> U foldr(Function fn, U init, Sequence<T> s) {
             U res = init;
-            while (s != null) {
-                res = Utils.<U>unsafe(fn.apply(s.head(), init));
+            while (!isNil(s)) {
+                res = Utils.<U>unsafe(fn.apply(s.head(), res));
                 s = s.tail();
             }
             return res;
@@ -183,7 +187,7 @@ public class Sequences
         }
 
         public static Object[] toArray(Sequence<?> s) {
-            if (s == null) return EMPTY_OBJ_ARRAY;
+            if (isNil(s)) return EMPTY_OBJ_ARRAY;
         
             Object[] a;
             if (s instanceof Finite) a = new Object[ ((Finite<?>) s).length()];
@@ -194,17 +198,17 @@ public class Sequences
             do {
                 a[i++] = s.head();
                 s = s.tail();
-            } while (s != null);
+            } while (!isNil(s));
             return a;
         }
 
         public static <T> T[] toArray(Sequence<T> s, T[] dummy) {
             java.util.List<T> l = new java.util.LinkedList<T>();
-            if (s == null) return l.toArray(dummy);
+            if (isNil(s)) return l.toArray(dummy);
             do {
                 l.add(s.head());
                 s = tail(s);
-            } while (s != null);
+            } while (!isNil(s));
             return l.toArray(dummy);
         }
     }

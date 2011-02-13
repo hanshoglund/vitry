@@ -25,9 +25,9 @@ import java.util.Iterator;
 import java.util.Properties;
 
 import vitry.prelude.*;
+import vitry.runtime.error.BindingError;
 import vitry.runtime.error.UndefinedError;
 import vitry.runtime.struct.*;
-import vitry.runtime.util.ModuleClassLoader;
 
 
 /**
@@ -86,6 +86,8 @@ public final class VitryRuntime
             def("(->)",                 NIL);
             def("(<->)",                NIL);
             def("(<-)",                 NIL);
+            def("symbol",               new symbol());
+            def("string",               new string());
                         
             def("eq",                   new eq());
             def("neq",                  NIL);
@@ -223,11 +225,11 @@ public final class VitryRuntime
             
             // Alpha - JVM interop
             def("host",                 NIL);
-            def("class",                NIL);
-            def("method",               NIL);
+            def("class",                new class_());
+            def("method",               new method());
             def("fieldGet",             NIL);
             def("fieldPut",             NIL);
-            def("classOf",              NIL);
+            def("classOf",              new classOf());
             def("methodsOf",            NIL);
             def("fieldsOf",             NIL);            
             
@@ -257,6 +259,12 @@ public final class VitryRuntime
             defFix("($!)",              0,  true,  false);
             defFix("($)",               0,  false, false);
         }
+        
+        /**
+         * Classes interned for reflection.
+         * TODO unify with native set mechanism?
+         */
+        static Environment<Symbol, Class<?>> internedClasses = new HashEnvironment<Symbol, Class<?>>();
         
 
         /**
@@ -345,7 +353,7 @@ public final class VitryRuntime
             return prelude.extend();
         }
         
-        public Object getPreludeValue(Symbol key) throws UndefinedError {
+        public static Object getPreludeValue(Symbol key) throws UndefinedError {
             return prelude.lookup(key);
         }
         
@@ -354,15 +362,30 @@ public final class VitryRuntime
         }
         
         
+        public static Class<?> internClass(Symbol name) throws ClassNotFoundException {
+            if (!internedClasses.hasBinding(name)) {
+                Class<?> c = Class.forName(name.toString());
+                internedClasses.define(name, c);
+            }
+            return internedClasses.lookup(name);
+        }
         
         
         
         
+        
+
+
         // General construction and conversion
         
         
+
         public static Product product(Sequence<Pattern> s) {
+            if (Sequences.isNil(s)) return null;
             if (s instanceof Product) return (Product) s;
+            return new ForwardingProduct(s);
+        }
+        public static Product productUnsafe(Sequence<Pattern> s) {
             return new ForwardingProduct(s);
         }
 
@@ -517,7 +540,7 @@ final class Bottom extends AbstractSet
     }
 
 
-final class Nil extends Atom implements Product
+final class Nil extends Atom implements Product, Finite<Pattern>
     {
         Nil() {}
 
@@ -570,6 +593,11 @@ final class Nil extends Atom implements Product
 
         private <T> T throwUnsupported() {
             throw new UnsupportedOperationException("() has no members.");
+        }
+
+
+        public int length() {
+            return 0;
         }
 
     }

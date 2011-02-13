@@ -82,6 +82,7 @@ class OperatorRewrite
              * and all following elements.
              */
             
+            Fixity fix = null;
             Product before = null;
             Pattern pred = null;
             Pattern prim = null;
@@ -104,15 +105,19 @@ class OperatorRewrite
                 
                 if (last == null || !isOpTree(now)) continue;
                 
-                Fixity f = getFixity(now);
-                if (f != null && (f.getPrecedence() > max || (f.getPrecedence() == max && !f.getAssociativity()))) {
+                fix = getFixity(now);
+                if (fix != null 
+                    && (fix.getPrecedence() > max 
+                        || (fix.getPrecedence() == max 
+                            && !fix.getAssociativity()))) {
+
                     prim = (Product) now;
                     pred = last;
                     after = product(it.following());
-                    max = f.getPrecedence();
+                    max = fix.getPrecedence();
                 }
             }
-            if (prim == null && pred != null) throw new ParseError("Correputed operator tree " + seq);
+            if (prim == null || fix == null) throw new ParseError("Correputed operator tree " + seq);
             
             /*
              * Find preceding elements by backtracking
@@ -126,31 +131,32 @@ class OperatorRewrite
             Pattern hoist;
             Product insert, unify = null;
             
-//            if (hasSameOperator(prim, pred) && getFixity(prim).isGathering()) {
-//                // Gathering operator, just concatenate
-//                unify = append((Product) pred, prim.tail());
-//
-//            } else if (isOpTree(pred) && isShallow(pred) && length((Product) pred) <= 2) {
-//                // Both preceding and primary are unprocessed
-//                // Hoist and reinsert
-//                // (append (init preceding, ((insert (last preceding) primary) . nil)))
-//                hoist = last((Product) pred);
-//                insert = insert(hoist, prim);
-//                unify = append(init((Product) pred), single((Pattern) insert));
-//            } else {
-//                // Primary is processed or non-op expression
-//                // Simply insert
-//                insert = insert(pred, prim);
-//                unify = insert;
-//            }
-//
-//            return rewrite(append(before, cons((Pattern) unify, after)));
-            return null;
+            if (hasSameOperator(prim, pred) && fix.isGathering()) {
+                // Gathering operator, just concatenate
+                unify = product(append((Product) pred, ((Product) prim).tail()));
+
+            } else if (isOpTree(pred) && isShallow(pred) && length((Product) pred) <= 2) {
+                // Both preceding and primary are unprocessed
+                // Hoist and reinsert
+                
+                // (append (init preceding, ((insert (last preceding) primary) . nil)))
+                
+                hoist = last((Product) pred);
+                insert = insert(hoist, (Product) prim);
+                
+                unify = product(append(init((Product) pred), product(single((Pattern) insert))));
+            } else {
+                // Primary is processed or non-op expression
+                // Simply insert
+                insert = insert(pred, (Product) prim);
+                unify = insert;
+            }
+
+            return rewrite(product(append(before, cons((Pattern) unify, after))));
         }
 
         private static Product insert(Pattern hoist, Product primary) {
-            return null;
-//            return cons(primary.head(), cons(hoist, primary.tail()));
+            return product(cons(primary.head(), cons(hoist, primary.tail())));
         }
 
         /**
@@ -216,12 +222,14 @@ class OperatorRewrite
         }
 
         /**
-         * Returns whether two sequences have the same head.
+         * Returns whether two sequences have the same head operator.
          */
-        private static boolean hasSameOperator(Sequence<?> primary, Pattern preceding) {
-            if (preceding instanceof Sequence) {
-                return ((Sequence<?>) preceding).head().toString()
-                    .equals(primary.head().toString());
+        private static boolean hasSameOperator(Object a, Object b) {
+            if (a instanceof Sequence && b instanceof Sequence) {
+                Object ah = ((Sequence<?>) a).head();
+                Object bh = ((Sequence<?>) b).head();
+                // TODO check it is op type
+                return ah.toString().equals(bh.toString());
             }
             return false;
         }

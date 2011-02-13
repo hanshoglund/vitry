@@ -485,7 +485,6 @@ public class Interpreter implements Eval
                         }
                         
                     case TYPE_OPS:
-                        throwNotSupported();
                         OperatorRewrite rw = new OperatorRewrite(fixities, context);
                         expr = rw.rewrite(ops);
                         continue;
