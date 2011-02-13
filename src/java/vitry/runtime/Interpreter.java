@@ -168,7 +168,6 @@ public class Interpreter implements Eval
                         op  = expr;
                         ops = null;                            
                     } else {           
-                        // TODO Seq<P>, not Product?
                         op  = ((Sequence<Pattern>) expr).head();
                         ops = ((Sequence<Pattern>) expr).tail();
                     }
@@ -185,7 +184,6 @@ public class Interpreter implements Eval
                 } catch (VitryError e) {
                     throw e;
                 }
-                
                 
                 /*
                  * Process expr    

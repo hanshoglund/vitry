@@ -21,9 +21,9 @@ package vitry.runtime;
 import vitry.runtime.struct.Sequence;
 
 /**
- * This class implements most aspects of a function, except how
- * it is applied. Requires scope upon construction, however domain
- * and range are mutable to allow for type inference.
+ * This class implements most aspects of a function, except invocation.
+ * Requires scope upon construction, however domain and range are mutable 
+ * to allow for in-place type reconstruction.
  *
  * @author Hans Höglund 
  */
