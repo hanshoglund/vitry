@@ -8,16 +8,20 @@ import vitry.runtime.struct.*;
 public class product extends InvertibleRestFunction
     {
         public Sequence<?> applyVarInverse(Object a) throws InvocationError {
-            if (a instanceof Destructible)
+            if (a instanceof Product)
                 return ((Destructible) a).destruct();
-            return throwDestructuring();
+            return throwDestruct(a);
         }
 
         public Object applyVar(Sequence<?> args) {
             return VitryRuntime.productOf(Sequences.toArray(args));
         }
 
-        private <T> T throwDestructuring() {
-            throw new DestructuringError("");
+        private <T> T throwDestruct(Object val) {
+            throw new TypeError(val, this);
+        }
+        
+        public String toString() {
+            return "(,)";
         }
     }

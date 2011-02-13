@@ -18,6 +18,7 @@
  */
 package vitry.runtime.error;
 
+import vitry.runtime.Function;
 import vitry.runtime.Pattern;
 import vitry.runtime.Type;
 
@@ -29,12 +30,21 @@ import vitry.runtime.Type;
 public class TypeError extends VitryError
     {
 
+        private TypeError(String msg) {
+            super(msg);
+        }
+        
         public TypeError(Type tag, Pattern v) {
             super("Can not apply tag " + tag + " to " + v);
         }
 
-        public TypeError() {
-            super("");
+        public TypeError(Object v, Function structor) {
+            super("Could not destruct " + v + " using " + structor);
+        }
+
+        
+        public static void throwMismatch(Object v, Pattern p) {
+            throw new TypeError("" + v + " does not conform to " + p);            
         }
 
         private static final long serialVersionUID = 3634069213260367204L;

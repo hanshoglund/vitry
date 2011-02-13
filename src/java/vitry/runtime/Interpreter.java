@@ -591,7 +591,7 @@ public class Interpreter implements Eval
                                     public void invoke(Object value, Environment<Symbol, Object> frame) {
 
                                         // Check type
-                                        if (!Native.wrap(value).matchFor(right)) throw new TypeError();
+                                        if (!Native.wrap(value).matchFor(right)) TypeError.throwMismatch(value, right);
                                         
                                         if (left instanceof LeftContinuation) {
                                             // Left may be a destructuring or other type check
@@ -613,7 +613,7 @@ public class Interpreter implements Eval
                                     return ((Type) right).tag(Native.wrap(left));
                                 else {
                                     if (!Native.wrap(left).matchFor(right))
-                                        throw new TypeError();
+                                        TypeError.throwMismatch(left, right);
                                     return left;
                                 }
                             }
