@@ -252,7 +252,8 @@ public class Interpreter implements Eval
                             Object bra = frame.lookup(PAR);
                             if (bra instanceof Product) {
                                 Pattern f = Sequences.second((Product) bra);
-                                return ((Function) f).apply(exprOps.head());
+                                Object val = eval(exprOps.head(), context, frame, fixities);
+                                return ((Function) f).apply(val);
                             } else {
                                 context = context.extend(DELIMITER, PAR).define(QUOTED, FALSE);
                                 expr = exprOps.head();
@@ -283,7 +284,8 @@ public class Interpreter implements Eval
                             Object bra = frame.lookup(BRA);
                             if (bra instanceof Product) {
                                 Pattern f = Sequences.second((Product) bra);
-                                return ((Function) f).apply(exprOps.head());
+                                Object val = eval(exprOps.head(), context, frame, fixities);
+                                return ((Function) f).apply(val);
                             } else {
                                 context = context.extend(DELIMITER, BRA).define(QUOTED, FALSE);
                                 expr = exprOps.head();
@@ -314,7 +316,8 @@ public class Interpreter implements Eval
                             Object bra = frame.lookup(ANG);
                             if (bra instanceof Product) {
                                 Pattern f = Sequences.second((Product) bra);
-                                return ((Function) f).apply(exprOps.head());
+                                Object val = eval(exprOps.head(), context, frame, fixities);
+                                return ((Function) f).apply(val);
                             } else {
                                 context = context.extend(DELIMITER, ANG).define(QUOTED, FALSE);
                                 expr = exprOps.head();
