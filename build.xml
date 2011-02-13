@@ -64,29 +64,6 @@
         </javac>
 	</target>
 	
-	
-	<!-- =============================================================== -->
-	<target name="compile-js" description="">
-		<java fork="true"
-		    classpath="lib/js.jar:lib/jline.jar:bin"
-		    classname="org.mozilla.javascript.tools.jsc.Main"
-		    failonerror="true">
-			<arg value="-d"/>
-			<arg value="bin"/>
-			<arg value="-nosource"/>
-			<arg value="-opt"/>
-			<arg value="0"/>
-			<arg value="-version"/>
-			<arg value="${js.version}"/>
-			<arg value="-package"/>
-			<arg value="vitry"/>
-
-			<arg value="${js.src}/vitry/core.js"/>
-			<arg value="${js.src}/vitry/header.js"/>
-			<arg value="${js.src}/vitry/main.js"/>
-		</java>
-	</target>
-	
 
     <!-- =============================================================== -->
     <target name="doc" description="">
@@ -112,8 +89,7 @@
 	    dirs, 
 	    generate-antlr, 
 	    compile-src, 
-	    compile-test, 
-	    compile-js" 
+	    compile-test" 
 	    description="">
 	</target>
 

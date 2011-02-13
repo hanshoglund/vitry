@@ -96,12 +96,7 @@ abstract class AbstractProduct extends ConstructionPattern implements Product
             return Utils.hash(this.getClass().hashCode(), this);
         }
 
-
         public String toString() {
             return Utils.join(this, "(", ", ", ")");
-        }
-        
-        protected <T> T throwUnsupported() {
-            throw new UnsupportedOperationException("No value for this accessor.");
         }
     }

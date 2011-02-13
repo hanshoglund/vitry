@@ -18,7 +18,8 @@
  */
 package vitry.runtime;
 
-import java.util.Iterator;
+import vitry.runtime.struct.Sequence;
+import vitry.runtime.util.Utils;
 
 /**
  * Implements native lists.
@@ -28,35 +29,74 @@ import java.util.Iterator;
 abstract public class List extends ConstructionPattern
     {
 
-        public InvertibleFunction structor() {
-            return null;
-        }
-
-        public boolean hasTail() {
-            return false;
-            // TODO Auto-generated method stub
-        }
-
-        public Iterator<Pattern> iterator() {
-            return null;
-            // TODO Auto-generated method stub
-        }
+//        public InvertibleFunction structor() {
+//            // TODO should we access this from here?
+//            return null;
+//        }
         
         
         // Eq and match
 
-        public boolean eqFor(Pattern o) {
+        public boolean eq(List o) {
+            Sequence<Pattern> left = o;
+            Sequence<Pattern> right = this;
+
+            while (left != null && right != null) {
+                if (!left.head().eqFor(right.head())) return false;
+                left = left.tail();
+                right = right.tail();
+            }
+            return (left == null && right == null);
+        }
+
+        public boolean match(List p) {
+            Sequence<Pattern> left = p;
+            Sequence<Pattern> right = this;
+
+            while (left != null && right != null) {
+                if (!left.head().matchFor(right.head())) return false;
+                left = left.tail();
+                right = right.tail();
+            }
+            return (left == null && right == null);
+        }
+
+        public boolean match(Intersection a) {
+            for (Pattern x : a)
+                if (x.matchFor(this)) return true;
             return false;
-            // TODO Auto-generated method stub
+        }
+
+        public boolean eqFor(Pattern p) {
+            return p.eq(this);
         }
 
         public boolean matchFor(Pattern p) {
-            return false;
-            // TODO Auto-generated method stub
+            return p.match(this);
         }
         
         
         // Java stuff
         
+        public List mapList(Function fn) {
+            return VitryRuntime.list(super.<Pattern>map(fn));
+        }
         
+        public List cons(Pattern head) {
+            return VitryRuntime.list(super.cons(head));
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) return true;
+            if (o instanceof List) return eq((List) o);
+            return false;
+        }
+
+        public int hashCode() {
+            return Utils.hash(this.getClass().hashCode(), this);
+        }
+
+        public String toString() {
+            return Utils.join(this, "[", ", ", "]");
+        }
     }

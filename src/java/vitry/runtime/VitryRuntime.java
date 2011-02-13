@@ -79,7 +79,7 @@ public final class VitryRuntime
             def("str",                  STR);
             
             def("(,)",                  new product());
-            def("[,]",                  NIL);
+            def("[,]",                  new list());
             def("{,}",                  new set());
             def("(|)",                  new union());
             def("(&)",                  new intersection());
@@ -385,6 +385,13 @@ public final class VitryRuntime
             if (s instanceof Product) return (Product) s;
             return new ForwardingProduct(s);
         }
+
+        public static List list(Sequence<Pattern> s) {
+            if (Sequences.isNil(s)) return null;
+            if (s instanceof List) return (List) s;
+            return new ForwardingList(s);
+        }
+        
         public static Product productUnsafe(Sequence<Pattern> s) {
             return new ForwardingProduct(s);
         }
@@ -406,6 +413,10 @@ public final class VitryRuntime
         
         public static Product productOf(Object... args) {
             return new ForwardingProduct(Native.wrap(new ArraySequence<Object>(args)));
+        }
+        
+        public static List listOf(Object... args) {
+            return new ForwardingList(Native.wrap(new ArraySequence<Object>(args)));
         }
         
         public static Set setOf(Object... args) {
@@ -737,5 +748,27 @@ final class ForwardingIntersection extends Intersection
     }
 
 
+final class ForwardingList extends List
+{
+    final Sequence<Pattern> elements;
 
+    public ForwardingList(Sequence<Pattern> elements) {
+        this.elements = elements;
+    }
 
+    public Iterator<Pattern> iterator() {
+        return elements.iterator();
+    }
+
+    public Pattern head() {
+        return elements.head();
+    }
+
+    public Sequence<Pattern> tail() {
+        return elements.tail();
+    }
+
+    public boolean hasTail() {
+        return elements.hasTail();
+    }
+}
