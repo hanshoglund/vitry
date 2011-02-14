@@ -44,7 +44,7 @@ tokens {
     Do;
     Type;
        
-    // TypeDecl; ImplicitDecl; FnDecl; MemberDecl;
+    TypeDecl; ImplicitDecl; FnDecl; MemberDecl;
 }
 
 
@@ -122,13 +122,10 @@ inlineRight
     | 'fn'   '[' left*   ']' inline[true]        -> ^(Fn left* inline)
     | 'let'  '(' assign* ')' inline[true]        -> ^(Let assign* inline)
     | 'let'  '[' assign* ']' inline[true]        -> ^(Let assign* inline)
-    // | 'loop' '(' assign* ')' inline[true]        -> ^(Loop assign* inline)
-    // | 'loop' '[' assign* ']' inline[true]        -> ^(Loop assign* inline)
     | 'do'   '(' assign* ')' expr*               -> ^(Do assign* expr*)
     | 'do'   '[' assign* ']' expr*               -> ^(Do assign* expr*)
     | 'match' v=expr '(' (c+=left e+=expr)* ')'  -> ^(Match $v ^($c $e)*)    
     | 'if' expr expr 'else'? inline[true]        -> ^(If expr expr inline)
-    // | 'recur' expr*                              -> ^(Recur expr*)
     ;
 
 assign
@@ -142,31 +139,42 @@ apply
     ;
 
 
-
-    
-
-/* 
- * Declarative forms
- * TODO
+/*
+ * Module declaration
+ * Note that this is not an expr
  */
+module 
+    : 'module' moduleName 
+      ( 
+        '(' exports+=Symbol* ')' 
+      )?
+      ( 
+        'import' imports+=moduleName*
+      )*
+      ( 
+        '(' declarations+=declaration ')' 
+      )*
+      // -> ^(Module moduleName ^($exports)* ^($imports)* ^($declarations)*)
+    ;
+    
+declaration
+    : left '=' expr                              
+    //-> ^(MemberDecl left expr)
+    // | 'type'     '(' assign*      ')'                -> ^(TypeDecl assign*)
+    // | 'implicit' '(' (expr expr)* ')'           -> ^(ImplicitDecl ^(expr expr)*)
+    // | Symbol '(' left*        ')' '=' inline[true] -> ^(FnDecl Symbol left+ inline)
+    ;
+     
 
-// module 
-//     : 'module' moduleName ('(' exports+=Symbol* ')')?
-//       ('import' imports+=moduleName*)*
-//       ( '(' declarations+=moduleDecl ')' )*
-//     -> ^(Module moduleName ^($exports)* ^($imports)* ^($declarations)*)
-//     ;
-//     
-// moduleDecl
-//     : 'type'    '(' assign* ')'                -> ^(TypeDecl assign*)
-//     | 'implicit' '(' (expr expr)* ')'           -> ^(ImplicitDecl ^(expr expr)*)
-//     | Symbol    '(' left* ')' '=' inline[true] -> ^(FnDecl Symbol left+ inline)
-//     | left '=' expr                              -> ^(MemberDecl left expr)
-//     ;
-//     
-// moduleName :
-//     Symbol ('.' Symbol)* -> ^(Symbol Symbol+)
-//     ; 
+/*
+ * TODO We should use '.' as a canonical separator, but we can not enforce it
+ * without making it a special character.
+ *
+ * Maybe use a semantic predicate checking LA(1)?
+ */
+moduleName :
+    Symbol (Op Symbol)* -> ^(Symbol Symbol*)
+    ;   
     
 
 
@@ -179,8 +187,8 @@ apply
  
 Op  : (
         '!' | '#' | '$' | '%' | '&' | '\'' | '*' | '+' | ',' | '-' |
-        '.' | '/' | ';' | '<' | '=' | '>' | '?' | '@' | '\\' | '^' | 
-        '_' | '|' | '~' | ':'
+        '.' | '/' | ':' | ';' | '<' | '=' | '>' | '?' | '@' | '\\' | '^' | 
+        '_' | '|' | '~' | 
       )*
     ;
     
