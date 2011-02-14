@@ -154,23 +154,23 @@ public class IndentationReader extends Reader
 
                 for (int i = 0; i < indent; i++)
                     setBuffer(n++, ' ');
-
-                setBuffer(n++, '(');
-
-                /*
-                 * Emit rest of line
-                 */
-                int c;
-                while (true) {
-                    c = readLineChar();
-                    if (c >= 0 && c != 0xffff) // FIXME
-                    setBuffer(n++, (char) c);
-                    else
-                        break;
-                }
+    
+                    setBuffer(n++, '(');
+            }
                 
-            } else {
-
+            /*
+             * Emit rest of line
+             */
+            int c;
+            while (true) {
+                c = readLineChar();
+                if (c >= 0 && c != 0xffff) // FIXME
+                setBuffer(n++, (char) c);
+                else
+                    break;
+            }
+                
+            if (finished) {
                 while (levels.size() > 1) {
                     setBuffer(n++, ')');
                     levels.pop();
@@ -303,19 +303,19 @@ public class IndentationReader extends Reader
             Reader r = new InputStreamReader(ClassLoader.getSystemResourceAsStream("vitry/music/Time.vitry"));
             IndentationReader ir = new IndentationReader(r);
             BufferedReader br = new BufferedReader(ir);
+//            
             
-            
-            char[] cs = new char[1];
-            while (ir.read(cs, 0, 1) > 0) {
-                System.out.print(cs);
-            }
-            System.out.flush();
-            
-//            int c;
-//            while ( (c = ir.read()) >= 0) {
-//                System.out.write(c);
+//            char[] cs = new char[20];
+//            while (ir.read(cs, 0, 1) > 0) {
+//                System.out.print(cs);
 //            }
 //            System.out.flush();
+            
+            int c;
+            while ( (c = ir.read()) >= 0) {
+                System.out.write(c);
+            }
+            System.out.flush();
             
 //            String s;
 //            while ( (s = br.readLine()) != null) {
