@@ -33,20 +33,17 @@ import java.util.Stack;
  * Rewrites indentation as parentheses.
  * 
  * At the moment also handles comment stripping, this should be factored out.
- * Comments are indicate by any operator character at the beginning of a line
- * (no whitespace before).
+ * Comments are indicated by a comment character at the beginning of a line.
  * 
  * FIXME Misses final parentheses if input is not terminated by a line-break.
  */
 public class IndentationReader extends Reader
     {   
         /**
-         * Operator characters (sorted!).
+         * Commentcharacters (sorted!).
          */
-        private static final char[] OP_CHARS = {
-            '!', '#', '$', '%', '&', '\'', '*', '+', ',', '-',
-            '.', '/', ':', ';', '<', '=', '>', '?', '@', '\\', '^', 
-            '_', '|', '~'
+        private static final char[] COMMENT_CHARS = {
+            ';'
         };
         
         private Stack<Integer> levels = new Stack<Integer>();
@@ -126,7 +123,7 @@ public class IndentationReader extends Reader
                 while(consumeBreak() > 0) linesRead++;
                 indent = consumeLineSpace();
                 
-                skip = (peek() == ';' || peek() == '\n');
+                skip = (isCommentChar(peek()) || peek() == '\n');
                 while (skip && readLineChar() >= 0);
                 
             } while (!finished && skip);
@@ -290,8 +287,8 @@ public class IndentationReader extends Reader
         
         
 
-        private boolean isOpChar(char c) {
-            return Arrays.binarySearch(OP_CHARS, c) >= 0;
+        private boolean isCommentChar(int i) {
+            return Arrays.binarySearch(COMMENT_CHARS, (char) i) >= 0;
         }
         
         
@@ -300,7 +297,7 @@ public class IndentationReader extends Reader
         
         
         public static void main(String[] args) throws IOException {
-            Reader r = new InputStreamReader(ClassLoader.getSystemResourceAsStream("vitry/music/Time.vitry"));
+            Reader r = new InputStreamReader(ClassLoader.getSystemResourceAsStream("Vitry/Music/Time.vitry"));
             IndentationReader ir = new IndentationReader(r);
             BufferedReader br = new BufferedReader(ir);
 //            
@@ -316,14 +313,6 @@ public class IndentationReader extends Reader
                 System.out.write(c);
             }
             System.out.flush();
-            
-//            String s;
-//            while ( (s = br.readLine()) != null) {
-//                System.out.println(s);
-//            }
-//            System.out.flush();
-
-
         }
         
 
