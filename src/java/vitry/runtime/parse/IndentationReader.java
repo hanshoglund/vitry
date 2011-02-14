@@ -18,12 +18,14 @@
  */
 package vitry.runtime.parse;
 
+import static java.lang.Math.min;
 import static java.lang.System.arraycopy;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.io.PushbackReader;
 import java.io.Reader;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -51,175 +53,187 @@ public class IndentationReader extends Reader
             '_', '|', '~'
         };
         
-        private final Reader r;
-
         private Stack<Integer> levels = new Stack<Integer>();
-        private Queue<Character> inserted = new LinkedList<Character>();
-        
-        private char[] line;
-        private char[] ahead;
-        
-        private int lineCount;
-        private int linePos;
-        private int lineLen;
-        private int aheadLen;
 
-        private int added;
+        private final PushbackReader input;
+        
+        private char[] line = new char[10];
+        int  length = 0;
+        int position = 0;
+        int linesRead = 0;
+        int linesEmitted = 0;
+        int state = 0;
+        
+        private static final int EOF = -1;
         
 
-        public IndentationReader(Reader source) {
-            this.r = source;
+        public IndentationReader(Reader input) {
+            this.input = new PushbackReader(input, 2);
+            this.levels.push(0);
         }
         
-
-        
-        
-        public int read(char[] buf, int off, int len) throws IOException {
-            int n = 0;
-            
-            if (line == null) {
-                // First line
-                line = new char[12];
-                ahead = new char[12];
-                levels.push(1);
-                lineCount = 0;
-                
-                readNextLine();
-            }
-
-            while (n < len && off + n < buf.length) {
-                if (linePos >= lineLen-1) {
-                    int nextIndent;
-                    boolean nextIsComment;
-                    boolean nextIsAllWhitespace;
-                    
-                    do {
-                        if ((nextIndent = getNextLineIndent()) < 0 || readNextLine() < 0) {
-                            while(n < len && off + n < buf.length && !inserted.isEmpty()) {
-                                buf[off + n] = inserted.poll();
-                                n++;
-                            }
-                            return -1;
-                        }
-                        
-                        nextIsComment = aheadLen > 0 && isOpChar(ahead[0]);
-                        nextIsAllWhitespace = true;
-                        for(int i = 0; i < aheadLen; i++) {
-                            nextIsAllWhitespace &= Character.isWhitespace(ahead[i]);
-                        }
-                        
-                    } while (nextIsComment || nextIsAllWhitespace);
-                    
-//                    if (levels.peek() > nextIndent) {
-//                        levels.push(nextIndent);
-//                    }
-//                    while (levels.size() > 1 && levels.peek() < nextIndent) {
-//                        levels.pop();
-//                        inserted.offer(')');
-//                    }
-//                    
-
-                    while (levels.size() > 0 && nextIndent < levels.peek()) {
-                        inserted.offer(')');
-                        levels.pop();
-                    }
-                    if (levels.size() > 0 && nextIndent == levels.peek() && lineCount > 0) {
-                        inserted.offer(')');
-                    }
-                    if (levels.size() > 0 && nextIndent > levels.peek()) {
-                        levels.push(nextIndent);
-                    }
-                    inserted.offer('\n');
-                    inserted.offer('(');    
-                    lineCount++;
-                    
-                }
-                
-                if (!inserted.isEmpty()) {
-                    buf[off + n] = inserted.poll();
-                    n++;
-                } else {
-                    buf[off + n] = line[linePos];
-                    linePos++;
-                    n++;
-                }
-                    
-            }
-            return n;
+        public int read() throws IOException {
+            checkLine();
+            if (state == EOF) return -1;
+            return line[position++];
         }
         
-        /**
-         * Reads characters into currentLine until a newline is encountered.
-         * Resets linePos, lineLength and addedChars.
-         */
-        private int readNextLine() throws IOException {
-            linePos = 0;
-            added = 0;
-            
-            resizeLine(aheadLen);
-            System.arraycopy(ahead, 0, line, 0, aheadLen);            
+        public int read(char[] sink, int offset, int length) throws IOException {
+            int count = 0;
+            int max = min(length, sink.length - offset);
 
-            if (aheadLen > 0 && line[aheadLen-1] == '\n') {
-                lineLen = aheadLen;
-            
+            while (count < max) {
+                checkLine();
+                if (state == EOF) {
+                    return -1; 
+                }
+                sink[count + offset] = line[position];
+                position++;
+                count++;
+            }
+            if (count > 0) {
+                return count;
             } else {
-            
-                int n = aheadLen;
-                int c;
-                do {
-                    c = r.read();
-                    resizeLine(n);
-                    line[n++] = (char) c;
-                } while (c > 0 && c != '\n');
-                if (c < 0) return -1;
-                lineLen = n;
+                return -1;
             }
-            return lineLen;
+        }
+
+        private void checkLine() throws IOException {
+            if (position >= length) {
+                nextLine();                    
+            }
         }
         
         /**
-         * Reads ahead into the next line until a non-whitespace element is
-         * encountered. Returns the number of whitespace characters consumed or -1.
-         * 
-         * Assure we are at the beginning of a line before calling.
+         * Fill [] with characters from the next line.
+         * Update lpos, lend and lineRead.
+         * If nothing more to read, set state to EOF and return. 
+         * @throws IOException 
          */
-        private int getNextLineIndent() throws IOException {
+        private void nextLine() throws IOException {
+            int n = 0;
+            boolean skip;
+            int indent;
+
+            do {
+                while(consumeBreak() > 0) linesRead++;
+                indent = consumeLineSpace();
+                
+                char a = (char) peek();
+                char b = (char) peek();
+                skip = (peek() == ';' || peek() == '\n');
+                while (skip && readLineChar() >= 0);
+            } while (state != EOF && skip);
+            
+            while (levels.size() > 1 && indent < levels.peek() && linesEmitted >= 1) {
+                writeLine(n++, ')');
+                levels.pop();
+            }
+            if (levels.size() > 0 && indent == levels.peek() && linesEmitted >= 1) {
+                writeLine(n++, ')');
+            }
+            if (levels.size() > 0 && indent > levels.peek()) {
+                levels.push(indent);
+            }
+            if (linesEmitted >= 1)
+                writeLine(n++, '\n');
+            linesEmitted++;
+            
+            for (int i = 0; i<indent; i++)
+                writeLine(n++, ' ');
+            writeLine(n++, '(');
+            
+            int c;
+            while (true) {
+                c = readLineChar();
+                if (c >= 0)
+                    writeLine(n++, (char) c);
+                else
+                    break;
+            }
+            
+            while (state == EOF && levels.size() > 0) {
+                writeLine(n++, ')');
+                levels.pop();
+            }
+
+            
+            position = 0;
+            length = n;
+        }
+        
+        private int peek() throws IOException {
+            int a = input.read();
+            if (a < 0) {
+                state = EOF;
+                return -1;
+            }
+            input.unread(a);
+            return a;
+        }
+        
+        private int readLineChar() throws IOException {
+            int a = input.read();
+            if (a < 0) {
+                state = EOF;
+                return -1;
+            }
+            if (a == '\n' || a == '\r') {
+                input.unread(a);
+                return -1;
+            }
+            return a;
+        }
+        
+        private int consumeBreak() throws IOException {
+            int a = input.read();
+            int b = input.read();
+            if (b < 0) {
+                state = EOF; 
+            }
+            if (a == '\n' && b == '\r') return 2;
+            input.unread(b);
+            if (a == '\n' || a == '\r') return 1;
+            input.unread(a);
+            return 0;
+        }
+
+        
+
+        private int consumeLineSpace() throws IOException {
             int n = 0;
             int c;
             do {
-                c = r.read();
-                resizeAhead(n);
-                ahead[n++] = (char) c;
-            } while (c > 0 && (c == ' ' || c == '\t'));
-            if (c < 0) return -1;
-            aheadLen = n;
+                c = input.read();
+                n++;
+            } while (c >= 0 && c == ' ' || c == '\t'); 
+            if (c < 0) {
+                state = EOF;
+            } else {
+                input.unread(c);
+                n--;
+            }
             return n;
         }
+
+
         
-
-
-
-
-        private void resizeAhead(int n) {
-            if (ahead.length <= n) {
-                char[] a = new char[(int) (n * 1.8)];
-                arraycopy(ahead, 0, a, 0, ahead.length);
-                this.ahead = a;
-            }
-        }
-        private void resizeLine(int n) {
+        private void writeLine(int n, char c) {
+System.err.write(c);
+System.err.flush();
             if (line.length <= n) {
                 char[] a = new char[(int) (n * 1.8)];
                 arraycopy(line, 0, a, 0, line.length);
                 this.line = a;
             }
+            line[n] = c;
         }        
 
 
         
         
         public void close() throws IOException {
-            r.close();
+            input.close();
         }
         
 //        
@@ -260,8 +274,10 @@ public class IndentationReader extends Reader
             
             int c;
             while ( (c = ir.read()) >= 0) {
-                System.out.write(c);
+//                System.out.write(c);
             }
+            System.out.flush();
+            
 //            String s;
 //            while ( (s = br.readLine()) != null) {
 //                System.out.println(s);
