@@ -19,20 +19,14 @@
 package vitry.runtime.parse;
 
 import static java.lang.Math.min;
-import static java.lang.System.arraycopy;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.LineNumberReader;
 import java.io.PushbackReader;
 import java.io.Reader;
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Stack;
-
-import vitry.runtime.util.Utils;
 
 
 /**
@@ -41,6 +35,8 @@ import vitry.runtime.util.Utils;
  * At the moment also handles comment stripping, this should be factored out.
  * Comments are indicate by any operator character at the beginning of a line
  * (no whitespace before).
+ * 
+ * FIXME Misses final parentheses if input is not terminated by a line-break.
  */
 public class IndentationReader extends Reader
     {   
@@ -57,14 +53,12 @@ public class IndentationReader extends Reader
 
         private final PushbackReader input;
         
-        private char[] line = new char[10];
+        private char[] buffer = new char[10];
         int  length = 0;
         int position = 0;
         int linesRead = 0;
         int linesEmitted = 0;
-        int state = 0;
-        
-        private static final int EOF = -1;
+        boolean finished = false;
         
 
         public IndentationReader(Reader input) {
@@ -73,107 +67,139 @@ public class IndentationReader extends Reader
         }
         
         public int read() throws IOException {
-            checkLine();
-            if (state == EOF) return -1;
-            return line[position++];
+            if (position >= this.length) {
+                if (finished)
+                    return -1;
+                nextLine();
+            }
+            return buffer[position++];
         }
         
         public int read(char[] sink, int offset, int length) throws IOException {
+            // FIXME temporary
             int count = 0;
-            int max = min(length, sink.length - offset);
-
-            while (count < max) {
-                checkLine();
-                if (state == EOF) {
-                    return -1; 
-                }
-                sink[count + offset] = line[position];
-                position++;
+            int c;
+            while (count < length) {
+                c = this.read();
+                if (c < 0) return -1;
+                sink[offset+count] = (char) c;
                 count++;
             }
-            if (count > 0) {
-                return count;
-            } else {
-                return -1;
-            }
+            return count;
+            
+            
+//            int count = 0;
+//            int max = min(length, sink.length - offset);
+//
+//            while (count < max) {
+//                if (position >= this.length) {
+//                    if (finished)
+//                        return -1;
+//                    nextLine();
+//                }
+//                
+//                sink[count + offset] = buffer[position];
+//                position++;
+//                count++;
+//            }
+//            if (count > 0) {
+//                return count;
+//            } else {
+//                return -1;
+//            }
         }
 
-        private void checkLine() throws IOException {
-            if (position >= length) {
-                nextLine();                    
-            }
-        }
-        
         /**
-         * Fill line with characters, update position and end.
-         * If nothing more to read, set state to EOF and return. 
+         * Fill buffer with characters, from the next line
+         * Reset position and end
          */
         private void nextLine() throws IOException {
             int n = 0;
-            boolean skip;
             int indent;
+            boolean skip;
 
+            /*
+             * Consume line break, empty or comment lines
+             * Consume and count initial whitespace
+             */
             do {
                 while(consumeBreak() > 0) linesRead++;
                 indent = consumeLineSpace();
                 
                 skip = (peek() == ';' || peek() == '\n');
                 while (skip && readLineChar() >= 0);
-            } while (state != EOF && skip);
+                
+            } while (!finished && skip);
             
+            /*
+             * Emit closing parentheses for previous line
+             */            
             while (levels.size() > 1 && indent < levels.peek() && linesEmitted >= 1) {
-                writeLine(n++, ')');
+                setBuffer(n++, ')');
                 levels.pop();
             }
             if (levels.size() > 0 && indent == levels.peek() && linesEmitted >= 1) {
-                writeLine(n++, ')');
+                setBuffer(n++, ')');
             }
             if (levels.size() > 0 && indent > levels.peek()) {
                 levels.push(indent);
             }
-            if (linesEmitted >= 1)
-                writeLine(n++, '\n');
-            linesEmitted++;
             
-            for (int i = 0; i<indent; i++)
-                writeLine(n++, ' ');
-            writeLine(n++, '(');
-            
-            int c;
-            while (true) {
-                c = readLineChar();
-                if (c >= 0)
-                    writeLine(n++, (char) c);
-                else
-                    break;
-            }
-            
-            while (state == EOF && levels.size() > 0) {
-                writeLine(n++, ')');
-                levels.pop();
-            }
-            if (state == EOF) writeLine(n++, '\n');
+            if (!finished) {
 
+                if (linesEmitted >= 1) 
+                    setBuffer(n++, '\n');
+
+                linesEmitted++;
+
+                for (int i = 0; i < indent; i++)
+                    setBuffer(n++, ' ');
+
+                setBuffer(n++, '(');
+
+                /*
+                 * Emit rest of line
+                 */
+                int c;
+                while (true) {
+                    c = readLineChar();
+                    if (c >= 0 && c != 0xffff) // FIXME
+                    setBuffer(n++, (char) c);
+                    else
+                        break;
+                }
+                
+            } else {
+
+                while (levels.size() > 1) {
+                    setBuffer(n++, ')');
+                    levels.pop();
+                }
+                setBuffer(n++, '\n');
+            }
             
             position = 0;
             length = n;
         }
         
+        /**
+         * Returns the next character to be read.
+         */
         private int peek() throws IOException {
             int a = input.read();
-            if (a < 0) {
-                state = EOF;
-                return -1;
-            }
             input.unread(a);
             return a;
         }
-        
+
+        /**
+         * Read the next character if if is not a line break.
+         * Returns the character or -1.
+         */
         private int readLineChar() throws IOException {
             int a = input.read();
             if (a < 0) {
-                state = EOF;
-                return -1;
+                finished = true;
+                return a;
             }
             if (a == '\n' || a == '\r') {
                 input.unread(a);
@@ -182,11 +208,16 @@ public class IndentationReader extends Reader
             return a;
         }
         
+        /**
+         * Consume one line break (\n or \r or \n\r).
+         * Returns the number of characters consumed (0-2).
+         */
         private int consumeBreak() throws IOException {
             int a = input.read();
             int b = input.read();
             if (b < 0) {
-                state = EOF; 
+                finished = true; 
+                return 0;
             }
             if (a == '\n' && b == '\r') return 2;
             input.unread(b);
@@ -196,7 +227,10 @@ public class IndentationReader extends Reader
         }
 
         
-
+        /**
+         * Consume any number of space characters (' ' or \t)
+         * Returns the number of characters consumed.
+         */
         private int consumeLineSpace() throws IOException {
             int n = 0;
             int c;
@@ -205,7 +239,8 @@ public class IndentationReader extends Reader
                 n++;
             } while (c >= 0 && c == ' ' || c == '\t'); 
             if (c < 0) {
-                state = EOF;
+                finished = true;
+                return 0;
             } else {
                 input.unread(c);
                 n--;
@@ -215,15 +250,15 @@ public class IndentationReader extends Reader
 
 
         
-        private void writeLine(int n, char c) {
-System.err.write(c);
-System.err.flush();
-            if (line.length <= n) {
+        private void setBuffer(int n, char c) {
+//System.err.write(c);
+//System.err.flush();
+            if (buffer.length <= n) {
                 char[] a = new char[(int) (n * 1.8)];
-                arraycopy(line, 0, a, 0, line.length);
-                this.line = a;
+                System.arraycopy(buffer, 0, a, 0, buffer.length);
+                this.buffer = a;
             }
-            line[n] = c;
+            buffer[n] = c;
         }        
 
 
@@ -269,16 +304,24 @@ System.err.flush();
             IndentationReader ir = new IndentationReader(r);
             BufferedReader br = new BufferedReader(ir);
             
-            int c;
-            while ( (c = ir.read()) >= 0) {
-//                System.out.write(c);
+            
+            char[] cs = new char[1];
+            while (ir.read(cs, 0, 1) > 0) {
+                System.out.print(cs);
             }
             System.out.flush();
+            
+//            int c;
+//            while ( (c = ir.read()) >= 0) {
+//                System.out.write(c);
+//            }
+//            System.out.flush();
             
 //            String s;
 //            while ( (s = br.readLine()) != null) {
 //                System.out.println(s);
 //            }
+//            System.out.flush();
 
 
         }
