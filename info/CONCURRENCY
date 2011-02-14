@@ -1,0 +1,36 @@
+
+
+
+- Some notes on concurrency
+    - Keep platform independence in mind
+        - We should set some POSIX/JVM-compatible primitives
+        
+    - The language is mainly designed for off-line processing, not massive concurrency
+    - Parallelism for ranges, map/fold etc should be investigated
+    - Call-by-value and immutability help us keep things simple
+    
+- Runtime  
+    - Each runtime may load and unload modules
+    - Each runtime starts off in a single thread (the main thread), but may spawn more
+    - Compiled/interpreted should have same behaviour:
+        - Compiled code may execute in several threads (as methods)
+        - Interpreted code access its interpreter via a ThreadLocal in VitryRuntime
+    - Runtime state (loaded modules, setup etc) is synchronized on access by VitryRuntime
+    
+    
+- Shared state?
+    - Simplest approach is to banish entirely (for RAM)
+        - Clojure-style agents
+        
+    - Simple restrictions for File system/network/audio/MIDI
+    - No Haskell-style total purity attempted
+    - Look and CL and ML solutions
+    
+
+
+
+- Add real-time support later?
+    - Look into FRP developmets (Hudak et al)
+    - Look into OSC, SuperCollider and friends 
+    
+        - But this is probably a separate project...

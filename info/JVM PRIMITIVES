@@ -24,24 +24,24 @@ JVM
 
 Basic abstraction units (interfaces):
 
-    Function<F,T>
+    Function
         Callable, n-ary where 1 <= n <= 16 or variadic
         This is to support constructors
     
     Sequence<T>
         Linked reference structure with head and tail    
     
-    Finite
+    Finite<T>
         Seq with known length
     
-    Lookup  
+    Lookup<T>  
         Seq with random access
     
     Environment<K,V>
         Linked set of bindings
         Implemented by hashtables etc.
     
-    InvertibleFunction<F,T>
+    InvertibleFunction
         Inverse callable (n-ary or variadic etc)
     
     Pattern
@@ -68,22 +68,48 @@ Concrete classes:
         - Pair/single nodes
         - Array/iterable adapter
         - Mapped version
-        
-
-Caveats:
-
-  - For interop we need
-      String <-> str
-      java.lang.Number <-> num
-      java.lang.Float <-> float
-
-   - But we should get rid of these once we have proper type reconstruction
-      java.lang.BigInteger <-> nat
-      java.lang.BigRational <-> nat
 
 
-  - Patterns passed through seq library must be properly decorated, i.e. product conses should be products etc
 
+Good things:
 
+   - Efficient, eventually
+   - Garbage collection
+   - Class loaders
+   - Threads
+   - Widely available, reasonably easy for end users to install
    
+
+Caveats:   
+                                                                  
+    - We can not use generics for functions and patterns since:
+        - They are not powerful enough to represent what we do
+        - They are erased at runtime, while we need to retain several things
+    
+    - Hence, a lot of checkcasts (cheap, but irritating)
+
+    - For interop we need
+        String <-> str
+        java.lang.Number <-> num
+        java.lang.Float <-> float
+
+      - But we should get rid of these once we have proper type reconstruction
+        java.lang.BigInteger <-> nat
+        java.lang.BigRational <-> nat
+      
+    - No TCO for compiled code
+        - Let trampolines be a compile-time option
+
+    - Patterns passed through seq library must be properly decorated, i.e. product conses 
+      should be products etc. This gives a one-call overhead to every head/tail access.
+    
+    - But the alternatives are worse:
+    - Trashing orthogonal hierarchies for seq implementations/pattern types (impossible)
+    - Using only a single pattern type and add explicit tags (but this is much slower
+      than static dispatching on match/eq, and definately much uglier).
         
+    - Overhead for JNI/JNA linking
+        - But Vitry is designed for self-hosting anyway
+        - Network and file interfaces are better than static linking
+       
+

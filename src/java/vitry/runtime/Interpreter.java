@@ -88,7 +88,12 @@ public class Interpreter implements Eval
             .define( DELIMITER , PAR    )
             .define( SIDE      , RIGHT  )
             .define( QUOTED    , FALSE  )
-            .define( MUTABLE   , FALSE  ));        
+            .define( MUTABLE   , FALSE  ));  
+        
+        
+        // Private state
+        
+        private ModuleProvider moduleProvider;
                 
                 
         public boolean acceptsParserTokens() {

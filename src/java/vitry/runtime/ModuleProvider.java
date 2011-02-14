@@ -20,31 +20,13 @@ package vitry.runtime;
 
 import vitry.runtime.struct.Sequence;
 
+
 /**
- * Implements run-time modules.
- *
- * @author Hans Höglund
+ * An object that provides modules.
  */
-public class Module implements Scope
+public interface ModuleProvider
     {
-                     
-        private Sequence<Symbol> name;
+        Module forName(String name);
 
-        private final Environment<Symbol, Object> values;
-
-        private Environment<Symbol, Type> types;
-
-        private Environment<Symbol, Fixity> fixities;
-
-        public Module(Environment<Symbol, Object> env) {
-            this.values = env;
-        }
-
-        public Environment<Symbol, Object> getEnvironment() {
-            return values;
-        }
-
-
-        // TODO implicit env
-        // TODO type env
+        Module forName(Sequence<Symbol> name);
     }
