@@ -105,10 +105,8 @@ public class IndentationReader extends Reader
         }
         
         /**
-         * Fill [] with characters from the next line.
-         * Update lpos, lend and lineRead.
+         * Fill line with characters, update position and end.
          * If nothing more to read, set state to EOF and return. 
-         * @throws IOException 
          */
         private void nextLine() throws IOException {
             int n = 0;
@@ -119,8 +117,6 @@ public class IndentationReader extends Reader
                 while(consumeBreak() > 0) linesRead++;
                 indent = consumeLineSpace();
                 
-                char a = (char) peek();
-                char b = (char) peek();
                 skip = (peek() == ';' || peek() == '\n');
                 while (skip && readLineChar() >= 0);
             } while (state != EOF && skip);
@@ -156,6 +152,7 @@ public class IndentationReader extends Reader
                 writeLine(n++, ')');
                 levels.pop();
             }
+            if (state == EOF) writeLine(n++, '\n');
 
             
             position = 0;
