@@ -1,54 +1,45 @@
-a
-                        ; Test module to check the parser
 
-                        module Vitry.Music.Time
-                            time
-                            absTime
+; Test module to check the parser
 
-                        import Vitry.Music
-                        import Vitry.Parse.Util
+module Vitry.Music.Time
+    time
+    absTime
 
+import Vitry.Music
+import Vitry.Parse.Util
 
-
-
-
-
-                        type time        = absoluteTime | relativeTime
-                           absoluteTime = sec
-                           relativeTime = rat
-                           pos          = time
-                           dur          = time
-                           sec          = float
-
-
-                        quarter = 1/4
-                        half = 1/2
-
-                        foo x y z = x + y + z
-
-                        implicit type
-                            min  = 60 * sec
-                            hour = 60 * min
-                            day  = 24 * hour
-                            Hz   = 1 / sec
-                            kHz  = hz * 10e3
-                            MHz  = hz * 10e6
-
-
-                        combinators =
-                            let 
-                                 add5 = (add 5)
-                                 add26 = (add 26)
-                                 mod5= (mod 5)
-                                 x = 0
-                              eq mod5 (add26 x) (add5 x)
+    22+4
 
 
 
-                        john   
-                        ; test
-                          paul
-                            george
-                          ringo
+type time        = absoluteTime | relativeTime
+   absoluteTime = sec
+   relativeTime = rat
+   pos          = time
+   dur          = time
+   sec          = float
+
+
+quarter = 1/4
+half = 1/2
+
+foo x y z = x + y + z
+
+
+combinators =
+    let 
+         add5 = (add 5)
+         add26 = (add 26)
+         mod5= (mod 5)
+         x = 0
+      eq mod5 (add26 x) (add5 x)
+
+
+
+john   
+; test
+  paul
+    george
+  ringo
 
 

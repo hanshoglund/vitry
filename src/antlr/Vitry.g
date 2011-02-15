@@ -35,16 +35,12 @@ tokens {
     Fn;
     Let; 
     Assign;
-//    Loop; 
-//    Recur; 
     Apply; 
     Ops; If; 
     Match; 
     
     Do;
     Type;
-       
-    TypeDecl; ImplicitDecl; FnDecl; MemberDecl;
 }
 
 
@@ -188,7 +184,7 @@ moduleName :
 Op  : (
         '!' | '#' | '$' | '%' | '&' | '\'' | '*' | '+' | ',' | '-' |
         '.' | '/' | ':' | ';' | '<' | '=' | '>' | '?' | '@' | '\\' | '^' | 
-        '_' | '|' | '~' | 
+        '_' | '|' | '~'
       )*
     ;
     

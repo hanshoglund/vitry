@@ -18,9 +18,6 @@
  */
 package vitry.runtime.parse;
 
-import static java.lang.Math.min;
-
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PushbackReader;
@@ -28,40 +25,42 @@ import java.io.Reader;
 import java.util.Arrays;
 import java.util.Stack;
 
+import vitry.runtime.util.CachingReader;
+
 
 /**
  * Rewrites indentation as parentheses.
  * 
  * At the moment also handles comment stripping, this should be factored out.
  * Comments are indicated by a comment character at the beginning of a line.
- * 
- * FIXME Misses final parentheses if input is not terminated by a line-break.
  */
 public class IndentationReader extends Reader
     {   
         /**
-         * Commentcharacters (sorted!).
+         * Comment characters (sorted!).
          */
         private static final char[] COMMENT_CHARS = {
             ';'
         };
         
-        private Stack<Integer> levels = new Stack<Integer>();
-
-        private final PushbackReader input;
-        
-        private char[] buffer = new char[10];
-        int  length = 0;
-        int position = 0;
-        int linesRead = 0;
-        int linesEmitted = 0;
-        boolean finished = false;
+        private Stack<Integer> levels;
+        private final   PushbackReader input;
+        private char[]  buffer;
+        private int     length = 0;
+        private int     position = 0;
+        private int     linesRead = 0;
+        private int     linesEmitted = 0;
+        private int     charactersAdded = 0;
+        private boolean finished = false;
         
 
         public IndentationReader(Reader input) {
             this.input = new PushbackReader(input, 2);
+            this.levels = new Stack<Integer>();     
+            this.buffer = new char[80];
             this.levels.push(0);
         }
+
         
         public int read() throws IOException {
             if (position >= this.length) {
@@ -84,7 +83,6 @@ public class IndentationReader extends Reader
             }
             return count;
             
-            
 //            int count = 0;
 //            int max = min(length, sink.length - offset);
 //
@@ -105,6 +103,30 @@ public class IndentationReader extends Reader
 //                return -1;
 //            }
         }
+        
+        /**
+         * Returns the line number in input.
+         */
+        public int getLineNumber() {
+            return linesRead + 1;
+        }
+
+        /**
+         * Returns the position in the current input line.
+         * Generated characters are not considered.
+         */
+        public int getLinePosition() {
+            return position - charactersAdded; // TODO
+        }          
+        
+        public void close() throws IOException {
+            input.close();
+        }
+        
+        
+        
+        
+        // Implementation
 
         /**
          * Fill buffer with characters, from the next line
@@ -143,7 +165,6 @@ public class IndentationReader extends Reader
             }
             
             if (!finished) {
-
                 if (linesEmitted >= 1) 
                     setBuffer(n++, '\n');
 
@@ -151,8 +172,8 @@ public class IndentationReader extends Reader
 
                 for (int i = 0; i < indent; i++)
                     setBuffer(n++, ' ');
-    
-                    setBuffer(n++, '(');
+                    
+                setBuffer(n++, '(');
             }
                 
             /*
@@ -246,10 +267,7 @@ public class IndentationReader extends Reader
         }
 
 
-        
         private void setBuffer(int n, char c) {
-//System.err.write(c);
-//System.err.flush();
             if (buffer.length <= n) {
                 char[] a = new char[(int) (n * 1.8)];
                 System.arraycopy(buffer, 0, a, 0, buffer.length);
@@ -257,35 +275,7 @@ public class IndentationReader extends Reader
             }
             buffer[n] = c;
         }        
-
-
-        
-        
-        public void close() throws IOException {
-            input.close();
-        }
-        
-//        
-//        /**
-//         * Returns the current position in the current line, not taking
-//         * generated characters into account.
-//         */
-//        public int getLineNumber() {
-//            return lineNum;
-//        }
-//        
-//        /**
-//         * Returns the current position in the current line, not taking
-//         * generated characters into account.
-//         */
-//        public int getLinePosition() {
-//            return linePos - lineAddedChars;
-//        }
-
-
-        
-        
-        
+           
 
         private boolean isCommentChar(int i) {
             return Arrays.binarySearch(COMMENT_CHARS, (char) i) >= 0;
@@ -294,14 +284,11 @@ public class IndentationReader extends Reader
         
         
         
-        
-        
         public static void main(String[] args) throws IOException {
             Reader r = new InputStreamReader(ClassLoader.getSystemResourceAsStream("Vitry/Music/Time.vitry"));
             IndentationReader ir = new IndentationReader(r);
-            BufferedReader br = new BufferedReader(ir);
-//            
-            
+            CachingReader cr = new CachingReader(ir);
+
 //            char[] cs = new char[20];
 //            while (ir.read(cs, 0, 1) > 0) {
 //                System.out.print(cs);
@@ -309,11 +296,20 @@ public class IndentationReader extends Reader
 //            System.out.flush();
             
             int c;
-            while ( (c = ir.read()) >= 0) {
+            while ( (c = cr.read()) >= 0) {
                 System.out.write(c);
+            }
+            cr.rewind();
+            while ( (c = cr.read()) >= 0) {
+                System.out.write(c);
+            }
+            
+            while ( (c = ir.read()) >= 0) {
+                if (c == 'q') {
+                    System.out.println("Line: " + ir.getLineNumber());
+                    System.out.println("Pos: "  + ir.getLinePosition());
+                }
             }
             System.out.flush();
         }
-        
-
     }

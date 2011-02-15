@@ -1,16 +1,16 @@
 /*
  * Vitry, copyright (C) Hans Hoglund 2011
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
@@ -25,24 +25,23 @@ import java.util.Iterator;
 import java.util.Properties;
 
 import vitry.prelude.*;
-import vitry.runtime.error.BindingError;
 import vitry.runtime.error.UndefinedError;
 import vitry.runtime.struct.*;
 
 
 /**
  * Runtime system for the Vitry programming language.
- * 
+ *
  * @author Hans Höglund
  */
-public final class VitryRuntime     
+public final class VitryRuntime
     {
-    
+
         public static final Nil         NIL             = new Nil();
         public static final Bottom      BOTTOM          = new Bottom();
         public static final Any         ANY             = new Any();
         public static final Symbol      TRUE            = Symbol.intern("true");
-        public static final Symbol      FALSE           = Symbol.intern("false");                                                        
+        public static final Symbol      FALSE           = Symbol.intern("false");
         public static final Set         NAT             = NativeSet.forClass(BigInteger.class);
         public static final Set         INT             = NativeSet.forClass(BigInteger.class);
         public static final Set         RAT             = NativeSet.forClass(BigRational.class);
@@ -50,13 +49,13 @@ public final class VitryRuntime
         public static final Set         DOUBLE          = NativeSet.forClass(Double.class);
         public static final Set         COMPLEX         = null;
         public static final Set         CHAR            = NativeSet.forClass(Character.class);
-        public static final Set         STR             = NativeSet.forClass(String.class); 
-        // TODO boolean etc                                                                                
+        public static final Set         STR             = NativeSet.forClass(String.class);
+        // TODO boolean etc
         static final int                MIN_ARITY       = 1;
         static final int                MAX_ARITY       = 0xf;
 
-        
-        
+
+
         private static final Environment<Symbol, Object> prelude = new HashEnvironment<Symbol, Object>();
         private static final Environment<Symbol, Fixity> preludeFixities = new HashEnvironment<Symbol, Fixity>();
 
@@ -77,7 +76,7 @@ public final class VitryRuntime
             def("complex",              COMPLEX);
             def("char",                 CHAR);
             def("str",                  STR);
-            
+
             def("(,)",                  new product());
             def("[,]",                  new list());
             def("{,}",                  new set());
@@ -88,7 +87,7 @@ public final class VitryRuntime
             def("(<-)",                 NIL);
             def("symbol",               new symbol());
             def("string",               new string());
-                        
+
             def("eq",                   new eq());
             def("neq",                  NIL);
             def("lt",                   NIL);
@@ -108,17 +107,17 @@ public final class VitryRuntime
             def("and",                  NIL);
             def("or",                   NIL);
             def("not",                  NIL);
-                          
+
             def("arity",                new arity());
             def("id",                   new id());
-            def("const",                new const_());   
+            def("const",                new const_());
             def("compose",              NIL);
             def("follow",               NIL);
             def("power",                NIL);
-            def("flip",                 NIL);            
-            def("(./)",                 alias("compose"));            
-            def("(.\\)",                alias("follow"));            
-               
+            def("flip",                 NIL);
+            def("(./)",                 alias("compose"));
+            def("(.\\)",                alias("follow"));
+
             def("add",                  new add());
             def("sub",                  new sub());
             def("mul",                  new mul());
@@ -154,25 +153,25 @@ public final class VitryRuntime
             def("(%)",                  alias("mod"));
             def("(%%)",                 alias("modp"));
             def("(^)",                  alias("exp"));
-            
+
             def("isNegative",           NIL);
             def("isOdd",                NIL);
             def("isEven",               NIL);
             def("isPrime",              NIL);
-            
+
             // head        : [a] -> a
             // tail        : [a] -> [a]
             // last        : [a] -> a
             // init        : [a] -> [a]
             // cons        : a, [a] -> a
-            
+
             def("head",                 NIL);
             def("tail",                 NIL);
             def("last",                 NIL);
             def("init",                 NIL);
             def("prepend",              NIL);
             def("append",               NIL);
-            
+
             def("length",               NIL);
             def("rank",                 NIL);
             def("isEmpty",              NIL);
@@ -184,7 +183,7 @@ public final class VitryRuntime
             def("foldl",                NIL);
             def("foldr",                NIL);
             def("concat",               NIL);
-            
+
             def("insert",               NIL);
             def("substr",               NIL);
             def("subseq",               NIL);
@@ -192,7 +191,7 @@ public final class VitryRuntime
             def("take",                 NIL);
             def("remove",               NIL);
             def("retain",               NIL);
-            
+
             def("reverse",              NIL);
             def("revappend",            NIL);
             def("sort",                 NIL);
@@ -211,18 +210,18 @@ public final class VitryRuntime
             def("eval",                 NIL);
             def("print",                NIL);
             def("error",                NIL);
-            
+
             def("require",              NIL);
             def("load",                 NIL);
             def("version",              NIL);
             def("quit",                 new quit());
-            
+
             // Alpha - to be replaced
             def("openFile",             NIL);
             def("closeFile",            NIL);
             def("readFile",             NIL);
             def("writeFile",            NIL);
-            
+
             // Alpha - JVM interop
             def("host",                 NIL);
             def("class",                new class_());
@@ -231,8 +230,8 @@ public final class VitryRuntime
             def("fieldPut",             NIL);
             def("classOf",              new classOf());
             def("methodsOf",            NIL);
-            def("fieldsOf",             NIL);            
-            
+            def("fieldsOf",             NIL);
+
             defFix("(.)",               12, false, true );   // gathering?
             defFix("(^^)",              10, true,  false);
             defFix("(^)",               10, true,  false);
@@ -259,58 +258,58 @@ public final class VitryRuntime
             defFix("($!)",              0,  true,  false);
             defFix("($)",               0,  false, false);
         }
-        
+
         /**
          * Classes interned for reflection.
          * TODO unify with native set mechanism?
          */
         static Environment<Symbol, Class<?>> internedClasses = new HashEnvironment<Symbol, Class<?>>();
-        
+
 
         /**
          * Used to determine classpath etc.
          */
         private final Properties  systemProperties;
-                          
+
         /**
          * Used to load modules.
          */
         private ClassLoader classLoader;
-                                      
+
         /**
          * Loaded modules.
          */
         private Sequence<Module> modules;
-                                          
+
         /**
          * Used to execute interpreted code.
          */
         private Eval       interpreter;
-           
+
         /**
          * This is for the gensym facility.
          */
         private BigInteger uniqueState = BigInteger.valueOf(0x2177375305f7L);
 
-        
-        
+
+
         public VitryRuntime
             (
-            Properties systemProperties, 
+            Properties systemProperties,
             ClassLoader classLoader,
             Eval interpreter
-            ) 
+            )
         {
             this.systemProperties = systemProperties;
             this.classLoader = classLoader;
             this.interpreter = interpreter;
         }
 
-        
-        
-        
+
+
+
         // Static accessors
-        
+
 
         public Properties getSystemProperties() {
             return systemProperties;
@@ -339,29 +338,29 @@ public final class VitryRuntime
         public static Environment<Symbol, Object> getPrelude() {
             return prelude;
         }
-        
+
         public static Environment<Symbol, Fixity> getPreludeFixities() {
             return preludeFixities;
         }
 
 
 
-        
+
         // Prelude accessors
-        
+
         public static Environment<Symbol, Object> newTopLevelEnvironment() {
             return prelude.extend();
         }
-        
+
         public static Object getPreludeValue(Symbol key) throws UndefinedError {
             return prelude.lookup(key);
         }
-        
+
         public static Object getPreludeValue(String key) throws UndefinedError {
             return prelude.lookup(Symbol.intern(key));
         }
-        
-        
+
+
         public static Class<?> internClass(Symbol name) throws ClassNotFoundException {
             if (!internedClasses.hasBinding(name)) {
                 Class<?> c = Class.forName(name.toString());
@@ -369,16 +368,16 @@ public final class VitryRuntime
             }
             return internedClasses.lookup(name);
         }
-        
-        
-        
-        
-        
+
+
+
+
+
 
 
         // General construction and conversion
-        
-        
+
+
 
         public static Product product(Sequence<Pattern> s) {
             if (Sequences.isNil(s)) return null;
@@ -391,7 +390,7 @@ public final class VitryRuntime
             if (s instanceof List) return (List) s;
             return new ForwardingList(s);
         }
-        
+
         public static Product productUnsafe(Sequence<Pattern> s) {
             return new ForwardingProduct(s);
         }
@@ -410,23 +409,23 @@ public final class VitryRuntime
             if (s instanceof Intersection) return (Intersection) s;
             return new ForwardingIntersection(s);
         }
-        
+
         public static Product productOf(Object... args) {
             return new ForwardingProduct(Native.wrap(new ArraySequence<Object>(args)));
         }
-        
+
         public static List listOf(Object... args) {
             return new ForwardingList(Native.wrap(new ArraySequence<Object>(args)));
         }
-        
+
         public static Set setOf(Object... args) {
             return new ForwardingSet(Native.wrap(new ArraySequence<Object>(args)));
         }
-        
+
         public static Union unionOf(Object... args) {
             return new ForwardingUnion(Native.wrap(new ArraySequence<Object>(args)));
         }
-        
+
         public static Intersection intersectionOf(Object... args) {
             return new ForwardingIntersection(Native.wrap(new ArraySequence<Object>(args)));
         }
@@ -437,29 +436,29 @@ public final class VitryRuntime
         public static Symbol toVitryBool(boolean a) {
             return a ? TRUE : FALSE;
         }
-        
+
         public static boolean toJavaBool(Symbol a) {
             return a != FALSE;
         }
-        
-        
-        
-        
-         
+
+
+
+
+
         // Support code
 
         private static void def(String name, Object val) {
             prelude.define(Symbol.intern(name), val);
-        }            
-        
+        }
+
         private static Object alias(String name) {
             return prelude.lookup(Symbol.intern(name));
         }
-        
+
         private static void defFix(String name, int precedence, boolean assoc, boolean gathering) {
             preludeFixities.define(Symbol.intern(name), new Fixity(precedence, assoc, gathering));
         }
-        
+
         private Symbol nextUnique() {
             byte[] val = uniqueState.toByteArray();
             char[] str = new char[val.length / 2 + 1];
@@ -543,12 +542,12 @@ final class Bottom extends AbstractSet
 
         public Sequence<Pattern> tail() {
             return throwUnsupported();
-        } 
-        
+        }
+
         public Iterator<Pattern> iterator() {
             return NilIterator.INSTANCE;
         }
-        
+
         private <T> T throwUnsupported() {
             throw new UnsupportedOperationException("{} has no members.");
         }
@@ -579,13 +578,13 @@ final class Nil extends Atom implements Finite<Pattern>
         public boolean hasTail() {
             return false;
         }
-        
+
         public int length() {
             return 0;
         }
 
         // Rest of interface unsupported...
-        
+
 
         public Pattern head() {
             return throwUnsupported();
@@ -613,7 +612,7 @@ final class Nil extends Atom implements Finite<Pattern>
 class NilIterator extends SequenceIterator<Pattern>
     {
         static final SequenceIterator<Pattern> INSTANCE = new NilIterator();
-        
+
         private NilIterator(){
             super(VitryRuntime.NIL);
         }

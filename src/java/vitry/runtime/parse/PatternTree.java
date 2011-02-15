@@ -66,40 +66,36 @@ public class PatternTree extends CommonTree implements Product
         
         public Pattern head() {
             if (!generatedSeq) generateSeq();
-            
-            if (hasPayload()) {
+
+            if (hasPayload())
                 return wrap(token);
-            } else {
+            else
                 return (childSeq == null) ? null : childSeq.head();
-            }
         }
 
         public Sequence<Pattern> tail() {
             if (!generatedSeq) generateSeq();
             
-            if (hasPayload()) {
+            if (hasPayload())
                 return (childSeq == null) ? null : childSeq;
-            } else {
+            else
                 return (childSeq == null) ? null : childSeq.tail();
-            }
         }
         
         public Iterator<Pattern> iterator() {
             return new SequenceIterator<Pattern>(this);
         }
 
-
-
-        public boolean hasPayload() {
-            return token != null;
-        }
-        
         public boolean hasTail() {
             if (hasPayload()) {
                 return childSeq != null;
             } else {
                 return childSeq != null && childSeq.tail() != null;
             }        
+        }
+        
+        public boolean hasPayload() {
+            return token != null;
         }
         
         
@@ -109,20 +105,24 @@ public class PatternTree extends CommonTree implements Product
             if (children != null) {
                 // Make a seq out of the ANTLR child list
                 Sequence<Pattern> itSeq = 
-                    new IterableSequence<Pattern>(
-                            Utils.<Iterable<Pattern>>unsafe(this.children));
-                
-                this.childSeq = new MapSequence<Pattern,Pattern>(new StandardFunction(1){
-                    
-                    // Replace singletons with their contained token
-                    public Object apply(Object o) throws InvocationError {
-                        CommonTree t = (CommonTree) o;
-                        if (t.getChildCount() == 0 && t.getToken() != null) {
-                            return wrap(t.getToken());
+                    new IterableSequence<Pattern>
+                    (
+                    Utils.<Iterable<Pattern>>unsafe(this.children)
+                    );
+                       
+                // Replace singletons with their contained token
+                this.childSeq = new MapSequence<Pattern,Pattern>(
+                    new StandardFunction(1){                                                    
+                        public Object apply(Object o) throws InvocationError {
+                            CommonTree t = (CommonTree) o;
+                            if (t.getChildCount() == 0 && t.getToken() != null) {
+                                return wrap(t.getToken());
+                            }
+                            return t;
                         }
-                        return t;
-                    }
-                }, itSeq);
+                    }, 
+                    itSeq
+                    );
             }
             generatedSeq = true;
         }
@@ -132,173 +132,114 @@ public class PatternTree extends CommonTree implements Product
         }
 
 
-        
-        // Delegate rest of implementation
 
-        
+        // Delegates rest of interface
 
         public boolean eq(Object o) {
             return delegee.eq(o);
         }
 
-
-
         public Product mapProduct(Function fn) {
             return delegee.mapProduct(fn);
         }
-
-
 
         public boolean eq(Atom o) {
             return delegee.eq(o);
         }
 
-
-
         public Product cons(Pattern p) {
             return delegee.cons(p);
         }
-
-
 
         public boolean eq(Tagged o) {
             return delegee.eq(o);
         }
 
-
-
         public boolean eq(Product o) {
             return delegee.eq(o);
         }
-
-
 
         public <U> Sequence<U> map(Function fn) {
             return delegee.map(fn);
         }
 
-
-
         public boolean eq(Function p) {
             return delegee.eq(p);
         }
-
-
 
         public boolean eq(List p) {
             return delegee.eq(p);
         }
 
-
-
         public SequenceIterator<Pattern> sequenceIterator() {
             return delegee.sequenceIterator();
         }
-
-
 
         public boolean eq(Set o) {
             return delegee.eq(o);
         }
 
-
-
         public boolean eq(Union o) {
             return delegee.eq(o);
         }
-
-
 
         public boolean eq(Intersection o) {
             return delegee.eq(o);
         }
 
-
-
         public boolean eq(Type o) {
             return delegee.eq(o);
         }
-
-
 
         public boolean match(Object o) {
             return delegee.match(o);
         }
 
-
-
         public boolean match(Atom o) {
             return delegee.match(o);
         }
-
-
 
         public boolean match(Tagged o) {
             return delegee.match(o);
         }
 
-
-
         public boolean match(Product p) {
             return delegee.match(p);
         }
-
-
 
         public boolean match(Function p) {
             return delegee.match(p);
         }
 
-
-
         public boolean match(List p) {
             return delegee.match(p);
         }
-
-
 
         public boolean match(Set p) {
             return delegee.match(p);
         }
 
-
-
         public boolean match(Union p) {
             return delegee.match(p);
         }
-
-
 
         public boolean match(Intersection p) {
             return delegee.match(p);
         }
 
-
-
         public boolean match(Type p) {
             return delegee.match(p);
         }
-
-
 
         public boolean eqFor(Pattern o) {
             return delegee.eqFor(o);
         }
 
-
-
         public boolean matchFor(Pattern p) {
             return delegee.matchFor(p);
         }
 
-
-
         public String toString() {
             return delegee.toString();
-        }
-        
-        
-        
-
-        
+        }    
     }
