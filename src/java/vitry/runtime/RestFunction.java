@@ -21,6 +21,7 @@ package vitry.runtime;
 import vitry.runtime.error.InvocationError;
 import vitry.runtime.struct.ArraySequence;
 import vitry.runtime.struct.Sequence;
+import vitry.runtime.struct.Sequences;
 
 
 /**
@@ -52,7 +53,7 @@ public class RestFunction extends AbstractFunction
         }
 
         public Object applyVar(Object[] args) {
-            return applyVar(new ArraySequence<Object>(args));
+            return applyVar(Sequences.fromArray(args));
         }
 
         public Object apply(Object a0) throws InvocationError {

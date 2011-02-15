@@ -56,10 +56,10 @@ public final class VitryRuntime
 
 
 
-        private static final Environment<Symbol, Object> prelude = new HashEnvironment<Symbol, Object>();
-        private static final Environment<Symbol, Fixity> preludeFixities = new HashEnvironment<Symbol, Fixity>();
+        private final Environment<Symbol, Object> prelude = new HashEnvironment<Symbol, Object>();
+        private final Environment<Symbol, Fixity> preludeFixities = new HashEnvironment<Symbol, Fixity>();
 
-        static {
+        {
             def("()",                   NIL);
             def("[]",                   productOf(NIL, new list()));
             def("{}",                   productOf(BOTTOM, new set()));
@@ -204,6 +204,9 @@ public final class VitryRuntime
             def("every",                NIL);
             def("none",                 NIL);
 
+            def("(++)",                 new conc());
+            def("conc",                 alias("(++)"));
+            
             def("now",                  NIL);
 
             def("read",                 NIL);
@@ -211,6 +214,7 @@ public final class VitryRuntime
             def("print",                NIL);
             def("error",                NIL);
 
+            def("repl",                 new repl(this));
             def("require",              NIL);
             def("load",                 NIL);
             def("version",              NIL);
@@ -224,11 +228,11 @@ public final class VitryRuntime
 
             // Alpha - JVM interop
             def("host",                 NIL);
-            def("class",                new class_());
-            def("method",               new method());
+            def("class",                new class_(this));
+            def("method",               new method(this));
             def("fieldGet",             NIL);
             def("fieldPut",             NIL);
-            def("classOf",              new classOf());
+            def("classOf",              new classOf(this));
             def("methodsOf",            NIL);
             def("fieldsOf",             NIL);
 
@@ -241,6 +245,7 @@ public final class VitryRuntime
             defFix("(*)",               9,  true,  false);
             defFix("(-)",               8,  true,  false);
             defFix("(+)",               8,  true,  false);
+            defFix("(++)",              8,  true,  false);
             defFix("(<)",               6,  true,  false);
             defFix("(<=)",              6,  true,  false);
             defFix("(>=)",              6,  true,  false);
@@ -263,7 +268,7 @@ public final class VitryRuntime
          * Classes interned for reflection.
          * TODO unify with native set mechanism?
          */
-        static Environment<Symbol, Class<?>> internedClasses = new HashEnvironment<Symbol, Class<?>>();
+        private final Environment<Symbol, Class<?>> internedClasses = new HashEnvironment<Symbol, Class<?>>();
 
 
         /**
@@ -303,6 +308,9 @@ public final class VitryRuntime
             this.systemProperties = systemProperties;
             this.classLoader = classLoader;
             this.interpreter = interpreter;
+            
+            if(this.interpreter == null)
+                this.interpreter = new Interpreter(this);
         }
 
 
@@ -335,11 +343,11 @@ public final class VitryRuntime
             this.interpreter = interpreter;
         }
 
-        public static Environment<Symbol, Object> getPrelude() {
+        public Environment<Symbol, Object> getPrelude() {
             return prelude;
         }
 
-        public static Environment<Symbol, Fixity> getPreludeFixities() {
+        public Environment<Symbol, Fixity> getPreludeFixities() {
             return preludeFixities;
         }
 
@@ -348,20 +356,20 @@ public final class VitryRuntime
 
         // Prelude accessors
 
-        public static Environment<Symbol, Object> newTopLevelEnvironment() {
+        public Environment<Symbol, Object> newTopLevelEnvironment() {
             return prelude.extend();
         }
 
-        public static Object getPreludeValue(Symbol key) throws UndefinedError {
+        public Object getPreludeValue(Symbol key) throws UndefinedError {
             return prelude.lookup(key);
         }
 
-        public static Object getPreludeValue(String key) throws UndefinedError {
+        public Object getPreludeValue(String key) throws UndefinedError {
             return prelude.lookup(Symbol.intern(key));
         }
 
 
-        public static Class<?> internClass(Symbol name) throws ClassNotFoundException {
+        public Class<?> internClass(Symbol name) throws ClassNotFoundException {
             if (!internedClasses.hasBinding(name)) {
                 Class<?> c = Class.forName(name.toString());
                 internedClasses.define(name, c);
@@ -443,19 +451,17 @@ public final class VitryRuntime
 
 
 
-
-
         // Support code
 
-        private static void def(String name, Object val) {
+        private void def(String name, Object val) {
             prelude.define(Symbol.intern(name), val);
         }
 
-        private static Object alias(String name) {
+        private  Object alias(String name) {
             return prelude.lookup(Symbol.intern(name));
         }
 
-        private static void defFix(String name, int precedence, boolean assoc, boolean gathering) {
+        private void defFix(String name, int precedence, boolean assoc, boolean gathering) {
             preludeFixities.define(Symbol.intern(name), new Fixity(precedence, assoc, gathering));
         }
 

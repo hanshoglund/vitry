@@ -37,7 +37,8 @@ public class ArraySequence<T> extends AbstractSequence<T> implements Finite<T>
         }
 
         public ArraySequence(T[] elements, int offset) {
-            if (offset >= elements.length) throw new IllegalArgumentException();
+            if (offset >= elements.length) 
+                throw new IllegalArgumentException("Offset must be less than than length");
             this.array = elements;
             this.offset = offset;
         }

@@ -7,8 +7,11 @@ import vitry.runtime.error.InvocationError;
 
 public class classOf extends StandardFunction
     {
-        public classOf() {
+        final VitryRuntime rt;
+
+        public classOf(VitryRuntime rt) {
             super(1);
+            this.rt = rt;
         }
 
         /**
@@ -18,7 +21,7 @@ public class classOf extends StandardFunction
         public Object apply(Object obj) throws InvocationError {
             Symbol ref = Symbol.intern(obj.getClass().getName());
             try {
-                VitryRuntime.internClass(ref);
+                rt.internClass(ref);
             } catch (ClassNotFoundException e) {
                 throw new AssertionError("Failed interning a loaded class");
             }

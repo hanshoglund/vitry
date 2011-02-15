@@ -24,7 +24,7 @@ public class EvalStdInMod
 
             BufferedReader lineReader = new BufferedReader(new InputStreamReader(System.in));
             String line;
-            Eval interpreter = new Interpreter();
+            Eval interpreter = new Interpreter(null);
             System.out.println();
 
             try {

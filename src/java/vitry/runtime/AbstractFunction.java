@@ -42,7 +42,7 @@ abstract class AbstractFunction extends ConstructionPattern implements Function,
         
 
         public AbstractFunction() {
-            this(VitryRuntime.getPrelude(), null, null);
+            this(null, null, null);
         }
 
         public AbstractFunction(Scope scope) {

@@ -6,13 +6,18 @@ import vitry.runtime.VitryRuntime;
 import vitry.runtime.error.InvocationError;
 import vitry.runtime.error.ResolveError;
 
+
 public class class_ extends StandardFunction
     {
-        public class_() {
+        String[] prefixes = { "", "java.lang.", "vitry.runtime.", "vitry.prelude." };
+
+        final VitryRuntime rt;
+
+        public class_(VitryRuntime rt) {
             super(1);
+            this.rt = rt;
         }
-        
-        String[] prefixes = {"", "java.lang.", "vitry.runtime.", "vitry.prelude."};
+
 
         /**
          * type class = symbol
@@ -26,13 +31,13 @@ public class class_ extends StandardFunction
 
             String name = null;
             Symbol ref = null;
-            
+
             for (String p : prefixes) {
                 name = p + ((String) nameStr);
                 try {
                     ref = Symbol.intern(name);
-                    VitryRuntime.internClass(ref);
-                } catch(ClassNotFoundException _) {
+                    rt.internClass(ref);
+                } catch (ClassNotFoundException _) {
                     ref = null;
                     continue;
                 }

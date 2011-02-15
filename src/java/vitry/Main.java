@@ -27,18 +27,15 @@ import vitry.prelude.*;
 
 public class Main
     {
-
+        
         public static void main(String[] args) {
-            // TODO exec from shell
-            // TODO other options
             
-            Interpreter interpreter = new Interpreter();
             Properties properties = System.getProperties();
-            ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             
-            VitryRuntime rt = new VitryRuntime(properties, classLoader, interpreter);
+            VitryRuntime rt = new VitryRuntime(properties, classLoader, null);
             
             Function repl = (Function) rt.getPreludeValue("repl");
-            repl.apply(NIL);
+            repl.applyVar(args);
         }
     }

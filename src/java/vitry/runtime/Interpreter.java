@@ -93,9 +93,19 @@ public class Interpreter implements Eval
         
         // Private state
         
+        private VitryRuntime rt;
         private ModuleProvider moduleProvider;
                 
                 
+        public Interpreter(VitryRuntime rt) {
+            this.rt = rt;
+        }
+
+        public Interpreter(VitryRuntime rt, ModuleProvider moduleProvider) {
+            this.rt = rt;
+            this.moduleProvider = moduleProvider;
+        }
+
         public boolean acceptsParserTokens() {
             return true;
         }
@@ -117,8 +127,8 @@ public class Interpreter implements Eval
                 (
                 expr, 
                 STANDARD_CONTEXT,
-                VitryRuntime.getPrelude(),
-                VitryRuntime.getPreludeFixities());
+                rt.getPrelude(),
+                rt.getPreludeFixities());
         }
         
 
@@ -126,7 +136,7 @@ public class Interpreter implements Eval
        
  
         
-        final Object eval
+        public final Object eval
                 (
                 Pattern expr,
                 Environment<Symbol, Symbol> context,

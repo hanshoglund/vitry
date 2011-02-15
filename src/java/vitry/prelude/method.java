@@ -15,11 +15,15 @@ import vitry.runtime.struct.Sequences;
 public class method extends StandardFunction
     {
 
-        private static final Function string = (Function) VitryRuntime.getPreludeValue("string");
         private static final Class<?>[] dummy = new Class<?>[0];
 
-        public method() {
+        private final VitryRuntime rt;
+        private final Function string;
+
+        public method(VitryRuntime rt) {
             super(3);
+            this.rt = rt;
+            this.string = (Function) rt.getPreludeValue("string");
         }
 
         /**
@@ -33,7 +37,7 @@ public class method extends StandardFunction
             Sequence<Symbol> types = (Sequence<Symbol>) t;
 
             try {
-                Class<?> cl = VitryRuntime.internClass(clRef);
+                Class<?> cl = rt.internClass(clRef);
                 Class<?>[] clTypes = null;
                 if (t != VitryRuntime.NIL)
                     clTypes = Sequences.toArray(types.<Class<?>> map(string), dummy);

@@ -44,7 +44,6 @@ public class Sequences
             return s == null || s == VitryRuntime.NIL;
         }
         
-
         public static <T> Sequence<T> single(T x) {
             return cons(x, null);
         }
@@ -55,6 +54,13 @@ public class Sequences
                 return new Single<T>(x);
             else
                 return xs.cons(x);
+        }
+
+        public static <T> Sequence<T> fromArray(T[] a) {
+            if (a.length == 0)
+                return null;
+            else
+                return new ArraySequence<T>(a);
         }
 
         public static <T> T head(Sequence<T> xs) {

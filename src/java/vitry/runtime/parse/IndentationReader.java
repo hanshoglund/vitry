@@ -25,8 +25,6 @@ import java.io.Reader;
 import java.util.Arrays;
 import java.util.Stack;
 
-import vitry.runtime.util.CachingReader;
-
 
 /**
  * Rewrites indentation as parentheses.
@@ -287,7 +285,6 @@ public class IndentationReader extends Reader
         public static void main(String[] args) throws IOException {
             Reader r = new InputStreamReader(ClassLoader.getSystemResourceAsStream("Vitry/Music/Time.vitry"));
             IndentationReader ir = new IndentationReader(r);
-            CachingReader cr = new CachingReader(ir);
 
 //            char[] cs = new char[20];
 //            while (ir.read(cs, 0, 1) > 0) {
@@ -296,11 +293,7 @@ public class IndentationReader extends Reader
 //            System.out.flush();
             
             int c;
-            while ( (c = cr.read()) >= 0) {
-                System.out.write(c);
-            }
-            cr.rewind();
-            while ( (c = cr.read()) >= 0) {
+            while ( (c = ir.read()) >= 0) {
                 System.out.write(c);
             }
             
