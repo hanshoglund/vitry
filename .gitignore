@@ -4,10 +4,7 @@
 .project
 .settings
 debug.txt
-HindleyMilner.scala
-hm.py
 Doxyfile
-doxygen/
 main.js
 vitry.jar
 doc/
