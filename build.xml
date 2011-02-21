@@ -47,7 +47,7 @@
     </target>
     
     <target name="generate-antlr" description="">
-        <java fork="true" classpath="lib/antlr.jar:bin" classname="org.antlr.Tool" failonerror="true">
+        <java fork="true" classpath="lib/antlr-3.2.jar:bin" classname="org.antlr.Tool" failonerror="true">
             <arg value="-fo"/>
             <arg value="src/java/vitry/runtime/parse/"/>
             <arg value="-verbose"/>
@@ -58,13 +58,11 @@
     <target name="compile-src" description="">
         <javac srcdir="src" destdir="bin" extdirs="">
             <classpath>
-                <pathelement location="lib/js.jar"/>
-                <pathelement location="lib/junit.jar"/>
-                <pathelement location="lib/jline.jar"/>
-                <pathelement location="lib/antlr.jar"/>
+                <pathelement location="lib/antlr-3.2.jar"/>
                 <pathelement location="lib/asm-3.3.jar"/>
                 <pathelement location="lib/asm-commons-3.3.jar"/>
                 <pathelement location="lib/asm-util-3.3.jar"/>
+                <pathelement location="lib/jline-0.9.94.jar"/>
             </classpath>
         </javac>
     </target>
@@ -72,13 +70,11 @@
     <target name="compile-test" description="">
         <javac srcdir="test" destdir="bin" extdirs="">
             <classpath>
-                <pathelement location="lib/js.jar"/>
-                <pathelement location="lib/junit.jar"/>
-                <pathelement location="lib/jline.jar"/>
-                <pathelement location="lib/antlr.jar"/>
+                <pathelement location="lib/antlr-3.2.jar"/>
                 <pathelement location="lib/asm-3.3.jar"/>
                 <pathelement location="lib/asm-commons-3.3.jar"/>
                 <pathelement location="lib/asm-util-3.3.jar"/>
+                <pathelement location="lib/jline-0.9.94.jar"/>
             </classpath>
         </javac>
     </target>
