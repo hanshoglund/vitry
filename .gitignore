@@ -12,3 +12,7 @@ main.js
 vitry.jar
 doc/
 bin/
+src/java/vitry/Build.java
+src/java/vitry/runtime/parse/VitryLexer.java
+src/java/vitry/runtime/parse/VitryParser.java
+src/java/vitry/runtime/parse/Vitry.tokens

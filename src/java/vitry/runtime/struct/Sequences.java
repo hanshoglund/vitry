@@ -18,7 +18,7 @@
  */
 package vitry.runtime.struct;
 
-import static vitry.runtime.Build.MEMOIZE_SEQUENCES;
+import static vitry.Build.*;
 
 import java.util.ArrayList;
 import java.util.Map;

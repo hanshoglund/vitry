@@ -8,7 +8,7 @@ import java.io.StringReader;
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonTokenStream;
 
-import vitry.runtime.Build;
+import vitry.Build;
 import vitry.runtime.Pattern;
 import vitry.runtime.RestFunction;
 import vitry.runtime.VitryRuntime;

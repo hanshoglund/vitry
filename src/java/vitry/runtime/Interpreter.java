@@ -18,7 +18,7 @@
  */
 package vitry.runtime;
 
-import static vitry.runtime.Build.*;
+import static vitry.Build.*;
 import static vitry.runtime.struct.Sequences.*;
 
 import java.math.BigInteger;

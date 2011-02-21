@@ -125,7 +125,7 @@ class OperatorRewrite
             before = product(pred == null ? null : untilElement(seq, pred));
             
             /*
-             * Now we have (before ++ pred ++ prim ++ after) == seq
+             * Now we have (before ++ (pred) ++ (prim) ++ after) == seq
              */
             
             Pattern hoist;

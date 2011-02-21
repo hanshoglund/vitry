@@ -180,12 +180,12 @@ public class IndentationReader extends Reader
             int c;
             while (true) {
                 c = readLineChar();
-                if (c >= 0 && c != 0xffff) // FIXME
-                setBuffer(n++, (char) c);
-                else
+                if (c >= 0 && c != 0xffff) { // FIXME
+                    setBuffer(n++, (char) c);
+                } else {                    
                     break;
+                }
             }
-                
             if (finished) {
                 while (levels.size() > 1) {
                     setBuffer(n++, ')');
