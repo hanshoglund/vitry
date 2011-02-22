@@ -34,6 +34,12 @@ private static final CommonToken DUMMY = new CommonToken(VitryParser.LineSpace, 
         private int pos;
         private int linesEmitted = 0;
 
+        /**
+         * When this flag is set, act as if indentation is same as previous
+         * line.
+         */
+        private boolean postEnclose = false;
+        
 
         public IndentationTokenSource(BufferedTokenStream input) {
             this.input = input;
@@ -93,33 +99,58 @@ private static final CommonToken DUMMY = new CommonToken(VitryParser.LineSpace, 
                 return;
             }
 
-            /*
-             * Emit closing parentheses for previous line
-             */
-            while (levels.size() > 1 && indent < levels.peek() && linesEmitted >= 1) {
-                currentLine.add(PAR_RIGHT);
-                levels.pop();
-            }
-            if (levels.size() > 0 && indent == levels.peek() && linesEmitted >= 1) {
-                currentLine.add(PAR_RIGHT);
-            }
-            if (levels.size() > 0 && indent > levels.peek()) {
-                levels.push(indent);
+            boolean isInline = isOp(input.LA(1));
+
+
+            if (isInline) {
+                
+            } else {
+            
+                /*
+                 * Emit closing parentheses for previous line
+                 */
+                if (postEnclose) {
+    System.err.println(input.LT(1));
+    System.err.println(indent);
+                    postEnclose = false;
+                    
+                    if (levels.peek() != indent) {
+                        levels.push(indent);                    
+                    }
+                    // FIXME
+                    if (levels.peek() == 0) {
+                        currentLine.add(PAR_RIGHT);                    
+                    }
+                    currentLine.add(PAR_RIGHT);                    
+                    
+                } else {
+                    while (levels.size() > 1 && indent < levels.peek() && linesEmitted >= 1) {
+                        currentLine.add(PAR_RIGHT);
+                        levels.pop();
+                    }
+                    if (levels.size() > 0 && indent == levels.peek() && linesEmitted >= 1) {
+                        currentLine.add(PAR_RIGHT);                    
+                    }
+                    if (levels.size() > 0 && indent > levels.peek()) {
+                        levels.push(indent);
+                    }
+                }
+                
+            
+                /**
+                 * Emit break and indent for current line.
+                 */
+                if (linesEmitted >= 1) {
+                    currentLine.add(BREAK);
+                }
+    
+                for (int i = 0; i < indent; i++) {
+                    currentLine.add(SPACE);
+                }
+    
+                currentLine.add(PAR_LEFT);
             }
 
-            /**
-             * Emit break and indent for current line.
-             */
-            if (linesEmitted >= 1) {
-                currentLine.add(BREAK);
-            }
-
-            for (int i = 0; i < indent; i++) {
-                currentLine.add(SPACE);
-            }
-             
-            // TODO skip if inline
-            currentLine.add(PAR_LEFT);
             
             
             /**
@@ -152,7 +183,7 @@ private static final CommonToken DUMMY = new CommonToken(VitryParser.LineSpace, 
              * Emit rest of line.
              */
             if (enclose) {
-System.err.println(input.LT(encloseStart-1));
+//System.err.println(input.LT(encloseStart-1));
                 for (int i=1; i < encloseStart-1; i++) {
                     currentLine.add(input.LT(i));
                 }
@@ -160,7 +191,9 @@ System.err.println(input.LT(encloseStart-1));
                     input.consume();
                 }
                 
-                currentLine.add(PAR_LEFT);
+                if (!isInline) {
+                    currentLine.add(PAR_LEFT);                    
+                }
                 
                 do {
                     t = input.LT(1);
@@ -168,7 +201,8 @@ System.err.println(input.LT(encloseStart-1));
                     input.consume();
                 } while (!isEof(input.LA(1)) && !isLineBreak(input.LA(1)));                
 
-                currentLine.add(PAR_RIGHT);
+                postEnclose = true;
+//                currentLine.add(PAR_RIGHT);
             
             } else {
 
@@ -217,6 +251,10 @@ System.err.println(input.LT(encloseStart-1));
 
         private boolean isLeftParen(int la) {
             return la == 34 || la == 36 || la == 38;
+        }
+
+        private boolean isOp(int la) {
+            return la == VitryParser.Op;
         }
 
         
