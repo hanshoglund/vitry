@@ -23,50 +23,30 @@ import java.util.Iterator;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 
-import vitry.runtime.Atom;
-import vitry.runtime.Function;
-import vitry.runtime.Intersection;
-import vitry.runtime.List;
-import vitry.runtime.Pattern;
-import vitry.runtime.Product;
-import vitry.runtime.Set;
-import vitry.runtime.StandardFunction;
-import vitry.runtime.Tagged;
-import vitry.runtime.Type;
-import vitry.runtime.Union;
-import vitry.runtime.VitryRuntime;
-import vitry.runtime.error.InvocationError;
-import vitry.runtime.struct.IterableSequence;
-import vitry.runtime.struct.MapSequence;
-import vitry.runtime.struct.Sequence;
-import vitry.runtime.struct.SequenceIterator;
-import vitry.runtime.util.Utils;
+import vitry.runtime.*;
+import vitry.runtime.error.*;
+import vitry.runtime.struct.*;
+import vitry.runtime.util.*;
 
 
 /**
- * Reflects ANTLR-generated trees into Vitry.
- * 
- * Currently assumes that ANTLR's list of children contains only PatternTrees.
+ * Reflects antlr syntax trees into Vitry. Each node is a Product containing
+ * its children. The head token is the first child.
+ *
+ * @author Hans Höglund
  */
 public class PatternTree extends CommonTree implements Product
     {
-
         private final Product delegee      = VitryRuntime.productUnsafe(this);
-
         private Sequence<Pattern> childSeq = null;
-
         private boolean generatedSeq       = false;
-
         
         public PatternTree(Token payload) {
             super(payload);
         }
-
-        
         
         public Pattern head() {
             if (!generatedSeq) generateSeq();
-
             if (hasPayload())
                 return wrap(token);
             else
@@ -75,13 +55,12 @@ public class PatternTree extends CommonTree implements Product
 
         public Sequence<Pattern> tail() {
             if (!generatedSeq) generateSeq();
-            
             if (hasPayload())
                 return (childSeq == null) ? null : childSeq;
             else
                 return (childSeq == null) ? null : childSeq.tail();
         }
-        
+
         public Iterator<Pattern> iterator() {
             return new SequenceIterator<Pattern>(this);
         }
@@ -91,38 +70,33 @@ public class PatternTree extends CommonTree implements Product
                 return childSeq != null;
             } else {
                 return childSeq != null && childSeq.tail() != null;
-            }        
+            }
         }
-        
+
         public boolean hasPayload() {
             return token != null;
         }
         
-        
-        
+        /**
+         * Converts the child list to a sequence, and replace singletons nodes
+         * with the token they contain.
+         */
         private void generateSeq() {
-            
+
             if (children != null) {
-                // Make a seq out of the ANTLR child list
                 Sequence<Pattern> itSeq = 
-                    new IterableSequence<Pattern>
-                    (
-                    Utils.<Iterable<Pattern>>unsafe(this.children)
-                    );
-                       
-                // Replace singletons with their contained token
-                this.childSeq = new MapSequence<Pattern,Pattern>(
-                    new StandardFunction(1){                                                    
+                    new IterableSequence<Pattern>(Utils.<Iterable<Pattern>> unsafe(this.children));
+
+                this.childSeq = new MapSequence<Pattern, Pattern>(new StandardFunction(1)
+                    {
                         public Object apply(Object o) throws InvocationError {
                             CommonTree t = (CommonTree) o;
-                            if (t.getChildCount() == 0 && t.getToken() != null) {
-                                return wrap(t.getToken());
+                            if (t.getChildCount() == 0 && t.getToken() != null) { 
+                                return wrap(t.getToken()); 
                             }
                             return t;
                         }
-                    }, 
-                    itSeq
-                    );
+                    }, itSeq);
             }
             generatedSeq = true;
         }
@@ -133,7 +107,7 @@ public class PatternTree extends CommonTree implements Product
 
 
 
-        // Delegates rest of interface
+        // Delegate rest of interface
 
         public boolean eq(Object o) {
             return delegee.eq(o);

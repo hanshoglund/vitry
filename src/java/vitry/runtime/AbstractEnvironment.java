@@ -28,7 +28,7 @@ import vitry.runtime.util.Utils;
  */
 abstract class AbstractEnvironment<K, V> implements Environment<K, V>
     {
-
+        
         private final Environment<K, V> parent;
 
         private static Environment<?, ?> global = new GlobalEnvironment();

@@ -29,7 +29,8 @@
             ];
             java.lang.System.out.println("Generating " + file);                                       
             
-            var sb = new java.lang.StringBuilder();
+            var sb = new java.lang.StringBuilder();      
+            sb.append("// Generated during build\n");
             sb.append("package vitry;\n\n");
             sb.append("public class Build {\n");
             for each (p in props) {

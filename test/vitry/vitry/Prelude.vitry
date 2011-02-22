@@ -103,8 +103,8 @@ type
   ; word32  = (bool, bool ...)
   ; word64  = (bool, bool ...)
   ; word128 = (bool, bool ...)
-  ; nat     = 0 | 1 | 2 ...
-  ; int     = nat | -1 | -2 ...
+  ; nat     = 0 | 1 | 2 ...
+  ; int     = nat | -1 | -2 ...
     rat     = (nat, nat)
     complex = (double, double)
     polar   = (double, double)
@@ -218,7 +218,7 @@ max x y = if (x > y) x else y
 isOdd x        = x % 2 == 0
 isEven x       = x % 2 == 1
 
-isPrime x      = ; TODO
+isPrime x      = ...
 
 isZero 0       = true
        _       = false
@@ -248,7 +248,7 @@ isFinite   x   = not (isInfinite x)
 ; prepend
 
 last    (x, [])   = x                   : [a] -> a
-   |    (x, xs)   = last xs
+        (x, xs)   = last xs
 
 init    (x, [])   = []                  : [a] -> [a]
         (x, xs)   = (x, (init xs))
@@ -341,3 +341,9 @@ infix
     right  1  (||)
     left   0  ($!)
     right  0  ($)
+
+
+
+
+
+

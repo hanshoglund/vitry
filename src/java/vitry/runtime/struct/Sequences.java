@@ -219,3 +219,29 @@ public class Sequences
             return l.toArray(dummy);
         }
     }
+    
+    
+class Single<T> extends AbstractSequence<T> implements Finite<T>
+    {        
+        private final T obj;
+
+        public Single(T obj) {
+            this.obj = obj;
+        }
+
+        public T head() {
+            return obj;
+        }
+
+        public Sequence<T> tail() {
+            return null;
+        }
+
+        public int length() {
+            return 1;
+        }
+
+        public boolean hasTail() {
+            return false;
+        }
+    }

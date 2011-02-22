@@ -1,17 +1,34 @@
+/*
+ * Vitry, copyright (C) Hans Hoglund 2011
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * See COPYING.txt for details.
+ */
 package vitry.runtime.parse;
 
-import vitry.runtime.Environment;
-import vitry.runtime.HashEnvironment;
-import vitry.runtime.Pattern;
-import vitry.runtime.Symbol;
-import vitry.runtime.error.ParseError;
-import vitry.runtime.error.VitryError;
+import vitry.runtime.*;
+import vitry.runtime.error.*;
 
 
 /**
  * Provides integers identifiers representing token types.
  * 
- * TODO generate table from Vitry.tokens file (?)
+ * TODO
+ *     Generate from Vitry.tokens
+ *
+ * @author Hans Höglund 
  */
 public class VitryTokenTypes
     {
@@ -58,6 +75,8 @@ public class VitryTokenTypes
                 throw e;
             }
         }
+
+
 
         private static final Environment<Pattern, Integer> TABLE = new HashEnvironment<Pattern, Integer>();
 

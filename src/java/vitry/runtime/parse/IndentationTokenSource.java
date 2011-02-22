@@ -19,7 +19,6 @@ public class IndentationTokenSource implements TokenSource
         private static final CommonToken PAR_LEFT = new CommonToken(PAR_LEFT_TYPE, "(");
         private static final CommonToken PAR_RIGHT = new CommonToken(PAR_RIGHT_TYPE, ")");
 
-private static final CommonToken DUMMY = new CommonToken(VitryParser.LineSpace, "#");
         private static final CommonToken SPACE = new CommonToken(VitryParser.LineSpace, " ");
         private static final CommonToken BREAK = new CommonToken(VitryParser.LineBreak, "\n");
         static {
@@ -102,22 +101,19 @@ private static final CommonToken DUMMY = new CommonToken(VitryParser.LineSpace, 
             boolean isInline = isOp(input.LA(1));
 
 
-            if (isInline) {
-                
-            } else {
+            if (!isInline) {
             
                 /*
                  * Emit closing parentheses for previous line
                  */
                 if (postEnclose) {
-    System.err.println(input.LT(1));
-    System.err.println(indent);
-                    postEnclose = false;
+//System.err.println(input.LT(1));
+//System.err.println(indent);
                     
                     if (levels.peek() != indent) {
                         levels.push(indent);                    
                     }
-                    // FIXME
+                    // TODO is this correct?
                     if (levels.peek() == 0) {
                         currentLine.add(PAR_RIGHT);                    
                     }
@@ -147,9 +143,14 @@ private static final CommonToken DUMMY = new CommonToken(VitryParser.LineSpace, 
                 for (int i = 0; i < indent; i++) {
                     currentLine.add(SPACE);
                 }
+                if (postEnclose && levels.peek() != 0) {
+                    currentLine.add(SPACE);
+                }
     
                 currentLine.add(PAR_LEFT);
             }
+            postEnclose = false;
+
 
             
             
@@ -158,10 +159,13 @@ private static final CommonToken DUMMY = new CommonToken(VitryParser.LineSpace, 
              * brackets?
              */
             boolean enclose = false;
-            int encloseStart = 0;
+            int encloseStart = -1;
             
-            if ((!isSingleTopLevel(input.LA(1)) && levels.peek() == 0) 
-                    || isKeyword(input.LA(1))) {    
+            if (
+                (!isSingleTopLevel(input.LA(1)) && levels.peek() == 0) 
+                || isKeyword(input.LA(1))
+            ) {    
+                
                 if (isLeftParen(input.LA(1))) {
                     encloseStart = 4;
                 } else {
@@ -174,7 +178,6 @@ private static final CommonToken DUMMY = new CommonToken(VitryParser.LineSpace, 
                 } while (isLineSpace(la));
                 if (!isLineBreak(input.LA(encloseStart-1)) 
                     && !(input.LA(encloseStart-1) == 47)) {
-//currentLine.add(DUMMY);                    
                     enclose = true;
                 }
             }
@@ -183,7 +186,6 @@ private static final CommonToken DUMMY = new CommonToken(VitryParser.LineSpace, 
              * Emit rest of line.
              */
             if (enclose) {
-//System.err.println(input.LT(encloseStart-1));
                 for (int i=1; i < encloseStart-1; i++) {
                     currentLine.add(input.LT(i));
                 }
@@ -202,7 +204,6 @@ private static final CommonToken DUMMY = new CommonToken(VitryParser.LineSpace, 
                 } while (!isEof(input.LA(1)) && !isLineBreak(input.LA(1)));                
 
                 postEnclose = true;
-//                currentLine.add(PAR_RIGHT);
             
             } else {
 

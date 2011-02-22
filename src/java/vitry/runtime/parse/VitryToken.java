@@ -18,14 +18,15 @@
  */
 package vitry.runtime.parse;
 
-import org.antlr.runtime.Token;
-
-import vitry.runtime.Atom;
+import org.antlr.runtime.*;
+import vitry.runtime.*;
 
 /**
  * Simple wrapper for CommonToken that displays, equals and matches as
  * its text. The string constructor is used to construct dummy tokens
- * used for matching.
+ * (for matching).   
+ *
+ * @author Hans Höglund 
  */
 public class VitryToken extends Atom
     {

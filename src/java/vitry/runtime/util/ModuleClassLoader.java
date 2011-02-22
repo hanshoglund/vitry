@@ -31,19 +31,11 @@ import java.util.Map;
 /**
  * Loads classes from the java class path and/or any specified path.
  *  
- *   - Delegates base packages by default
- *   - Delegates other classes if it can not find them
- *   - Loads each requested class separately along with its references
- *   - {@link #unloadClass} and {@link #reloadClass} works like a persistent collection
- *   - Unloaded classes may be reclaimed iff there are no external reference to them
+ * Delegates base packages by default and other classes if it can not find them.
+ * The unload and reload methods return a new class loader. For classes to be
+ * reclaimed, the old classloader must go out of scope.
  * 
- * Invariants:
- * 
- *   - The method loadClass(S) is referentially transparent.
- *   - If this class delegates loading of a class C to another loader L,
- *     then for any type T that is referenced by C, this.loadClass == L.loadClass(). 
- *   
- *   
+ * @author Hans Höglund
  */
 public class ModuleClassLoader extends ClassLoader
     {
@@ -72,32 +64,36 @@ public class ModuleClassLoader extends ClassLoader
 
             boolean delegateEagerly = moduleLoaderShouldDelegate(name);
             ClassNotFoundException ex = null;
-            Class<?> c = findLoadedClass(name);
+            Class<?> cl = findLoadedClass(name);
 
-            if (c == null) c = classes.get(name);
-            if (c == null && delegateEagerly) 
+            if (cl == null) {
+                cl = classes.get(name);
+            }
+            if (cl == null && delegateEagerly) {
                 try {
-                    c = this.getParent().loadClass(name);
+                    cl = this.getParent().loadClass(name);
                 } catch (ClassNotFoundException e) {
                     ex = e;
-                }
-            if (c == null) 
-                try {
-                    c = new DefiningClassLoader(getPathsArray()).loadClass(name, this);
-                } catch (ClassNotFoundException e) {
+                }                
             }
-            if (c == null) {
+            if (cl == null) {
+                try {
+                    cl = new DefiningClassLoader(getPathsArray()).loadClass(name, this);
+                } catch (ClassNotFoundException e) {                
+                }
+            }
+            if (cl == null) {
                 if (delegateEagerly) {
                     // Only reached if delegation failed
                     assert (ex != null);
                     throw ex;
                 } else {
-                    c = this.getParent().loadClass(name);
+                    cl = this.getParent().loadClass(name);
                 }
             }
 
-            if (resolve) resolveClass(c);
-            return c;
+            if (resolve) resolveClass(cl);
+            return cl;
         }
 
         public synchronized ModuleClassLoader unloadClass(String name) {

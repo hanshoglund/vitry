@@ -20,7 +20,6 @@ package vitry.runtime.struct;
 
 import vitry.runtime.Function;
 
-
 public interface Sequence<T> extends Iterable<T>
     {
         T head();

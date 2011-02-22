@@ -19,13 +19,11 @@
 package vitry.runtime.struct;
 
 import java.util.Iterator;
-
 import vitry.runtime.Function;
 
 
 abstract public class AbstractSequence<T> implements Sequence<T>
     {
-
         public Iterator<T> iterator() {
             return new SequenceIterator<T>(this);
         }
