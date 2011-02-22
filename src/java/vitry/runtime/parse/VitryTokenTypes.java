@@ -10,28 +10,30 @@ import vitry.runtime.error.VitryError;
 
 /**
  * Provides integers identifiers representing token types.
+ * 
+ * TODO generate table from Vitry.tokens file (?)
  */
 public class VitryTokenTypes
     {
 
-        public static final Environment<Pattern, Integer> SYMBOLIC_TOKENS = (new HashEnvironment<Pattern, Integer>()
-                .define(Symbol.intern("Ang"), VitryParser.Ang)
-                .define(Symbol.intern("Apply"), VitryParser.Apply)
-                .define(Symbol.intern("Assign"), VitryParser.Assign)
-                .define(Symbol.intern("Bra"), VitryParser.Bra)
-                .define(Symbol.intern("Do"), VitryParser.Do)
-                .define(Symbol.intern("Fn"), VitryParser.Fn)
-                .define(Symbol.intern("If"), VitryParser.If)
-                .define(Symbol.intern("Left"), VitryParser.Left)
-                .define(Symbol.intern("Let"), VitryParser.Let)
-                // .define(Symbol.intern("Loop"), VitryParser.Loop)
-                .define(Symbol.intern("Match"), VitryParser.Match)
-                .define(Symbol.intern("Module"), VitryParser.Module)
-                .define(Symbol.intern("Ops"), VitryParser.Ops)
-                .define(Symbol.intern("Par"), VitryParser.Par)
-                .define(Symbol.intern("Quote"), VitryParser.Quote)
-                // .define(Symbol.intern("Recur"), VitryParser.Recur)
-                .define(Symbol.intern("Type"), VitryParser.Type));
+        static {
+            def("Ang",      VitryParser.Ang);
+            def("Apply",    VitryParser.Apply);
+            def("Assign",   VitryParser.Assign);
+            def("Bra",      VitryParser.Bra);
+            def("Do",       VitryParser.Do);
+            def("Fn",       VitryParser.Fn);
+            def("If",       VitryParser.If);
+            def("Left",     VitryParser.Left);
+            def("Let",      VitryParser.Let);
+            def("Match",    VitryParser.Match);
+            def("Module",   VitryParser.Module);
+            def("Ops",      VitryParser.Ops);
+            def("Par",      VitryParser.Par);
+            def("Quote",    VitryParser.Quote);
+            def("Type",     VitryParser.Type);
+        }
+
 
         public static int parserTokenType(Pattern p) {
             return ((VitryToken) p).getTokenType();
@@ -39,12 +41,12 @@ public class VitryTokenTypes
 
         public static int symbolicTokenType(Pattern p) {
             try {
-                return SYMBOLIC_TOKENS.lookup(p);
+                return TABLE.lookup(p);
             } catch (Exception e) {
                 throw new ParseError("Unknown form: " + p);
             }
         }
-        
+
         public static int tokenType(Pattern p) {
             try {
                 try {
@@ -55,5 +57,11 @@ public class VitryTokenTypes
             } catch (VitryError e) {
                 throw e;
             }
+        }
+
+        private static final Environment<Pattern, Integer> TABLE = new HashEnvironment<Pattern, Integer>();
+
+        private static void def(String sym, int type) {
+            TABLE.define(Symbol.intern(sym), type);
         }
     }

@@ -115,10 +115,10 @@ inline [boolean rs]
  */
 inlineRight
     : 'fn'   '(' left*   ')' inline[true]        -> ^(Fn left* inline)
-    | 'fn'   '[' left*   ']' inline[true]        -> ^(Fn left* inline)
     | 'let'  '(' assign* ')' inline[true]        -> ^(Let assign* inline)
-    | 'let'  '[' assign* ']' inline[true]        -> ^(Let assign* inline)
     | 'do'   '(' assign* ')' expr*               -> ^(Do assign* expr*)
+    | 'fn'   '[' left*   ']' inline[true]        -> ^(Fn left* inline)
+    | 'let'  '[' assign* ']' inline[true]        -> ^(Let assign* inline)
     | 'do'   '[' assign* ']' expr*               -> ^(Do assign* expr*)
     | 'match' v=expr '(' (c+=left e+=expr)* ')'  -> ^(Match $v ^($c $e)*)    
     | 'if' expr expr 'else'? inline[true]        -> ^(If expr expr inline)
@@ -207,12 +207,11 @@ Complex
     |   ('0'..'9')+ 'i'
     ;
     
-Whitespace
-    : ( ' '
-      | '\t'
-      | '\r'
-      | '\n'
-      ) {$channel=HIDDEN;}
+LineSpace
+    : (' ' | '\t' | '\r' | '\n') {$channel=HIDDEN;}
+    ;
+LineBreak
+    : ('\n' | '\r' '\n'?) {$channel=HIDDEN;}
     ;
 
 String

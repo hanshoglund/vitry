@@ -27,10 +27,14 @@ import java.util.Stack;
 
 
 /**
- * Rewrites indentation as parentheses.
- * 
- * At the moment also handles comment stripping, this should be factored out.
+ * Rewrites indentation as parentheses and removes comment lines.
  * Comments are indicated by a comment character at the beginning of a line.
+ *      
+ *
+ * FIXME
+ *      - This class duplicates lexer functionality and does not scale.
+ *          - Should probably be rewritetten as subclass of org.antlr.runtime.CommonTokenStream
+ *      - Sometimes misses closing parentheses for documents ending with non-break characters
  */
 public class IndentationReader extends Reader
     {   
@@ -40,6 +44,10 @@ public class IndentationReader extends Reader
         private static final char[] COMMENT_CHARS = {
             ';'
         };
+        private static final String[] SPECIAL_KEYWORDS = {
+            "fn", "let", "do", "import", "type", "implicit"
+        };                    
+        private static final int LOOKAHEAD = 8;
         
         private Stack<Integer> levels;
         private final   PushbackReader input;
@@ -53,7 +61,7 @@ public class IndentationReader extends Reader
         
 
         public IndentationReader(Reader input) {
-            this.input = new PushbackReader(input, 2);
+            this.input = new PushbackReader(input, LOOKAHEAD);
             this.levels = new Stack<Integer>();     
             this.buffer = new char[80];
             this.levels.push(0);
@@ -162,6 +170,8 @@ public class IndentationReader extends Reader
                 levels.push(indent);
             }
             
+
+            
             if (!finished) {
                 if (linesEmitted >= 1) 
                     setBuffer(n++, '\n');
@@ -173,6 +183,10 @@ public class IndentationReader extends Reader
                     
                 setBuffer(n++, '(');
             }
+            
+            // if consume keyword
+            //      emit keyword + ' '
+            //      enclose rest of line in ( )
                 
             /*
              * Emit rest of line
@@ -283,7 +297,8 @@ public class IndentationReader extends Reader
         
         
         public static void main(String[] args) throws IOException {
-            Reader r = new InputStreamReader(ClassLoader.getSystemResourceAsStream("Vitry/Music/Time.vitry"));
+            // Reader r = new InputStreamReader(ClassLoader.getSystemResourceAsStream("Vitry/Music/Time.vitry"));
+            Reader r = new java.io.FileReader(args[0]);
             IndentationReader ir = new IndentationReader(r);
 
 //            char[] cs = new char[20];

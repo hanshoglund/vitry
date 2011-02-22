@@ -77,44 +77,44 @@ public final class VitryRuntime
             def("char",                 CHAR);
             def("str",                  STR);
 
-            def("(,)",                  new product());
-            def("[,]",                  new list());
-            def("{,}",                  new set());
-            def("(|)",                  new union());
-            def("(&)",                  new intersection());
-            def("(->)",                 NIL);
-            def("(<->)",                NIL);
-            def("(<-)",                 NIL);
+            def("(,)",                  new product());         // bootstr
+            def("[,]",                  new list());            // bootstr
+            def("{,}",                  new set());             // bootstr
+            def("(|)",                  new union());           // bootstr
+            def("(&)",                  new intersection());    // bootstr
+            def("(->)",                 NIL);                   // bootstr TODO 
+            def("(<->)",                NIL);                   // bootstr TODO 
+            def("(<-)",                 NIL);                   // bootstr TODO 
             def("symbol",               new symbol());
             def("string",               new string());
 
             def("eq",                   new eq());
-            def("neq",                  NIL);
-            def("lt",                   NIL);
-            def("lte",                  NIL);
-            def("gte",                  NIL);
-            def("gt",                   NIL);
-            def("succ",                 NIL);
-            def("pred",                 NIL);
-            def("min",                  NIL);
-            def("max",                  NIL);
+            def("neq",                  NIL);                   // bootstr TODO 
+            def("lt",                   NIL);                   // bootstr TODO 
+            def("lte",                  NIL);                   // bootstr TODO 
+            def("gte",                  NIL);                   // bootstr TODO 
+            def("gt",                   NIL);                   // bootstr TODO 
+            def("succ",                 NIL);                   // bootstr TODO 
+            def("pred",                 NIL);                   // bootstr TODO 
+            def("min",                  NIL);                   // prelude TODO 
+            def("max",                  NIL);                   // prelude TODO
             def("(==)",                 alias("eq"));
             def("(/=)",                 alias("neq"));
             def("(<)",                  alias("lt"));
             def("(<=)",                 alias("lte"));
             def("(=>)",                 alias("gte"));
             def("(>)",                  alias("gt"));
-            def("and",                  NIL);
-            def("or",                   NIL);
-            def("not",                  NIL);
+            def("not",                  NIL);                   // prelude TODO 
+            def("and",                  NIL);                   // prelude TODO 
+            def("or",                   NIL);                   // prelude TODO 
 
             def("arity",                new arity());
             def("id",                   new id());
             def("const",                new const_());
-            def("compose",              NIL);
-            def("follow",               NIL);
-            def("power",                NIL);
-            def("flip",                 NIL);
+            def("compose",              NIL);                   // prelude TODO
+            def("follow",               NIL);                   // prelude TODO
+            def("power",                NIL);                   // prelude TODO
+            def("flip",                 NIL);                   // prelude TODO
             def("(./)",                 alias("compose"));
             def("(.\\)",                alias("follow"));
 
@@ -164,6 +164,9 @@ public final class VitryRuntime
             // last        : [a] -> a
             // init        : [a] -> [a]
             // cons        : a, [a] -> a
+            
+            // Sequence functions
+            // Overload on strings pro tempore
 
             def("head",                 NIL);
             def("tail",                 NIL);
@@ -225,6 +228,8 @@ public final class VitryRuntime
             def("closeFile",            NIL);
             def("readFile",             NIL);
             def("writeFile",            NIL);
+            def("str2list",             NIL);
+            def("list2str",             NIL);
 
             // Alpha - JVM interop
             def("host",                 NIL);

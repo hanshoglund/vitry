@@ -27,11 +27,10 @@ foo x y z = x + y + z
 
 
 combinators =
-    let 
-         add5 = (add 5)
+    let {add5 = (add 5)
          add26 = (add 26)
          mod5= (mod 5)
-         x = 0
+         x = 0}
       eq mod5 (add26 x) (add5 x)
 
 

@@ -1,0 +1,389 @@
+
+
+
+do a b
+   c d
+     e f
+     
+do a = 1 
+   print (1 + 2)
+                
+let x = 1
+    y = 2
+    1 + 2
+
+
+; 
+; 
+; 
+; let [add5 = (add 5)  add26 = (add 26)  mod5 = (mod 5)  x = 0] (eq (mod5 (add26 x)) (add5 x))
+; let [s = (fn [x y z] x z (y z))  k = const   i = id] s k k 3
+; 
+; 
+; 
+; 
+; test = 
+;     a, b, c, d 
+;         
+; foo = 
+;     "a very long string a very long string a very long string a very long string "
+;     + "a very long string a very long string a very long string a very long string "
+;     + "a very long string a very long string a very long string a very long string "
+;     
+; foo a b = c
+;     int = false
+; 
+;                  
+; type = a
+;      | b
+;      | c
+; 
+; match x
+;     nat doWithNat
+;     str doWithStr
+; 
+; 
+; 
+; fn x y z 
+;    x + y + z
+; 
+; 
+; add x y = x + y
+;     z _ = z
+; 
+; 
+; 
+; let foo = 1
+;     let bar = 2
+;         foo + bar
+; 
+; 
+; 
+; 
+; do f = open
+;    str = read f
+;    write str f
+; 
+; let x = 1
+;     y = 2
+;     x + y
+;     
+;     
+; 
+; 
+; 
+; 
+; 
+; module Vitry.Prelude
+; 
+; 
+; 
+; ; Core types
+; ; Required by the basic constructors.
+; 
+; type
+;     nil
+;     true
+;     false
+;     bool = true | false
+;     empty
+; 
+; () = nil
+; [] = nil
+; {} = empty
+; 
+; 
+; ; Basic constructors
+; ; May be implemented by sequencing and matching prococols.
+; 
+; ; (,)       tuple,        n == 0 || > 1
+; ; [,]       list,         n >= 0
+; ; {,}       set,          n >= 0
+; ; (|)       union,        n > 1
+; ; (&)       intersection, n > 1
+; ; (->)      function,     n == 2
+; ; (<->)     isomorphism,  n == 2
+; 
+; 
+; ; Booleans
+; 
+; ; Equality is defined in the matching logic, since a == b iff a : b, b : a
+; ; However, implementations should override == to get a faster comparison
+; 
+; ; (==) : a -> b -> bool
+; ; (!=) : not . (==)
+; 
+; not  false     = true
+;      true      = false
+; (&&) true true = true
+;      bool bool = false
+; (||) true bool = true
+;      bool true = true
+;      bool bool = false
+; 
+; 
+; 
+; 
+; ; Functions
+; 
+; id    x       = x
+; const x       = fn (y) x
+; (.)   f g     = fn (x) f (g x)
+; (..)  f g     = g . f
+; iter  f i     = f . (iter f (i-1))
+;       0 f     = f
+; 
+; flip  f x y z = f y x z
+; ;domain
+; ;range
+; ;arity
+; 
+; 
+; ; Numbers and strings
+; ; Logically numbers are no distinct from symbolic values, but implementations
+; ; will of course use underlying machine/VM primitives.
+; 
+; type
+;   ; word8   = (bool, bool ...)
+;   ; word16  = (bool, bool ...)
+;   ; word32  = (bool, bool ...)
+;   ; word64  = (bool, bool ...)
+;   ; word128 = (bool, bool ...)
+;   ; nat     = 0 | 1 | 2 ...
+;   ; int     = nat | -1 | -2 ...
+;     rat     = (nat, nat)
+;     complex = (double, double)
+;     polar   = (double, double)
+;     char    = word16
+;     float   = word32
+;     double  = word64
+;     quad    = word128
+;     str     = [char]
+; 
+; type num    = prec
+;             | real
+; type prec   = nat
+;             | int
+;             | rat
+; type real   = float
+;             | double
+;             | quad
+;             | complex
+; 
+; ; Numeric conversions
+; 
+; implicit
+;     bool     -> nat
+;     nat      -> int
+;     float    -> double
+; 
+;     n : int    <-> (n, 1) : rat
+;     r : double <-> (r, 0) : complex
+; 
+;     (r, t) : polar   -> (r * (cos t), r * (sin t))    : complex
+;     (x, y) : complex -> (sqrt (y^2 + x^2), atan2 y x) : polar
+; 
+; ; Note that precise and real hierarchies are orthogonal
+; ; Some standard library functions are overloaded for precise
+; ; and real arithmetic, others assume a specific representation.
+; 
+; 
+; 
+; sign 1 n = abs n    : num -> num -> num
+;      0 n = -(abs n)
+; 
+; ;
+; ; getBits x:float
+; ; getBits x:double
+; ; getBits x:quad
+; 
+; 
+; 
+; ; Special function to lift canonical string representations into
+; ; the value domain and vice versa. These functions are simple
+; ; subsets of (eval . read) and print respectively, and can be
+; ; equally misused.
+; 
+; ; symbol : str -> a
+; ; string : a -> str
+; 
+; 
+; 
+; 
+; 
+; ; Meant to be extended
+; zeroth   = error
+; succ     = error
+; pred     = error
+; (<)  x y = error
+; (<=) x y = error
+; (>=) x y = error
+; (>)  x y = error
+; 
+; min x y = if (x < y) x else y
+;     [x] = foldl (<) zeroth [x]
+; max x y = if (x > y) x else y
+;     [x] = foldl (>) zeroth [x]
+; 
+; 
+; 
+; 
+; 
+; 
+; ; Arithmetic
+; 
+; ; (+)
+; ; (-)
+; ; (*)
+; ; (/)
+; ; (%)
+; ; (%%)
+; ; negate
+; ; abs
+; ; signum
+; ; (^)
+; ; sqrt
+; ; log
+; ; logn
+; ; ln
+; ; sin
+; ; tan
+; ; cos
+; ; asin
+; ; atan
+; ; acos
+; ; round
+; ; ceil
+; ; floor
+; ; recip
+; ; sum
+; ; prod
+; ; gcd
+; ; lcm
+; 
+; isOdd x        = x % 2 == 0
+; isEven x       = x % 2 == 1
+; 
+; isPrime x      = ; TODO
+; 
+; isZero 0       = true
+;        _       = false
+; 
+; isPositive n   = n > 0
+; isNegative     = n < 0
+; 
+; isReal (r, i) = (i == 0) : complex -> bool
+;        num    = true     : num -> bool
+;        _      = false    : a -> bool
+; 
+; isNan      nan = true
+;            _   = false
+; isInfinite inf = true
+;            _   = false
+; isNumber   x   = not (isNan x)
+; isFinite   x   = not (isInfinite x)
+; 
+; 
+; 
+; 
+; 
+; ; Lists
+; 
+; ; head
+; ; tail
+; ; prepend
+; 
+; last    (x, [])   = x                   : [a] -> a
+;    |    (x, xs)   = last xs
+; 
+; init    (x, [])   = []                  : [a] -> [a]
+;         (x, xs)   = (x, (init xs))
+; 
+; append  [] a      = (a, [])             : [a] -> a -> [a]
+;         (x, xs) a = (x, (append a xs))
+; 
+; length  []        = 0                   : [a] -> nat
+;         (x, xs)   = 1 + (length xs)
+; 
+; rank    xs = fold (xs)
+; 
+; isEmpty [] = true
+;         _  = false
+; isSingle [_] = true
+;          _   = false
+; 
+; nth
+; map
+; ; apply
+; foldl
+; foldr
+; (++)
+; 
+; insert
+; substr
+; subseq
+; drop
+; take
+; remove
+; retain
+; 
+; reverse
+; sort
+; search
+; shuffle
+; permute
+; partition
+; 
+; some
+; every
+; none
+; 
+; 
+; 
+; 
+; 
+; 
+; now
+; 
+; read
+; eval
+; print
+; error
+; 
+; 
+; repl
+; require
+; load
+; version
+; quit
+; 
+; 
+; 
+; 
+; infix
+;     right+ 12 (.)
+;     left   10 (^^)
+;     left   10 (^)
+;     left   9  (%)
+;     left   9  (%%)
+;     left   9  (/)
+;     left   9  (*)
+;     left   8  (-)
+;     left   8  (+)
+;     left   8  (++)
+;     left   6  (<)
+;     left   6  (<=)
+;     left   6  (>=)
+;     left   6  (>)
+;     left   6  (/=)
+;     left   6  (==)
+;     left+  5  [,]
+;     left+  5  {,}
+;     left+  5  (,)
+;     left   4  (|)
+;     left   4  (&)
+;     right  3  (->)
+;     right  2  (&&)
+;     right  1  (||)
+;     left   0  ($!)
+;     right  0  ($) 
