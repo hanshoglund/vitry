@@ -56,6 +56,9 @@ package vitry.runtime.parse;
 }
 
 @lexer::members{
+    public static int DEFAULT_CHANNEL = Token.DEFAULT_CHANNEL;
+    public static int HIDDEN_CHANNEL  = Token.HIDDEN_CHANNEL;
+    public static int COMMENT_CHANNEL = 55;
 }
 
 
@@ -155,10 +158,13 @@ module
     
 declaration
     : left '=' expr                              
-    //-> ^(MemberDecl left expr)
-    // | 'type'     '(' assign*      ')'                -> ^(TypeDecl assign*)
-    // | 'implicit' '(' (expr expr)* ')'           -> ^(ImplicitDecl ^(expr expr)*)
-    // | Symbol '(' left*        ')' '=' inline[true] -> ^(FnDecl Symbol left+ inline)
+    //-> ^(MemberDecl left expr)      
+    // | Symbol '(' left*        ')' '=' inline[true] 
+    //-> ^(FnDecl Symbol left+ inline)
+    | 'type' '(' assign* ')'
+    //-> ^(TypeDecl assign*)
+    | 'implicit' '(' (expr expr)* ')'           
+    //-> ^(ImplicitDecl ^(expr expr)*)
     ;
      
 
@@ -207,8 +213,13 @@ Complex
     |   ('0'..'9')+ 'i'
     ;
     
+Comment
+    :   ';' ~('\n'|'\r')* '\r'? '\n' {$channel=COMMENT_CHANNEL;}
+    |   '#|' ( options {greedy=false;} : . )* '|#' {$channel=COMMENT_CHANNEL;}
+    ;
+        
 LineSpace
-    : (' ' | '\t' | '\r' | '\n') {$channel=HIDDEN;}
+    : (' ' | '\t') {$channel=HIDDEN;}
     ;
 LineBreak
     : ('\n' | '\r' '\n'?) {$channel=HIDDEN;}

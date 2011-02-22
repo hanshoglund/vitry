@@ -17,8 +17,8 @@
     </target>
     
     <target name="generate-build" description="">
-        <script language="javascript">               
-            var file = "./src/java/vitry/Build.java";
+        <script language="javascript">     
+            var file = new java.io.File(project.getBaseDir(), "src/java/vitry/Build.java");
             var props = [
               ["boolean", "debug"], 
               ["boolean", "memoize-sequences"], 
@@ -47,7 +47,7 @@
     </target>
     
     <target name="generate-antlr" description="">
-        <java fork="true" classpath="lib/antlr-3.2.jar:bin" classname="org.antlr.Tool" failonerror="true">
+        <java fork="true" classpath="lib/antlr-3.3.jar:bin" classname="org.antlr.Tool" failonerror="true">
             <arg value="-fo"/>
             <arg value="src/java/vitry/runtime/parse/"/>
             <arg value="-verbose"/>
@@ -58,7 +58,7 @@
     <target name="compile-src" description="">
         <javac srcdir="src" destdir="bin" extdirs="">
             <classpath>
-                <pathelement location="lib/antlr-3.2.jar"/>
+                <pathelement location="lib/antlr-3.3.jar"/>
                 <pathelement location="lib/asm-3.3.jar"/>
                 <pathelement location="lib/asm-commons-3.3.jar"/>
                 <pathelement location="lib/asm-util-3.3.jar"/>
@@ -70,7 +70,7 @@
     <target name="compile-test" description="">
         <javac srcdir="test" destdir="bin" extdirs="">
             <classpath>
-                <pathelement location="lib/antlr-3.2.jar"/>
+                <pathelement location="lib/antlr-3.3.jar"/>
                 <pathelement location="lib/asm-3.3.jar"/>
                 <pathelement location="lib/asm-commons-3.3.jar"/>
                 <pathelement location="lib/asm-util-3.3.jar"/>
@@ -92,8 +92,7 @@
         </jar>
     </target>
     
-    <target name="debug" depends="clean, dirs, generate-build, generate-antlr, compile-src, compile-test" description="">
-	  </target>
+    <target name="debug" depends="clean, dirs, generate-build, generate-antlr, compile-src, compile-test" description=""></target>
     
     <target name="usage" description="">
         <echo>Usage:                                                 </echo>
