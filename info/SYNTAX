@@ -1,0 +1,39 @@
+Simplified EBNF
+
+expr    = pexpr [":" pexpr]
+lexpr   = pexpr [":" pexpr]
+
+pexpr   = "(" line ")"
+        | "[" line "]"
+        | "{" line "}"
+        | "`" op
+        | "`" pexpr
+        | literal
+
+line    = "fn" "(" {lexpr} ")" line
+        | "let" "(" {assign} ")" line 
+        | "do" "(" {assign} ")"
+        | "match" expr "(" {lexpr expr} ")"
+        | "if" expr expr ["else"] line
+        | apply
+        | {op apply}
+        | apply {op apply}
+
+assign  = lexpr "=" expr
+apply   = expr {expr}
+
+decl    = "module" ["(" {mname} ")"]
+        | "import" {mname ["as" symbol]}
+        | "type" {symbol} "=" expr
+        | "implicit" {expr}
+        | "infix" "(" ")"
+        | symbol {"(" {expr} "=" expr ")"}
+        | assign  
+
+mname   = symbol {op symbol}
+
+literal = symbol
+        | natural
+        | float
+        | complex
+        | string

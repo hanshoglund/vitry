@@ -29,7 +29,6 @@ public class IndentFile
 //            TokenStream tokens = new CommonTokenStream(lexer);
             TokenStream tokens = new CommonTokenStream(new IndentationTokenSource(new BufferedTokenStream(lexer)));
             
-            
             System.out.println(tokens);
         }
 

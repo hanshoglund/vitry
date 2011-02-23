@@ -1,42 +1,208 @@
+; Test by java -cp bin:lib/* vitry.runtime.launch.IndentFile test/vitry/indent.vitry > test/indent/indent.vitry
 
-module Fsm (main)
 
+"========== Declarations =========="
+
+module A
+module A.B
+module A foo bar
+module A
+    foo
+    bar
+
+import A.B
+import A.B as C
+    X.Y as Z
 import
-    InputOutput
+    A.B as C
+    X.Y as Z
+import
+    A
+        B as X
+        C as Y
 
-names = shuffle `fresh ["Hans", "Mats", "Isak", "David", "Maria", "Mattias", "Max", "Tim", "Jason"]
-engine = "circo"
-degree = 2
+type a = b | c
+type a = b
+       | c
+type list a = () | list a
+type list a = ()
+            | list a
+
+implicit (a -> b) (c -> d)
+implicit a -> b
+         c -> d
+implicit
+    a -> b
+    c -> d
+
+; FIXME one ) is missing
+infix (left 2 (*)) (right 1 (+))
+infix left 2 (*)
+      right 1 (+)
+infix
+    left 2 (*)
+    right 1 (+)
 
 
-rotate list steps = 
-   let n = steps %% (length list)
-        take (list n) ++ take (list 0 n)
-    
+"========== Simple assignments =========="
 
-skiffle list degree =
-   let length = (length list)
-       lengthDegree = length / degree
-       reverse (gen list)
-
-gen list = 
-   let i = lastIndexOf list
-       nth list (floor (i % degree * lengthDegree + i/degree)) . gen list (i - 1))
-
-
-nodes = join [ (format "%n [label = %n] \n  " n) | n = names ]
-    ++ "\n    Start [shape = diamond] "
-
-connections = (join (names ++ (first names)) " -> ") 
-    ++ " " ++ "\n    Start -> " ++ pick names
+foo = 1
+foo =
+    1
+foo = 1 + 2
+foo = 1
+    + 2
+foo =
+    1 + 2
+str = "a very long engagement a very long engagement "
+    + "a very long engagement a very long engagement "
+    + "a very long engagement a very long engagement "
+    + "a very long engagement a very long engagement "
 
 
-main = do
-    let buffer = getCharBuffer
-        read getReader "./fsm_bu.dot" buffer
-        rewrite buffer "${nodes}" nodes
-        rewrite buffer "${connections}" connections
-        write buffer buffer getWriter "./fsm.dot"
+"========== Equational assignments =========="
 
-    exec (engine + " fsm.dot -Tgif -o fsm.gif") (file ".") `block
-    print "Done!"
+; FIXME one ) is missing
+foo x = 1
+foo x =
+    1
+foo x y = 1
+    _   = 2
+foo
+    x y = 1
+    _   = 2
+
+; with inline etc
+
+
+"========== Fn =========="
+f = fn (x) x
+
+f = fn (x) 
+    x
+
+f = fn 
+    x
+    x
+
+f = fn (x y z) x + y + z
+
+f = fn (x y z) 
+    x + y + z
+
+f = fn
+    x y z
+    x + y + z
+
+"========== Let =========="
+
+foo = let (x = 1 y = 2) (x + x)
+
+foo = let (x = 1 y = 2)
+    x + x
+
+; FIXME does not enclose
+foo = let x = 1
+        y = 2
+        x + x
+
+foo = let ((x = 1) (y = 2)) (x + x)
+
+foo = let x = 1
+    x + x
+
+; FIXME does not enclose
+foo =
+    let x = 1
+        x + x
+
+
+
+"========== Do ==========" 
+
+
+
+"========== Match =========="
+
+
+"========== If =========="
+
+if (a < 1) `small `big
+         
+if (a < 1) `small
+    `big
+
+if (a < 1)
+    `small
+    `big
+
+if a < 1 
+    `small
+    `big
+
+if (a < 1) `small else `big
+
+if (a < 1) 
+    `small 
+    else `big
+
+if a < 1 
+    `small
+    else `big
+
+
+"========== More infix =========="
+a = 1 + 2 * 3
+a = -1 * 2
+a = 1
+    + 2
+        * 3
+a = 1
+        + 2
+    * 3
+
+
+
+
+
+; module Fsm (main)
+;
+; import
+;     InputOutput
+;
+; names = shuffle `fresh ["Hans", "Mats", "Isak", "David", "Maria", "Mattias", "Max", "Tim", "Jason"]
+; engine = "circo"
+; degree = 2
+;
+;
+; rotate list steps =
+;    let n = steps %% (length list)
+;         take (list n) ++ take (list 0 n)
+;
+;
+; skiffle list degree =
+;    let length = (length list)
+;        lengthDegree = length / degree
+;        reverse (gen list)
+;
+; gen list =
+;    let i = lastIndexOf list
+;        nth list (floor (i % degree * lengthDegree + i/degree)) . gen list (i - 1))
+;
+;
+; nodes = join [ (format "%n [label = %n] \n  " n) | n = names ]
+;     ++ "\n    Start [shape = diamond] "
+;
+; connections = (join (names ++ (first names)) " -> ")
+;     ++ " " ++ "\n    Start -> " ++ pick names
+;
+;
+; main = do
+;     let buffer = getCharBuffer
+;         read getReader "./fsm_bu.dot" buffer
+;         rewrite buffer "${nodes}" nodes
+;         rewrite buffer "${connections}" connections
+;         write buffer buffer getWriter "./fsm.dot"
+;
+;     exec (engine + " fsm.dot -Tgif -o fsm.gif") (file ".") `block
+;     print "Done!"

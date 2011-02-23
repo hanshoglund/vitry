@@ -2,7 +2,7 @@
 ; Test module to check the parser
 
 module Vitry.Music.Time
-    time
+    Time
     absTime
 
 import Vitry.Music
@@ -12,12 +12,12 @@ import Vitry.Parse.Util
 
 
 
-type time       = absoluteTime | relativeTime
-   absoluteTime = sec
-   relativeTime = rat
-   pos          = time
-   dur          = time
-   sec          = float
+type Time       = AbsoluteTime | RelativeTime
+   AbsoluteTime = Sec
+   RelativeTime = rat
+   Pos          = Time
+   Dur          = Time
+   Sec          = Float
 
 
 quarter = 1/4

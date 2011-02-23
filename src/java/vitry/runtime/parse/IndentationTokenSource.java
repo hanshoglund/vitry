@@ -9,15 +9,18 @@ import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenSource;
 
-
+/**
+ * FIXME
+ *      Single lines where enclose miss one ).
+ * 
+ * TODO
+ *      Strip trailing whitespace as an option (for debugging).
+ */
 public class IndentationTokenSource implements TokenSource
-    {
-        public static final int PAR_LEFT_TYPE = VitryParser.T__34;
-        public static final int PAR_RIGHT_TYPE = VitryParser.T__35;
-
-
-        private static final CommonToken PAR_LEFT = new CommonToken(PAR_LEFT_TYPE, "(");
-        private static final CommonToken PAR_RIGHT = new CommonToken(PAR_RIGHT_TYPE, ")");
+    {       
+                
+        private static final CommonToken PAR_LEFT = new CommonToken(VitryTokenTypes.PL, "(");
+        private static final CommonToken PAR_RIGHT = new CommonToken(VitryTokenTypes.PR, ")");
 
         private static final CommonToken SPACE = new CommonToken(VitryParser.LineSpace, " ");
         private static final CommonToken BREAK = new CommonToken(VitryParser.LineBreak, "\n");
@@ -28,6 +31,7 @@ public class IndentationTokenSource implements TokenSource
 
 
         private final BufferedTokenStream input;
+        
         private Stack<Integer> levels = new Stack<Integer>();
         private List<Token> currentLine = new ArrayList<Token>();
         private int pos;
@@ -44,7 +48,15 @@ public class IndentationTokenSource implements TokenSource
             this.input = input;
             this.levels.push(0);
         }
-
+        
+        public String getSourceName() {
+            return input.getSourceName();
+        }
+        
+        /**
+         * Returns the next token, or a token of type Token.EOF if all
+         * tokens have been read.
+         */
         public Token nextToken() {
             if (pos >= currentLine.size()) {
                 nextLine();
@@ -59,7 +71,7 @@ public class IndentationTokenSource implements TokenSource
 
 
         /**
-         * Read tokens form next line and fill buffer.
+         * Read next line and fill buffer.
          */
         private void nextLine() {
             Token t;
@@ -80,9 +92,6 @@ public class IndentationTokenSource implements TokenSource
                     input.consume();
                     indent++;
                 }
-//System.err.println(input.LT(1));
-//System.err.println(input.LT(2));
-//System.err.println(input.LT(3));
                 if (isComment(input.LA(1))) {
                     input.consume();
                     continue;
@@ -112,10 +121,10 @@ public class IndentationTokenSource implements TokenSource
                     
                     if (levels.peek() != indent) {
                         levels.push(indent);                    
-                    }
-                    // TODO is this correct?
-                    if (levels.peek() == 0) {
-                        currentLine.add(PAR_RIGHT);                    
+                        // TODO is this correct?
+                        if (levels.peek() == 0) {
+                            currentLine.add(PAR_RIGHT);                    
+                        }
                     }
                     currentLine.add(PAR_RIGHT);                    
                     
@@ -139,7 +148,7 @@ public class IndentationTokenSource implements TokenSource
                 if (linesEmitted >= 1) {
                     currentLine.add(BREAK);
                 }
-    
+
                 for (int i = 0; i < indent; i++) {
                     currentLine.add(SPACE);
                 }
@@ -148,10 +157,11 @@ public class IndentationTokenSource implements TokenSource
                 }
     
                 currentLine.add(PAR_LEFT);
+            } else {
+                currentLine.add(SPACE);
             }
+            
             postEnclose = false;
-
-
             
             
             /**
@@ -161,12 +171,19 @@ public class IndentationTokenSource implements TokenSource
             boolean enclose = false;
             int encloseStart = -1;
             
+            /**
+             * Possible if we are some special top level declarations
+             * Also possible if we see a keyword
+             */
             if (
-                (!isSingleTopLevel(input.LA(1)) && levels.peek() == 0) 
+                (levels.peek() == 0 && !isSingleTopLevel(input.LA(1))) 
                 || isKeyword(input.LA(1))
             ) {    
-                
-                if (isLeftParen(input.LA(1))) {
+                /**
+                 * Track the next non-space token
+                 * If this is a (OP) style expression, skip the token and pars
+                 */
+                if (isLeftDelim(input.LA(1))) {
                     encloseStart = 4;
                 } else {
                     encloseStart = 2;
@@ -176,10 +193,11 @@ public class IndentationTokenSource implements TokenSource
                 do {
                     la = input.LA(encloseStart++);
                 } while (isLineSpace(la));
-                if (!isLineBreak(input.LA(encloseStart-1)) 
-                    && !(input.LA(encloseStart-1) == 47)) {
-                    enclose = true;
-                }
+                
+                /**
+                 * If the line is not finished and we do not see =, then we enclose.
+                 */
+                enclose = !isLineBreak(input.LA(encloseStart-1)) && !isEq(input.LA(encloseStart-1));
             }
 
             /**
@@ -214,13 +232,10 @@ public class IndentationTokenSource implements TokenSource
                 } while (!isEof(input.LA(1)) && !isLineBreak(input.LA(1)));
             }
 
-
             if (isEof(input.LA(1))) {
                 finish();
                 return;
             }
-            
-            
             linesEmitted++;
             pos = 0;
         }
@@ -240,43 +255,49 @@ public class IndentationTokenSource implements TokenSource
             return;
         }
         
-
-        private boolean isSingleTopLevel(int i) {
-            return i == VitryParser.T__48;
-        }
-        private boolean isKeyword(int i) {
-            return i == VitryParser.Do
-                || i == VitryParser.Let
-                || i == VitryParser.Match; // TODO type, implicit
+        /**
+         * Escape the enclosing mechanism.
+         */
+        private static boolean isSingleTopLevel(int a) {
+            return a == VitryTokenTypes.MODULE;
         }
 
-        private boolean isLeftParen(int la) {
-            return la == 34 || la == 36 || la == 38;
+        private boolean isEq(int a) {
+            return a == VitryTokenTypes.EQ;
         }
-
-        private boolean isOp(int la) {
-            return la == VitryParser.Op;
-        }
-
         
-        private boolean isComment(int la) {
-            return la == VitryParser.Comment;
+        private static boolean isLeftDelim(int a) {
+            return a == VitryTokenTypes.PL 
+                || a == VitryTokenTypes.BL 
+                || a == VitryTokenTypes.AL;
         }
 
-        private boolean isLineSpace(int a) {
+        private static boolean isKeyword(int a) {
+            return a == VitryTokenTypes.DO
+                || a == VitryTokenTypes.LET
+                || a == VitryTokenTypes.MATCH
+                || a == VitryTokenTypes.TYPE
+                || a == VitryTokenTypes.IMPLICIT;
+        }
+
+        private static boolean isOp(int a) {
+            return a == VitryParser.Op;
+        }
+
+        private static boolean isComment(int a) {
+            return a == VitryParser.Comment;
+        }
+
+        private static boolean isLineSpace(int a) {
             return a == VitryParser.LineSpace;
         }
 
-        private boolean isLineBreak(int a) {
+        private static boolean isLineBreak(int a) {
             return a == VitryParser.LineBreak;
         }
 
-        private boolean isEof(int a) {
+        private static boolean isEof(int a) {
             return a == Token.EOF;
         }
 
-
-        public String getSourceName() {
-            return input.getSourceName();
-        }
     }

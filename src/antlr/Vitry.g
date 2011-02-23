@@ -120,15 +120,14 @@ inlineRight
     : 'fn'   '(' left*   ')' inline[true]        -> ^(Fn left* inline)
     | 'let'  '(' assign* ')' inline[true]        -> ^(Let assign* inline)
     | 'do'   '(' assign* ')' expr*               -> ^(Do assign* expr*)
-    | 'fn'   '[' left*   ']' inline[true]        -> ^(Fn left* inline)
-    | 'let'  '[' assign* ']' inline[true]        -> ^(Let assign* inline)
-    | 'do'   '[' assign* ']' expr*               -> ^(Do assign* expr*)
     | 'match' v=expr '(' (c+=left e+=expr)* ')'  -> ^(Match $v ^($c $e)*)    
     | 'if' expr expr 'else'? inline[true]        -> ^(If expr expr inline)
     ;
 
 assign
-    : left '=' expr         -> ^(Assign left expr)
+    : //'(' left '=' expr ')' -> ^(Assign left expr)
+    //| 
+    left '=' expr         -> ^(Assign left expr)
     ;
     
 
@@ -157,14 +156,18 @@ module
     ;
     
 declaration
-    : left '=' expr                              
+    : assign
     //-> ^(MemberDecl left expr)      
     // | Symbol '(' left*        ')' '=' inline[true] 
     //-> ^(FnDecl Symbol left+ inline)
-    | 'type' '(' assign* ')'
+    // | 'type' '(' assign* ')'
     //-> ^(TypeDecl assign*)
-    | 'implicit' '(' (expr expr)* ')'           
+    // | 'implicit' '(' (expr expr)* ')'           
     //-> ^(ImplicitDecl ^(expr expr)*)
+    ;
+    
+dummy :
+    'as' | 'type' | 'implicit' | 'fixity'
     ;
      
 
