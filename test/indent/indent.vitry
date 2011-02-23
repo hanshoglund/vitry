@@ -20,7 +20,7 @@
 (type (list a = () | list a )
      (tree a = (a) | (tree a, tree a)))
 (type (list a = () | list a)
-     (tree a = (a) | (tree a, tree a)))
+     (tree a = (a)  | (tree a, tree a)))
 (implicit (a -> b)
          (c -> d))
 (implicit
@@ -37,14 +37,11 @@
 (foo =
     (1))
 (foo = 1 + 2)
-(foo = 1 + 2))
 (foo =
     (1 + 2))
 (str = "a very long engagement a very long engagement " + "a very long engagement a very long engagement " + "a very long engagement a very long engagement " + "a very long engagement a very long engagement "))
 ("========== Equational assignments ==========")
 (foo (x = 1))
-(foo (x =)
-    (1))
 (foo (x y = 1)
     (_   = 2))
 (foo

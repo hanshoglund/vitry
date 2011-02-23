@@ -37,8 +37,6 @@ implicit
     a -> b
     c -> d
 
-; FIXME one ) is missing
-infix (left 2 (*)) (right 1 (+))
 infix left 2 (*)
       right 1 (+)
 infix
@@ -52,10 +50,10 @@ foo = 1
 foo =
     1
 foo = 1 + 2
-foo = 1
-    + 2
 foo =
     1 + 2
+
+; FIXME
 str = "a very long engagement a very long engagement "
     + "a very long engagement a very long engagement "
     + "a very long engagement a very long engagement "
@@ -66,8 +64,6 @@ str = "a very long engagement a very long engagement "
 
 ; FIXME one ) is missing
 foo x = 1
-foo x =
-    1
 foo x y = 1
     _   = 2
 foo

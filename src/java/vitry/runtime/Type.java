@@ -45,7 +45,7 @@ public class Type extends BasePattern implements TypeExpr
             return name;
         }
 
-        public Sequence<TypeExpr> getTypeVariables() {
+        Sequence<TypeExpr> getTypeVariables() {
             return vars;
         }
 

@@ -23,13 +23,13 @@ import org.antlr.runtime.tree.CommonTreeAdaptor;
 
 /**
  * Creates antlr syntax-trees that implements Pattern and Product.
- * The root node must be cast to PatternTree.
+ * The root node (obtained from the parser) must be cast to VitryTree.
  *
  * @author Hans Höglund
  */
-public class PatternTreeAdaptor extends CommonTreeAdaptor
+public class VitryTreeAdaptor extends CommonTreeAdaptor
     {
         public Object create(Token payload) {
-            return new PatternTree(payload);
+            return new VitryTree(payload);
         }
     }

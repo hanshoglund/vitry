@@ -84,18 +84,6 @@ public class VitryTokenTypes
         }
 
 
-        public static int parserTokenType(Pattern p) {
-            return ((VitryToken) p).getTokenType();
-        }
-
-        public static int symbolicTokenType(Pattern p) {
-            try {
-                return TABLE.lookup(p);
-            } catch (Exception e) {
-                throw new ParseError("Unknown form: " + p);
-            }
-        }
-
         public static int tokenType(Pattern p) {
             try {
                 try {
@@ -109,11 +97,25 @@ public class VitryTokenTypes
         }
 
 
-        private static Environment<Pattern, Integer> TABLE;
+        public static int parserTokenType(Pattern p) {
+            return ((VitryToken) p).getTokenType();
+        }
+
+
+        public static int symbolicTokenType(Pattern p) {
+            try {
+                return table.lookup(p);
+            } catch (Exception e) {
+                throw new ParseError("Unknown form: " + p);
+            }
+        }
+
+
+        private static Environment<Pattern, Integer> table;
 
         private static void def(String sym, int type) {
-            if (TABLE == null)
-                TABLE = new HashEnvironment<Pattern, Integer>();
-            TABLE.define(Symbol.intern(sym), type);
+            if (table == null)
+                table = new HashEnvironment<Pattern, Integer>();
+            table.define(Symbol.intern(sym), type);
         }
     }

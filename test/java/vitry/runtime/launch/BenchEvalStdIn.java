@@ -11,7 +11,7 @@ import org.antlr.runtime.CommonTokenStream;
 import vitry.runtime.Eval;
 import vitry.runtime.Interpreter;
 import vitry.runtime.Pattern;
-import vitry.runtime.parse.PatternTreeAdaptor;
+import vitry.runtime.parse.VitryTreeAdaptor;
 import vitry.runtime.parse.VitryLexer;
 import vitry.runtime.parse.VitryParser;
 
@@ -42,7 +42,7 @@ public class BenchEvalStdIn
                         CommonTokenStream tokens = new CommonTokenStream(lexer);
 
                         VitryParser parser = new VitryParser(tokens);
-                        parser.setTreeAdaptor(new PatternTreeAdaptor());
+                        parser.setTreeAdaptor(new VitryTreeAdaptor());
 
                         timer.start();
                         Pattern expr = (Pattern) parser.expr().getTree();

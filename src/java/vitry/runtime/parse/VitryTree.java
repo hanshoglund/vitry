@@ -35,13 +35,13 @@ import vitry.runtime.util.*;
  *
  * @author Hans Höglund
  */
-public class PatternTree extends CommonTree implements Product
+public class VitryTree extends CommonTree implements Product
     {
-        private final Product delegee      = VitryRuntime.productUnsafe(this);
+        private final Product delegee      = VitryRuntime.productFrom(this);
         private Sequence<Pattern> childSeq = null;
         private boolean generatedSeq       = false;
         
-        public PatternTree(Token payload) {
+        public VitryTree(Token payload) {
             super(payload);
         }
         

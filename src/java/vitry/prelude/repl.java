@@ -13,7 +13,7 @@ import vitry.runtime.Pattern;
 import vitry.runtime.RestFunction;
 import vitry.runtime.VitryRuntime;
 import vitry.runtime.error.InvocationError;
-import vitry.runtime.parse.PatternTreeAdaptor;
+import vitry.runtime.parse.VitryTreeAdaptor;
 import vitry.runtime.parse.VitryLexer;
 import vitry.runtime.parse.VitryParser;
 import vitry.runtime.struct.Sequence;
@@ -57,7 +57,7 @@ public class repl extends RestFunction
                         lexer.setCharStream(new ANTLRReaderStream(new StringReader(line)));
 
                         VitryParser parser = new VitryParser(new CommonTokenStream(lexer));
-                        parser.setTreeAdaptor(new PatternTreeAdaptor());
+                        parser.setTreeAdaptor(new VitryTreeAdaptor());
 
                         
                         Pattern read = (Pattern) parser.expr().getTree();

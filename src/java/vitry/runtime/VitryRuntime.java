@@ -404,10 +404,6 @@ public final class VitryRuntime
             return new ForwardingList(s);
         }
 
-        public static Product productUnsafe(Sequence<Pattern> s) {
-            return new ForwardingProduct(s);
-        }
-
         public static Set set(Sequence<Pattern> s) {
             if (s instanceof Set) return (Set) s;
             return new ForwardingSet(s);
@@ -438,6 +434,13 @@ public final class VitryRuntime
         public static Union unionOf(Object... args) {
             return new ForwardingUnion(Native.wrap(new ArraySequence<Object>(args)));
         }
+
+        public static Product productFrom(Sequence<Pattern> s) {
+            return new ForwardingProduct(s);
+        }
+
+
+
 
         public static Intersection intersectionOf(Object... args) {
             return new ForwardingIntersection(Native.wrap(new ArraySequence<Object>(args)));
