@@ -11,7 +11,7 @@ import org.antlr.runtime.TokenSource;
 
 /**
  * FIXME
- *      Single lines where enclose miss one ).
+ *      Single lines (sometimes?) emit one ) to much.
  * 
  * TODO
  *      Strip trailing whitespace as an option (for debugging).
@@ -119,26 +119,21 @@ public class IndentationTokenSource implements TokenSource
 //System.err.println(input.LT(1));
 //System.err.println(indent);
                     
-                    if (levels.peek() != indent) {
-                        levels.push(indent);                    
-                        // TODO is this correct?
-                        if (levels.peek() == 0) {
-                            currentLine.add(PAR_RIGHT);                    
-                        }
-                    }
-                    currentLine.add(PAR_RIGHT);                    
+                    currentLine.add(PAR_RIGHT);
+//                    levels.push(indent + 1); 
+                    postEnclose = false;
+
                     
-                } else {
-                    while (levels.size() > 1 && indent < levels.peek() && linesEmitted >= 1) {
-                        currentLine.add(PAR_RIGHT);
-                        levels.pop();
-                    }
-                    if (levels.size() > 0 && indent == levels.peek() && linesEmitted >= 1) {
-                        currentLine.add(PAR_RIGHT);                    
-                    }
-                    if (levels.size() > 0 && indent > levels.peek()) {
-                        levels.push(indent);
-                    }
+                }
+                while (levels.size() > 1 && indent < levels.peek() && linesEmitted >= 1) {
+                    currentLine.add(PAR_RIGHT);
+                    levels.pop();
+                }
+                if (levels.size() > 0 && indent == levels.peek() && linesEmitted >= 1) {
+                    currentLine.add(PAR_RIGHT);                    
+                }
+                if (levels.size() > 0 && indent > levels.peek()) {
+                    levels.push(indent);
                 }
                 
             
@@ -161,7 +156,7 @@ public class IndentationTokenSource implements TokenSource
                 currentLine.add(SPACE);
             }
             
-            postEnclose = false;
+//            postEnclose = false;
             
             
             /**

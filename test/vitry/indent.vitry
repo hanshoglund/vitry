@@ -24,11 +24,13 @@ import
 type a = b | c
 type a = b
        | c
-type list a = () | list a
+type list a = () | list a 
+     tree a = (a) | (tree a, tree a)
 type list a = ()
             | list a
+     tree a = (a) 
+            | (tree a, tree a)
 
-implicit (a -> b) (c -> d)
 implicit a -> b
          c -> d
 implicit
