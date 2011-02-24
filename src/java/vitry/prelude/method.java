@@ -8,8 +8,8 @@ import vitry.runtime.Symbol;
 import vitry.runtime.VitryRuntime;
 import vitry.runtime.error.InvocationError;
 import vitry.runtime.error.ResolveError;
-import vitry.runtime.struct.Sequence;
-import vitry.runtime.struct.Sequences;
+import vitry.runtime.struct.Seq;
+import vitry.runtime.struct.Seqs;
 
 
 public class method extends StandardFunction
@@ -34,17 +34,17 @@ public class method extends StandardFunction
         public Object apply(Object c, Object n, Object t) throws InvocationError {
             Symbol clRef = (Symbol) c;
             Symbol name = (Symbol) n;
-            Sequence<Symbol> types = (Sequence<Symbol>) t;
+            Seq<Symbol> types = (Seq<Symbol>) t;
 
             try {
                 Class<?> cl = rt.internClass(clRef);
                 Class<?>[] clTypes = null;
                 if (t != VitryRuntime.NIL)
-                    clTypes = Sequences.toArray(types.<Class<?>> map(string), dummy);
+                    clTypes = Seqs.toArray(types.<Class<?>> map(string), dummy);
 
                 final Method m = cl.getMethod(name.toString(), clTypes);
 //System.out.println(m);
-                int arity = Sequences.length(types);
+                int arity = Seqs.length(types);
                 
                 switch (arity){
                     case 0:

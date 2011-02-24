@@ -26,29 +26,25 @@ import java.util.WeakHashMap;
 
 import vitry.runtime.Function;
 import vitry.runtime.VitryRuntime;
-import vitry.runtime.util.Utils;
+import vitry.runtime.misc.Utils;
 
 
 /**
  * Basic sequence operations.
  */
-public class Sequences
+public class Seqs
     {
-        private Sequences() {}
+        private Seqs() {}
 
         private static final Map<Object, Object> memoizedLasts = new WeakHashMap<Object, Object>();
 
         private static final Object[] EMPTY_OBJ_ARRAY = new Object[0];
         
-        public static boolean isNil(Sequence<?> s) {
-            return s == null || s == VitryRuntime.NIL;
-        }
-        
-        public static <T> Sequence<T> single(T x) {
+        public static <T> Seq<T> single(T x) {
             return cons(x, null);
         }
 
-        public static <T> Sequence<T> cons(T x, Sequence<T> xs) {
+        public static <T> Seq<T> cons(T x, Seq<T> xs) {
             // TODO this may cause problems for delegators
             if (isNil(xs))
                 return new Single<T>(x);
@@ -56,22 +52,22 @@ public class Sequences
                 return xs.cons(x);
         }
 
-        public static <T> Sequence<T> fromArray(T[] a) {
+        public static <T> Seq<T> fromArray(T[] a) {
             if (a.length == 0)
                 return null;
             else
-                return new ArraySequence<T>(a);
+                return new ArraySeq<T>(a);
         }
 
-        public static <T> T head(Sequence<T> xs) {
+        public static <T> T head(Seq<T> xs) {
             return xs.head();
         }
 
-        public static <T> Sequence<T> tail(Sequence<T> xs) {
+        public static <T> Seq<T> tail(Seq<T> xs) {
             return xs.tail();
         }
 
-        public static <T> T last(Sequence<T> s) {
+        public static <T> T last(Seq<T> s) {
             if (MEMOIZE_SEQUENCES) {
                 Object m = memoizedLasts.get(s);
                 if (m != null) return Utils.<T> unsafe(m);
@@ -87,7 +83,7 @@ public class Sequences
             return r;
         }
 
-        public static <T> Sequence<T> init(Sequence<T> s) {
+        public static <T> Seq<T> init(Seq<T> s) {
             if (isNil(s.tail())) {
                 if (MEMOIZE_SEQUENCES) {
                     memoizedLasts.put(s, s.head());
@@ -98,14 +94,14 @@ public class Sequences
             }
         }
 
-        public static <T> Sequence<T> until(Sequence<T> s, Sequence<T> t) {
+        public static <T> Seq<T> until(Seq<T> s, Seq<T> t) {
             if (isNil(s) || s == t) 
                 return null;
             else
                 return cons(head(s), until(tail(s), t));
         }
 
-        public static <T> Sequence<T> untilElement(Sequence<T> s, T e) {
+        public static <T> Seq<T> untilElement(Seq<T> s, T e) {
             if (isNil(s) || s.head().equals(e)) 
                 return null;
             else
@@ -113,7 +109,11 @@ public class Sequences
         }
 
 
-        public static int length(Sequence<?> s) {
+        public static boolean isNil(Seq<?> s) {
+            return s == null || s == VitryRuntime.NIL;
+        }
+
+        public static int length(Seq<?> s) {
             if (s instanceof Finite) return ((Finite<?>) s).length();
             int length = 0;
             do {
@@ -123,47 +123,29 @@ public class Sequences
             return length;
         }
 
-        public static <T> Sequence<T> reverse(Sequence<T> xs) {
-            return reverseAppend(xs, null);
-        }
-
-        public static <T> Sequence<T> append(Sequence<T> xs, Sequence<T> ys) {
-            if (isNil(xs)) 
-                return ys;
-            else
-                return cons(head(xs), append(tail(xs), ys));
-        }
-
-        public static <T> Sequence<T> reverseAppend(Sequence<T> xs, Sequence<T> ys) {
-            if (isNil(xs))
-                return ys;
-            else
-                return reverseAppend(xs.tail(), cons(xs.head(), ys));
-        }
-
-        public static <T> T first(Sequence<T> s) {
+        public static <T> T first(Seq<T> s) {
             return s.head();
         }
 
-        public static <T> T second(Sequence<T> s) {
+        public static <T> T second(Seq<T> s) {
             return s.tail().head();
         }
 
-        public static <T> T third(Sequence<T> s) {
+        public static <T> T third(Seq<T> s) {
             return s.tail().tail().head();
         }
 
-        public static <T> T index(Sequence<T> s, int i) {
+        public static <T> T nth(Seq<T> s, int i) {
             for (int j = 0; j < i; j++)
                 s = tail(s);
             return s.head();
         }
 
-        public static <T> T nthLast(Sequence<T> s, int i) {
-            return index(reverse(s), i);
+        public static <T> T nthLast(Seq<T> s, int i) {
+            return nth(reverse(s), i);
         }
 
-        public static <U, T> U foldl(Function fn, U init, Sequence<T> s) {
+        public static <U, T> U foldl(Function fn, U init, Seq<T> s) {
             U res = init;
             while (!isNil(s)) {
                 res = Utils.<U>unsafe(fn.apply(res, s.head()));
@@ -172,7 +154,7 @@ public class Sequences
             return res;
         }
         
-        public static <U, T> U foldr(Function fn, U init, Sequence<T> s) {
+        public static <U, T> U foldr(Function fn, U init, Seq<T> s) {
             U res = init;
             while (!isNil(s)) {
                 res = Utils.<U>unsafe(fn.apply(s.head(), res));
@@ -181,19 +163,33 @@ public class Sequences
             return res;
         }
 
-        public static <T> Sequence<T> printable(Sequence<T> s) {
-            return new PrintableSequence<T>(s);
+        public static <T> Seq<T> reverse(Seq<T> xs) {
+            return reverseAppend(xs, null);
         }
 
-        public static <T> SequenceIterator<T> iterate(Sequence<T> s) {
-            return new SequenceIterator<T>(s);
+        public static <T> Seq<T> append(Seq<T> xs, Seq<T> ys) {
+            if (isNil(xs)) 
+                return ys;
+            else
+                return cons(head(xs), append(tail(xs), ys));
         }
 
-        public static <T> RewindableSequenceIterator<T> rewindableIterate(Sequence<T> s) {
-            return new RewindableSequenceIterator<T>(iterate(s));
+        public static <T> Seq<T> reverseAppend(Seq<T> xs, Seq<T> ys) {
+            if (isNil(xs))
+                return ys;
+            else
+                return reverseAppend(xs.tail(), cons(xs.head(), ys));
         }
 
-        public static Object[] toArray(Sequence<?> s) {
+        public static <T> Seq<T> printable(Seq<T> s) {
+            return new PrintableSeq<T>(s);
+        }
+
+        public static <T> SeqIterator<T> iterate(Seq<T> s) {
+            return new SeqIterator<T>(s);
+        }
+
+        public static Object[] toArray(Seq<?> s) {
             if (isNil(s)) return EMPTY_OBJ_ARRAY;
         
             Object[] a;
@@ -209,7 +205,7 @@ public class Sequences
             return a;
         }
 
-        public static <T> T[] toArray(Sequence<T> s, T[] dummy) {
+        public static <T> T[] toArray(Seq<T> s, T[] dummy) {
             java.util.List<T> l = new java.util.LinkedList<T>();
             if (isNil(s)) return l.toArray(dummy);
             do {
@@ -221,7 +217,7 @@ public class Sequences
     }
     
     
-class Single<T> extends AbstractSequence<T> implements Finite<T>
+class Single<T> extends AbstractSeq<T> implements Finite<T>
     {        
         private final T obj;
 
@@ -233,7 +229,7 @@ class Single<T> extends AbstractSequence<T> implements Finite<T>
             return obj;
         }
 
-        public Sequence<T> tail() {
+        public Seq<T> tail() {
             return null;
         }
 

@@ -19,13 +19,14 @@
 package vitry.runtime;
 
 import static vitry.runtime.VitryRuntime.product;
+import static vitry.runtime.VitryRuntime.toVitryBool;
 
 import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.Properties;
 
 import vitry.prelude.*;
-import vitry.runtime.error.UndefinedError;
+import vitry.runtime.error.*;
 import vitry.runtime.struct.*;
 
 
@@ -34,7 +35,7 @@ import vitry.runtime.struct.*;
  *
  * @author Hans Höglund
  */
-public final class VitryRuntime
+public final class VitryRuntime implements Scope
     {
 
         public static final Nil         NIL             = new Nil();
@@ -56,8 +57,9 @@ public final class VitryRuntime
 
 
 
-        private final Environment<Symbol, Object> prelude = new HashEnvironment<Symbol, Object>();
-        private final Environment<Symbol, Fixity> preludeFixities = new HashEnvironment<Symbol, Fixity>();
+        private final Env<Symbol, Object> prelude = new HashEnvironment<Symbol, Object>();
+        
+        private final Env<Symbol, Fixity> preludeFixities = new HashEnvironment<Symbol, Fixity>();
 
         {
             def("()",                   NIL);
@@ -108,15 +110,15 @@ public final class VitryRuntime
             def("and",                  NIL);                   // prelude TODO 
             def("or",                   NIL);                   // prelude TODO 
 
-            def("arity",                new arity());
+            def("arity",                new arity_());
             def("id",                   new id());
             def("const",                new const_());
-            def("compose",              NIL);                   // prelude TODO
+            def("compose",              new compose());
             def("follow",               NIL);                   // prelude TODO
             def("power",                NIL);                   // prelude TODO
             def("flip",                 NIL);                   // prelude TODO
-            def("(./)",                 alias("compose"));
-            def("(.\\)",                alias("follow"));
+            def("(.)",                 alias("compose"));
+            def("(..)",                alias("follow"));
 
             def("add",                  new add());
             def("sub",                  new sub());
@@ -168,8 +170,8 @@ public final class VitryRuntime
             // Sequence functions
             // Overload on strings pro tempore
 
-            def("head",                 NIL);
-            def("tail",                 NIL);
+            def("head",                 new head());
+            def("tail",                 new tail());
             def("last",                 NIL);
             def("init",                 NIL);
             def("prepend",              NIL);
@@ -212,9 +214,9 @@ public final class VitryRuntime
             
             def("now",                  NIL);
 
-            def("read",                 NIL);
-            def("eval",                 NIL);
-            def("print",                NIL);
+            def("read",                 new read(this));
+            def("eval",                 new eval_(this));
+            def("print",                new print(this));
             def("error",                NIL);
 
             def("repl",                 new repl(this));
@@ -222,6 +224,9 @@ public final class VitryRuntime
             def("load",                 NIL);
             def("version",              NIL);
             def("quit",                 new quit());
+            
+            // Implementation
+            def("__rt",                 this);
 
             // Alpha - to be replaced
             def("openFile",             NIL);
@@ -230,6 +235,7 @@ public final class VitryRuntime
             def("writeFile",            NIL);
             def("str2list",             NIL);
             def("list2str",             NIL);
+            def("rewrite",              new rewrite(this));
 
             // Alpha - JVM interop
             def("host",                 NIL);
@@ -241,7 +247,8 @@ public final class VitryRuntime
             def("methodsOf",            NIL);
             def("fieldsOf",             NIL);
 
-            defFix("(.)",               12, false, true );   // gathering?
+            defFix("(..)",              12, false, false);   // gathering?
+            defFix("(.)",               12, false, false );   // gathering?
             defFix("(^^)",              10, true,  false);
             defFix("(^)",               10, true,  false);
             defFix("(%)",               9,  true,  false);
@@ -269,12 +276,6 @@ public final class VitryRuntime
             defFix("($)",               0,  false, false);
         }
 
-        /**
-         * Classes interned for reflection.
-         * TODO unify with native set mechanism?
-         */
-        private final Environment<Symbol, Class<?>> internedClasses = new HashEnvironment<Symbol, Class<?>>();
-
 
         /**
          * Used to determine classpath etc.
@@ -289,7 +290,7 @@ public final class VitryRuntime
         /**
          * Loaded modules.
          */
-        private Sequence<Module> modules;
+        private Seq<Module> modules;
 
         /**
          * Used to execute interpreted code.
@@ -300,6 +301,12 @@ public final class VitryRuntime
          * This is for the gensym facility.
          */
         private BigInteger uniqueState = BigInteger.valueOf(0x2177375305f7L);
+
+        /**
+         * Classes interned for reflection.
+         * TODO unify with native set mechanism?
+         */
+        private final Env<Symbol, Class<?>> internedClasses = new HashEnvironment<Symbol, Class<?>>();
 
 
 
@@ -321,7 +328,7 @@ public final class VitryRuntime
 
 
 
-        // Static accessors
+        // Accessors
 
 
         public Properties getSystemProperties() {
@@ -347,21 +354,21 @@ public final class VitryRuntime
         public void setInterpreter(Eval interpreter) {
             this.interpreter = interpreter;
         }
+        
+        
+        public Env<Symbol, Object> getEnvironment() {
+            return getPrelude();
+        }
 
-        public Environment<Symbol, Object> getPrelude() {
+        public Env<Symbol, Object> getPrelude() {
             return prelude;
         }
 
-        public Environment<Symbol, Fixity> getPreludeFixities() {
+        public Env<Symbol, Fixity> getPreludeFixities() {
             return preludeFixities;
         }
 
-
-
-
-        // Prelude accessors
-
-        public Environment<Symbol, Object> newTopLevelEnvironment() {
+        public Env<Symbol, Object> newTopLevelEnvironment() {
             return prelude.extend();
         }
 
@@ -391,75 +398,89 @@ public final class VitryRuntime
         // General construction and conversion
 
 
-
-        public static Product product(Sequence<Pattern> s) {
-            if (Sequences.isNil(s)) return null;
-            if (s instanceof Product) return (Product) s;
-            return new ForwardingProduct(s);
-        }
-
-        public static List list(Sequence<Pattern> s) {
-            if (Sequences.isNil(s)) return null;
-            if (s instanceof List) return (List) s;
-            return new ForwardingList(s);
-        }
-
-        public static Set set(Sequence<Pattern> s) {
-            if (s instanceof Set) return (Set) s;
-            return new ForwardingSet(s);
-        }
-
-        public static Union union(Sequence<Pattern> s) {
-            if (s instanceof Union) return (Union) s;
-            return new ForwardingUnion(s);
-        }
-
-        public static Intersection intersection(Sequence<Pattern> s) {
-            if (s instanceof Intersection) return (Intersection) s;
-            return new ForwardingIntersection(s);
-        }
-
-        public static Product productOf(Object... args) {
-            return new ForwardingProduct(Native.wrap(new ArraySequence<Object>(args)));
-        }
-
-        public static List listOf(Object... args) {
-            return new ForwardingList(Native.wrap(new ArraySequence<Object>(args)));
-        }
-
-        public static Set setOf(Object... args) {
-            return new ForwardingSet(Native.wrap(new ArraySequence<Object>(args)));
-        }
-
-        public static Union unionOf(Object... args) {
-            return new ForwardingUnion(Native.wrap(new ArraySequence<Object>(args)));
-        }
-
-        public static Product productFrom(Sequence<Pattern> s) {
-            return new ForwardingProduct(s);
-        }
-
-
-
-
-        public static Intersection intersectionOf(Object... args) {
-            return new ForwardingIntersection(Native.wrap(new ArraySequence<Object>(args)));
-        }
-
-
-
-
         public static Symbol toVitryBool(boolean a) {
             return a ? TRUE : FALSE;
         }
 
-        public static boolean toJavaBool(Symbol a) {
+        public static boolean toPrimBool(Symbol a) {
             return a != FALSE;
+        }
+        
+        
+
+        public static Product product(Seq<Pattern> s) {
+            if (Seqs.isNil(s)) return null;
+            if (s instanceof Product) return (Product) s;
+            return productFrom(s);
+        }
+
+        public static List list(Seq<Pattern> s) {
+            if (Seqs.isNil(s)) return null;
+            if (s instanceof List) return (List) s;
+            return listFrom(s);
+        }
+
+        public static Set set(Seq<Pattern> s) {
+            if (s instanceof Set) return (Set) s;
+            return setFrom(s);
+        }
+
+        public static Union union(Seq<Pattern> s) {
+            if (s instanceof Union) return (Union) s;
+            return unionFrom(s);
+        }
+
+        public static Intersection intersection(Seq<Pattern> s) {
+            if (s instanceof Intersection) return (Intersection) s;
+            return intersectionFrom(s);
+        }
+        
+        
+        public static Product productOf(Object... args) {
+            return productFrom(Native.wrap(new ArraySeq<Object>(args)));
+        }
+
+        public static List listOf(Object... args) {
+            return listFrom(Native.wrap(new ArraySeq<Object>(args)));
+        }
+
+        public static Set setOf(Object... args) {
+            return setFrom(Native.wrap(new ArraySeq<Object>(args)));
+        }
+
+        public static Union unionOf(Object... args) {
+            return unionFrom(Native.wrap(new ArraySeq<Object>(args)));
+        }
+
+        public static Intersection intersectionOf(Object... args) {
+            return intersectionFrom(Native.wrap(new ArraySeq<Object>(args)));
+        }
+        
+        
+        public static Product productFrom(Seq<Pattern> s) {
+            return new ForwardingProduct(s);
+        }
+
+        public static List listFrom(Seq<Pattern> s) {
+            return new ForwardingList(s);
+        }
+        
+        public static Set setFrom(Seq<Pattern> s) {
+            return new ForwardingSet(s);
+        }
+        
+        public static Union unionFrom(Seq<Pattern> s) {
+            return new ForwardingUnion(s);
+        }
+
+        public static Intersection intersectionFrom(Seq<Pattern> s) {
+            return new ForwardingIntersection(s);
         }
 
 
 
-        // Support code
+
+        // Helper methods
 
         private void def(String name, Object val) {
             prelude.define(Symbol.intern(name), val);
@@ -486,6 +507,10 @@ public final class VitryRuntime
             return Symbol.intern(new String(str));
         }
     }
+
+
+
+
 
 
 
@@ -554,7 +579,7 @@ final class Bottom extends AbstractSet
             return throwUnsupported();
         }
 
-        public Sequence<Pattern> tail() {
+        public Seq<Pattern> tail() {
             return throwUnsupported();
         }
 
@@ -585,8 +610,8 @@ final class Nil extends Atom implements Finite<Pattern>
             return product(new Pair<Pattern>(head, this));
         }
 
-        public <U> MapSequence<Pattern, U> map(Function fn) {
-            return new MapSequence<Pattern, U>(fn, this);
+        public <U> MapSeq<Pattern, U> map(Function fn) {
+            return new MapSeq<Pattern, U>(fn, this);
         }
 
         public boolean hasTail() {
@@ -612,7 +637,7 @@ final class Nil extends Atom implements Finite<Pattern>
             return NilIterator.INSTANCE;
         }
 
-        public SequenceIterator<Pattern> sequenceIterator() {
+        public SeqIterator<Pattern> sequenceIterator() {
             return NilIterator.INSTANCE;
         }
 
@@ -623,9 +648,9 @@ final class Nil extends Atom implements Finite<Pattern>
     }
 
 
-class NilIterator extends SequenceIterator<Pattern>
+class NilIterator extends SeqIterator<Pattern>
     {
-        static final SequenceIterator<Pattern> INSTANCE = new NilIterator();
+        static final SeqIterator<Pattern> INSTANCE = new NilIterator();
 
         private NilIterator(){
             super(VitryRuntime.NIL);
@@ -654,9 +679,9 @@ class NilIterator extends SequenceIterator<Pattern>
 
 final class ForwardingProduct extends AbstractProduct
     {
-        final Sequence<Pattern> elements;
+        final Seq<Pattern> elements;
 
-        public ForwardingProduct(Sequence<Pattern> elements) {
+        public ForwardingProduct(Seq<Pattern> elements) {
             this.elements = elements;
         }
 
@@ -680,9 +705,9 @@ final class ForwardingProduct extends AbstractProduct
 
 final class ForwardingSet extends AbstractSet
     {
-        final Sequence<Pattern> elements;
+        final Seq<Pattern> elements;
 
-        public ForwardingSet(Sequence<Pattern> elements) {
+        public ForwardingSet(Seq<Pattern> elements) {
             this.elements = elements;
         }
 
@@ -694,7 +719,7 @@ final class ForwardingSet extends AbstractSet
             return elements.head();
         }
 
-        public Sequence<Pattern> tail() {
+        public Seq<Pattern> tail() {
             return elements.tail();
         }
 
@@ -706,9 +731,9 @@ final class ForwardingSet extends AbstractSet
 
 final class ForwardingUnion extends Union
     {
-        final Sequence<Pattern> elements;
+        final Seq<Pattern> elements;
 
-        public ForwardingUnion(Sequence<Pattern> elements) {
+        public ForwardingUnion(Seq<Pattern> elements) {
             this.elements = elements;
         }
 
@@ -720,7 +745,7 @@ final class ForwardingUnion extends Union
             return elements.head();
         }
 
-        public Sequence<Pattern> tail() {
+        public Seq<Pattern> tail() {
             return elements.tail();
         }
 
@@ -732,9 +757,9 @@ final class ForwardingUnion extends Union
 
 final class ForwardingIntersection extends Intersection
     {
-        final Sequence<Pattern> elements;
+        final Seq<Pattern> elements;
 
-        public ForwardingIntersection(Sequence<Pattern> elements) {
+        public ForwardingIntersection(Seq<Pattern> elements) {
             this.elements = elements;
         }
 
@@ -746,7 +771,7 @@ final class ForwardingIntersection extends Intersection
             return elements.head();
         }
 
-        public Sequence<Pattern> tail() {
+        public Seq<Pattern> tail() {
             return elements.tail();
         }
 
@@ -758,9 +783,9 @@ final class ForwardingIntersection extends Intersection
 
 final class ForwardingList extends List
 {
-    final Sequence<Pattern> elements;
+    final Seq<Pattern> elements;
 
-    public ForwardingList(Sequence<Pattern> elements) {
+    public ForwardingList(Seq<Pattern> elements) {
         this.elements = elements;
     }
 
@@ -772,7 +797,7 @@ final class ForwardingList extends List
         return elements.head();
     }
 
-    public Sequence<Pattern> tail() {
+    public Seq<Pattern> tail() {
         return elements.tail();
     }
 
@@ -780,3 +805,185 @@ final class ForwardingList extends List
         return elements.hasTail();
     }
 }
+
+
+
+
+
+// Trivial prelude
+
+
+
+class arity_ extends StandardFunction
+{
+    public arity_() { super(1); }
+
+    public Object apply(Object a) {
+        return ((Arity) a).getArity();
+    }
+}
+
+class compose extends StandardFunction
+{
+    public compose() { super(2); }
+    
+    public Object apply(final Object f, final Object g) {
+        return new StandardFunction(1){
+            public Object apply(Object x) throws InvocationError {
+                return ((Function) f).apply(((Function) g).apply(x));
+            }  
+        };
+    }
+}
+
+class conc extends StandardFunction
+{
+    public conc() { super(2); }
+    
+    public Object apply(Object a, Object b) {
+        return ((String) a).concat((String) b);
+    }
+}
+
+class const_ extends StandardFunction
+{
+    public const_() {
+        super(1);
+    }
+
+    public Object apply(final Object a) {
+        return new StandardFunction(1)
+            {
+                public Object apply(Object b) {
+                    return a;
+                }
+            };
+    }
+}
+
+class eq extends StandardFunction
+{
+    public eq() {
+        super(2);
+    }
+
+    public Object apply(Object a, Object b) {
+        if (b instanceof Pattern) {
+            if (a instanceof Pattern) { 
+                return toVitryBool( ((Pattern) a).eqFor((Pattern) b)); 
+            }
+            return toVitryBool( ((Pattern) b).eq(a));
+        }
+        return toVitryBool(a.equals(b));
+    }
+}
+
+class eval_ extends StandardFunction
+{
+    private VitryRuntime rt;
+
+    public eval_(VitryRuntime rt) {
+        super(1, rt);
+        this.rt = rt;
+    }
+
+    public Object apply(Object a) {
+        return rt.getInterpreter().eval(a);
+    }
+}
+
+class head extends StandardFunction
+{
+    public head() {
+        super(1);
+    }
+    public Object apply(Object a) {
+        return ((Seq) a).head();
+    }
+}
+
+class tail extends StandardFunction
+{
+    public tail() {
+        super(1);
+    }
+
+    public Object apply(Object a) {
+        return ((Seq) a).tail();
+    }
+}
+
+class id extends StandardFunction
+{
+    public id() {
+        super(1);
+    }
+
+    public Object apply(Object a) {
+        return a;
+    }
+}
+
+
+class product extends InvertibleRestFunction
+   {
+       public Seq<?> applyVarInverse(Object a) throws InvocationError {
+           if (a instanceof Product)
+               return ((Destructible) a).destruct();
+           return throwDestruct(a);
+       }
+
+       public Object applyVar(Seq<?> args) {
+           return VitryRuntime.productOf(Seqs.toArray(args));
+       }
+
+       private <T> T throwDestruct(Object val) {
+           throw new TypeError(val, this);
+       }
+       
+       public String toString() {
+           return "(,)";
+       }
+   }
+
+class list extends InvertibleRestFunction
+   {
+       public Seq<?> applyVarInverse(Object a) throws InvocationError {
+           if (a instanceof List)
+               return ((Destructible) a).destruct();
+           return throwDestruct(a);
+       }
+
+       public Object applyVar(Seq<?> args) {
+           return VitryRuntime.listOf(Seqs.toArray(args));
+       }
+
+       private <T> T throwDestruct(Object val) {
+           throw new TypeError(val, this);
+       }
+
+       public String toString() {
+           return "[,]";
+       }
+   }
+
+class set extends RestFunction
+   {
+       public Object applyVar(Seq<?> args) {
+           return VitryRuntime.setOf(Seqs.toArray(args));
+       }
+   }
+
+class union extends RestFunction
+   {
+       public Object applyVar(Seq<?> args) {
+           return VitryRuntime.unionOf(Seqs.toArray(args));
+       }
+   }
+
+class intersection extends RestFunction
+   {
+       public Object applyVar(Seq<?> args) {
+           return VitryRuntime.intersectionOf(Seqs.toArray(args));
+       }
+   }

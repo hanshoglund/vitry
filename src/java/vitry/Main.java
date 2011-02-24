@@ -18,12 +18,9 @@
  */
 package vitry;
 
-import static vitry.runtime.VitryRuntime.*;
-
 import java.util.Properties;
 
 import vitry.runtime.*;
-import vitry.prelude.*;
 
 public class Main
     {

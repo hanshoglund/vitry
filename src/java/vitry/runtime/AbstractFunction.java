@@ -18,7 +18,7 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.struct.Sequence;
+import vitry.runtime.struct.Seq;
 
 /**
  * This class implements most aspects of a function, except invocation.
@@ -33,11 +33,11 @@ abstract class AbstractFunction extends ConstructionPattern implements Function,
         /**
          * Enclosing environment.
          */
-        final Environment<Symbol, Object> env;
+        final Env<Symbol, Object> env;
 
         private Pattern domain;
 
-        private Sequence<Pattern> range;
+        private Seq<Pattern> range;
 
         
 
@@ -49,19 +49,19 @@ abstract class AbstractFunction extends ConstructionPattern implements Function,
             this(scope.getEnvironment(), null, null);
         }
 
-        protected AbstractFunction(Environment<Symbol, Object> env) {
+        protected AbstractFunction(Env<Symbol, Object> env) {
             this(env, null, null);
         }
         
-        protected AbstractFunction(Environment<Symbol, Object> env, Pattern domain,
-                Sequence<Pattern> range) {
+        protected AbstractFunction(Env<Symbol, Object> env, Pattern domain,
+                Seq<Pattern> range) {
             this.env = env;
             this.domain = domain;
             this.range = range;
         }
 
 
-        public Environment<Symbol, Object> getEnvironment() {
+        public Env<Symbol, Object> getEnvironment() {
             return this.env;
         }
 
@@ -69,7 +69,7 @@ abstract class AbstractFunction extends ConstructionPattern implements Function,
             return domain;
         }
 
-        public synchronized Sequence<Pattern> getRange() {
+        public synchronized Seq<Pattern> getRange() {
             return range;
         }
 
@@ -77,7 +77,7 @@ abstract class AbstractFunction extends ConstructionPattern implements Function,
             this.domain = domain;
         }
 
-        public synchronized void setRange(Sequence<Pattern> range) {
+        public synchronized void setRange(Seq<Pattern> range) {
             this.range = range;
         }
 
@@ -90,7 +90,7 @@ abstract class AbstractFunction extends ConstructionPattern implements Function,
         }
 
 
-        public Sequence<Pattern> tail() {
+        public Seq<Pattern> tail() {
             return this.getRange();
         }
 

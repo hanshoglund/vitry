@@ -18,31 +18,44 @@
  */
 package vitry.runtime;
 
-import static vitry.runtime.VitryRuntime.product;
-import static vitry.runtime.struct.Sequences.*;
-
+import static vitry.runtime.VitryRuntime.*;
+import static vitry.runtime.struct.Seqs.*;
 import vitry.runtime.error.*;
 import vitry.runtime.parse.*;
 import vitry.runtime.struct.*;
-import vitry.runtime.util.*;
+
+
+abstract public class Rewriting
+    {
+        abstract public Product rewrite(Seq<Pattern> seq);
+        
+        public static final Rewriting operators
+            (
+            Env<Symbol, Fixity> fix, Env<Symbol, Symbol> ctxt
+            ) 
+        {
+            return new OperatorRewrite(fix, ctxt);
+        }
+    }
+
 
 /**
  * Rewrites opererator-form syntax trees into application-form.
  */        
-class OperatorRewrite
+class OperatorRewrite extends Rewriting
     {
         public OperatorRewrite(
-            Environment<Symbol, Fixity> fixities,
-            Environment<Symbol, Symbol> context) 
+            Env<Symbol, Fixity> fixities,
+            Env<Symbol, Symbol> context) 
         {
             this.fixities = fixities;
             this.context = context;
             this.delimiter = context.lookup(Interpreter.DELIMITER);
         }
         
-        final Environment<Symbol, Fixity> fixities;
+        final Env<Symbol, Fixity> fixities;
         
-        final Environment<Symbol, Symbol> context;
+        final Env<Symbol, Symbol> context;
         
         final Symbol delimiter;
 
@@ -55,7 +68,7 @@ class OperatorRewrite
          * operator.
          * 
          * This algorithm proceeds by locating the highest-precedence 
-         * operator tree and unify it with its antecedent. If several elements
+         * operator tree and unify it with its predecessor. If several elements
          * compete for highest precedence, the leftmost or rightmost expression
          * is selected, based on the associativity of the operator in question.
          * 
@@ -64,13 +77,12 @@ class OperatorRewrite
          * 
          * Returns an (Apply, +, ...) expression.
          */
-        public Product rewrite(Sequence<Pattern> seq) {
+        public Product rewrite(Seq<Pattern> seq) {
             
             /*
              * If the expression is in normal form, convert it to application
              * form and return
              */
-             
             if (length(seq) == 1) {
                 return rewriteAsApplication((Product) seq.head());
             }
@@ -81,14 +93,13 @@ class OperatorRewrite
              * Also store its direct predecessor element, all other preceding elements,
              * and all following elements.
              */
-            
             Fixity fix = null;
             Product before = null;
             Pattern pred = null;
             Pattern prim = null;
             Product after = null;
             
-            SequenceIterator<Pattern> it = iterate(seq);
+            SeqIterator<Pattern> it = iterate(seq);
             int max = -1;
             
             
@@ -102,22 +113,23 @@ class OperatorRewrite
                  * 
                  * Always skip the first value.
                  */
-                
                 if (last == null || !isOpTree(now)) continue;
                 
                 fix = getFixity(now);
+                
                 if (fix != null 
                     && (fix.getPrecedence() > max 
                         || (fix.getPrecedence() == max 
-                            && !fix.getAssociativity()))) {
-
+                            && !fix.getAssociativity()))) 
+                {
                     prim = (Product) now;
                     pred = last;
                     after = product(it.following());
                     max = fix.getPrecedence();
                 }
             }
-            if (prim == null || fix == null) throw new ParseError("Correputed operator tree " + seq);
+            if (prim == null || fix == null)
+                throw new ParseError("Correputed operator tree " + seq);
             
             /*
              * Find preceding elements by backtracking
@@ -125,46 +137,60 @@ class OperatorRewrite
             before = product(pred == null ? null : untilElement(seq, pred));
             
             /*
-             * Now we have (before ++ (pred) ++ (prim) ++ after) == seq
+             * So we have
+             *  (before ++ (pred) ++ (prim) ++ after) == seq
+             * 
+             * Now unify pred and prim, then reapply (before ++ (unify) ++ after).
              */
+            Product unify;
             
-            Pattern hoist;
-            Product insert, unify = null;
-            
-            if (hasSameOperator(prim, pred) && fix.isGathering()) {
-                // Gathering operator, just concatenate
+            if (hasSameOperator(prim, pred) && fix.isGathering()) 
+            {    
+                /*
+                 * Simply concatenate
+                 */
                 unify = product(append((Product) pred, ((Product) prim).tail()));
 
-            } else if (isOpTree(pred) && isShallow(pred) && length((Product) pred) <= 2) {
-                // Both preceding and primary are unprocessed
-                // Hoist and reinsert
-                
-                // (append (init preceding, ((insert (last preceding) primary) . nil)))
-                
-                hoist = last((Product) pred);
-                insert = insert(hoist, (Product) prim);
-                
-                unify = product(append(init((Product) pred), product(single((Pattern) insert))));
-            } else {
-                // Primary is processed or non-op expression
-                // Simply insert
-                insert = insert(pred, (Product) prim);
-                unify = insert;
+            } 
+            else 
+            if (isOpTree(pred) && isShallow(pred) && length((Product) pred) <= 2) 
+            {
+                /*
+                 * Both preceding and primary are unprocessed
+                 * Hoist and reinsert
+                 */
+                Pattern hoist = last((Product) pred);                
+                unify = product(append
+                        (init((Product) pred), 
+                         product(single
+                             ((Pattern) insert(hoist, (Product) prim)))));
+            }
+            else
+            {
+                /*
+                 * Primary is processed or non-op expression
+                 * Simply insert
+                 */
+                unify = insert(pred, (Product) prim);
             }
 
             return rewrite(product(append(before, cons((Pattern) unify, after))));
         }
+        
+        
+        
+        
 
-        private static Product insert(Pattern hoist, Product primary) {
-            return product(cons(primary.head(), cons(hoist, primary.tail())));
-        }
+        
+        // Predicates
+        
 
         /**
          * If the given value is list on the form (Op, _), return the fixity of the operator.
          * Otherwise return null.
          */
         private Fixity getFixity(Pattern p) {
-            if (p instanceof Sequence) {
+            if (p instanceof Seq) {
                 return getFixity((Product) p);
             }
             return null;
@@ -173,14 +199,15 @@ class OperatorRewrite
         private Fixity getFixity(Product p) {
             return fixities.lookup(Interpreter.evalOperator(p.head(), delimiter));
         }
-
+        
+        
         /**
-         * Predicate matching sequences of length 2 or greater whose first 
+         * Matches sequences of length 2 or greater whose first 
          * element is an operator.
          */
         private static boolean isOpTree(Pattern p) {
-            if (p instanceof Sequence) {
-                Sequence<?> s = (Sequence<?>) p;
+            if (p instanceof Seq) {
+                Seq<?> s = (Seq<?>) p;
                 
                 if (length(s) < 2) return false;
                 if (!isOperator(first(s))) return false;
@@ -191,17 +218,17 @@ class OperatorRewrite
         }
         
         /**
-         * Predicate matching any sequence s where all elements in s are not
+         * Matches any sequence s where all elements in s are not
          * headed by an operator.
          */
         private static boolean isShallow(Pattern p) {
-            if (p instanceof Sequence) {
-                Sequence<?> s = (Sequence<?>) p;
+            if (p instanceof Seq) {
+                Seq<?> s = (Seq<?>) p;
                 return foldl(new StandardFunction(1){
                     public Object apply(Object a, Object b) throws InvocationError {
                         if (!(Boolean) a) return false;
-                        if (b instanceof Sequence) {
-                            return !isOperator(first((Sequence<?>) b));
+                        if (b instanceof Seq) {
+                            return !isOperator(first((Seq<?>) b));
                         }
                         return true;
                     }
@@ -211,7 +238,7 @@ class OperatorRewrite
         }
 
         /**
-         * Predicate matching operator tokens.
+         * Matches op tokens.
          */
         private static boolean isOperator(Object o) {
             if (o instanceof Pattern) {                
@@ -223,16 +250,29 @@ class OperatorRewrite
         /**
          * Returns whether two sequences have the same head operator.
          */
-        private static boolean hasSameOperator(Object a, Object b) {
-            if (a instanceof Sequence && b instanceof Sequence) {
-                Object ah = ((Sequence<?>) a).head();
-                Object bh = ((Sequence<?>) b).head();
-                // TODO check it is op type
-                return ah.toString().equals(bh.toString());
+        private static boolean hasSameOperator(Object xs, Object ys) {
+            if (xs instanceof Seq && ys instanceof Seq) {
+                Object x = ((Seq<?>) xs).head();
+                Object y = ((Seq<?>) ys).head();
+               
+                // TODO verify op type
+                return x.toString().equals(y.toString());
             }
             return false;
         }
         
+
+
+
+
+        // Helper methods
+        
+
+        private static Product insert(Pattern hoist, Product primary) {
+            return product(cons(primary.head(), cons(hoist, primary.tail())));
+        }
+
+
         /**
          * Deep-walks a sequence of patterns and/or sequences and replaces
          * all elements (+,...) with (Apply,+,...).
@@ -242,10 +282,9 @@ class OperatorRewrite
             if (!isOperator(first(seq))) {
                 return seq;
             }
-            
-            Sequence<Pattern> map = seq.map(new StandardFunction(1) {
+            Seq<Pattern> map = seq.map(new StandardFunction(1) {
                 public Object apply(Object s) throws InvocationError {
-                    if (s instanceof Sequence) {
+                    if (s instanceof Seq) {
                         return rewriteAsApplication((Product) s);
                     } else {
                         return s;

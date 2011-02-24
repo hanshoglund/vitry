@@ -26,21 +26,21 @@ import java.util.Iterator;
  * 
  * Mutating the iterable is not recommended.
  */
-public class IterableSequence<T> extends AbstractSequence<T>
+public class IterableSeq<T> extends AbstractSeq<T>
     {
         private Iterable<T> itbl;   // Store for iterator in the leading node
         private Iterator<T> it;
         private T           head;
-        private Sequence<T> tail;
+        private Seq<T> tail;
         private boolean     headed = false;
         private boolean     tailed = false;
 
-        public IterableSequence(Iterable<T> itbl) {
+        public IterableSeq(Iterable<T> itbl) {
             this.itbl = itbl;
             this.it = itbl.iterator();
         }
 
-        private IterableSequence(Iterable<T> itbl, Iterator<T> it) {
+        private IterableSeq(Iterable<T> itbl, Iterator<T> it) {
             this.itbl = itbl;
             this.it = it;
         }
@@ -57,11 +57,11 @@ public class IterableSequence<T> extends AbstractSequence<T>
             return head;
         }
 
-        public Sequence<T> tail() {
+        public Seq<T> tail() {
             if (!tailed) {
                 head();
                 if (it.hasNext())
-                    tail = new IterableSequence<T>(null, it);
+                    tail = new IterableSeq<T>(null, it);
                 tailed = true;
             }
             return tail;

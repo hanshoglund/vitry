@@ -2,8 +2,8 @@ package vitry.runtime.launch;
 
 import java.util.Arrays;
 
-import vitry.runtime.struct.Sequence;
-import static vitry.runtime.struct.Sequences.*;
+import vitry.runtime.struct.Seq;
+import static vitry.runtime.struct.Seqs.*;
 import static java.lang.System.out;
 
 
@@ -12,12 +12,12 @@ public class ArraysVsSeqs
 
         public static void main(String[] args) {
             Object o = new Object();
-            int n = 2000;
+            int n = 10000;
 
             Object[] oa = new Object[n];
             Arrays.fill(oa, o);
 
-            Sequence<Object> os = null;
+            Seq<Object> os = null;
             for (int i = 0; i < n; i++) {
                 os = cons(o, os);
             }

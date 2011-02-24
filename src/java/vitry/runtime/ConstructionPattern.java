@@ -20,18 +20,18 @@ package vitry.runtime;
 
 import java.util.Iterator;
 
-import vitry.runtime.struct.MapSequence;
+import vitry.runtime.struct.MapSeq;
 import vitry.runtime.struct.Pair;
-import vitry.runtime.struct.Sequence;
-import vitry.runtime.struct.SequenceIterator;
+import vitry.runtime.struct.Seq;
+import vitry.runtime.struct.SeqIterator;
 
 
-abstract public class ConstructionPattern extends BasePattern implements Sequence<Pattern>, Destructible
+abstract public class ConstructionPattern extends BasePattern implements Seq<Pattern>, Destructible
     {
         /**
          * Instances destructs on their elements.
          */
-        public Sequence<Pattern> destruct() {
+        public Seq<Pattern> destruct() {
             return this;
         }
 
@@ -39,19 +39,19 @@ abstract public class ConstructionPattern extends BasePattern implements Sequenc
             return true;
         }
 
-        public Sequence<Pattern> cons(Pattern head) {
+        public Seq<Pattern> cons(Pattern head) {
             return new Pair<Pattern>(head, this);
         }
 
-        public <U> Sequence<U> map(Function fn) {
-            return new MapSequence<Pattern, U>(fn, this);
+        public <U> Seq<U> map(Function fn) {
+            return new MapSeq<Pattern, U>(fn, this);
         }
 
         public Iterator<Pattern> iterator() {
-            return new SequenceIterator<Pattern>(this);
+            return new SeqIterator<Pattern>(this);
         }
 
-        public SequenceIterator<Pattern> sequenceIterator() {
-            return new SequenceIterator<Pattern>(this);
+        public SeqIterator<Pattern> sequenceIterator() {
+            return new SeqIterator<Pattern>(this);
         }
     }

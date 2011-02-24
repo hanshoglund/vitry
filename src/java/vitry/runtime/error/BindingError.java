@@ -18,7 +18,7 @@
  */
 package vitry.runtime.error;
 
-import vitry.runtime.Environment;
+import vitry.runtime.Env;
 
 /**
  * Thrown to indicate a problem related to a binding operation.
@@ -29,7 +29,7 @@ public class BindingError extends VitryError
 
         private Object env;
 
-        public BindingError(Object key, Environment<?, ?> env) {
+        public BindingError(Object key, Env<?, ?> env) {
             super("Key " + key + " already defined in " + env);
             this.key = key;
             this.env = env;

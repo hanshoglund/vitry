@@ -21,7 +21,7 @@ package vitry.runtime.struct;
 /**
  * A sequence whose length is known at compile-time.
  */
-public interface Finite<T> extends Sequence<T>
+public interface Finite<T> extends Seq<T>
     {
         int length();
     }

@@ -25,8 +25,8 @@ import org.antlr.runtime.tree.CommonTree;
 
 import vitry.runtime.*;
 import vitry.runtime.error.*;
+import vitry.runtime.misc.*;
 import vitry.runtime.struct.*;
-import vitry.runtime.util.*;
 
 
 /**
@@ -38,7 +38,7 @@ import vitry.runtime.util.*;
 public class VitryTree extends CommonTree implements Product
     {
         private final Product delegee      = VitryRuntime.productFrom(this);
-        private Sequence<Pattern> childSeq = null;
+        private Seq<Pattern> childSeq = null;
         private boolean generatedSeq       = false;
         
         public VitryTree(Token payload) {
@@ -53,7 +53,7 @@ public class VitryTree extends CommonTree implements Product
                 return (childSeq == null) ? null : childSeq.head();
         }
 
-        public Sequence<Pattern> tail() {
+        public Seq<Pattern> tail() {
             if (!generatedSeq) generateSeq();
             if (hasPayload())
                 return (childSeq == null) ? null : childSeq;
@@ -62,7 +62,7 @@ public class VitryTree extends CommonTree implements Product
         }
 
         public Iterator<Pattern> iterator() {
-            return new SequenceIterator<Pattern>(this);
+            return new SeqIterator<Pattern>(this);
         }
 
         public boolean hasTail() {
@@ -84,10 +84,10 @@ public class VitryTree extends CommonTree implements Product
         private void generateSeq() {
 
             if (children != null) {
-                Sequence<Pattern> itSeq = 
-                    new IterableSequence<Pattern>(Utils.<Iterable<Pattern>> unsafe(this.children));
+                Seq<Pattern> itSeq = 
+                    new IterableSeq<Pattern>(Utils.<Iterable<Pattern>> unsafe(this.children));
 
-                this.childSeq = new MapSequence<Pattern, Pattern>(new StandardFunction(1)
+                this.childSeq = new MapSeq<Pattern, Pattern>(new StandardFunction(1)
                     {
                         public Object apply(Object o) throws InvocationError {
                             CommonTree t = (CommonTree) o;
@@ -133,7 +133,7 @@ public class VitryTree extends CommonTree implements Product
             return delegee.eq(o);
         }
 
-        public <U> Sequence<U> map(Function fn) {
+        public <U> Seq<U> map(Function fn) {
             return delegee.map(fn);
         }
 
@@ -145,7 +145,7 @@ public class VitryTree extends CommonTree implements Product
             return delegee.eq(p);
         }
 
-        public SequenceIterator<Pattern> sequenceIterator() {
+        public SeqIterator<Pattern> sequenceIterator() {
             return delegee.sequenceIterator();
         }
 

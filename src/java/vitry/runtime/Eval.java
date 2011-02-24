@@ -50,7 +50,7 @@ public interface Eval
      * @throws ParseError
      * @throws ResolveError
      */
-    public Object eval(Pattern expr) throws ParseError, ResolveError, TypeError;
+    public Object eval(Object expr) throws ParseError, ResolveError, TypeError;
     
     /**
      * Whether this eval method accepts parser-generated tokens.

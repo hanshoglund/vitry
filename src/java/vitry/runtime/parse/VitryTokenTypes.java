@@ -77,6 +77,7 @@ public class VitryTokenTypes
             def("Let", VitryParser.Let);
             def("Match", VitryParser.Match);
             def("Module", VitryParser.Module);
+            def("Op", VitryParser.Op);
             def("Ops", VitryParser.Ops);
             def("Par", VitryParser.Par);
             def("Quote", VitryParser.Quote);
@@ -111,7 +112,7 @@ public class VitryTokenTypes
         }
 
 
-        private static Environment<Pattern, Integer> table;
+        private static Env<Pattern, Integer> table;
 
         private static void def(String sym, int type) {
             if (table == null)

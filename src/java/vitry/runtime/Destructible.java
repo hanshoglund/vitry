@@ -18,12 +18,12 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.struct.Sequence;
+import vitry.runtime.struct.Seq;
 
 
 public interface Destructible
     {
         boolean canDestruct();
 
-        Sequence<Pattern> destruct();
+        Seq<Pattern> destruct();
     }

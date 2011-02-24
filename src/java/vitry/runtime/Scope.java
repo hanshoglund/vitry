@@ -21,5 +21,5 @@ package vitry.runtime;
 
 public interface Scope
     {
-        public Environment<Symbol, Object> getEnvironment();
+        public Env<Symbol, Object> getEnvironment();
     }

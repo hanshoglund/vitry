@@ -16,7 +16,7 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime.util;
+package vitry.runtime.misc;
 
 import java.io.IOException;
 import java.io.StringWriter;

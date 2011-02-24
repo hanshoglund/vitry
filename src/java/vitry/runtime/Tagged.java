@@ -18,8 +18,8 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.struct.Sequence;
-import vitry.runtime.util.Utils;
+import vitry.runtime.misc.Utils;
+import vitry.runtime.struct.Seq;
 
 /**
  * Implements tagged values.
@@ -94,7 +94,7 @@ public class Tagged extends BasePattern implements Destructible
             return (val instanceof Destructible) && ((Destructible) val).canDestruct();
         }
 
-        public Sequence<Pattern> destruct() {
+        public Seq<Pattern> destruct() {
             return ((Destructible) val).destruct();
         }        
     }

@@ -24,7 +24,7 @@ import vitry.runtime.struct.*;
 
 public class InvertibleRestFunction extends RestFunction implements InvertibleFunction
     {
-        public Sequence<?> applyVarInverse(Object a) throws InvocationError {
+        public Seq<?> applyVarInverse(Object a) throws InvocationError {
             throw new NoImplementationException();
         }
 
@@ -33,7 +33,7 @@ public class InvertibleRestFunction extends RestFunction implements InvertibleFu
         }
 
         public Object applyInverse(Object a) throws InvocationError {
-            return applyVarInverse(Sequences.single(a));
+            return applyVarInverse(Seqs.single(a));
         }
 
         private final class Inv extends InvertibleRestFunction
@@ -46,12 +46,12 @@ public class InvertibleRestFunction extends RestFunction implements InvertibleFu
                 return InvertibleRestFunction.this.apply(a);
             }
         
-            public Object applyVar(Sequence<?> args) {
+            public Object applyVar(Seq<?> args) {
                 return InvertibleRestFunction.this.applyVarInverse(args.head()).head();
             }
         
-            public Sequence<Object> applyVarInverse(Object a) throws InvocationError {
-                return Sequences.cons(InvertibleRestFunction.this.applyVar(Sequences.single(a)), null);
+            public Seq<Object> applyVarInverse(Object a) throws InvocationError {
+                return Seqs.cons(InvertibleRestFunction.this.applyVar(Seqs.single(a)), null);
             }
         }
     }

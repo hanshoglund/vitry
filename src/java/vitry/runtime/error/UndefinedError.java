@@ -18,7 +18,7 @@
  */
 package vitry.runtime.error;
 
-import vitry.runtime.Environment;
+import vitry.runtime.Env;
 
 /**
  * Thrown to indicate failed lookup of some binding.
@@ -27,9 +27,9 @@ public class UndefinedError extends BindingError
     {
         private Object key;
 
-        private Environment<?,?> env;
+        private Env<?,?> env;
 
-        public UndefinedError(Object key, Environment<?, ?> env) {
+        public UndefinedError(Object key, Env<?, ?> env) {
             super("Could not find key '" + key + "' in " + env);
             this.key = key;
             this.env = env;
@@ -39,7 +39,7 @@ public class UndefinedError extends BindingError
             return key;
         }
 
-        public Environment<?,?> getEnv() {
+        public Env<?,?> getEnv() {
             return env;
         }
 

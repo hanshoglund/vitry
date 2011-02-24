@@ -33,7 +33,7 @@ import vitry.runtime.error.*;
  *
  * @author Hans Höglund
  */
-public interface Environment<K, V>
+public interface Env<K, V>
     {
         /**
          * Define the given key in this environment.
@@ -41,29 +41,29 @@ public interface Environment<K, V>
          * non-persistent environment.
          * @throws BindingError If the given key already exists.
          */
-        Environment<K, V> define(K key, V val) throws BindingError;
+        Env<K, V> define(K key, V val) throws BindingError;
 
         /**
          * Returns an extension of this environment containing the given 
          * binding. Does not modify this environment.
          */
-        Environment<K, V> extend(K key, V val);
+        Env<K, V> extend(K key, V val);
 
         /**
          * Returns an extension of this environment.          
          */
-        Environment<K, V> extend();
+        Env<K, V> extend();
         
         /**
          * Update this environment to associate the given key with the given
          * value. Not supported by persistent environments.
          */
-        Environment<K, V> assoc(K key, V val);
+        Env<K, V> assoc(K key, V val);
         
         /**
          * Returns the parent. Referentially transparent.
          */
-        Environment<K, V> getParent();
+        Env<K, V> getParent();
 
         /**
          * Lookup the given key. Referentially transparent iff this is a

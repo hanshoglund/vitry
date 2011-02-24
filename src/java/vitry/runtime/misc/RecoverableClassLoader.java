@@ -16,7 +16,7 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime.util;
+package vitry.runtime.misc;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -37,14 +37,14 @@ import java.util.Map;
  * 
  * @author Hans Höglund
  */
-public class ModuleClassLoader extends ClassLoader
+public class RecoverableClassLoader extends ClassLoader
     {
 
-        public ModuleClassLoader() {
+        public RecoverableClassLoader() {
             this.classes = new HashMap<String, Class<?>>();
         }
 
-        public ModuleClassLoader(Map<String, Class<?>> classes) {
+        public RecoverableClassLoader(Map<String, Class<?>> classes) {
             this.classes = classes;
         }
 
@@ -96,16 +96,16 @@ public class ModuleClassLoader extends ClassLoader
             return cl;
         }
 
-        public synchronized ModuleClassLoader unloadClass(String name) {
+        public synchronized RecoverableClassLoader unloadClass(String name) {
             // TODO use persistent collection
             Map<String, Class<?>> removed = new HashMap<String, Class<?>>(classes);
             removed.remove(name);
-            return new ModuleClassLoader(removed);
+            return new RecoverableClassLoader(removed);
         }
 
-        public synchronized ModuleClassLoader reloadClass(String name)
+        public synchronized RecoverableClassLoader reloadClass(String name)
                 throws ClassNotFoundException {
-            ModuleClassLoader mcl = this.unloadClass(name);
+            RecoverableClassLoader mcl = this.unloadClass(name);
             mcl.loadClass(name);
             return mcl;
         }
@@ -133,7 +133,7 @@ public class ModuleClassLoader extends ClassLoader
                     super(paths, null);
                 }
 
-                private ModuleClassLoader tempParent;
+                private RecoverableClassLoader tempParent;
 
                 public Class<?> loadClass(String name) throws ClassNotFoundException {
 
@@ -147,7 +147,7 @@ public class ModuleClassLoader extends ClassLoader
                     return c;
                 }
 
-                public Class<?> loadClass(String name, ModuleClassLoader parent)
+                public Class<?> loadClass(String name, RecoverableClassLoader parent)
                         throws ClassNotFoundException {
                     // Store parent temporarily for recursive invocations by the JVM                    
                     tempParent = parent;

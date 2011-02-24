@@ -19,15 +19,15 @@
 package vitry.runtime;
 
 import static vitry.Build.*;
-import static vitry.runtime.struct.Sequences.*;
+import static vitry.runtime.struct.Seqs.*;
 
 import java.math.BigInteger;
 import java.util.Iterator;
 
 import vitry.runtime.error.*;
+import vitry.runtime.misc.*;
 import vitry.runtime.parse.*;
 import vitry.runtime.struct.*;
-import vitry.runtime.util.*;
                                 
 
 /**
@@ -84,7 +84,7 @@ public class Interpreter implements Eval
 
         // Context for semantic disambiguition
         
-        static final Environment<Symbol, Symbol> STANDARD_CONTEXT = (new HashEnvironment<Symbol, Symbol>()
+        public static final Env<Symbol, Symbol> STANDARD_CONTEXT = (new HashEnvironment<Symbol, Symbol>()
             .define( DELIMITER , PAR    )
             .define( SIDE      , RIGHT  )
             .define( QUOTED    , FALSE  )
@@ -120,7 +120,7 @@ public class Interpreter implements Eval
         
         public Object eval
                 (
-                Pattern expr
+                Object expr
                 ) 
         throws ParseError, LinkageError, TypeError {
             return eval
@@ -138,12 +138,12 @@ public class Interpreter implements Eval
         
         public final Object eval
                 (
-                Pattern expr,
-                Environment<Symbol, Symbol> context,
-                Environment<Symbol, Object> frame,
+                Object expr,
+                Env<Symbol, Symbol> context,
+                Env<Symbol, Object> frame,
 //                Sequence<vitry.runtime.Type> types,
 //                Environment<Symbol, Sequence<Type>> implicits,
-                Environment<Symbol, Fixity> fixities
+                Env<Symbol, Fixity> fixities
                 )
         throws ParseError, LinkageError, TypeError {
                              
@@ -155,7 +155,7 @@ public class Interpreter implements Eval
             /**
              * Expr tail or null
              */
-            Sequence<Pattern> exprOps;
+            Seq<Pattern> exprOps;
             
             /**
              * Type of expr head
@@ -180,11 +180,11 @@ public class Interpreter implements Eval
                  */
                 try {
                     if (isAcceptedToken(expr)) {
-                        exprOp  = expr;
+                        exprOp  = Utils.<Pattern>unsafe(expr);
                         exprOps = null;                            
                     } else {           
-                        exprOp  = Utils.<Sequence<Pattern>>unsafe(expr).head();
-                        exprOps = Utils.<Sequence<Pattern>>unsafe(expr).tail();
+                        exprOp  = Utils.<Seq<Pattern>>unsafe(expr).head();
+                        exprOps = Utils.<Seq<Pattern>>unsafe(expr).tail();
                     }
                 } catch (Exception _) {
                     throw new ParseError("Unknown form: " 
@@ -258,7 +258,7 @@ public class Interpreter implements Eval
                             } else {
                                 Object bra = frame.lookup(PAR);
                                 if (bra instanceof Product) {
-                                    return Sequences.first((Product) bra);
+                                    return Seqs.first((Product) bra);
                                 } else {
                                     return bra;
                                 }
@@ -268,12 +268,12 @@ public class Interpreter implements Eval
                             Object bra = frame.lookup(PAR);
                             
                             if (bra instanceof Product) {
-                                final Function f = (Function) Sequences.second((Product) bra);
+                                final Function f = (Function) Seqs.second((Product) bra);
                                 final Object content = eval(exprOps.head(), context, frame, fixities);
 
                                 if (context.lookup(SIDE) == LEFT && f instanceof InvertibleFunction) {
                                     return new LeftContinuation(){
-                                        public void invoke(Object val, Environment<Symbol, Object> frame) {
+                                        public void invoke(Object val, Env<Symbol, Object> frame) {
                                             Object contentVal = ((InvertibleFunction) f).applyVarInverse(val).head();
                                             if (content instanceof LeftContinuation) {
                                                 ((LeftContinuation) content).invoke(contentVal, frame);
@@ -311,7 +311,7 @@ public class Interpreter implements Eval
                             } else {
                                 Object bra = frame.lookup(BRA);
                                 if (bra instanceof Product) {
-                                    return Sequences.first((Product) bra);
+                                    return Seqs.first((Product) bra);
                                 } else {
                                     return bra;
                                 }
@@ -321,12 +321,12 @@ public class Interpreter implements Eval
                             Object bra = frame.lookup(BRA);
                             
                             if (bra instanceof Product) {
-                                final Function f = (Function) Sequences.second((Product) bra);
+                                final Function f = (Function) Seqs.second((Product) bra);
                                 final Object content = eval(exprOps.head(), context, frame, fixities);
 
                                 if (context.lookup(SIDE) == LEFT && f instanceof InvertibleFunction) {
                                     return new LeftContinuation(){
-                                        public void invoke(Object val, Environment<Symbol, Object> frame) {
+                                        public void invoke(Object val, Env<Symbol, Object> frame) {
                                             Object contentVal = ((InvertibleFunction) f).applyVarInverse(val).head();
                                             if (content instanceof LeftContinuation) {
                                                 ((LeftContinuation) content).invoke(contentVal, frame);
@@ -364,7 +364,7 @@ public class Interpreter implements Eval
                             } else {
                                 Object bra = frame.lookup(ANG);
                                 if (bra instanceof Product) {
-                                    return Sequences.first((Product) bra);
+                                    return Seqs.first((Product) bra);
                                 } else {
                                     return bra;
                                 }
@@ -374,12 +374,12 @@ public class Interpreter implements Eval
                             Object bra = frame.lookup(ANG);
                             
                             if (bra instanceof Product) {
-                                final Function f = (Function) Sequences.second((Product) bra);
+                                final Function f = (Function) Seqs.second((Product) bra);
                                 final Object content = eval(exprOps.head(), context, frame, fixities);
 
                                 if (context.lookup(SIDE) == LEFT && f instanceof InvertibleFunction) {
                                     return new LeftContinuation(){
-                                        public void invoke(Object val, Environment<Symbol, Object> frame) {
+                                        public void invoke(Object val, Env<Symbol, Object> frame) {
                                             Object contentVal = ((InvertibleFunction) f).applyVarInverse(val).head();
                                             if (content instanceof LeftContinuation) {
                                                 ((LeftContinuation) content).invoke(contentVal, frame);
@@ -432,7 +432,7 @@ public class Interpreter implements Eval
 
                     case TYPE_FN:
                         {
-                            Sequence<Pattern> params = init(exprOps);
+                            Seq<Pattern> params = init(exprOps);
                             Pattern body = last(exprOps);   
                             return new InterpretedFunction(params, body, frame, fixities, this);
                         }
@@ -449,7 +449,7 @@ public class Interpreter implements Eval
 
                     case TYPE_LET:
                         {
-                            Sequence<Pattern> assignments = init(exprOps);
+                            Seq<Pattern> assignments = init(exprOps);
                             expr = last(exprOps);
                             frame = frame.extend();
                             
@@ -489,21 +489,21 @@ public class Interpreter implements Eval
 
                     case TYPE_APPLY:
                         final Object            fn   = eval(exprOps.head(), context.extend(SIDE, RIGHT), frame, fixities);
-                        final Sequence<Pattern> args = exprOps.tail();
+                        final Seq<Pattern> args = exprOps.tail();
                         final int               numArgs = length(args);
 
                         if (context.lookup(SIDE) == LEFT && (fn instanceof InvertibleFunction)) {
-                            final Environment<Symbol, Symbol> contextCs = context;
-                            final Environment<Symbol, Object> frameCs = frame;
-                            final Environment<Symbol, Fixity> fixitiesCs = fixities;
+                            final Env<Symbol, Symbol> contextCs = context;
+                            final Env<Symbol, Object> frameCs = frame;
+                            final Env<Symbol, Fixity> fixitiesCs = fixities;
                             
                             return new LeftContinuation()
                                 {
-                                    public void invoke(Object value, Environment<Symbol, Object> frame) {
+                                    public void invoke(Object value, Env<Symbol, Object> frame) {
                                         if (fn instanceof InvertibleFunction) {
                                             InvertibleFunction ifn = (InvertibleFunction) fn;
                                             
-                                            Sequence<?> vals = ifn.applyVarInverse(value);
+                                            Seq<?> vals = ifn.applyVarInverse(value);
                                             
                                             Iterator<Pattern> keyExprIt;
                                             Iterator<?> valIt;
@@ -542,10 +542,10 @@ public class Interpreter implements Eval
                                 int arity = ifn.getArity();
 
                                 if (numArgs < arity) {
-                                    Environment<Symbol, Object> callFrame = frame;
+                                    Env<Symbol, Object> callFrame = frame;
                                     frame = ifn.env.extend();
                                     
-                                    SequenceIterator<Pattern> param;
+                                    SeqIterator<Pattern> param;
                                     Iterator<Pattern> arg;
                                     
                                     for (param = ifn.params.sequenceIterator(), arg = args.iterator();
@@ -570,7 +570,7 @@ public class Interpreter implements Eval
                                 } 
                                 if (numArgs == arity) {
                                     context = STANDARD_CONTEXT;
-                                    Environment<Symbol, Object> callFrame = frame;
+                                    Env<Symbol, Object> callFrame = frame;
                                     frame = ifn.env.extend();
                                     
                                     for (Iterator<Pattern> param = ifn.params.iterator(), arg = args.iterator();
@@ -618,11 +618,11 @@ public class Interpreter implements Eval
 
                     case TYPE_IF:
                         {
-                            Object condition = eval(Sequences.first(exprOps), context, frame, fixities);    
+                            Object condition = eval(Seqs.first(exprOps), context, frame, fixities);    
                             if (! (condition.equals(FALSE)) ) {
-                                expr = Sequences.second(exprOps);
+                                expr = Seqs.second(exprOps);
                             } else {
-                                expr = Sequences.third(exprOps);
+                                expr = Seqs.third(exprOps);
                             }
                             continue;
                         }
@@ -651,13 +651,13 @@ public class Interpreter implements Eval
                         {
                             // TODO native types
                             
-                            final Object left = eval(Sequences.first(exprOps), context, frame, fixities);
-                            final Pattern right = Native.wrap(eval(Sequences.second(exprOps), context.extend(SIDE, RIGHT), frame, fixities));
+                            final Object left = eval(Seqs.first(exprOps), context, frame, fixities);
+                            final Pattern right = Native.wrap(eval(Seqs.second(exprOps), context.extend(SIDE, RIGHT), frame, fixities));
     
                             if (context.lookup(SIDE) == LEFT) {
                                 
                                 return new LeftContinuation() {
-                                    public void invoke(Object value, Environment<Symbol, Object> frame) {
+                                    public void invoke(Object value, Env<Symbol, Object> frame) {
 
                                         // Check type
                                         if (!Native.wrap(value).matchFor(right)) TypeError.throwMismatch(value, right);
@@ -698,19 +698,19 @@ public class Interpreter implements Eval
 
 
         
-        static final boolean isSelfEvaluating(Pattern expr) {
+        static final boolean isSelfEvaluating(Object expr) {
             return (expr instanceof Atom && !(expr instanceof VitryToken)) 
                 || !(expr instanceof Pattern);
         }
         
-        static final boolean isAcceptedToken(Pattern expr) {
+        static final boolean isAcceptedToken(Object expr) {
             return expr instanceof VitryToken;
         }
         
         // Note: NOT the same as the predicate in rewriting (which checks for Op, not Ops)
         private static boolean isOpsExpr(Pattern p) {
-            if (p instanceof Sequence) {
-                Sequence<?> s = (Sequence<?>) p;
+            if (p instanceof Seq) {
+                Seq<?> s = (Seq<?>) p;
                 
                 if (length(s) < 2) return false;
                 if (!isOps(first(s))) return false;
@@ -780,10 +780,10 @@ final class InterpretedFunction extends RestFunction implements Arity
         /**
          * Param and body expressions
          */
-        final Sequence<Pattern> params;
+        final Seq<Pattern> params;
         final Pattern body;
         final int arity;
-        final Environment<Symbol, Fixity> fixities;
+        final Env<Symbol, Fixity> fixities;
         
         /*
          * Creating interpreter
@@ -791,10 +791,10 @@ final class InterpretedFunction extends RestFunction implements Arity
         final Interpreter interpr;
 
         public InterpretedFunction(
-                Sequence<Pattern> params, 
+                Seq<Pattern> params, 
                 Pattern body,
-                Environment<Symbol, Object> env, 
-                Environment<Symbol, Fixity> fixities,
+                Env<Symbol, Object> env, 
+                Env<Symbol, Fixity> fixities,
                 Interpreter interpreter) {
             super(env);
             this.body = body;
@@ -809,8 +809,8 @@ final class InterpretedFunction extends RestFunction implements Arity
         }
         
         
-        public Object applyVar(Sequence<?> args, int length) {
-            Environment<Symbol, Object> frame = this.getEnvironment().extend();
+        public Object applyVar(Seq<?> args, int length) {
+            Env<Symbol, Object> frame = this.getEnvironment().extend();
 
             // TODO adapt to standard CC
             
@@ -820,19 +820,22 @@ final class InterpretedFunction extends RestFunction implements Arity
         
         // Override to get a faster length
         
-        public Object applyVar(Sequence<?> args) {
+        public Object applyVar(Seq<?> args) {
             return applyVar(args, length(args));
         }
 
         public Object applyVar(Object[] args) {
-            return applyVar(new ArraySequence<Object>(args), args.length);
+            return applyVar(new ArraySeq<Object>(args), args.length);
         }
     }
+
+
+
 
 final class InterpretedModule extends Module
 {
 
-    public InterpretedModule(Environment<Symbol, Object> env) {
+    public InterpretedModule(Env<Symbol, Object> env) {
         super(env);
         // TODO Auto-generated constructor stub
     }
@@ -849,6 +852,6 @@ final class InterpretedModule extends Module
  * Typically pass in a right side value to be matched, destructured etc.
  */
 interface LeftContinuation {
-    public void invoke(Object value, Environment<Symbol, Object> frame);
+    public void invoke(Object value, Env<Symbol, Object> frame);
 }
     

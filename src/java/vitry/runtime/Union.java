@@ -18,7 +18,7 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.util.Utils;
+import vitry.runtime.misc.Utils;
 
 
 abstract public class Union extends InclusionPattern

@@ -19,35 +19,35 @@
 package vitry.runtime;
 
 import vitry.runtime.error.*;
-import vitry.runtime.util.Utils;
+import vitry.runtime.misc.*;
 
 /**         
  * Base environment.
  *
  * @author Hans Höglund
  */
-abstract class AbstractEnvironment<K, V> implements Environment<K, V>
+abstract class AbstractEnv<K, V> implements Env<K, V>
     {
         
-        private final Environment<K, V> parent;
+        private final Env<K, V> parent;
 
-        private static Environment<?, ?> global = new GlobalEnvironment();
+        private static Env<?, ?> global = new GlobalEnvironment();
 
 
-        public AbstractEnvironment() {
-            this.parent = AbstractEnvironment.<K, V> empty();
+        public AbstractEnv() {
+            this.parent = AbstractEnv.<K, V> empty();
         }
 
-        public AbstractEnvironment(Environment<K, V> parent) {
+        public AbstractEnv(Env<K, V> parent) {
             this.parent = parent;
         }
 
-        public Environment<K, V> getParent() {
+        public Env<K, V> getParent() {
             return parent;
         }
 
         public V lookup(K key) throws UndefinedError {
-            Environment<K, V> env = this;
+            Env<K, V> env = this;
             V val = this.getBinding(key);
             try {
                 while (val == null) {
@@ -60,11 +60,11 @@ abstract class AbstractEnvironment<K, V> implements Environment<K, V>
             return val;
         }
 
-        private static <K, V> Environment<K, V> empty() {
-            return Utils.<Environment<K, V>>unsafe(global);
+        private static <K, V> Env<K, V> empty() {
+            return Utils.<Env<K, V>>unsafe(global);
         }
 
-        public Environment<K, V> assoc(K key, V val) {
+        public Env<K, V> assoc(K key, V val) {
             return throwUnsupported();
         }
 
@@ -74,17 +74,17 @@ abstract class AbstractEnvironment<K, V> implements Environment<K, V>
     }
 
 
-class GlobalEnvironment extends AbstractEnvironment<Object, Object>
+class GlobalEnvironment extends AbstractEnv<Object, Object>
     {
-        public Environment<Object, Object> define(Object key, Object val) throws BindingError {
+        public Env<Object, Object> define(Object key, Object val) throws BindingError {
             return throwUnsupported();
         }
 
-        public Environment<Object, Object> extend(Object key, Object val) {
+        public Env<Object, Object> extend(Object key, Object val) {
             return throwUnsupported();
         }
 
-        public Environment<Object, Object> extend() {
+        public Env<Object, Object> extend() {
             return throwUnsupported();
         }
 

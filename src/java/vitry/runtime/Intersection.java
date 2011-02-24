@@ -18,7 +18,7 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.util.*;
+import vitry.runtime.misc.*;
 
 
 abstract public class Intersection extends InclusionPattern

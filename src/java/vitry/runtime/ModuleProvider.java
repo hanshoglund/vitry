@@ -18,7 +18,7 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.struct.Sequence;
+import vitry.runtime.struct.Seq;
 
 
 /**
@@ -28,5 +28,5 @@ public interface ModuleProvider
     {
         Module forName(String name);
 
-        Module forName(Sequence<Symbol> name);
+        Module forName(Seq<Symbol> name);
     }

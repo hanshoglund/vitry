@@ -21,16 +21,16 @@ package vitry.runtime.struct;
 /**
  * A SequenceIterator that remembers its starting point.
  */
-public class RewindableSequenceIterator<T> extends SequenceIterator<T>
+public class RewindableSeqIterator<T> extends SeqIterator<T>
     {
-        private final Sequence<T> start;
+        private final Seq<T> start;
 
-        public RewindableSequenceIterator(Sequence<T> seq) {
+        public RewindableSeqIterator(Seq<T> seq) {
             super(seq);
             this.start = seq;
         }
         
-        public RewindableSequenceIterator(SequenceIterator<T> it) {
+        public RewindableSeqIterator(SeqIterator<T> it) {
             super(it.seq);
             this.start = it.seq;
         }
@@ -43,7 +43,7 @@ public class RewindableSequenceIterator<T> extends SequenceIterator<T>
          * Returns  all elements leeding up to the current sequence
          * from the starting point.
          */
-        public Sequence<T> preceding() {
-            return Sequences.until(start, seq);
+        public Seq<T> preceding() {
+            return Seqs.until(start, seq);
         }
     }

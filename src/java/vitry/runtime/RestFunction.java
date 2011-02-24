@@ -19,9 +19,8 @@
 package vitry.runtime;
 
 import vitry.runtime.error.InvocationError;
-import vitry.runtime.struct.ArraySequence;
-import vitry.runtime.struct.Sequence;
-import vitry.runtime.struct.Sequences;
+import vitry.runtime.struct.Seq;
+import vitry.runtime.struct.Seqs;
 
 
 /**
@@ -41,19 +40,19 @@ public class RestFunction extends AbstractFunction
             super(scope);
         }
 
-        public RestFunction(Environment<Symbol, Object> env) {
+        public RestFunction(Env<Symbol, Object> env) {
             super(env);
         }
         
         /**
          * Throws a NoImplementationException.
          */
-        public Object applyVar(Sequence<?> args) {
+        public Object applyVar(Seq<?> args) {
             throw new NoImplementationException();
         }
 
         public Object applyVar(Object[] args) {
-            return applyVar(Sequences.fromArray(args));
+            return applyVar(Seqs.fromArray(args));
         }
 
         public Object apply(Object a0) throws InvocationError {

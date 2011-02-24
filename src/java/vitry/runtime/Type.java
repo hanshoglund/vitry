@@ -19,8 +19,8 @@
 package vitry.runtime;
 
 import vitry.runtime.error.TypeError;
-import vitry.runtime.struct.Sequence;
-import vitry.runtime.util.Utils;
+import vitry.runtime.misc.Utils;
+import vitry.runtime.struct.Seq;
 
 
 public class Type extends BasePattern implements TypeExpr
@@ -28,9 +28,9 @@ public class Type extends BasePattern implements TypeExpr
         
         private final Pattern            pattern;
         private final Symbol             name;
-        private final Sequence<TypeExpr> vars;
+        private final Seq<TypeExpr> vars;
 
-        public Type(Pattern pattern, Symbol id, Sequence<TypeExpr> vars) {
+        public Type(Pattern pattern, Symbol id, Seq<TypeExpr> vars) {
             this.pattern = pattern;
             this.name = id;
             this.vars = vars;
@@ -45,7 +45,7 @@ public class Type extends BasePattern implements TypeExpr
             return name;
         }
 
-        Sequence<TypeExpr> getTypeVariables() {
+        Seq<TypeExpr> getTypeVariables() {
             return vars;
         }
 

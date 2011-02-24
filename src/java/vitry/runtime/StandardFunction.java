@@ -19,8 +19,8 @@
 package vitry.runtime;
 
 import vitry.runtime.error.InvocationError;
-import vitry.runtime.struct.Sequence;
-import vitry.runtime.struct.Sequences;
+import vitry.runtime.struct.Seq;
+import vitry.runtime.struct.Seqs;
 
 
 /**
@@ -565,8 +565,8 @@ abstract public class StandardFunction extends AbstractFunction implements Arity
             }
         }
 
-        public Object applyVar(Sequence<?> args) throws InvocationError {
-            return applyVar(Sequences.toArray(args));
+        public Object applyVar(Seq<?> args) throws InvocationError {
+            return applyVar(Seqs.toArray(args));
         }
 
         public Object applyVar(Object[] args) throws InvocationError {

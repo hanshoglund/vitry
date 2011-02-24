@@ -19,7 +19,7 @@
 package vitry.runtime;
 
 import vitry.runtime.error.InvocationError;
-import vitry.runtime.util.Utils;
+import vitry.runtime.misc.Utils;
 
 
 class PartialApplication extends StandardFunction

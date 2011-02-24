@@ -19,34 +19,45 @@
 package vitry.runtime.struct;
 
 import java.util.Iterator;
-import vitry.runtime.Function;
 
+import vitry.runtime.misc.Utils;
 
-abstract public class AbstractSequence<T> implements Sequence<T>
+/**
+ * For debugging. Prints like a product.
+ */
+public class PrintableSeq<T> extends AbstractSeq<T>
     {
-        public Iterator<T> iterator() {
-            return new SequenceIterator<T>(this);
+        private Seq<T> delegee;
+
+        public PrintableSeq(Seq<T> delegee) {
+            this.delegee = delegee;
         }
 
-        public SequenceIterator<T> sequenceIterator() {
-            return new SequenceIterator<T>(this);
+        public T head() {
+            return delegee.head();
         }
-        
+
         public boolean hasTail() {
-            return this.tail() == null;
+            return delegee.hasTail();
         }
 
-        public Sequence<T> cons(T head) {
-            return new Pair<T>(head, this);
+        public Seq<T> cons(T head) {
+            return delegee.cons(head);
         }
 
-        public <U> Sequence<U> map(Function fn) {
-            return new MapSequence<T, U>(fn, this);
+        public Iterator<T> iterator() {
+            return delegee.iterator();
+        }
+
+        public Seq<T> tail() {
+            return delegee.tail();
         }
         
-        
-        // DEBUG
+        public SeqIterator<T> sequenceIterator() {
+            return delegee.sequenceIterator();
+        }
+
         public String toString() {
-            return Sequences.printable(this).toString();
+            return Utils.join(this, "(", ", ", ")");
         }
     }

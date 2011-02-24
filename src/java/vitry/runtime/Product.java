@@ -18,10 +18,10 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.struct.Sequence;
+import vitry.runtime.struct.Seq;
 
 
-public interface Product extends Pattern, Sequence<Pattern>
+public interface Product extends Pattern, Seq<Pattern>
     {
         Product mapProduct(Function fn);
 

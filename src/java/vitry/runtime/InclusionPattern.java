@@ -20,11 +20,11 @@ package vitry.runtime;
 
 import java.util.Iterator;
 
+import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.*;
-import vitry.runtime.util.Utils;
 
 
-abstract public class InclusionPattern extends BasePattern implements Sequence<Pattern>
+abstract public class InclusionPattern extends BasePattern implements Seq<Pattern>
     {
         public boolean eq(Set o) {
             return o == this || this.match(o) && this.matchFor(o);
@@ -57,12 +57,12 @@ abstract public class InclusionPattern extends BasePattern implements Sequence<P
             return false;
         }
         
-        public Sequence<Pattern> cons(Pattern head) {
+        public Seq<Pattern> cons(Pattern head) {
             return new Pair<Pattern>(head, this);
         }
 
-        public <U> MapSequence<Pattern, U> map(Function fn) {
-            return new MapSequence<Pattern,U>(fn, this);
+        public <U> MapSeq<Pattern, U> map(Function fn) {
+            return new MapSeq<Pattern,U>(fn, this);
         }
         
         
@@ -83,10 +83,10 @@ abstract public class InclusionPattern extends BasePattern implements Sequence<P
         }
 
         public Iterator<Pattern> iterator() {
-            return new SequenceIterator<Pattern>(this);
+            return new SeqIterator<Pattern>(this);
         }
 
-        public SequenceIterator<Pattern> sequenceIterator() {
-            return new SequenceIterator<Pattern>(this);
+        public SeqIterator<Pattern> sequenceIterator() {
+            return new SeqIterator<Pattern>(this);
         }
     }

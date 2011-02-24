@@ -19,8 +19,8 @@
 package vitry.runtime;
 
 import static vitry.runtime.VitryRuntime.product;
-import vitry.runtime.struct.Sequence;
-import vitry.runtime.util.Utils;
+import vitry.runtime.misc.Utils;
+import vitry.runtime.struct.Seq;
 
 /**
  * Base implementation, relying on a sequence.
@@ -34,8 +34,8 @@ abstract class AbstractProduct extends ConstructionPattern implements Product
     {
         
         public boolean eq(Product o) {
-            Sequence<Pattern> left = o;
-            Sequence<Pattern> right = this;
+            Seq<Pattern> left = o;
+            Seq<Pattern> right = this;
 
             while (left != null && right != null) {
                 if (!left.head().eqFor(right.head())) return false;
@@ -46,8 +46,8 @@ abstract class AbstractProduct extends ConstructionPattern implements Product
         }
 
         public boolean match(Product p) {
-            Sequence<Pattern> left = p;
-            Sequence<Pattern> right = this;
+            Seq<Pattern> left = p;
+            Seq<Pattern> right = this;
 
             while (left != null && right != null) {
                 if (!left.head().matchFor(right.head())) return false;

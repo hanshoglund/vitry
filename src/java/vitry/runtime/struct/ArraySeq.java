@@ -19,31 +19,32 @@
 package vitry.runtime.struct;
 
 import java.util.Iterator;
-import vitry.runtime.util.ArrayIterator;
+
+import vitry.runtime.misc.ArrayIterator;
 
 
 /**
  * Adapts an array as a sequence. Mutating the array is not recommended.
  */
-public class ArraySequence<T> extends AbstractSequence<T> implements Finite<T>
+public class ArraySeq<T> extends AbstractSeq<T> implements Finite<T>
     {
         private final T[]   array;
         private final int   offset;
-        private Sequence<T> tail;
+        private Seq<T> tail;
         private boolean     tailed = false;
 
-        public ArraySequence(T... elements) {
+        public ArraySeq(T... elements) {
             this(elements, 0);
         }
 
-        public ArraySequence(T[] elements, int offset) {
+        public ArraySeq(T[] elements, int offset) {
             if (offset >= elements.length) 
                 throw new IllegalArgumentException("Offset must be less than than length");
             this.array = elements;
             this.offset = offset;
         }
         
-        private ArraySequence(T[] elements, int offset, Object dummy) {
+        private ArraySeq(T[] elements, int offset, Object dummy) {
             this.array = elements;
             this.offset = offset;
         }
@@ -56,10 +57,10 @@ public class ArraySequence<T> extends AbstractSequence<T> implements Finite<T>
             return array[offset];
         }
 
-        public Sequence<T> tail() {
+        public Seq<T> tail() {
             if (!tailed) {
                 if (hasTail()) {
-                    tail = new ArraySequence<T>(array, offset + 1, null);                    
+                    tail = new ArraySeq<T>(array, offset + 1, null);                    
                 }
                 tailed = true;
             }

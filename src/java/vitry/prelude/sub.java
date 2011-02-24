@@ -4,14 +4,14 @@ import java.math.BigInteger;
 
 import vitry.runtime.BigRational;
 import vitry.runtime.RestFunction;
-import vitry.runtime.struct.Sequence;
-import vitry.runtime.struct.Sequences;
+import vitry.runtime.struct.Seq;
+import vitry.runtime.struct.Seqs;
 
 public class sub extends RestFunction
     {
         
-        public Object applyVar(Sequence<?> args) {
-            return applyVar(Sequences.toArray(args));
+        public Object applyVar(Seq<?> args) {
+            return applyVar(Seqs.toArray(args));
         }
         
         public Object applyVar(Object[] args) {

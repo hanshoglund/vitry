@@ -18,7 +18,7 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.struct.Sequence;
+import vitry.runtime.struct.Seq;
 
 /**
  * Implements type inference.
@@ -45,11 +45,11 @@ interface TypableFunction
 
         Pattern getDomain();
 
-        Sequence<Pattern> getRange();
+        Seq<Pattern> getRange();
 
         void setDomain(Pattern domain);
 
-        void setRange(Sequence<Pattern> range);
+        void setRange(Seq<Pattern> range);
 
     }
 

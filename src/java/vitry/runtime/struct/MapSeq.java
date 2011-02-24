@@ -19,13 +19,11 @@
 package vitry.runtime.struct;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 import vitry.runtime.Arity;
 import vitry.runtime.Function;
-import vitry.runtime.error.InvocationError;
-import vitry.runtime.util.Checks;
-import vitry.runtime.util.Utils;
+import vitry.runtime.misc.Checks;
+import vitry.runtime.misc.Utils;
 
 
 /**
@@ -33,12 +31,12 @@ import vitry.runtime.util.Utils;
  *
  * The function is applied on head lookup, not tail.
  */
-public class MapSequence<A, B> extends AbstractSequence<B>
+public class MapSeq<A, B> extends AbstractSeq<B>
     {
         private final Function fn;
-        private final Sequence<A> input;
+        private final Seq<A> input;
 
-        public MapSequence(Function fn, Sequence<A> input) {
+        public MapSeq(Function fn, Seq<A> input) {
             Checks.checkNotNull(fn, input);
             if (fn instanceof Arity) Checks.checkArity((Arity) fn, 1);
             this.fn = fn;
@@ -56,9 +54,9 @@ public class MapSequence<A, B> extends AbstractSequence<B>
             return Utils.<B>unsafe(fn.apply(head));
         }
 
-        public Sequence<B> tail() {
+        public Seq<B> tail() {
             if (input.hasTail()) {
-                return new MapSequence<A, B>(fn, input.tail());
+                return new MapSeq<A, B>(fn, input.tail());
             } else {
                 return null;
             }

@@ -16,7 +16,7 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime.util;
+package vitry.runtime.misc;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

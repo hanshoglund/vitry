@@ -18,7 +18,7 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.struct.Sequence;
+import vitry.runtime.struct.Seq;
 
 /**
  * Implements run-time modules.
@@ -28,19 +28,19 @@ import vitry.runtime.struct.Sequence;
 public class Module implements Scope
     {
                      
-        private Sequence<Symbol> name;
+        private Seq<Symbol> name;
 
-        private final Environment<Symbol, Object> values;
+        private final Env<Symbol, Object> values;
 
-        private Environment<Symbol, Type> types;
+        private Env<Symbol, Type> types;
 
-        private Environment<Symbol, Fixity> fixities;
+        private Env<Symbol, Fixity> fixities;
 
-        public Module(Environment<Symbol, Object> env) {
+        public Module(Env<Symbol, Object> env) {
             this.values = env;
         }
 
-        public Environment<Symbol, Object> getEnvironment() {
+        public Env<Symbol, Object> getEnvironment() {
             return values;
         }
 

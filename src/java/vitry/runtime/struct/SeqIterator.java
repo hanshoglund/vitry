@@ -27,14 +27,14 @@ import java.util.NoSuchElementException;
  * This is the one returned by AbstractSequence, override if a more effiecient
  * implementation is available.
  */
-public class SequenceIterator<T> implements Iterator<T>
+public class SeqIterator<T> implements Iterator<T>
     {
         /**
          * Current sequence, or null if we are finished. Updated for each pass.
          */
-        protected Sequence<T> seq;
+        protected Seq<T> seq;
 
-        public SequenceIterator(Sequence<T> seq) {
+        public SeqIterator(Seq<T> seq) {
             this.seq = seq;
         }
 
@@ -58,7 +58,7 @@ public class SequenceIterator<T> implements Iterator<T>
          * Returns a sequence of all remaining elements (its head is the
          * first element returned by next etc).
          */
-        public Sequence<T> following() {
+        public Seq<T> following() {
             return seq;
         }
     }

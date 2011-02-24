@@ -22,8 +22,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import vitry.runtime.struct.MapSequence;
-import vitry.runtime.struct.Sequence;
+import vitry.runtime.struct.MapSeq;
+import vitry.runtime.struct.Seq;
      
 
 /**
@@ -110,7 +110,7 @@ public final class NativeSet extends AbstractSet
             return throwEnumeration();
         }
 
-        public Sequence<Pattern> tail() {
+        public Seq<Pattern> tail() {
             return throwEnumeration();
         }
 
@@ -118,11 +118,11 @@ public final class NativeSet extends AbstractSet
             return throwEnumeration();
         }
 
-        public Sequence<Pattern> cons(Pattern head) {
+        public Seq<Pattern> cons(Pattern head) {
             return throwEnumeration();
         }
 
-        public <U> MapSequence<Pattern, U> map(Function fn) {
+        public <U> MapSeq<Pattern, U> map(Function fn) {
             return throwEnumeration();
         }
 

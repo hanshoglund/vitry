@@ -18,7 +18,7 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.util.Utils;
+import vitry.runtime.misc.Utils;
 
 
 abstract class AbstractSet extends InclusionPattern implements Set
