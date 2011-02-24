@@ -71,24 +71,22 @@ tokens {
 
 /*
  * Parser rules                                 
- *
- * TODO do, match
  */
 
 expr
     : 'fn'  '(' leftSimple* ')'  expr              -> ^(Fn leftSimple* expr)
     | 'let' ( ('(' left '=')=> assign )*  expr     -> ^(Let assign* expr)
-    | 'do' ( ('(' | '[' | '{' | '`' | literal ) => 
-             ( ('(' left '=') => e+=assign 
-               | e+=simple) )*                     -> ^(Do $e*)
+    | 'do'  ( ('(' | '[' | '{' | '`' | literal )=> 
+              ( ('(' left '=')=> e+=assign 
+                | e+=simple) )*                    -> ^(Do $e*)
     | 'if' type type 'else'? expr                  -> ^(If type type expr)
-    | 'match' type ( ('(' left '=')=> assign )*    -> ^(Match type assign*)    
+    | 'match' type matchCase*                      -> ^(Match type matchCase*)    
     | inline
     ;
 
 left
-    : inline -> ^(Left inline)	
-	;                    
+    : inline -> ^(Left inline)
+    ;                    
 
 inline
     : (Op (')' | ']' | '}')) => Op
@@ -98,6 +96,10 @@ inline
     ;     
 
 assign
+    : '(' left '=' expr ')'  -> ^(Assign left expr)
+    ;
+    
+matchCase
     : '(' left '=' expr ')'  -> ^(Assign left expr)
     ;
 
@@ -128,9 +130,8 @@ literal
     ;
 
 leftSimple
-	: simple -> ^(Left simple)	
-	;
-
+    : simple -> ^(Left simple)
+    ;
 
 
 
@@ -167,11 +168,12 @@ moduleName :
  */
  
 Op  : (
-        '!' | '#' | '$' | '%' | '&' | '\'' | '*' | '+' | ',' | '-' |
-        '.' | '/' | ':' | ';' | '<' | '=' | '>' | '?' | '@' | '\\' | '^' | 
-        '|' | '~'
-      )*
-    ;
+         '!' | '#' | '$' | '%' | '&' | '\'' | '*' | '+' | ',' | '-' |
+         '.' | '/' | ':' | ';' | '<' | '=' | '>' | '?' | '@' | '\\' | '^' | 
+         '|' | '~'
+       )*
+     ;
+
     
 Symbol
     :    ('_'|'a'..'z'|'A'..'Z') ('_'|'a'..'z'|'A'..'Z'|'0'..'9')*

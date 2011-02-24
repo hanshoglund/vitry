@@ -29,6 +29,8 @@ public class Utils
     {
         private Utils() {
         }
+        
+        // Arrays
 
         public static Object[] conc(Object[] a, Object... b) {
             Object[] res = new Object[a.length + b.length];
@@ -36,6 +38,17 @@ public class Utils
             System.arraycopy(b, 0, res, a.length, b.length);
             return res;
         }
+        
+        public static int linearSearch(Object[] a, Object key) {
+            for (int i = 0; i < a.length; i++) {
+                if (a[i] == key)
+                    return i;
+            }
+            return -1;
+        }
+        
+        
+        // Strings
 
         public static String join(Iterable<?> elements, String start, String delim, String end) {
             StringBuilder strb = new StringBuilder();
@@ -169,22 +182,7 @@ public class Utils
         public static <T> void nothing(T val) {
             return;
         }
-        
-        
-//        public static Product prune(Product p) {
-//            try {
-//                if ( ((Product) p.head()).tail() == null) {
-//                    Pattern h = ((Product) p.head()).head();
-//                    Product t = prune(new SimpleProduct(p.tail()));
-//                    return new SimpleProduct(t.cons(h));
-//                }
-//            } catch (ClassCastException e) {
-//            }
-//            if (p.tail() == null) return p;
-//            Pattern h = p.head();
-//            Product t = prune(new SimpleProduct(p.tail()));
-//            return new SimpleProduct(t.cons(h));
-//        }
+
 
         public static int hash(int seed, int val) {
             return (seed * 65050 + val) % 2044508069;
