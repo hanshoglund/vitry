@@ -76,12 +76,13 @@ tokens {
  */
 
 expr
-    : 'fn'   '(' leftSimple* ')' expr           -> ^(Fn leftSimple* expr)
-    | 'let'  (('(' left '=') => assign)* expr   -> ^(Let assign* expr)
-    | 'do'   (assign)*                          -> ^(Do assign*)
-    | 'if' type type 'else'? expr               -> ^(If type type expr)
-    | 'match' v=type '(' 
-        ('('c+=left')' '('e+=expr')')* ')'      -> ^(Match $v ^($c $e)*)    
+    : 'fn'  '(' leftSimple* ')'  expr              -> ^(Fn leftSimple* expr)
+    | 'let' ( ('(' left '=')=> assign )*  expr     -> ^(Let assign* expr)
+    | 'do' ( ('(' | '[' | '{' | '`' | literal ) => 
+             ( ('(' left '=') => e+=assign 
+               | e+=simple) )*                     -> ^(Do $e*)
+    | 'if' type type 'else'? expr                  -> ^(If type type expr)
+    | 'match' type ( ('(' left '=')=> assign )*    -> ^(Match type assign*)    
     | inline
     ;
 
@@ -116,7 +117,10 @@ simple
     | '{' expr? '}'  -> ^(Ang expr?)
     | '`' Op         -> ^(Quote Op)
     | '`' simple     -> ^(Quote simple)
-    | Symbol
+    | literal;
+    
+literal
+    : Symbol
     | Natural
     | Float
     | Complex

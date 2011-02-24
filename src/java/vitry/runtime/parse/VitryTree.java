@@ -38,7 +38,7 @@ import vitry.runtime.struct.*;
 public class VitryTree extends CommonTree implements Product
     {
         private final Product delegee      = VitryRuntime.productFrom(this);
-        private Seq<Pattern> childSeq = null;
+        private Seq<Pattern> childSeq      = null;
         private boolean generatedSeq       = false;
         
         public VitryTree(Token payload) {
@@ -46,23 +46,25 @@ public class VitryTree extends CommonTree implements Product
         }
         
         public Pattern head() {
-            if (!generatedSeq) generateSeq();
-            if (hasPayload())
+            if (!generatedSeq) {
+                generateSeq();
+            }
+            if (hasPayload()) {                
                 return wrap(token);
-            else
+            } else {                
                 return (childSeq == null) ? null : childSeq.head();
+            }
         }
 
         public Seq<Pattern> tail() {
-            if (!generatedSeq) generateSeq();
-            if (hasPayload())
-                return (childSeq == null) ? null : childSeq;
-            else
+            if (!generatedSeq) {
+                generateSeq();
+            }
+            if (hasPayload()) {                
+                return childSeq;
+            } else {                
                 return (childSeq == null) ? null : childSeq.tail();
-        }
-
-        public Iterator<Pattern> iterator() {
-            return new SeqIterator<Pattern>(this);
+            }
         }
 
         public boolean hasTail() {
@@ -76,6 +78,11 @@ public class VitryTree extends CommonTree implements Product
         public boolean hasPayload() {
             return token != null;
         }
+
+        public Iterator<Pattern> iterator() {
+            return new SeqIterator<Pattern>(this);
+        }
+
         
         /**
          * Converts the child list to a sequence, and replace singletons nodes
@@ -84,8 +91,7 @@ public class VitryTree extends CommonTree implements Product
         private void generateSeq() {
 
             if (children != null) {
-                Seq<Pattern> itSeq = 
-                    new IterableSeq<Pattern>(Utils.<Iterable<Pattern>> unsafe(this.children));
+                Seq<Pattern> itSeq = new IterableSeq<Pattern>(Utils.<Iterable<Pattern>> unsafe(this.children));
 
                 this.childSeq = new MapSeq<Pattern, Pattern>(new StandardFunction(1)
                     {

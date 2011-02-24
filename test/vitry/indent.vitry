@@ -1,26 +1,5 @@
 ; Test by java -cp bin:lib/* vitry.runtime.launch.IndentFile test/vitry/indent.vitry > test/indent/indent.vitry
 
-fn (x y z) M
-
-
-
-let a = 1
-    b = 2
-    c
-
-do  a = 1
-    b
-    c = 2
-
-match x
-    a b
-    c d
-    
-if a < b
-    a
-    b
-
-
 "========== Declarations =========="
 
 module A
