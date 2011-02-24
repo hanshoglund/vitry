@@ -21,9 +21,9 @@ if true 1 else 0
 if false 10 0
 if nil 1 0
 
-let [foo  = `foo]  foo
-let [true = false] true
-let [true = false] `true
+let (foo  = `foo)  foo
+let (true = false) true
+let (true = false) `true
 
 ; ======================================================================
 ; Function creation and application
@@ -33,21 +33,21 @@ fn (x) x
 (fn (x) x) 3
 
 (add 1) 2
-((fn [x y] add x y) 1) 2
-(fn [a b c d e f g h i j k l m n o p q r] a) 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18
+((fn (x y) add x y) 1) 2
+(fn (a b c d e f g h i j k l m n o p q r) a) 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18
 
-((fn [a b c] 0) 1 2 3)
+((fn (a b c) 0) 1 2 3)
 
-((fn [a b c d e] e) 1 2 3 4 5)
-((((((fn [a b c d e] e) 1) 2) 3) 4) 5)
+((fn (a b c d e) e) 1 2 3 4 5)
+((((((fn (a b c d e) e) 1) 2) 3) 4) 5)
 
-(fn [a b c d e f] f) 1 2 3 4 5 6
-(((((((fn [a b c d e f] f) 1) 2) 3) 4) 5) 6)
-((((((((((((((((fn [a b c d e f g h i j k l m n o p] p) 1) 2) 3) 4) 5) 6) 7) 8) 9) 10) 11) 12) 13) 14) 15) 16
+(fn (a b c d e f) f) 1 2 3 4 5 6
+(((((((fn (a b c d e f) f) 1) 2) 3) 4) 5) 6)
+((((((((((((((((fn (a b c d e f g h i j k l m n o p) p) 1) 2) 3) 4) 5) 6) 7) 8) 9) 10) 11) 12) 13) 14) 15) 16
 
 
-let [add5 = (add 5)  add26 = (add 26)  mod5 = (mod 5)  x = 0] (eq (mod5 (add26 x)) (add5 x))
-let [s = (fn [x y z] x z (y z))  k = const   i = id] s k k 3
+let (add5 = ((+) 5)  add26 = ((+) 26)  mod5 = ((%) 5)  x = 0) (mod5 (add26 x) == add5 x)
+let (s = (fn (x y z) x z (y z))  k = const   i = id) s k k 3
 
 
 ; ======================================================================
@@ -56,7 +56,7 @@ let [s = (fn [x y z] x z (y z))  k = const   i = id] s k k 3
 
 1 + 2 + 3
 1 + 2 * 5
-7 % 5, (add 0) 1
+7 % 5, ((+) 0) 1
 -1
 
 
@@ -65,13 +65,13 @@ let [s = (fn [x y z] x z (y z))  k = const   i = id] s k k 3
 ; ======================================================================
 
 let ((a,b) = (1,2)) a
-let ([a,(b,c)]=[1,(2,3)]) c
-let ([a,[b,c]]=[1,[2,3]]) c
+let ((a,(b,c))=(1,(2,3))) c
+let ((a,(b,c))=(1,(2,3))) c
 
 ; error!
-let ([a,[b,c]]=[1,2,3]) c 
-let ([a,(b,c)]=[1,[2,3]]) c 
-let ((a,[b,c])=[1,(2,3)]) c 
+let ((a,(b,c))=(1,2,3)) c 
+let ((a,[b,c])=(1,(2,3))) c 
+let ((a,(b,c))=(1,[2,3])) c 
    
 
 ; ======================================================================

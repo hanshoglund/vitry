@@ -18,6 +18,7 @@
  */
 package vitry.runtime;
 
+import static vitry.runtime.VitryRuntime.*;
 import vitry.runtime.misc.Utils;
 
 
@@ -61,11 +62,11 @@ abstract class AbstractSet extends InclusionPattern implements Set
         }
 
         public Pattern union(Set b) {
-            return VitryRuntime.unionOf(this, b);
+            return unionOf(this, b);
         }
 
         public Pattern intersection(Set b) {
-            return VitryRuntime.intersectionOf(this, b);
+            return intersectionOf(this, b);
         }
         
         

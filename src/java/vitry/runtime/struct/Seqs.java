@@ -45,7 +45,6 @@ public class Seqs
         }
 
         public static <T> Seq<T> cons(T x, Seq<T> xs) {
-            // TODO this may cause problems for delegators
             if (isNil(xs))
                 return new Single<T>(x);
             else

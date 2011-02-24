@@ -18,6 +18,7 @@
  */
 package vitry.runtime;
 
+import static vitry.runtime.VitryRuntime.*;
 import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.Seq;
 
@@ -27,14 +28,7 @@ import vitry.runtime.struct.Seq;
  * @author Hans Höglund
  */
 abstract public class List extends ConstructionPattern
-    {
-
-//        public InvertibleFunction structor() {
-//            // TODO should we access this from here?
-//            return null;
-//        }
-        
-        
+    {   
         // Eq and match
 
         public boolean eq(List o) {
@@ -74,18 +68,19 @@ abstract public class List extends ConstructionPattern
         public boolean matchFor(Pattern p) {
             return p.match(this);
         }
+
+        public List cons(Pattern head) {
+            return listFrom(super.cons(head));
+        }
+
+        public List mapList(Function fn) {
+            return listFrom(super.<Pattern>map(fn));
+        }
+        
         
         
         // Java stuff
         
-        public List mapList(Function fn) {
-            return VitryRuntime.list(super.<Pattern>map(fn));
-        }
-        
-        public List cons(Pattern head) {
-            return VitryRuntime.list(super.cons(head));
-        }
-
         public boolean equals(Object o) {
             if (o == this) return true;
             if (o instanceof List) return eq((List) o);

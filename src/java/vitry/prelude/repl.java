@@ -51,7 +51,6 @@ public class repl extends RestFunction
                         if (line.length() == 0){
                             continue;
                         }
-                        line = "(" + line + ")";
                         
                         VitryLexer lexer = new VitryLexer();
                         lexer.setCharStream(new ANTLRReaderStream(new StringReader(line)));
@@ -60,13 +59,13 @@ public class repl extends RestFunction
                         parser.setTreeAdaptor(new VitryTreeAdaptor());
 
                         
-                        Pattern read = (Pattern) parser.expr().getTree();
+                        Pattern read = (Pattern) parser.inline(true).getTree();
                         
                         Object value = rt.getInterpreter().eval(read);
                         System.out.println(value);
                         
                     } catch (Exception e) {
-                        System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                        System.err.println(e.getClass().getSimpleName() + ": " + e.getMessage());
 //                        e.printStackTrace();
                     }
                 }

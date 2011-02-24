@@ -64,6 +64,14 @@ abstract public class InclusionPattern extends BasePattern implements Seq<Patter
         public <U> MapSeq<Pattern, U> map(Function fn) {
             return new MapSeq<Pattern,U>(fn, this);
         }
+
+        public Iterator<Pattern> iterator() {
+            return new SeqIterator<Pattern>(this);
+        }
+
+        public SeqIterator<Pattern> sequenceIterator() {
+            return new SeqIterator<Pattern>(this);
+        }
         
         
         
@@ -80,13 +88,5 @@ abstract public class InclusionPattern extends BasePattern implements Seq<Patter
 
         public int hashCode() {
             return Utils.hash(this.getClass().hashCode(), this);
-        }
-
-        public Iterator<Pattern> iterator() {
-            return new SeqIterator<Pattern>(this);
-        }
-
-        public SeqIterator<Pattern> sequenceIterator() {
-            return new SeqIterator<Pattern>(this);
         }
     }

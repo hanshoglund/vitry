@@ -68,12 +68,12 @@ public final class VitryRuntime implements Scope
 
         {
             def("()",                 NIL);
-            def("[]",                 NIL);
-            def("{}",                 BOTTOM);
+            def("[]",                 productOf(NIL,    new list_()));
+            def("{}",                 productOf(BOTTOM, new set_()));
             def("_",                  ANY);
             
             def("(,)",                new product_());        
-            def("[,]",                new list_());           
+            def("[,]",                new list_());
             def("{,}",                new set_());            
             def("(|)",                new union_());          
             def("(&)",                new intersection_());   
@@ -92,11 +92,12 @@ public final class VitryRuntime implements Scope
             def("complex",            COMPLEX);
             def("char",               CHAR);
             def("str",                STR);
-            def("symbol",             new symbol());
-            def("string",             new string());
+            
+            def("symbol",             new symbol_());
+            def("string",             new string_());
 
             def("(==)",               new eq());
-            def("(/=)",               NIL);                   // TODO
+            def("(!=)",               NIL);                   // TODO
             def("not",                NIL);                   // TODO 
             def("(&&)",               NIL);                   // TODO 
             def("(||)",               NIL);                   // TODO 
@@ -149,59 +150,61 @@ public final class VitryRuntime implements Scope
 
             def("head",               new head());
             def("tail",               new tail());
-            def("last",               NIL);
-            def("init",               NIL);
-            def("prepend",            NIL);
-            def("append",             NIL);
+            def("last",               NIL);                   // TODO
+            def("init",               NIL);                   // TODO
+            def("prepend",            NIL);                   // TODO
+            def("append",             NIL);                   // TODO
 
-            def("length",             NIL);
-            def("rank",               NIL);
-            def("isEmpty",            NIL);
-            def("isSingle",           NIL);
+            def("length",             NIL);                   // TODO
+            def("rank",               NIL);                   // TODO
+            def("isEmpty",            NIL);                   // TODO
+            def("isSingle",           NIL);                   // TODO
 
-            def("nth",                NIL);
-            def("map",                NIL);
-            def("apply",              NIL);
-            def("foldl",              NIL);
-            def("foldr",              NIL);
-            def("concat",             NIL);
+            def("nth",                NIL);                   // TODO
+            def("map",                NIL);                   // TODO
+            def("apply",              NIL);                   // TODO
+            def("foldl",              NIL);                   // TODO
+            def("foldr",              NIL);                   // TODO
+            def("concat",             NIL);                   // TODO
 
-            def("insert",             NIL);
-            def("substr",             NIL);
-            def("subseq",             NIL);
-            def("drop",               NIL);
-            def("take",               NIL);
-            def("remove",             NIL);
-            def("retain",             NIL);
+            def("insert",             NIL);                   // TODO
+            def("substr",             NIL);                   // TODO
+            def("subseq",             NIL);                   // TODO
+            def("drop",               NIL);                   // TODO
+            def("take",               NIL);                   // TODO
+            def("remove",             NIL);                   // TODO
+            def("retain",             NIL);                   // TODO
 
-            def("reverse",            NIL);
-            def("revappend",          NIL);
-            def("sort",               NIL);
-            def("search",             NIL);
-            def("shuffle",            NIL);
-            def("permute",            NIL);
-            def("partition",          NIL);
+            def("reverse",            NIL);                   // TODO
+            def("revappend",          NIL);                   // TODO
+            def("sort",               NIL);                   // TODO
+            def("search",             NIL);                   // TODO
+            def("shuffle",            NIL);                   // TODO
+            def("permute",            NIL);                   // TODO
+            def("partition",          NIL);                   // TODO
 
-            def("some",               NIL);
-            def("every",              NIL);
-            def("none",               NIL);
+            def("some",               NIL);                   // TODO
+            def("every",              NIL);                   // TODO
+            def("none",               NIL);                   // TODO
 
-            def("(++)",               new conc());
-            
-            def("now",                NIL);
+            def("(++)",               new conc());            
+            def("now",                NIL);                   // TODO
 
             def("read",               new read(this));
             def("eval",               new eval_(this));
             def("print",              new print(this));
-            def("error",              NIL);
+            def("error",              NIL);                   // TODO
 
             def("repl",               new repl(this));
-            def("require",            NIL);
-            def("load",               NIL);
-            def("version",            NIL);
+            def("require",            NIL);                   // TODO
+            def("load",               NIL);                   // TODO
+            def("version",            NIL);                   // TODO
             def("quit",               new quit());
             
-            // Implementation
+            
+
+            // Alpha - subject to change or disappear:
+            
             def("__rt",               this);
             def("openFile",           NIL);
             def("closeFile",          NIL);
@@ -211,13 +214,14 @@ public final class VitryRuntime implements Scope
             def("list2str",           NIL);
             def("rewrite",            new rewrite(this));
 
-            // Alpha - JVM interop
             def("host",               NIL);
             def("class",              new class_(this));
             def("method",             new method(this));
             def("classOf",            new classOf(this));
             def("methodsOf",          NIL);
             def("fieldsOf",           NIL);
+            
+
 
             defFix("(..)",            12, false, false);   // gathering?
             defFix("(.)",             12, false, false );   // gathering?
@@ -535,6 +539,18 @@ final class Bottom extends AbstractSet
 
         public boolean eq(Set o) {
             return o == this;
+        }
+        
+        public boolean match(Set a) {
+            return a == this;
+        }
+
+        public boolean match(Union a) {
+            return false;
+        }
+
+        public boolean match(Intersection a) {
+            return false;
         }
 
         public String toString() {
@@ -872,6 +888,19 @@ final class intersection_ extends RestFunction
     }
     
 
+final class symbol_ extends Unary
+{
+    public Object apply(Object a) {
+        return Symbol.intern((String) a);
+    }
+}
+
+final class string_ extends Unary
+    {
+        public Object apply(Object a) throws InvocationError {
+            return a.toString();
+        }
+    }
 
 final class id extends Unary
     {

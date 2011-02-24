@@ -45,7 +45,7 @@ public interface Eval
      * a ResolveError or TypeError.
      * 
      * @param expr 
-     *      Pattern to evaluate.
+     *      Object to evaluate.
      * 
      * @throws ParseError
      * @throws ResolveError

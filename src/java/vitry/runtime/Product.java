@@ -26,5 +26,4 @@ public interface Product extends Pattern, Seq<Pattern>
         Product mapProduct(Function fn);
 
         Product cons(Pattern p);
-        
     }

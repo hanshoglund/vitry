@@ -18,7 +18,7 @@
  */
 package vitry.runtime;
 
-import static vitry.runtime.VitryRuntime.product;
+import static vitry.runtime.VitryRuntime.*;
 import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.Seq;
 
@@ -32,7 +32,6 @@ import vitry.runtime.struct.Seq;
  */
 abstract class AbstractProduct extends ConstructionPattern implements Product
     {
-        
         public boolean eq(Product o) {
             Seq<Pattern> left = o;
             Seq<Pattern> right = this;
@@ -71,20 +70,17 @@ abstract class AbstractProduct extends ConstructionPattern implements Product
             return p.match(this);
         }
         
-        
-        
+        public Product cons(Pattern head) {
+            return productFrom(super.cons(head));
+        }
+
+        public Product mapProduct(Function fn) {
+            return productFrom(super.<Pattern>map(fn));
+        }
         
         
         
         // Java stuff
-
-        public Product mapProduct(Function fn) {
-            return product(super.<Pattern>map(fn));
-        }
-
-        public Product cons(Pattern head) {
-            return product(super.cons(head));
-        }
 
         public boolean equals(Object o) {
             if (o == this) return true;
