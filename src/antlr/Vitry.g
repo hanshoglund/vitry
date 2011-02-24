@@ -30,26 +30,32 @@ tokens {
     Ang;    
     Left; 
     Quote;
-
     Module; 
     Fn;
     Let; 
     Assign;
     Apply; 
-    Ops; If; 
-    Match; 
-    
+    Ops; 
+    If; 
+    Match;    
     Do;
     Type;
+    Import;
+    TypeDecl;
+    Implicit;
+    Fixity;
 }
 
 
-@header {// See src/antlr/Vitry.g
-package vitry.runtime.parse;
+@header {
+    // See src/antlr/Vitry.g
+    package vitry.runtime.parse;
 }
-@lexer::header {// See src/antlr/Vitry.g
-package vitry.runtime.parse;
-}                         
+
+@lexer::header {
+    // See src/antlr/Vitry.g
+    package vitry.runtime.parse;
+}
 
 @members {
     // TODO override mismatch() and recoverFromMismatchSet()
@@ -64,32 +70,52 @@ package vitry.runtime.parse;
 
 
 /*
- * Parser rules
+ * Parser rules                                 
+ *
+ * TODO do, match
  */
 
-expr    
-    : (delim[true] ':') => delim[true] ':' expr   -> ^(Type delim expr)
-    | delim[true]
-    ; 
-
-/*
- * Left-side expression, forces destructuring and type checks
- * Note that in a : b, b is always right-side
- */
-left   
-    : (delim[false] ':') => delim[false] ':' expr -> ^(Left ^(Type delim expr))
-    | delim[false]                                -> ^(Left delim)
+expr
+    : 'fn'   '(' leftSimple* ')' expr           -> ^(Fn leftSimple* expr)
+    | 'let'  (('(' left '=') => assign)* expr   -> ^(Let assign* expr)
+    | 'do'   (assign)*                          -> ^(Do assign*)
+    | 'if' type type 'else'? expr               -> ^(If type type expr)
+    | 'match' v=type '(' 
+        ('('c+=left')' '('e+=expr')')* ')'      -> ^(Match $v ^($c $e)*)    
+    | inline
     ;
 
-/* 
- * Delimited, quoted or atomic
- */
-delim [boolean rs]
-    : '(' inline[rs]? ')'  -> ^(Par inline?)
-    | '[' inline[rs]? ']'  -> ^(Bra inline?)
-    | '{' inline[rs]? '}'  -> ^(Ang inline?)
-    | '`' Op               -> ^(Quote Op)
-    | '`' delim[rs]        -> ^(Quote delim)
+left
+    : inline -> ^(Left inline)	
+	;                    
+
+inline
+    : (Op (')' | ']' | '}')) => Op
+    | (Op apply)+                                   -> ^(Ops ^(Op apply)+)
+    | (apply Op) => e=apply (Op f+=apply)+          -> ^(Ops $e ^(Op $f)+)  
+    | apply
+    ;     
+
+assign
+    : '(' left '=' expr ')'  -> ^(Assign left expr)
+    ;
+
+apply
+    : (type type) => type+  -> ^(Apply type+)
+    | type
+    ;
+
+type    
+    : (simple ':') => simple ':' simple   -> ^(Type simple simple)
+    | simple
+    ; 
+
+simple
+    : '(' expr? ')'  -> ^(Par expr?)
+    | '[' expr? ']'  -> ^(Bra expr?)
+    | '{' expr? '}'  -> ^(Ang expr?)
+    | '`' Op         -> ^(Quote Op)
+    | '`' simple     -> ^(Quote simple)
     | Symbol
     | Natural
     | Float
@@ -97,77 +123,23 @@ delim [boolean rs]
     | String
     ;
 
-/*    
- * Inline, that is operator expression, application or special form
- *
- * TODO Support postfix operators?
- */
-inline [boolean rs]
-    : {$rs}? inlineRight
-    | (Op (')' | ']' | '}')) => Op
-    | (Op apply)+                            -> ^(Ops ^(Op apply)+)
-    | (apply Op) => e=apply (Op f+=apply)+   -> ^(Ops $e ^(Op $f)+)  
-    | apply
-    ;                      
+leftSimple
+	: simple -> ^(Left simple)	
+	;
 
-/*    
- * Strictly right-side special forms
- *
- * TODO We use delimiters for these expressions, however none
- * of these emit context. Is this confusing?
- */
-inlineRight
-    : 'fn'   '(' left*   ')' inline[true]        -> ^(Fn left* inline)
-    | 'let'  '(' assign* ')' inline[true]        -> ^(Let assign* inline)
-    | 'do'   '(' assign* ')' expr*               -> ^(Do assign* expr*)
-    | 'match' v=expr '(' (c+=left e+=expr)* ')'  -> ^(Match $v ^($c $e)*)    
-    | 'if' expr expr 'else'? inline[true]        -> ^(If expr expr inline)
-    ;
 
-assign
-    : //'(' left '=' expr ')' -> ^(Assign left expr)
-    //| 
-    left '=' expr         -> ^(Assign left expr)
-    ;
-    
 
-apply
-    : (expr expr) => expr+  -> ^(Apply expr+)
-    | expr
+
+decl :
+//     'module' moduleName expr*
+//    | 'import' ('(' moduleName ('as' Symbol)? ')')+
+//    | 'type' ('(' assign ')')*
     ;
 
 
-/*
- * Module declaration
- * Note that this is not an expr
- */
-module 
-    : 'module' moduleName 
-      ( 
-        '(' exports+=Symbol* ')' 
-      )?
-      ( 
-        'import' imports+=moduleName*
-      )*
-      ( 
-        '(' declarations+=declaration ')' 
-      )*
-      // -> ^(Module moduleName ^($exports)* ^($imports)* ^($declarations)*)
-    ;
-    
-declaration
-    : assign
-    //-> ^(MemberDecl left expr)      
-    // | Symbol '(' left*        ')' '=' inline[true] 
-    //-> ^(FnDecl Symbol left+ inline)
-    // | 'type' '(' assign* ')'
-    //-> ^(TypeDecl assign*)
-    // | 'implicit' '(' (expr expr)* ')'           
-    //-> ^(ImplicitDecl ^(expr expr)*)
-    ;
-    
+   
 dummy :
-    'as' | 'type' | 'implicit' | 'fixity'
+    'module' | 'import' | 'as' | 'type' | 'implicit' | 'fixity'
     ;
      
 

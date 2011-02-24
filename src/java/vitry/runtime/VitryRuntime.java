@@ -191,6 +191,7 @@ public final class VitryRuntime implements Scope
             def("now",                NIL);                   // TODO
 
             def("read",               new read(this));
+            def("readDecl",           new readDecl(this));
             def("eval",               new eval_(this));
             def("print",              new print(this));
             def("error",              NIL);                   // TODO

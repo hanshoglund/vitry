@@ -170,7 +170,17 @@ public class Interpreter implements Eval
                     Utils.nothing(DEBUG1);
                 }     
                 
-                if (isSelfEvaluating(expr)) return expr;    
+                if (isSelfEvaluating(expr)) {
+                    if (expr instanceof Symbol) {
+                        if (context.lookup(SIDE) == LEFT || context.lookup(QUOTED) == TRUE ) {
+                            return expr;
+                        } else {
+                            return frame.lookup((Symbol) expr);
+                        }
+                    }
+                    else
+                        return expr;
+                }     
                 
                 /*
                  * Parse tree structure

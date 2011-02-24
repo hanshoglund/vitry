@@ -59,7 +59,7 @@ public class repl extends RestFunction
                         parser.setTreeAdaptor(new VitryTreeAdaptor());
 
                         
-                        Pattern read = (Pattern) parser.inline(true).getTree();
+                        Pattern read = (Pattern) parser.expr().getTree();
                         
                         Object value = rt.getInterpreter().eval(read);
                         System.out.println(value);

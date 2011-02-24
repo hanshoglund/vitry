@@ -1,5 +1,25 @@
 ; Test by java -cp bin:lib/* vitry.runtime.launch.IndentFile test/vitry/indent.vitry > test/indent/indent.vitry
 
+fn (x y z) M
+
+
+
+let a = 1
+    b = 2
+    c
+
+do  a = 1
+    b
+    c = 2
+
+match x
+    a b
+    c d
+    
+if a < b
+    a
+    b
+
 
 "========== Declarations =========="
 
@@ -94,22 +114,18 @@ f = fn
 
 "========== Let =========="
 
-foo = let (x = 1 y = 2) (x + x)
 
-foo = let (x = 1 y = 2)
-    x + x
 
 ; FIXME does not enclose
 foo = let x = 1
         y = 2
         x + x
 
-foo = let ((x = 1) (y = 2)) (x + x)
+foo = let (x = 1) (y = 2) x + x
 
 foo = let x = 1
     x + x
 
-; FIXME does not enclose
 foo =
     let x = 1
         x + x
@@ -117,31 +133,15 @@ foo =
 
 
 "========== Do ==========" 
-fn (x y z) M
 
-
-
-let a = 1
-    b = 2
-    c
-
-do  a = 1
-    b
-    c = 2
-
-match x
-    a b
-    c d
-    
-if a < b
-    a
-    b
 
 
 "========== Match =========="
 
 
 "========== If =========="
+
+; TODO do not enclose if!
 
 if (a < 1) `small `big
          

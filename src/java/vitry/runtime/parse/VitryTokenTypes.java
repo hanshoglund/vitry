@@ -37,28 +37,28 @@ public class VitryTokenTypes
          * Terminals used by lexer. Do not confuse with the AST variants.
          * These do not exist in the syntax tree.
          */
-        public static final int PL = VitryParser.T__34;
-        public static final int PR = VitryParser.T__35;
-        public static final int BL = VitryParser.T__36;
-        public static final int BR = VitryParser.T__37;
-        public static final int AL = VitryParser.T__38;
-        public static final int AR = VitryParser.T__39;
+        public static final int PL = VitryParser.T__38;
+        public static final int PR = VitryParser.T__39;
+        public static final int BL = VitryParser.T__47;
+        public static final int BR = VitryParser.T__48;
+        public static final int AL = VitryParser.T__49;
+        public static final int AR = VitryParser.T__50;
         
-        public static final int FN = VitryParser.T__41;
-        public static final int LET = VitryParser.T__42;
+        public static final int FN = VitryParser.T__37;
+        public static final int LET = VitryParser.T__40;
         public static final int DO = VitryParser.T__43;
         public static final int MATCH = VitryParser.T__44;
         
-        public static final int IF = VitryParser.T__45;
-        public static final int ELSE = VitryParser.T__46;
-        public static final int EQ = VitryParser.T__47;
-        public static final int MODULE = VitryParser.T__48;
+        public static final int IF = VitryParser.T__41;
+        public static final int ELSE = VitryParser.T__42;
+        public static final int EQ = VitryParser.T__45;
+        public static final int MODULE = VitryParser.T__52;
         
-        public static final int IMPORT = VitryParser.T__49;
-        public static final int AS = VitryParser.T__50;
-        public static final int TYPE = VitryParser.T__51;
-        public static final int IMPLICIT = VitryParser.T__52;
-        public static final int FIXITY = VitryParser.T__53;
+        public static final int IMPORT = VitryParser.T__53;
+        public static final int AS = VitryParser.T__54;
+        public static final int TYPE = VitryParser.T__55;
+        public static final int IMPLICIT = VitryParser.T__56;
+        public static final int FIXITY = VitryParser.T__57;
 
         /**
          * The syntactic tokens used in the AST. These are members of
@@ -82,6 +82,10 @@ public class VitryTokenTypes
             def("Par", VitryParser.Par);
             def("Quote", VitryParser.Quote);
             def("Type", VitryParser.Type);
+            def("Import", VitryParser.Import);
+            def("TypeDecl", VitryParser.TypeDecl);
+            def("Implicit", VitryParser.Implicit);
+            def("Fixity", VitryParser.Fixity);
         }
 
 
