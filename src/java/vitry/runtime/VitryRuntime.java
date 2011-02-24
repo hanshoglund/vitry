@@ -18,8 +18,7 @@
  */
 package vitry.runtime;
 
-import static vitry.runtime.VitryRuntime.product;
-import static vitry.runtime.VitryRuntime.toVitryBool;
+import static vitry.runtime.VitryRuntime.*;
 
 import java.math.BigInteger;
 import java.util.Iterator;
@@ -38,242 +37,215 @@ import vitry.runtime.struct.*;
 public final class VitryRuntime implements Scope
     {
 
-        public static final Nil         NIL             = new Nil();
-        public static final Bottom      BOTTOM          = new Bottom();
-        public static final Any         ANY             = new Any();
-        public static final Symbol      TRUE            = Symbol.intern("true");
-        public static final Symbol      FALSE           = Symbol.intern("false");
-        public static final Set         NAT             = NativeSet.forClass(BigInteger.class);
-        public static final Set         INT             = NativeSet.forClass(BigInteger.class);
-        public static final Set         RAT             = NativeSet.forClass(BigRational.class);
-        public static final Set         FLOAT           = NativeSet.forClass(Float.class);
-        public static final Set         DOUBLE          = NativeSet.forClass(Double.class);
-        public static final Set         COMPLEX         = null;
-        public static final Set         CHAR            = NativeSet.forClass(Character.class);
-        public static final Set         STR             = NativeSet.forClass(String.class);
-        // TODO boolean etc
-        static final int                MIN_ARITY       = 1;
-        static final int                MAX_ARITY       = 0xf;
-
-
-
-        private final Env<Symbol, Object> prelude = new HashEnvironment<Symbol, Object>();
+        public static final Nil       NIL             = new Nil();
+        public static final Symbol    TRUE            = Symbol.intern("true");
+        public static final Symbol    FALSE           = Symbol.intern("false");
+        public static final Any       ANY             = new Any();
+        public static final Bottom    BOTTOM          = new Bottom();
+        public static final Union     BOOL            = unionOf(TRUE, FALSE);
         
-        private final Env<Symbol, Fixity> preludeFixities = new HashEnvironment<Symbol, Fixity>();
+        public static final Set       NAT             = NativeSet.forClass(BigInteger.class);
+        public static final Set       INT             = NativeSet.forClass(BigInteger.class);
+        public static final Set       RAT             = NativeSet.forClass(BigRational.class);
+        public static final Set       FLOAT           = NativeSet.forClass(Float.class);
+        public static final Set       DOUBLE          = NativeSet.forClass(Double.class);
+        public static final Set       COMPLEX         = null;
+        public static final Set       CHAR            = NativeSet.forClass(Character.class);
+        public static final Set       STR             = NativeSet.forClass(String.class);
+
+        static final int              MIN_ARITY       = 1;
+        static final int              MAX_ARITY       = 0xf;
+
+
+        /**
+         * Standard prelude
+         *                                          
+         * This is non-static so that bootstrap functions can access the runtime. 
+         */
+        private final Env<Symbol, Object> prelude = new HashEnv<Symbol, Object>();
+           
+        private final Env<Symbol, Fixity> preludeFixities = new HashEnv<Symbol, Fixity>();
 
         {
-            def("()",                   NIL);
-            def("[]",                   productOf(NIL, new list()));
-            def("{}",                   productOf(BOTTOM, new set()));
-            def("_",                    ANY);
-            def("nil",                  NIL);
-            def("true",                 TRUE);
-            def("false",                FALSE);
-            def("bool",                 unionOf(TRUE, FALSE));
-            def("nat",                  NAT);
-            def("int",                  INT);
-            def("rat",                  RAT);
-            def("float",                FLOAT);
-            def("double",               DOUBLE);
-            def("complex",              COMPLEX);
-            def("char",                 CHAR);
-            def("str",                  STR);
-
-            def("(,)",                  new product());         // bootstr
-            def("[,]",                  new list());            // bootstr
-            def("{,}",                  new set());             // bootstr
-            def("(|)",                  new union());           // bootstr
-            def("(&)",                  new intersection());    // bootstr
-            def("(->)",                 NIL);                   // bootstr TODO 
-            def("(<->)",                NIL);                   // bootstr TODO 
-            def("(<-)",                 NIL);                   // bootstr TODO 
-            def("symbol",               new symbol());
-            def("string",               new string());
-
-            def("eq",                   new eq());
-            def("neq",                  NIL);                   // bootstr TODO 
-            def("lt",                   NIL);                   // bootstr TODO 
-            def("lte",                  NIL);                   // bootstr TODO 
-            def("gte",                  NIL);                   // bootstr TODO 
-            def("gt",                   NIL);                   // bootstr TODO 
-            def("succ",                 NIL);                   // bootstr TODO 
-            def("pred",                 NIL);                   // bootstr TODO 
-            def("min",                  NIL);                   // prelude TODO 
-            def("max",                  NIL);                   // prelude TODO
-            def("(==)",                 alias("eq"));
-            def("(/=)",                 alias("neq"));
-            def("(<)",                  alias("lt"));
-            def("(<=)",                 alias("lte"));
-            def("(=>)",                 alias("gte"));
-            def("(>)",                  alias("gt"));
-            def("not",                  NIL);                   // prelude TODO 
-            def("and",                  NIL);                   // prelude TODO 
-            def("or",                   NIL);                   // prelude TODO 
-
-            def("arity",                new arity_());
-            def("id",                   new id());
-            def("const",                new const_());
-            def("compose",              new compose());
-            def("follow",               NIL);                   // prelude TODO
-            def("power",                NIL);                   // prelude TODO
-            def("flip",                 NIL);                   // prelude TODO
-            def("(.)",                 alias("compose"));
-            def("(..)",                alias("follow"));
-
-            def("add",                  new add());
-            def("sub",                  new sub());
-            def("mul",                  new mul());
-            def("div",                  new div());
-            def("mod",                  new mod());
-            def("modp",                 new modp());
-            def("negate",               new neg());
-            def("abs",                  NIL);
-            def("signum",               NIL);
-            def("exp",                  new pow());
-            def("sqrt",                 NIL);
-            def("log",                  NIL);
-            def("logn",                 NIL);
-            def("ln",                   NIL);
-            def("sin",                  NIL);
-            def("tan",                  NIL);
-            def("cos",                  NIL);
-            def("asin",                 NIL);
-            def("atan",                 NIL);
-            def("acos",                 NIL);
-            def("round",                NIL);
-            def("ceil",                 NIL);
-            def("floor",                NIL);
-            def("recip",                NIL);
-            def("sum",                  NIL);
-            def("prod",                 NIL);
-            def("gcd",                  NIL);
-            def("lcm",                  NIL);
-            def("(+)",                  alias("add"));
-            def("(-)",                  alias("sub"));
-            def("(*)",                  alias("mul"));
-            def("(/)",                  alias("div"));
-            def("(%)",                  alias("mod"));
-            def("(%%)",                 alias("modp"));
-            def("(^)",                  alias("exp"));
-
-            def("isNegative",           NIL);
-            def("isOdd",                NIL);
-            def("isEven",               NIL);
-            def("isPrime",              NIL);
-
-            // head        : [a] -> a
-            // tail        : [a] -> [a]
-            // last        : [a] -> a
-            // init        : [a] -> [a]
-            // cons        : a, [a] -> a
+            def("()",                 NIL);
+            def("[]",                 NIL);
+            def("{}",                 BOTTOM);
+            def("_",                  ANY);
             
-            // Sequence functions
-            // Overload on strings pro tempore
-
-            def("head",                 new head());
-            def("tail",                 new tail());
-            def("last",                 NIL);
-            def("init",                 NIL);
-            def("prepend",              NIL);
-            def("append",               NIL);
-
-            def("length",               NIL);
-            def("rank",                 NIL);
-            def("isEmpty",              NIL);
-            def("isSingle",             NIL);
-
-            def("nth",                  NIL);
-            def("map",                  NIL);
-            def("apply",                NIL);
-            def("foldl",                NIL);
-            def("foldr",                NIL);
-            def("concat",               NIL);
-
-            def("insert",               NIL);
-            def("substr",               NIL);
-            def("subseq",               NIL);
-            def("drop",                 NIL);
-            def("take",                 NIL);
-            def("remove",               NIL);
-            def("retain",               NIL);
-
-            def("reverse",              NIL);
-            def("revappend",            NIL);
-            def("sort",                 NIL);
-            def("search",               NIL);
-            def("shuffle",              NIL);
-            def("permute",              NIL);
-            def("partition",            NIL);
-
-            def("some",                 NIL);
-            def("every",                NIL);
-            def("none",                 NIL);
-
-            def("(++)",                 new conc());
-            def("conc",                 alias("(++)"));
+            def("(,)",                new product_());        
+            def("[,]",                new list_());           
+            def("{,}",                new set_());            
+            def("(|)",                new union_());          
+            def("(&)",                new intersection_());   
+            def("(->)",               NIL);                   // TODO 
+            def("(<->)",              NIL);                   // TODO 
             
-            def("now",                  NIL);
+            def("nil",                NIL);
+            def("true",               TRUE);
+            def("false",              FALSE);
+            def("bool",               BOOL);
+            def("nat",                NAT);
+            def("int",                INT);
+            def("rat",                RAT);
+            def("float",              FLOAT);
+            def("double",             DOUBLE);
+            def("complex",            COMPLEX);
+            def("char",               CHAR);
+            def("str",                STR);
+            def("symbol",             new symbol());
+            def("string",             new string());
 
-            def("read",                 new read(this));
-            def("eval",                 new eval_(this));
-            def("print",                new print(this));
-            def("error",                NIL);
+            def("(==)",               new eq());
+            def("(/=)",               NIL);                   // TODO
+            def("not",                NIL);                   // TODO 
+            def("(&&)",               NIL);                   // TODO 
+            def("(||)",               NIL);                   // TODO 
+            def("(<)",                NIL);
+            def("(<=)",               NIL);
+            def("(=>)",               NIL);
+            def("(>)",                NIL);
 
-            def("repl",                 new repl(this));
-            def("require",              NIL);
-            def("load",                 NIL);
-            def("version",              NIL);
-            def("quit",                 new quit());
+            def("arity",              new arity_());
+            def("id",                 new id());
+            def("const",              new const_());
+            def("(.)",                new compose());
+            def("(..)",               NIL);                   // TODO
+            def("power",              NIL);                   // TODO
+            def("flip",               NIL);                   // TODO
+
+            def("(+)",                new add());
+            def("(-)",                new sub());
+            def("(*)",                new mul());
+            def("(/)",                new div());
+            def("(%)",                new mod());
+            def("(%%)",               new modp());
+            def("(^)",                new pow());
+            def("abs",                NIL);                   // TODO
+            def("signum",             NIL);                   // TODO
+            def("sqrt",               NIL);                   // TODO
+            def("log",                NIL);                   // TODO
+            def("logn",               NIL);                   // TODO
+            def("ln",                 NIL);                   // TODO
+            def("sin",                NIL);                   // TODO
+            def("tan",                NIL);                   // TODO
+            def("cos",                NIL);                   // TODO
+            def("asin",               NIL);                   // TODO
+            def("atan",               NIL);                   // TODO
+            def("acos",               NIL);                   // TODO
+            def("round",              NIL);                   // TODO
+            def("ceil",               NIL);                   // TODO
+            def("floor",              NIL);                   // TODO
+            def("recip",              NIL);                   // TODO
+            def("sum",                NIL);                   // TODO
+            def("prod",               NIL);                   // TODO
+            def("gcd",                NIL);                   // TODO
+            def("lcm",                NIL);                   // TODO
+
+            def("isOdd",              NIL);                   // TODO
+            def("isEven",             NIL);                   // TODO
+            def("isPrime",            NIL);                   // TODO
+            def("isZero",             NIL);                   // TODO
+            def("isNegative",         NIL);                   // TODO
+
+            def("head",               new head());
+            def("tail",               new tail());
+            def("last",               NIL);
+            def("init",               NIL);
+            def("prepend",            NIL);
+            def("append",             NIL);
+
+            def("length",             NIL);
+            def("rank",               NIL);
+            def("isEmpty",            NIL);
+            def("isSingle",           NIL);
+
+            def("nth",                NIL);
+            def("map",                NIL);
+            def("apply",              NIL);
+            def("foldl",              NIL);
+            def("foldr",              NIL);
+            def("concat",             NIL);
+
+            def("insert",             NIL);
+            def("substr",             NIL);
+            def("subseq",             NIL);
+            def("drop",               NIL);
+            def("take",               NIL);
+            def("remove",             NIL);
+            def("retain",             NIL);
+
+            def("reverse",            NIL);
+            def("revappend",          NIL);
+            def("sort",               NIL);
+            def("search",             NIL);
+            def("shuffle",            NIL);
+            def("permute",            NIL);
+            def("partition",          NIL);
+
+            def("some",               NIL);
+            def("every",              NIL);
+            def("none",               NIL);
+
+            def("(++)",               new conc());
+            
+            def("now",                NIL);
+
+            def("read",               new read(this));
+            def("eval",               new eval_(this));
+            def("print",              new print(this));
+            def("error",              NIL);
+
+            def("repl",               new repl(this));
+            def("require",            NIL);
+            def("load",               NIL);
+            def("version",            NIL);
+            def("quit",               new quit());
             
             // Implementation
-            def("__rt",                 this);
-
-            // Alpha - to be replaced
-            def("openFile",             NIL);
-            def("closeFile",            NIL);
-            def("readFile",             NIL);
-            def("writeFile",            NIL);
-            def("str2list",             NIL);
-            def("list2str",             NIL);
-            def("rewrite",              new rewrite(this));
+            def("__rt",               this);
+            def("openFile",           NIL);
+            def("closeFile",          NIL);
+            def("readFile",           NIL);
+            def("writeFile",          NIL);
+            def("str2list",           NIL);
+            def("list2str",           NIL);
+            def("rewrite",            new rewrite(this));
 
             // Alpha - JVM interop
-            def("host",                 NIL);
-            def("class",                new class_(this));
-            def("method",               new method(this));
-            def("fieldGet",             NIL);
-            def("fieldPut",             NIL);
-            def("classOf",              new classOf(this));
-            def("methodsOf",            NIL);
-            def("fieldsOf",             NIL);
+            def("host",               NIL);
+            def("class",              new class_(this));
+            def("method",             new method(this));
+            def("classOf",            new classOf(this));
+            def("methodsOf",          NIL);
+            def("fieldsOf",           NIL);
 
-            defFix("(..)",              12, false, false);   // gathering?
-            defFix("(.)",               12, false, false );   // gathering?
-            defFix("(^^)",              10, true,  false);
-            defFix("(^)",               10, true,  false);
-            defFix("(%)",               9,  true,  false);
-            defFix("(%%)",              9,  true,  false);
-            defFix("(/)",               9,  true,  false);
-            defFix("(*)",               9,  true,  false);
-            defFix("(-)",               8,  true,  false);
-            defFix("(+)",               8,  true,  false);
-            defFix("(++)",              8,  true,  false);
-            defFix("(<)",               6,  true,  false);
-            defFix("(<=)",              6,  true,  false);
-            defFix("(>=)",              6,  true,  false);
-            defFix("(>)",               6,  true,  false);
-            defFix("(/=)",              6,  true,  false);
-            defFix("(==)",              6,  true,  false);
-            defFix("[,]",               5,  true,  true);
-            defFix("{,}",               5,  true,  true);
-            defFix("(,)",               5,  true,  true);
-            defFix("(|)",               4,  true,  false);  // assoc?
-            defFix("(&)",               4,  true,  false);  // assoc?
-            defFix("(->)",              3,  false, false);
-            defFix("(&&)",              2,  false, false);
-            defFix("(||)",              1,  false, false);
-            defFix("($!)",              0,  true,  false);
-            defFix("($)",               0,  false, false);
+            defFix("(..)",            12, false, false);   // gathering?
+            defFix("(.)",             12, false, false );   // gathering?
+            defFix("(^^)",            10, true,  false);
+            defFix("(^)",             10, true,  false);
+            defFix("(%)",             9,  true,  false);
+            defFix("(%%)",            9,  true,  false);
+            defFix("(/)",             9,  true,  false);
+            defFix("(*)",             9,  true,  false);
+            defFix("(-)",             8,  true,  false);
+            defFix("(+)",             8,  true,  false);
+            defFix("(++)",            8,  true,  false);
+            defFix("(<)",             6,  true,  false);
+            defFix("(<=)",            6,  true,  false);
+            defFix("(>=)",            6,  true,  false);
+            defFix("(>)",             6,  true,  false);
+            defFix("(/=)",            6,  true,  false);
+            defFix("(==)",            6,  true,  false);
+            defFix("[,]",             5,  true,  true);
+            defFix("{,}",             5,  true,  true);
+            defFix("(,)",             5,  true,  true);
+            defFix("(|)",             4,  true,  false);  // assoc?
+            defFix("(&)",             4,  true,  false);  // assoc?
+            defFix("(->)",            3,  false, false);
+            defFix("(&&)",            2,  false, false);
+            defFix("(||)",            1,  false, false);
+            defFix("($!)",            0,  true,  false);
+            defFix("($)",             0,  false, false);
         }
 
 
@@ -306,7 +278,7 @@ public final class VitryRuntime implements Scope
          * Classes interned for reflection.
          * TODO unify with native set mechanism?
          */
-        private final Env<Symbol, Class<?>> internedClasses = new HashEnvironment<Symbol, Class<?>>();
+        private final Env<Symbol, Class<?>> internedClasses = new HashEnv<Symbol, Class<?>>();
 
 
 
@@ -458,23 +430,23 @@ public final class VitryRuntime implements Scope
         
         
         public static Product productFrom(Seq<Pattern> s) {
-            return new ForwardingProduct(s);
+            return new StdProduct(s);
         }
 
         public static List listFrom(Seq<Pattern> s) {
-            return new ForwardingList(s);
+            return new StdList(s);
         }
         
         public static Set setFrom(Seq<Pattern> s) {
-            return new ForwardingSet(s);
+            return new StdSet(s);
         }
         
         public static Union unionFrom(Seq<Pattern> s) {
-            return new ForwardingUnion(s);
+            return new StdUnion(s);
         }
 
         public static Intersection intersectionFrom(Seq<Pattern> s) {
-            return new ForwardingIntersection(s);
+            return new StdIntersection(s);
         }
 
 
@@ -519,7 +491,8 @@ public final class VitryRuntime implements Scope
 
 final class Any extends Atom
     {
-        Any() {}
+        Any() {
+        }
 
         public boolean eq(Atom o) {
             return o == this;
@@ -557,7 +530,8 @@ final class Any extends Atom
 
 final class Bottom extends AbstractSet
     {
-        Bottom() {}
+        Bottom() {
+        }
 
         public boolean eq(Set o) {
             return o == this;
@@ -595,7 +569,8 @@ final class Bottom extends AbstractSet
 
 final class Nil extends Atom implements Finite<Pattern>
     {
-        Nil() {}
+        Nil() {
+        }
 
         public boolean eq(Atom o) {
             return o == this;
@@ -652,7 +627,7 @@ class NilIterator extends SeqIterator<Pattern>
     {
         static final SeqIterator<Pattern> INSTANCE = new NilIterator();
 
-        private NilIterator(){
+        private NilIterator() {
             super(VitryRuntime.NIL);
         }
 
@@ -674,14 +649,11 @@ class NilIterator extends SeqIterator<Pattern>
     }
 
 
-
-// Core type delegators
-
-final class ForwardingProduct extends AbstractProduct
+final class StdProduct extends AbstractProduct
     {
         final Seq<Pattern> elements;
 
-        public ForwardingProduct(Seq<Pattern> elements) {
+        public StdProduct(Seq<Pattern> elements) {
             this.elements = elements;
         }
 
@@ -689,7 +661,7 @@ final class ForwardingProduct extends AbstractProduct
             return elements.iterator();
         }
 
-        final  public Pattern head() {
+        final public Pattern head() {
             return elements.head();
         }
 
@@ -703,11 +675,11 @@ final class ForwardingProduct extends AbstractProduct
     }
 
 
-final class ForwardingSet extends AbstractSet
+final class StdSet extends AbstractSet
     {
         final Seq<Pattern> elements;
 
-        public ForwardingSet(Seq<Pattern> elements) {
+        public StdSet(Seq<Pattern> elements) {
             this.elements = elements;
         }
 
@@ -729,11 +701,11 @@ final class ForwardingSet extends AbstractSet
     }
 
 
-final class ForwardingUnion extends Union
+final class StdUnion extends Union
     {
         final Seq<Pattern> elements;
 
-        public ForwardingUnion(Seq<Pattern> elements) {
+        public StdUnion(Seq<Pattern> elements) {
             this.elements = elements;
         }
 
@@ -755,11 +727,11 @@ final class ForwardingUnion extends Union
     }
 
 
-final class ForwardingIntersection extends Intersection
+final class StdIntersection extends Intersection
     {
         final Seq<Pattern> elements;
 
-        public ForwardingIntersection(Seq<Pattern> elements) {
+        public StdIntersection(Seq<Pattern> elements) {
             this.elements = elements;
         }
 
@@ -781,209 +753,205 @@ final class ForwardingIntersection extends Intersection
     }
 
 
-final class ForwardingList extends List
-{
-    final Seq<Pattern> elements;
+final class StdList extends List
+    {
+        final Seq<Pattern> elements;
 
-    public ForwardingList(Seq<Pattern> elements) {
-        this.elements = elements;
+        public StdList(Seq<Pattern> elements) {
+            this.elements = elements;
+        }
+
+        public Iterator<Pattern> iterator() {
+            return elements.iterator();
+        }
+
+        public Pattern head() {
+            return elements.head();
+        }
+
+        public Seq<Pattern> tail() {
+            return elements.tail();
+        }
+
+        public boolean hasTail() {
+            return elements.hasTail();
+        }
     }
 
-    public Iterator<Pattern> iterator() {
-        return elements.iterator();
+
+// Bootstrap prelude
+
+abstract class Unary extends StandardFunction
+    {
+        public Unary() {
+            super(1);
+        }
     }
 
-    public Pattern head() {
-        return elements.head();
+abstract class Binary extends StandardFunction
+    {
+        public Binary() {
+            super(2);
+        }
     }
 
-    public Seq<Pattern> tail() {
-        return elements.tail();
+
+final class product_ extends InvertibleRestFunction
+    {
+        public Seq<?> applyVarInverse(Object a) throws InvocationError {
+            if (a instanceof Product)
+                return ((Destructible) a).destruct();
+            return throwDestruct(a);
+        }
+
+        public Object applyVar(Seq<?> args) {
+            return VitryRuntime.productOf(Seqs.toArray(args));
+        }
+
+        private <T> T throwDestruct(Object val) {
+            throw new TypeError(val, this);
+        }
+
+        public String toString() {
+            return "(,)";
+        }
     }
 
-    public boolean hasTail() {
-        return elements.hasTail();
+final class list_ extends InvertibleRestFunction
+    {
+        public Seq<?> applyVarInverse(Object a) throws InvocationError {
+            if (a instanceof List)
+                return ((Destructible) a).destruct();
+            return throwDestruct(a);
+        }
+
+        public Object applyVar(Seq<?> args) {
+            return VitryRuntime.listOf(Seqs.toArray(args));
+        }
+
+        private <T> T throwDestruct(Object val) {
+            throw new TypeError(val, this);
+        }
+
+        public String toString() {
+            return "[,]";
+        }
     }
-}
 
-
-
-
-
-// Trivial prelude
-
-
-
-class arity_ extends StandardFunction
-{
-    public arity_() { super(1); }
-
-    public Object apply(Object a) {
-        return ((Arity) a).getArity();
+final class set_ extends RestFunction
+    {
+        public Object applyVar(Seq<?> args) {
+            return VitryRuntime.setOf(Seqs.toArray(args));
+        }
+        
+        public String toString() {
+            return "{,}";
+        }
     }
-}
 
-class compose extends StandardFunction
-{
-    public compose() { super(2); }
+final class union_ extends RestFunction
+    {
+        public Object applyVar(Seq<?> args) {
+            return VitryRuntime.unionOf(Seqs.toArray(args));
+        }
+        
+        public String toString() {
+            return "(|)";
+        }
+    }
+
+final class intersection_ extends RestFunction
+    {
+        public Object applyVar(Seq<?> args) {
+            return VitryRuntime.intersectionOf(Seqs.toArray(args));
+        }
+        
+        public String toString() {
+            return "(&)";
+        }
+    }
     
-    public Object apply(final Object f, final Object g) {
-        return new StandardFunction(1){
-            public Object apply(Object x) throws InvocationError {
-                return ((Function) f).apply(((Function) g).apply(x));
-            }  
-        };
-    }
-}
 
-class conc extends StandardFunction
-{
-    public conc() { super(2); }
-    
-    public Object apply(Object a, Object b) {
-        return ((String) a).concat((String) b);
-    }
-}
 
-class const_ extends StandardFunction
-{
-    public const_() {
-        super(1);
+final class id extends Unary
+    {
+        public Object apply(Object a) {
+            return a;
+        }
     }
 
-    public Object apply(final Object a) {
-        return new StandardFunction(1)
-            {
+final class const_ extends Unary
+    {
+        public Object apply(final Object a) {
+            return new Unary() {
                 public Object apply(Object b) {
                     return a;
                 }
             };
-    }
-}
-
-class eq extends StandardFunction
-{
-    public eq() {
-        super(2);
-    }
-
-    public Object apply(Object a, Object b) {
-        if (b instanceof Pattern) {
-            if (a instanceof Pattern) { 
-                return toVitryBool( ((Pattern) a).eqFor((Pattern) b)); 
-            }
-            return toVitryBool( ((Pattern) b).eq(a));
         }
-        return toVitryBool(a.equals(b));
-    }
-}
-
-class eval_ extends StandardFunction
-{
-    private VitryRuntime rt;
-
-    public eval_(VitryRuntime rt) {
-        super(1, rt);
-        this.rt = rt;
     }
 
-    public Object apply(Object a) {
-        return rt.getInterpreter().eval(a);
-    }
-}
-
-class head extends StandardFunction
-{
-    public head() {
-        super(1);
-    }
-    public Object apply(Object a) {
-        return ((Seq) a).head();
-    }
-}
-
-class tail extends StandardFunction
-{
-    public tail() {
-        super(1);
+final class compose extends Binary
+    {
+        public Object apply(final Object f, final Object g) {
+            return new Unary() {
+                public Object apply(Object x) throws InvocationError {
+                    return ((Function) f).apply( ((Function) g).apply(x));
+                }
+            };
+        }
     }
 
-    public Object apply(Object a) {
-        return ((Seq) a).tail();
-    }
-}
-
-class id extends StandardFunction
-{
-    public id() {
-        super(1);
+final class arity_ extends Unary
+    {
+        public Object apply(Object a) {
+            return ((Arity) a).getArity();
+        }
     }
 
-    public Object apply(Object a) {
-        return a;
+final class conc extends Binary
+    {
+        public Object apply(Object a, Object b) {
+            return ((String) a).concat((String) b);
+        }
     }
-}
 
+final class eq extends Binary
+    {
+        public Object apply(Object a, Object b) {
+            if (b instanceof Pattern) {
+                if (a instanceof Pattern) { 
+                    return toVitryBool( ((Pattern) a).eqFor((Pattern) b)); }
+                return toVitryBool( ((Pattern) b).eq(a));
+            }
+            return toVitryBool(a.equals(b));
+        }
+    }
 
-class product extends InvertibleRestFunction
-   {
-       public Seq<?> applyVarInverse(Object a) throws InvocationError {
-           if (a instanceof Product)
-               return ((Destructible) a).destruct();
-           return throwDestruct(a);
-       }
+final class eval_ extends StandardFunction
+    {
+        private VitryRuntime rt;
 
-       public Object applyVar(Seq<?> args) {
-           return VitryRuntime.productOf(Seqs.toArray(args));
-       }
+        public eval_(VitryRuntime rt) {
+            super(1, rt);
+            this.rt = rt;
+        }
 
-       private <T> T throwDestruct(Object val) {
-           throw new TypeError(val, this);
-       }
-       
-       public String toString() {
-           return "(,)";
-       }
-   }
+        public Object apply(Object a) {
+            return rt.getInterpreter().eval(a);
+        }
+    }
 
-class list extends InvertibleRestFunction
-   {
-       public Seq<?> applyVarInverse(Object a) throws InvocationError {
-           if (a instanceof List)
-               return ((Destructible) a).destruct();
-           return throwDestruct(a);
-       }
+final class head extends Unary
+    {
+        public Object apply(Object a) {
+            return ((Seq) a).head();
+        }
+    }
 
-       public Object applyVar(Seq<?> args) {
-           return VitryRuntime.listOf(Seqs.toArray(args));
-       }
-
-       private <T> T throwDestruct(Object val) {
-           throw new TypeError(val, this);
-       }
-
-       public String toString() {
-           return "[,]";
-       }
-   }
-
-class set extends RestFunction
-   {
-       public Object applyVar(Seq<?> args) {
-           return VitryRuntime.setOf(Seqs.toArray(args));
-       }
-   }
-
-class union extends RestFunction
-   {
-       public Object applyVar(Seq<?> args) {
-           return VitryRuntime.unionOf(Seqs.toArray(args));
-       }
-   }
-
-class intersection extends RestFunction
-   {
-       public Object applyVar(Seq<?> args) {
-           return VitryRuntime.intersectionOf(Seqs.toArray(args));
-       }
-   }
+final class tail extends Unary
+    {
+        public Object apply(Object a) {
+            return ((Seq) a).tail();
+        }
+    }

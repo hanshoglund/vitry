@@ -39,18 +39,20 @@ type
     nil
     True
     False
+    Any
+    Empty
     Bool = True | False
-    empty
 
 () = nil
 [] = nil
-{} = empty
+{} = Empty
+_  = Any
 
 
 ; Basic constructors
 ; May be implemented by sequencing and matching prococols.
 
-; (,)       tuple,        n == 0 || > 1
+; (,)       product,      n == 0 || > 1
 ; [,]       list,         n >= 0
 ; {,}       set,          n >= 0
 ; (|)       union,        n > 1
@@ -105,14 +107,14 @@ type
   ; Word128 = (Bool, Bool ...)
   ; Nat     = 0 | 1 | 2 ...
   ; Int     = Nat | -1 | -2 ...
-    Rat     = (Nat, Nat)
-    Complex = (Double, Double)
-    Polar   = (Double, Double)
     Char    = Word16
     Float   = Word32
     Double  = Word64
-    quad    = Word128
-    str     = [Char]
+    Quad    = Word128
+    Rat     = (Nat, Nat)
+    Complex = (Double, Double)
+    Polar   = (Double, Double)
+    Str     = [Char]
 
 type Num    = Prec
             | Real

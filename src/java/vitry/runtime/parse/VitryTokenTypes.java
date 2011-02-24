@@ -116,7 +116,7 @@ public class VitryTokenTypes
 
         private static void def(String sym, int type) {
             if (table == null)
-                table = new HashEnvironment<Pattern, Integer>();
+                table = new HashEnv<Pattern, Integer>();
             table.define(Symbol.intern(sym), type);
         }
     }

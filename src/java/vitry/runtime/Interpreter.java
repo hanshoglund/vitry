@@ -84,7 +84,7 @@ public class Interpreter implements Eval
 
         // Context for semantic disambiguition
         
-        public static final Env<Symbol, Symbol> STANDARD_CONTEXT = (new HashEnvironment<Symbol, Symbol>()
+        public static final Env<Symbol, Symbol> STANDARD_CONTEXT = (new HashEnv<Symbol, Symbol>()
             .define( DELIMITER , PAR    )
             .define( SIDE      , RIGHT  )
             .define( QUOTED    , FALSE  )

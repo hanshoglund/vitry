@@ -27,16 +27,16 @@ import vitry.runtime.error.BindingError;
  *
  * @author Hans Höglund
  */
-public class HashEnvironment<K, V> extends AbstractEnv<K, V>
+public class HashEnv<K, V> extends AbstractEnv<K, V>
     {
         private final HashMap<K, V> bindings = new HashMap<K, V>();
         
         
-        public HashEnvironment() {
+        public HashEnv() {
             super();
         }
 
-        public HashEnvironment(Env<K, V> env) {
+        public HashEnv(Env<K, V> env) {
             super(env);
         }
 
@@ -51,7 +51,7 @@ public class HashEnvironment<K, V> extends AbstractEnv<K, V>
         }
 
         public Env<K, V> extend() {
-            return new HashEnvironment<K, V>(this);
+            return new HashEnv<K, V>(this);
         }
 
         public V getBinding(K key) {
