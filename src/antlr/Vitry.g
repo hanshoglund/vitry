@@ -50,37 +50,55 @@ tokens {
 @header {
     // See src/antlr/Vitry.g
     package vitry.runtime.parse;
+    
+    import vitry.runtime.error.*;
 }
+
+// @members {
+//     protected void mismatch(IntStream input, int ttype, BitSet follow) throws RecognitionException {
+//         throw new MismatchedTokenException(ttype, input);
+//     }
+//     public Object recoverFromMismatchedSet(IntStream input, RecognitionException ex, BitSet follow) 
+//          throws RecognitionException
+//     {
+//         throw new ParseError("", ex);
+//     }
+// }    
+
+// @rulecatch {
+//     catch (RecognitionException ex) {
+//         throw new ParseError("", ex);
+//     }
+// }        
 
 @lexer::header {
     // See src/antlr/Vitry.g
     package vitry.runtime.parse;
 }
 
-@members {
-    // TODO override mismatch() and recoverFromMismatchSet()
-}
-
 @lexer::members{
-    public static int DEFAULT_CHANNEL = Token.DEFAULT_CHANNEL;
+    // public static int DEFAULT_CHANNEL = Token.DEFAULT_CHANNEL;
     public static int HIDDEN_CHANNEL  = Token.HIDDEN_CHANNEL;
     public static int COMMENT_CHANNEL = 55;
 }
 
 
-
 /*
- * Parser rules                                 
+ * Parser rules
+ *
+ * We have two main entry-points: 
+ *     - expr, used by read and repl. Returns a single expression.
+ *     - file, used by readFile. Returns a list of declarations.
  */
 
 expr
-    : 'fn'  '(' leftSimple* ')'  expr              -> ^(Fn leftSimple* expr)
+    : 'fn'  '(' leftType* ')'  expr                -> ^(Fn leftType* expr)
     | 'let' ( ('(' left '=')=> assign )*  expr     -> ^(Let assign* expr)
     | 'do'  ( ('(' | '[' | '{' | '`' | literal )=> 
-              ( ('(' left '=')=> e+=assign 
-                | e+=simple) )*                    -> ^(Do $e*)
+              ( ('(' left '=')=> assignOrExpr+=assign 
+                | assignOrExpr+=type) )*           -> ^(Do $assignOrExpr*)
     | 'if' type type 'else'? expr                  -> ^(If type type expr)
-    | 'match' type matchCase*                      -> ^(Match type matchCase*)    
+    | 'match' type assign*                         -> ^(Match type assign*)    
     | inline
     ;
 
@@ -98,10 +116,6 @@ inline
 assign
     : '(' left '=' expr ')'  -> ^(Assign left expr)
     ;
-    
-matchCase
-    : '(' left '=' expr ')'  -> ^(Assign left expr)
-    ;
 
 apply
     : (type type) => type+  -> ^(Apply type+)
@@ -111,6 +125,10 @@ apply
 type    
     : (simple ':') => simple ':' simple   -> ^(Type simple simple)
     | simple
+    ;
+    
+leftType
+    : type -> ^(Left type)
     ; 
 
 simple
@@ -129,27 +147,43 @@ literal
     | String
     ;
 
-leftSimple
-    : simple -> ^(Left simple)
+
+
+file 
+    : decl+
     ;
 
-
-
-decl :
-//     'module' moduleName expr*
-//    | 'import' ('(' moduleName ('as' Symbol)? ')')+
+decl 
+    : 'module' moduleName exportDecl*   -> ^(Module moduleName exportDecl*) 
+    | 'import' importDecl+              -> ^(Import importDecl)+
+    | 'implicit' simple+                -> ^(Implicit simple)+
+    | 'infix' infix+                    -> ^(Fixity infix)+          
 //    | 'type' ('(' assign ')')*
+//    | topLevel
+    ;
+    
+exportDecl
+    : Symbol
+    | '(' Symbol ')' -> Symbol
+    ;
+    
+importDecl
+    : moduleName
+    | '(' moduleName ('as' Symbol)? ')' -> moduleName Symbol?
     ;
 
+infix 
+    : '(' assoc=simple style=Op? pred=simple op=simple ')' -> $op $pred $assoc $style?
+    ;
 
    
 dummy :
-    'module' | 'import' | 'as' | 'type' | 'implicit' | 'fixity'
+    'module' | 'import' | 'as' | 'type' | 'implicit' | 'infix'
     ;
      
 
 /*
- * TODO We should use '.' as a canonical separator, but we can not enforce it
+ * TODO We should use some canonical separator, but we can not enforce it
  * without making it a special character.
  *
  * Maybe use a semantic predicate checking LA(1)?
@@ -160,13 +194,9 @@ moduleName :
     
 
 
-
-
-
 /*
  * Lexer rules
  */
- 
 Op  : (
          '!' | '#' | '$' | '%' | '&' | '\'' | '*' | '+' | ',' | '-' |
          '.' | '/' | ':' | ';' | '<' | '=' | '>' | '?' | '@' | '\\' | '^' | 

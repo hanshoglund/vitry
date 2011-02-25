@@ -5,16 +5,14 @@ import java.io.IOException;
 import java.io.Reader;
 
 import org.antlr.runtime.ANTLRReaderStream;
-import org.antlr.runtime.BufferedTokenStream;
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.TokenStream;
 
-import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.HeaderTokenizer.Token;
-
-import vitry.runtime.parse.IndentationTokenSource;
+import vitry.runtime.parse.Indentation;
 import vitry.runtime.parse.VitryLexer;
+import vitry.runtime.parse.VitryToken;
 
 
 public class IndentFile
@@ -26,9 +24,16 @@ public class IndentFile
             }
             Reader input = new FileReader(args[0]);
             Lexer lexer = new VitryLexer(new ANTLRReaderStream(input));
-//            TokenStream tokens = new CommonTokenStream(lexer);
-            TokenStream tokens = new CommonTokenStream(new IndentationTokenSource(new BufferedTokenStream(lexer)));
+            Indentation indent = new Indentation(lexer);
             
+//            indent.setStartToken(new CommonToken(0, "{"));
+//            indent.setEndToken(new CommonToken(0, "}"));
+//            indent.setPreserveSpace(false);
+//            indent.setInlineEnabled(false);
+//            indent.setEncloseEnabled(false);
+            
+            TokenStream tokens = new CommonTokenStream(indent);
+          
             System.out.println(tokens);
         }
 

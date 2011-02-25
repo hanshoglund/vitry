@@ -41,7 +41,7 @@ public class Utils
         
         public static int linearSearch(Object[] a, Object key) {
             for (int i = 0; i < a.length; i++) {
-                if (a[i] == key)
+                if (a[i].equals(key))
                     return i;
             }
             return -1;

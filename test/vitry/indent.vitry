@@ -1,4 +1,9 @@
-; Test by java -cp bin:lib/* vitry.runtime.launch.IndentFile test/vitry/indent.vitry > test/indent/indent.vitry
+; Test by 
+; java -cp bin:lib/* vitry.runtime.launch.IndentFile test/vitry/indent.vitry > test/indent/indent.vitry
+
+
+
+
 
 "========== Declarations =========="
 
@@ -11,7 +16,7 @@ module A
 
 import A.B
 import A.B as C
-    X.Y as Z
+       X.Y as Z
 import
     A.B as C
     X.Y as Z
@@ -19,17 +24,6 @@ import
     A
         B as X
         C as Y
-
-type a = b | c
-type a = b
-       | c
-type list a = () | list a 
-     tree a = (a) | (tree a, tree a)
-type list a = ()
-            | list a
-     tree a = (a) 
-            | (tree a, tree a)
-
 implicit a -> b
          c -> d
 implicit
@@ -41,7 +35,16 @@ infix left 2 (*)
 infix
     left 2 (*)
     right 1 (+)
-
+                                  
+type a = b | c
+type a = b
+       | c
+type list a = () | list a 
+     tree a = (a) | (tree a, tree a)
+type list a = ()
+            | list a
+     tree a = (a)
+            | (tree a, tree a)
 
 "========== Simple assignments =========="
 
@@ -52,12 +55,14 @@ foo = 1 + 2
 foo =
     1 + 2
 
-; FIXME
 str = "a very long engagement a very long engagement "
-    + "a very long engagement a very long engagement "
-    + "a very long engagement a very long engagement "
-    + "a very long engagement a very long engagement "
+        + "a very long engagement a very long engagement "
+        + "a very long engagement a very long engagement "
+        + "a very long engagement a very long engagement "
 
+str = "a very long engagement a very long engagement " +
+    "a very long engagement a very long engagement " +
+        "a very long engagement a very long engagement "
 
 "========== Equational assignments =========="
 
@@ -93,14 +98,11 @@ f = fn
 
 "========== Let =========="
 
+; Do we need inline let ?
 
-
-; FIXME does not enclose
 foo = let x = 1
-        y = 2
-        x + x
-
-foo = let (x = 1) (y = 2) x + x
+          y = 2
+          x + x
 
 foo = let x = 1
     x + x
@@ -113,9 +115,32 @@ foo =
 
 "========== Do ==========" 
 
+do  f = openFile "name"
+    chars = stream f
+    write processChars f
+    close f
+
+input = do f = openFile
+    stream f
+
+input = do 
+    let fileName = transformName "name"
+        f = openFile fileName
+    stream f
 
 
 "========== Match =========="
+
+match str
+    "hans" = 1
+    "sven" = 2
+    (_, _) = "pair"
+                       
+match str
+    "sven" = 2
+    let h = "hans"
+        h = 1
+    (_, _) = "pair"
 
 
 "========== If =========="
@@ -154,50 +179,9 @@ a = 1
         * 3
 a = 1
         + 2
-    * 3
+  * 3
+  
+a
 
 
 
-
-
-; module Fsm (main)
-;
-; import
-;     InputOutput
-;
-; names = shuffle `fresh ["Hans", "Mats", "Isak", "David", "Maria", "Mattias", "Max", "Tim", "Jason"]
-; engine = "circo"
-; degree = 2
-;
-;
-; rotate list steps =
-;    let n = steps %% (length list)
-;         take (list n) ++ take (list 0 n)
-;
-;
-; skiffle list degree =
-;    let length = (length list)
-;        lengthDegree = length / degree
-;        reverse (gen list)
-;
-; gen list =
-;    let i = lastIndexOf list
-;        nth list (floor (i % degree * lengthDegree + i/degree)) . gen list (i - 1))
-;
-;
-; nodes = join [ (format "%n [label = %n] \n  " n) | n = names ]
-;     ++ "\n    Start [shape = diamond] "
-;
-; connections = (join (names ++ (first names)) " -> ")
-;     ++ " " ++ "\n    Start -> " ++ pick names
-;
-;
-; main = do
-;     let buffer = getCharBuffer
-;         read getReader "./fsm_bu.dot" buffer
-;         rewrite buffer "${nodes}" nodes
-;         rewrite buffer "${connections}" connections
-;         write buffer buffer getWriter "./fsm.dot"
-;
-;     exec (engine + " fsm.dot -Tgif -o fsm.gif") (file ".") `block
-;     print "Done!"

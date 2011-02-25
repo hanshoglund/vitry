@@ -21,7 +21,7 @@ package vitry.runtime.error;
 
 public class ParseError extends VitryError
     {
-        private ParseError(String string, Throwable cause) {
+        public ParseError(String string, Throwable cause) {
             super(string, cause);
         }
 
