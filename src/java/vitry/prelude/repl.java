@@ -65,8 +65,11 @@ public class repl extends RestFunction
                         System.out.println(value);
                         
                     } catch (Exception e) {
-                        System.err.println(e.getClass().getSimpleName() + ": " + e.getMessage());
-//                        e.printStackTrace();
+                        if (Build.DEBUG) {
+                            e.printStackTrace();                            
+                        } else {
+                            System.err.println(e.getClass().getSimpleName() + ": " + e.getMessage());                            
+                        }
                     }
                 }
             } catch (IOException e) {

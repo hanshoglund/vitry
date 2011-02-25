@@ -43,32 +43,6 @@ public class Interpreter implements Eval
 
         // Token types
         
-        static final int TYPE_OP      = VitryParser.Op;
-        static final int TYPE_SYM     = VitryParser.Symbol;
-        static final int TYPE_NAT     = VitryParser.Natural;
-        static final int TYPE_FLOAT   = VitryParser.Float;
-        static final int TYPE_COMPLEX = VitryParser.Complex;
-        static final int TYPE_STRING  = VitryParser.String;
-        
-        static final int TYPE_ANG     = VitryParser.Ang;
-        static final int TYPE_APPLY   = VitryParser.Apply;
-        static final int TYPE_ASSIGN  = VitryParser.Assign;
-        static final int TYPE_BRA     = VitryParser.Bra;
-        static final int TYPE_DO      = VitryParser.Do;
-        static final int TYPE_FN      = VitryParser.Fn;
-        static final int TYPE_IF      = VitryParser.If;
-        static final int TYPE_LEFT    = VitryParser.Left;
-        static final int TYPE_LET     = VitryParser.Let;
-        static final int TYPE_MATCH   = VitryParser.Match;
-        static final int TYPE_MODULE  = VitryParser.Module;
-        static final int TYPE_OPS     = VitryParser.Ops;
-        static final int TYPE_PAR     = VitryParser.Par;
-        static final int TYPE_QUOTE   = VitryParser.Quote;
-        static final int TYPE_TYPE    = VitryParser.Type;
-
-        
-        // Various identifiers
-        
         static final Symbol DELIMITER = Symbol.intern("delimiter");
         static final Symbol SIDE      = Symbol.intern("side");
         static final Symbol QUOTED    = Symbol.intern("quoted");
@@ -91,21 +65,25 @@ public class Interpreter implements Eval
             .define( MUTABLE   , FALSE  ));  
         
         
+        
         // Private state
         
-        private VitryRuntime rt;
+        private VitryRuntime runtime;
+        
         private ModuleProvider moduleProvider;
                 
                 
-        public Interpreter(VitryRuntime rt) {
-            this.rt = rt;
+        public Interpreter(VitryRuntime runtime) {
+            this.runtime = runtime;
         }
 
-        public Interpreter(VitryRuntime rt, ModuleProvider moduleProvider) {
-            this.rt = rt;
+        public Interpreter(VitryRuntime runtime, ModuleProvider moduleProvider) {
+            this.runtime = runtime;
             this.moduleProvider = moduleProvider;
         }
 
+        
+        
         public boolean acceptsParserTokens() {
             return true;
         }
@@ -113,62 +91,37 @@ public class Interpreter implements Eval
         public boolean acceptsUserTokens() {
             return true;
         }
+
         
         
-        
-        
-        
-        public Object eval
-                (
-                Object expr
-                ) 
+        public Object eval(Object expr) 
         throws ParseError, LinkageError, TypeError {
-            return eval
-                (
-                expr, 
-                STANDARD_CONTEXT,
-                rt.getPrelude(),
-                rt.getPreludeFixities());
+            return eval(expr, 
+                        STANDARD_CONTEXT,
+                        runtime.getPrelude(),
+                        runtime.getPreludeFixities());
         }
-        
 
-
-       
- 
         
-        public final Object eval
-                (
-                Object expr,
-                Env<Symbol, Symbol> context,
-                Env<Symbol, Object> frame,
-//                Sequence<vitry.runtime.Type> types,
-//                Environment<Symbol, Sequence<Type>> implicits,
-                Env<Symbol, Fixity> fixities
-                )
+        
+        
+        public final Object eval(Object expr,
+                                 Env<Symbol, Symbol> context,
+                                 Env<Symbol, Object> frame,
+//                               Sequence<vitry.runtime.Type> types,
+//                               Environment<Symbol, Sequence<Type>> implicits,
+                                 Env<Symbol, Fixity> fixities)
+        
         throws ParseError, LinkageError, TypeError {
-                             
-            /**
-             * Expr head or null
-             */
-            Pattern exprOp;
+
             
-            /**
-             * Expr tail or null
-             */
-            Seq<Pattern> exprOps;
-            
-            /**
-             * Type of expr head
-             */
+            Pattern exprHead;
+            Seq<Pattern> exprTail;
+
             int exprType;
 
             
             while (true) {
-                                                  
-                if (DEBUG) {
-                    String DEBUG1 = expr.toString();
-                    Utils.nothing(DEBUG1);
-                }     
                 
                 if (isSelfEvaluating(expr)) {
                     if (expr instanceof Symbol) {
@@ -190,11 +143,11 @@ public class Interpreter implements Eval
                  */
                 try {
                     if (isAcceptedToken(expr)) {
-                        exprOp  = Utils.<Pattern>unsafe(expr);
-                        exprOps = null;                            
+                        exprHead  = Utils.<Pattern>unsafe(expr);
+                        exprTail = null;                            
                     } else {           
-                        exprOp  = Utils.<Seq<Pattern>>unsafe(expr).head();
-                        exprOps = Utils.<Seq<Pattern>>unsafe(expr).tail();
+                        exprHead  = Utils.<Seq<Pattern>>unsafe(expr).head();
+                        exprTail = Utils.<Seq<Pattern>>unsafe(expr).tail();
                     }
                 } catch (Exception _) {
                     throw new ParseError("Unknown form: " 
@@ -202,9 +155,9 @@ public class Interpreter implements Eval
                 }
                 try {
                     try {
-                        exprType = VitryTokenTypes.parserTokenType(exprOp);
+                        exprType = VitryTokenTypes.parserTokenType(exprHead);
                     } catch (Exception _) {
-                        exprType = VitryTokenTypes.symbolicTokenType(exprOp);
+                        exprType = VitryTokenTypes.symbolicTokenType(exprHead);
                     }
                 } catch (VitryError e) {
                     throw e;
@@ -221,32 +174,32 @@ public class Interpreter implements Eval
                         
                 switch (exprType) {
                                                    
-                    case TYPE_NAT: 
-                        return evalNat(exprOp);
+                    case VitryParser.Natural: 
+                        return evalNat(exprHead);
                     
-                    case TYPE_FLOAT: 
-                        return evalFloat(exprOp);
+                    case VitryParser.Float: 
+                        return evalFloat(exprHead);
                         
-                    case TYPE_COMPLEX: 
-                        return evalComplex(exprOp);
+                    case VitryParser.Complex: 
+                        return evalComplex(exprHead);
 
-                    case TYPE_STRING: 
-                        return evalString(exprOp);
+                    case VitryParser.String: 
+                        return evalString(exprHead);
                         
                     
-                    case TYPE_OP:
+                    case VitryParser.Op:
                         if (context.lookup(SIDE) == LEFT || context.lookup(QUOTED) == TRUE) {
-                            return evalOperator( exprOp, context.lookup(DELIMITER) );  
+                            return evalOperator( exprHead, context.lookup(DELIMITER) );  
                         } else {
-                            return frame.lookup( evalOperator( exprOp, context.lookup(DELIMITER) ));   
+                            return frame.lookup( evalOperator( exprHead, context.lookup(DELIMITER) ));   
                         }
                         
                     
-                    case TYPE_SYM:
+                    case VitryParser.Symbol:
                         if (context.lookup(SIDE) == LEFT || context.lookup(QUOTED) == TRUE ) {
-                            return evalSymbol(exprOp);
+                            return evalSymbol(exprHead);
                         } else {
-                            return frame.lookup(evalSymbol(exprOp));
+                            return frame.lookup(evalSymbol(exprHead));
                         }
                                                                                      
                     
@@ -260,8 +213,8 @@ public class Interpreter implements Eval
                      * TODO Allow syntax such as `(+) to parse as (`+) ?
                      */
 
-                    case TYPE_PAR:
-                        if (exprOps == null) {
+                    case VitryParser.Par:
+                        if (exprTail == null) {
                             // Nullary case
                             if (context.lookup(SIDE) == LEFT || context.lookup(QUOTED) == TRUE ) {
                                 return PAR;
@@ -273,13 +226,13 @@ public class Interpreter implements Eval
                                     return bra;
                                 }
                             }
-                        } else if (!isOpsExpr(exprOps.head())) {
+                        } else if (!isOpsExpr(exprTail.head())) {
                             // Unary case
                             Object bra = frame.lookup(PAR);
                             
                             if (bra instanceof Product) {
                                 final Function f = (Function) Seqs.second((Product) bra);
-                                final Object content = eval(exprOps.head(), context, frame, fixities);
+                                final Object content = eval(exprTail.head(), context, frame, fixities);
 
                                 if (context.lookup(SIDE) == LEFT && f instanceof InvertibleFunction) {
                                     return new LeftContinuation(){
@@ -303,18 +256,18 @@ public class Interpreter implements Eval
                             
                             } else {
                                 context = context.extend(DELIMITER, PAR).define(QUOTED, FALSE);
-                                expr = exprOps.head();
+                                expr = exprTail.head();
                                 continue;
                             }
                         } else {
                             // n-ary case, n > 1 
                             context = context.extend(DELIMITER, PAR).define(QUOTED, FALSE);
-                            expr = exprOps.head();
+                            expr = exprTail.head();
                             continue;
                         }
                         
-                    case TYPE_BRA:
-                        if (exprOps == null) {
+                    case VitryParser.Bra:
+                        if (exprTail == null) {
                             // Nullary case
                             if (context.lookup(SIDE) == LEFT || context.lookup(QUOTED) == TRUE ) {
                                 return BRA;
@@ -326,13 +279,13 @@ public class Interpreter implements Eval
                                     return bra;
                                 }
                             }
-                        } else if (!isOpsExpr(exprOps.head())) {
+                        } else if (!isOpsExpr(exprTail.head())) {
                             // Unary case
                             Object bra = frame.lookup(BRA);
                             
                             if (bra instanceof Product) {
                                 final Function f = (Function) Seqs.second((Product) bra);
-                                final Object content = eval(exprOps.head(), context, frame, fixities);
+                                final Object content = eval(exprTail.head(), context, frame, fixities);
 
                                 if (context.lookup(SIDE) == LEFT && f instanceof InvertibleFunction) {
                                     return new LeftContinuation(){
@@ -356,18 +309,18 @@ public class Interpreter implements Eval
                             
                             } else {
                                 context = context.extend(DELIMITER, BRA).define(QUOTED, FALSE);
-                                expr = exprOps.head();
+                                expr = exprTail.head();
                                 continue;
                             }
                         } else {
                             // n-ary case, n > 1 
                             context = context.extend(DELIMITER, BRA).define(QUOTED, FALSE);
-                            expr = exprOps.head();
+                            expr = exprTail.head();
                             continue;
                         }
                         
-                    case TYPE_ANG:
-                        if (exprOps == null) {
+                    case VitryParser.Ang:
+                        if (exprTail == null) {
                             // Nullary case
                             if (context.lookup(SIDE) == LEFT || context.lookup(QUOTED) == TRUE ) {
                                 return ANG;
@@ -379,13 +332,13 @@ public class Interpreter implements Eval
                                     return bra;
                                 }
                             }
-                        } else if (!isOpsExpr(exprOps.head())) {
+                        } else if (!isOpsExpr(exprTail.head())) {
                             // Unary case
                             Object bra = frame.lookup(ANG);
                             
                             if (bra instanceof Product) {
                                 final Function f = (Function) Seqs.second((Product) bra);
-                                final Object content = eval(exprOps.head(), context, frame, fixities);
+                                final Object content = eval(exprTail.head(), context, frame, fixities);
 
                                 if (context.lookup(SIDE) == LEFT && f instanceof InvertibleFunction) {
                                     return new LeftContinuation(){
@@ -409,41 +362,41 @@ public class Interpreter implements Eval
                             
                             } else {
                                 context = context.extend(DELIMITER, ANG).define(QUOTED, FALSE);
-                                expr = exprOps.head();
+                                expr = exprTail.head();
                                 continue;
                             }
                         } else {
                             // n-ary case, n > 1 
                             context = context.extend(DELIMITER, ANG).define(QUOTED, FALSE);
-                            expr = exprOps.head();
+                            expr = exprTail.head();
                             continue;
                         }
                        
                     
                     // Context switches
 
-                    case TYPE_LEFT:
+                    case VitryParser.Left:
                         context = context.extend(SIDE, LEFT);
-                        expr = exprOps.head();
+                        expr = exprTail.head();
                         continue;
 
-                    case TYPE_QUOTE:
+                    case VitryParser.Quote:
                         context = context.extend(QUOTED, TRUE);
-                        expr = exprOps.head();
+                        expr = exprTail.head();
                         continue;
                         
                     
 
                              
-                    case TYPE_MODULE:
+                    case VitryParser.Module:
                         // TODO
 
 
 
-                    case TYPE_FN:
+                    case VitryParser.Fn:
                         {
-                            Seq<Pattern> params = init(exprOps);
-                            Pattern body = last(exprOps);   
+                            Seq<Pattern> params = init(exprTail);
+                            Pattern body = last(exprTail);   
                             return new InterpretedFunction(params, body, frame, fixities, this);
                         }
                         
@@ -457,10 +410,10 @@ public class Interpreter implements Eval
                      * is properly discarded upon return
                      */
 
-                    case TYPE_LET:
+                    case VitryParser.Let:
                         {
-                            Seq<Pattern> assignments = init(exprOps);
-                            expr = last(exprOps);
+                            Seq<Pattern> assignments = init(exprTail);
+                            expr = last(exprTail);
                             frame = frame.extend();
                             
                             for (Pattern a : assignments) {
@@ -470,36 +423,51 @@ public class Interpreter implements Eval
                         continue;
 
 
-                    case TYPE_DO:
-                        throwNotSupported(); // TODO
-                        // Set context to mutable, then eval assigns
+                    case VitryParser.Do:
+                        {
+                            Seq<Pattern> assignments = init(exprTail);
+                            expr = last(exprTail);
+                            frame = frame.extend();
+                            context = context.extend(MUTABLE, TRUE);
+                            
+                            if (assignments != null) {
+                                for (Pattern a : assignments) {
+                                    eval(a, context, frame, fixities);              
+                                }
+                            }
+                        }
+                        continue;
                         
 
-                    case TYPE_ASSIGN:
+                    case VitryParser.Assign:
                         {
-                            Object left = eval(first(exprOps), context, frame, fixities);
-                            Object right = eval(second(exprOps), context, frame, fixities);
+                            Object left = eval(first(exprTail), context, frame, fixities);
+                            Object right = eval(second(exprTail), context, frame, fixities);
                             
                             if (left instanceof LeftContinuation) {
                                 ((LeftContinuation) left).invoke(right, frame);
                                 
                             } else {                            
                                 try {
-                                    frame.define((Symbol) left, right);
+                                    if (context.lookup(MUTABLE) == TRUE) {
+                                        frame.assoc((Symbol) left, right);
+                                    } else {
+                                        frame.define((Symbol) left, right);                                        
+                                    }
                                 } catch (ClassCastException e) {
                                     throwAssignment(left);
                                 }
                             }
-                            return null;
+                            return right;
                         }
                         
                         
 
                     // Application and infix ops
 
-                    case TYPE_APPLY:
-                        final Object            fn   = eval(exprOps.head(), context.extend(SIDE, RIGHT), frame, fixities);
-                        final Seq<Pattern> args = exprOps.tail();
+                    case VitryParser.Apply:
+                        final Object            fn   = eval(exprTail.head(), context.extend(SIDE, RIGHT), frame, fixities);
+                        final Seq<Pattern> args = exprTail.tail();
                         final int               numArgs = length(args);
 
                         if (context.lookup(SIDE) == LEFT && (fn instanceof InvertibleFunction)) {
@@ -555,7 +523,7 @@ public class Interpreter implements Eval
                                     Env<Symbol, Object> callFrame = frame;
                                     frame = ifn.env.extend();
                                     
-                                    SeqIterator<Pattern> param;
+                                    SeqIterator<?> param;
                                     Iterator<Pattern> arg;
                                     
                                     for (param = ifn.params.sequenceIterator(), arg = args.iterator();
@@ -569,21 +537,18 @@ public class Interpreter implements Eval
                                             throwAssignment(name);
                                         }
                                     }
-                                    return new InterpretedFunction
-                                        (
-                                        param.following(),      // Remaining parameters
-                                        ifn.body, 
-                                        frame,                  // Updated frame
-                                        ifn.fixities, 
-                                        ifn.interpr
-                                        );
+                                    return new InterpretedFunction(param.following(),      // Remaining parameters
+                                                                   ifn.body, 
+                                                                   frame,                  // Updated frame
+                                                                   ifn.fixities, 
+                                                                   ifn.interpr);
                                 } 
                                 if (numArgs == arity) {
                                     context = STANDARD_CONTEXT;
                                     Env<Symbol, Object> callFrame = frame;
                                     frame = ifn.env.extend();
                                     
-                                    for (Iterator<Pattern> param = ifn.params.iterator(), arg = args.iterator();
+                                    for (Iterator<?> param = ifn.params.iterator(), arg = args.iterator();
                                     param.hasNext() && arg.hasNext();) 
                                     {
                                         Object name = eval(param.next(), context, frame, fixities);
@@ -618,26 +583,26 @@ public class Interpreter implements Eval
                             }
                         }
                         
-                    case TYPE_OPS:
+                    case VitryParser.Ops:
                         OperatorRewrite rw = new OperatorRewrite(fixities, context);
-                        expr = rw.rewrite(exprOps);
+                        expr = rw.rewrite(exprTail);
                         continue;
                         
                     
                     // Branching
 
-                    case TYPE_IF:
+                    case VitryParser.If:
                         {
-                            Object condition = eval(Seqs.first(exprOps), context, frame, fixities);    
+                            Object condition = eval(Seqs.first(exprTail), context, frame, fixities);    
                             if (! (condition.equals(FALSE)) ) {
-                                expr = Seqs.second(exprOps);
+                                expr = Seqs.second(exprTail);
                             } else {
-                                expr = Seqs.third(exprOps);
+                                expr = Seqs.third(exprTail);
                             }
                             continue;
                         }
 
-                    case TYPE_MATCH:
+                    case VitryParser.Match:
                         throwNotSupported();
 
                         
@@ -657,12 +622,12 @@ public class Interpreter implements Eval
 
                     // Type restr/spec
                         
-                    case TYPE_TYPE:
+                    case VitryParser.Type:
                         {
                             // TODO native types
                             
-                            final Object left = eval(Seqs.first(exprOps), context, frame, fixities);
-                            final Pattern right = Native.wrap(eval(Seqs.second(exprOps), context.extend(SIDE, RIGHT), frame, fixities));
+                            final Object left = eval(Seqs.first(exprTail), context, frame, fixities);
+                            final Pattern right = Native.wrap(eval(Seqs.second(exprTail), context.extend(SIDE, RIGHT), frame, fixities));
     
                             if (context.lookup(SIDE) == LEFT) {
                                 
@@ -700,7 +665,7 @@ public class Interpreter implements Eval
 
 
                     default:
-                        throw new ParseError("Unkown form '" + exprOp + "' in tree " 
+                        throw new ParseError("Unkown form '" + exprHead + "' in tree " 
                             + Utils.limit(expr.toString(), TRACE_LIMIT));
                 }
             }
@@ -731,7 +696,7 @@ public class Interpreter implements Eval
         }
         private static boolean isOps(Object o) {
             if (o instanceof Pattern) {                
-                return VitryTokenTypes.tokenType((Pattern) o) == Interpreter.TYPE_OPS;
+                return VitryTokenTypes.tokenType((Pattern) o) == VitryParser.Ops;
             } 
             return false;
         }
@@ -769,7 +734,7 @@ public class Interpreter implements Eval
         
         // Errors
         
-        private static <T> T throwAssignment(Object id) {
+        static <T> T throwAssignment(Object id) {
             throw new ParseError("Can not assign to non-symbol " + id);
         }
 
@@ -790,7 +755,7 @@ final class InterpretedFunction extends RestFunction implements Arity
         /**
          * Param and body expressions
          */
-        final Seq<Pattern> params;
+        final Seq<?> params;
         final Pattern body;
         final int arity;
         final Env<Symbol, Fixity> fixities;
@@ -801,7 +766,7 @@ final class InterpretedFunction extends RestFunction implements Arity
         final Interpreter interpr;
 
         public InterpretedFunction(
-                Seq<Pattern> params, 
+                Seq<?> params, 
                 Pattern body,
                 Env<Symbol, Object> env, 
                 Env<Symbol, Fixity> fixities,
@@ -820,11 +785,28 @@ final class InterpretedFunction extends RestFunction implements Arity
         
         
         public Object applyVar(Seq<?> args, int length) {
-            Env<Symbol, Object> frame = this.getEnvironment().extend();
-
-            // TODO adapt to standard CC
+            Env<Symbol, Symbol> context = Interpreter.STANDARD_CONTEXT;
+            Env<Symbol, Object> callFrame = this.env;
+            Env<Symbol, Object> frame = this.env.extend();
             
-            return null;                                
+            SeqIterator<?> param = this.params.sequenceIterator();
+            Iterator<?> arg = args.iterator();
+            while (param.hasNext() && arg.hasNext()) 
+            {
+                Object name = interpr.eval(param.next(), context, frame, fixities);
+                Object value = interpr.eval(arg.next(), context, callFrame, fixities);
+                try {
+                    frame.define((Symbol) name, value);
+                } catch (ClassCastException e) {
+                    Interpreter.throwAssignment(name);
+                }
+            }
+            if (length(args) < arity) {
+                return new InterpretedFunction(param.following(), body, frame, fixities, interpr);
+            } else {
+                return interpr.eval(body, context, frame, fixities);
+            }
+
         }
         
         
