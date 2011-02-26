@@ -415,6 +415,7 @@ public class Interpreter implements Eval
                             Seq<Pattern> assignments = init(exprTail);
                             expr = last(exprTail);
                             frame = frame.extend();
+                            context = context.extend(MUTABLE, FALSE);
                             
                             for (Pattern a : assignments) {
                                 eval(a, context, frame, fixities);              
@@ -466,12 +467,12 @@ public class Interpreter implements Eval
                     // Application and infix ops
 
                     case VitryParser.Apply:
-                        final Object            fn   = eval(exprTail.head(), context.extend(SIDE, RIGHT), frame, fixities);
+                        final Object       fn   = eval(exprTail.head(), context.extend(SIDE, RIGHT), frame, fixities);
                         final Seq<Pattern> args = exprTail.tail();
-                        final int               numArgs = length(args);
+                        final int          numArgs = length(args);
 
                         if (context.lookup(SIDE) == LEFT && (fn instanceof InvertibleFunction)) {
-                            final Env<Symbol, Symbol> contextCs = context;
+                            final Env<Symbol, Symbol> contextCs = context.extend(MUTABLE, FALSE);
                             final Env<Symbol, Object> frameCs = frame;
                             final Env<Symbol, Fixity> fixitiesCs = fixities;
                             
@@ -520,6 +521,7 @@ public class Interpreter implements Eval
                                 int arity = ifn.getArity();
 
                                 if (numArgs < arity) {
+                                    context = STANDARD_CONTEXT;
                                     Env<Symbol, Object> callFrame = frame;
                                     frame = ifn.env.extend();
                                     
@@ -529,8 +531,8 @@ public class Interpreter implements Eval
                                     for (param = ifn.params.sequenceIterator(), arg = args.iterator();
                                     param.hasNext() && arg.hasNext();) 
                                     {
-                                        Object name = eval(param.next(), STANDARD_CONTEXT, frame, ifn.fixities);
-                                        Object value = eval(arg.next(), STANDARD_CONTEXT, callFrame, ifn.fixities);
+                                        Object name = eval(param.next(), context, frame, ifn.fixities);
+                                        Object value = eval(arg.next(), context, callFrame, ifn.fixities);
                                         try {
                                             frame.define((Symbol) name, value);
                                         } catch (ClassCastException e) {
