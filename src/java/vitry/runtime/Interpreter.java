@@ -583,13 +583,15 @@ public class Interpreter implements Eval
                             }
                         }
                         
+                        
                     case VitryParser.Ops:
                         OperatorRewrite rw = new OperatorRewrite(fixities, context);
                         expr = rw.rewrite(exprTail);
                         continue;
                         
                     
-                    // Branching
+                    
+                        // Branching
 
                     case VitryParser.If:
                         {
@@ -750,6 +752,23 @@ public class Interpreter implements Eval
 
 
 
+/**
+ * Represents an unfinished left-side computation. Callers passing left-expressions
+ * should check the returned value against this interface and react if it is
+ * received.
+ */
+interface LeftContinuation {
+    
+    /**
+     * Invoke this continuation, passing a right-side value for
+     * further processing.
+     */
+    public void invoke(Object value, Env<Symbol, Object> frame);
+}
+
+
+
+
 final class InterpretedFunction extends RestFunction implements Arity
     {
         /**
@@ -765,12 +784,11 @@ final class InterpretedFunction extends RestFunction implements Arity
          */
         final Interpreter interpr;
 
-        public InterpretedFunction(
-                Seq<?> params, 
-                Pattern body,
-                Env<Symbol, Object> env, 
-                Env<Symbol, Fixity> fixities,
-                Interpreter interpreter) {
+        public InterpretedFunction(Seq<?> params, 
+                                   Pattern body,
+                                   Env<Symbol, Object> env, 
+                                   Env<Symbol, Fixity> fixities,
+                                   Interpreter interpreter) {
             super(env);
             this.body = body;
             this.params = params;
@@ -806,7 +824,6 @@ final class InterpretedFunction extends RestFunction implements Arity
             } else {
                 return interpr.eval(body, context, frame, fixities);
             }
-
         }
         
         
@@ -831,19 +848,5 @@ final class InterpretedModule extends Module
         super(env);
         // TODO Auto-generated constructor stub
     }
-}
-
-
-
-
-/**
- * Represents an unfinished left-side computation. Callers passing left-expressions
- * should check the returned value against this interface and react if it is
- * received.
- * 
- * Typically pass in a right side value to be matched, destructured etc.
- */
-interface LeftContinuation {
-    public void invoke(Object value, Env<Symbol, Object> frame);
 }
     

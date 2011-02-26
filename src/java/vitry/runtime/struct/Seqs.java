@@ -24,9 +24,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import vitry.runtime.Function;
-import vitry.runtime.VitryRuntime;
-import vitry.runtime.misc.Utils;
+import vitry.runtime.*;
+import vitry.runtime.misc.*;
 
 
 /**
@@ -36,10 +35,11 @@ public class Seqs
     {
         private Seqs() {}
 
-        private static final Map<Object, Object> memoizedLasts = new WeakHashMap<Object, Object>();
+        private static final Object[] EMPTY_ARRAY = new Object[0];
+        private static final Map<Object, Object> MEMOIZE_LAST = new WeakHashMap<Object, Object>();
 
-        private static final Object[] EMPTY_OBJ_ARRAY = new Object[0];
-        
+
+
         public static <T> Seq<T> single(T x) {
             return cons(x, null);
         }
@@ -68,7 +68,7 @@ public class Seqs
 
         public static <T> T last(Seq<T> s) {
             if (MEMOIZE_SEQUENCES) {
-                Object m = memoizedLasts.get(s);
+                Object m = MEMOIZE_LAST.get(s);
                 if (m != null) return Utils.<T> unsafe(m);
             }
             while (!isNil(s.tail())) {
@@ -77,7 +77,7 @@ public class Seqs
             T r = s.head();
 
             if (MEMOIZE_SEQUENCES) {
-                memoizedLasts.put(s, r);
+                MEMOIZE_LAST.put(s, r);
             }
             return r;
         }
@@ -85,7 +85,7 @@ public class Seqs
         public static <T> Seq<T> init(Seq<T> s) {
             if (isNil(s.tail())) {
                 if (MEMOIZE_SEQUENCES) {
-                    memoizedLasts.put(s, s.head());
+                    MEMOIZE_LAST.put(s, s.head());
                 }
                 return null;
             } else {
@@ -189,7 +189,7 @@ public class Seqs
         }
 
         public static Object[] toArray(Seq<?> s) {
-            if (isNil(s)) return EMPTY_OBJ_ARRAY;
+            if (isNil(s)) return EMPTY_ARRAY;
         
             Object[] a;
             if (s instanceof Finite) a = new Object[ ((Finite<?>) s).length()];

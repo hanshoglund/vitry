@@ -25,13 +25,19 @@ import java.util.Iterator;
  * object at construction time and traverses it as required.
  * 
  * Mutating the iterable is not recommended.
+ * 
+ * TODO 
+ *      Synchronization? 
+ *          Make eager variant that advances headed/tailed state upon
+ *          construction?
+ *  
  */
 public class IterableSeq<T> extends AbstractSeq<T>
     {
         private Iterable<T> itbl;   // Store for iterator in the leading node
         private Iterator<T> it;
         private T           head;
-        private Seq<T> tail;
+        private Seq<T>      tail;
         private boolean     headed = false;
         private boolean     tailed = false;
 

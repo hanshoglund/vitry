@@ -373,7 +373,7 @@ public class Indentation implements TokenSource
             do {
                 t = input.LA(++i);
             } while (t == VitryParser.LineSpace || t == VitryParser.Comment);
-            return input.LA(i) == VitryParser.LineBreak;
+            return nextIsLineBreak();
         }
 
         private void emitRestOfLine() {
@@ -398,7 +398,6 @@ public class Indentation implements TokenSource
                 buffer.add(BREAK);
             }
             buffer.add(Token.EOF_TOKEN);
-            count = 0;
             return;
         }
 
@@ -424,9 +423,7 @@ public class Indentation implements TokenSource
         }
         
         
-
         private static final CommonToken SPACE = new CommonToken(VitryParser.LineSpace, " ");
-        
         private static final CommonToken BREAK = new CommonToken(VitryParser.LineBreak, System.getProperty("line.separator"));
         
         static {

@@ -30,7 +30,7 @@ public class ArraySeq<T> extends AbstractSeq<T> implements Finite<T>
     {
         private final T[]   array;
         private final int   offset;
-        private Seq<T> tail;
+        private Seq<T>      tail;
         private boolean     tailed = false;
 
         public ArraySeq(T... elements) {
