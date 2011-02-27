@@ -27,7 +27,7 @@ import vitry.runtime.*;
 import vitry.runtime.error.*;
 import vitry.runtime.misc.*;
 import vitry.runtime.struct.*;
-
+import vitry.runtime.StandardFunction.*;
 
 /**
  * Reflects antlr syntax trees into Vitry. Each node is a Product containing
@@ -93,7 +93,7 @@ public class VitryTree extends CommonTree implements Product
             if (children != null) {
                 Seq<Pattern> itSeq = new IterableSeq<Pattern>(Utils.<Iterable<Pattern>> unsafe(this.children));
 
-                this.childSeq = new MapSeq<Pattern, Pattern>(new StandardFunction(1)
+                this.childSeq = itSeq.map(new Unary()
                     {
                         public Object apply(Object o) throws InvocationError {
                             CommonTree t = (CommonTree) o;
@@ -102,7 +102,7 @@ public class VitryTree extends CommonTree implements Product
                             }
                             return t;
                         }
-                    }, itSeq);
+                    });
             }
             generatedSeq = true;
         }

@@ -74,7 +74,7 @@ abstract public class List extends ConstructionPattern
         }
 
         public List mapList(Function fn) {
-            return listFrom(super.<Pattern>map(fn));
+            return listFrom(this.<Pattern>map(fn));
         }
         
         

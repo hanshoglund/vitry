@@ -97,7 +97,7 @@ class GlobalEnvironment extends AbstractEnv<Object, Object>
         }
 
         public Object getBinding(Object key) {
-            throw new UndefinedError(key, this);
+            throw new UndefinedError(key, this);        // TODO throw something lighter
         }
 
         private <T> T throwUnsupported() {

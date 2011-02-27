@@ -19,6 +19,8 @@
 package vitry.runtime.struct;
 
 import java.util.Iterator;
+
+import vitry.Build;
 import vitry.runtime.Function;
 
 
@@ -41,7 +43,11 @@ abstract public class AbstractSeq<T> implements Seq<T>
         }
 
         public <U> Seq<U> map(Function fn) {
-            return new MapSeq<T, U>(fn, this);
+            if (Build.MEMOIZE_SEQUENCES) {
+                return new MemoizedSeq<U>(new MapSeq<T, U>(fn, this));                
+            } else {
+                return new MapSeq<T, U>(fn, this);                
+            }
         }
         
         

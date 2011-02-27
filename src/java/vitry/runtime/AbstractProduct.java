@@ -75,7 +75,7 @@ abstract class AbstractProduct extends ConstructionPattern implements Product
         }
 
         public Product mapProduct(Function fn) {
-            return productFrom(super.<Pattern>map(fn));
+            return productFrom(this.<Pattern>map(fn));
         }
         
         

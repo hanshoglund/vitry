@@ -33,12 +33,15 @@ import vitry.runtime.misc.*;
  */
 public class Seqs
     {
-        private Seqs() {}
 
         private static final Object[] EMPTY_ARRAY = new Object[0];
+
         private static final Map<Object, Object> MEMOIZE_LAST = new WeakHashMap<Object, Object>();
+        private static final Map<Object, Integer> MEMOIZE_LENGTH = new WeakHashMap<Object, Integer>();
 
+        private Seqs() {}
 
+        
 
         public static <T> Seq<T> single(T x) {
             return cons(x, null);
@@ -114,11 +117,19 @@ public class Seqs
 
         public static int length(Seq<?> s) {
             if (s instanceof Finite) return ((Finite<?>) s).length();
+            
+            // if (MEMOIZE_SEQUENCES) {
+            //     Integer l = MEMOIZE_LENGTH.get(s);
+            //     if (l != null) return l;
+            // }      
             int length = 0;
             do {
                 length++;
                 s = s.tail();
             } while (!isNil(s));
+            // if (MEMOIZE_SEQUENCES) {
+            //     MEMOIZE_LENGTH.put(s, length);
+            // }  
             return length;
         }
 

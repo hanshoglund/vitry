@@ -99,7 +99,6 @@ abstract class AbstractFunction extends ConstructionPattern implements Function,
             return this.getRange() != null;
         }
 
-
         public boolean matchFor(Pattern p) {
             return p.eq(this);
         }

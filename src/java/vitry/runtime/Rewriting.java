@@ -20,6 +20,7 @@ package vitry.runtime;
 
 import static vitry.runtime.VitryRuntime.*;
 import static vitry.runtime.struct.Seqs.*;
+import vitry.runtime.StandardFunction.*;
 import vitry.runtime.error.*;
 import vitry.runtime.parse.*;
 import vitry.runtime.struct.*;

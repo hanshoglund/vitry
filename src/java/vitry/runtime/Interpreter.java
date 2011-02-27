@@ -36,34 +36,34 @@ import vitry.runtime.struct.*;
  * This implementation optimizes tail calls to interpreted functions,
  * but not to compiled functions.
  *
- * @author Hans Höglund
+ * @author Hans Hoglund
  */
 public class Interpreter implements Eval
 {
 
     static final Symbol DELIMITER = Symbol.intern("delimiter");
-    static final Symbol SIDE        = Symbol.intern("side");
-    static final Symbol QUOTED     = Symbol.intern("quoted");
-    static final Symbol MUTABLE    = Symbol.intern("mutable");
-    static final Symbol PAR         = Symbol.intern("()");
-    static final Symbol BRA         = Symbol.intern("[]");
-    static final Symbol ANG         = Symbol.intern("{}");
-    static final Symbol LEFT        = Symbol.intern("left");
-    static final Symbol RIGHT      = Symbol.intern("right");
-    static final Symbol TRUE        = Symbol.intern("true");
-    static final Symbol FALSE      = Symbol.intern("false");
+    static final Symbol SIDE      = Symbol.intern("side");
+    static final Symbol QUOTED    = Symbol.intern("quoted");
+    static final Symbol MUTABLE   = Symbol.intern("mutable");
+    static final Symbol PAR       = Symbol.intern("()");
+    static final Symbol BRA       = Symbol.intern("[]");
+    static final Symbol ANG       = Symbol.intern("{}");
+    static final Symbol LEFT      = Symbol.intern("left");
+    static final Symbol RIGHT     = Symbol.intern("right");
+    static final Symbol TRUE      = Symbol.intern("true");
+    static final Symbol FALSE     = Symbol.intern("false");
 
 
-    public static final Env<Symbol, Symbol> STANDARD_CONTEXT = (new HashEnv<Symbol, Symbol>()
-        .define( DELIMITER , PAR    )
-        .define( SIDE        , RIGHT  )
-        .define( QUOTED     , FALSE  )
-        .define( MUTABLE    , FALSE  ));
+    private static final Env<Symbol, Symbol> STANDARD_CONTEXT = (new HashEnv<Symbol, Symbol>()
+        .define( DELIMITER , PAR   )
+        .define( SIDE      , RIGHT )
+        .define( QUOTED    , FALSE )
+        .define( MUTABLE   , FALSE ));
 
 
-    final VitryRuntime runtime;
-
-    final ModuleProvider moduleProvider;
+    private final VitryRuntime runtime;
+                 
+    private ModuleProvider moduleProvider;
 
 
     public Interpreter(VitryRuntime runtime) {
@@ -77,117 +77,173 @@ public class Interpreter implements Eval
     }
 
 
-    public boolean acceptsParserTokens() {
+    public boolean acceptsParserTokens()
+    {
         return true;
     }
 
-    public boolean acceptsUserTokens() {
+    public boolean acceptsUserTokens()
+    {
         return true;
     }
 
-    public VitryRuntime getRuntime() {
+    /**
+     * Returns the runtime system owning this interpreter.
+     */
+    public VitryRuntime getRuntime()
+    {
         return runtime;
     }
 
-    public ModuleProvider getModuleProvider() {
+    /**
+     * Returns the source from which this interpreter imports dependencies for 
+     * created modules (may be null)
+     */
+    public ModuleProvider getModuleProvider()
+    {
         return moduleProvider;
     }
-
-
-    public Object eval(Object expr) throws ParseError, LinkageError, TypeError {
-        return eval(expr,
-                        STANDARD_CONTEXT,
-                        runtime.getPrelude(),
-                        runtime.getPreludeFixities());
+    
+    /**
+     * Set the source from which to imports dependencies for.
+     */
+    public void setModuleProvider(ModuleProvider moduleProvider)
+    {
+        this.moduleProvider = moduleProvider;
+    }
+    
+    public static Env<Symbol, Symbol> getStandardContext()
+    {
+        return STANDARD_CONTEXT;
     }
 
 
 
-    
-    
-    
-    
-    public final Object eval(Object expr,
-                             Env<Symbol, Symbol> context,
-                             Env<Symbol, Object> frame,
-                             // Sequence<vitry.runtime.Type> types,
-                             // Environment<Symbol, Sequence<Type>> implicits,
-                             Env<Symbol, Fixity> fixities)
-
-    throws ParseError, LinkageError, TypeError
+    public Object eval(Object expr) 
+    throws ParseError, TypeError, ResolveError
     {
-        Pattern exprHead;
-        Seq<Pattern> exprTail;
-        int exprType;
+        return eval(expr, 
+                    STANDARD_CONTEXT, 
+                    runtime.getPrelude(), 
+                    runtime.getPreludeFixities());
+    }
 
-        interpreter : while (true)
+   
+    /**
+     * Evaluate the given pattern.
+     * @param context 
+     *      Map of symbols determining evaluation context.
+     * @param frame
+     *      Bindings to use.
+     * @param fixities
+     *      Fixities to use.
+     * @throws ParseError
+     * @throws LinkageError
+     * @throws TypeError
+     */
+    public final Object eval(Object expr, Env<Symbol, Symbol> context,
+                             Env<Symbol, Object> frame, Env<Symbol, 
+                             Fixity> fixities) 
+    throws ParseError, TypeError, ResolveError
+    {
+        return eval(expr, context, frame, fixities, null, null);
+    }
+    
+    
+    
+    /**
+     * Evaluate the given pattern.
+     * @param context 
+     *      Map of symbols determining evaluation context.
+     * @param frame
+     *      Bindings to use.
+     * @param fixities
+     *      Fixities to use.
+     * @param types
+     *      Types to use.
+     * @param implicits
+     *      Implicit conversions to use.
+     * @return
+     * @throws ParseError
+     * @throws LinkageError
+     * @throws TypeError
+     */
+    public final Object eval(Object expr, Env<Symbol, Symbol> context,
+                             Env<Symbol, Object> frame, Env<Symbol, Fixity> fixities,
+                             Seq<Type> types, Env<Symbol, Seq<Type>> implicits)
+    throws ParseError, LinkageError, TypeError 
+    {
+        Pattern      exprHead = null;   // TODO could this be Object?
+        Seq<Pattern> exprTail = null;
+        int          exprType = -1;
+        
+        main : 
+        while (true)
         {
+            
             if (isSelfEvaluating(expr))
             {
                 if (expr instanceof Symbol)
                 {
                     return maybeLookup((Symbol) expr, context, frame);
-                }
-                else
-                {
-                    return expr;
-                }
+                } 
+                else 
+                return expr;
             }
-
+            
             try {
                 if (isAcceptedToken(expr))
                 {
-                    exprHead = Utils.<Pattern>unsafe(expr);
+                    exprHead = (Pattern) expr;
                     exprTail = null;
-                }
+                } 
                 else
                 {
-                    exprHead = Utils.<Seq<Pattern>>unsafe(expr).head();
-                    exprTail = Utils.<Seq<Pattern>>unsafe(expr).tail();
+                    exprHead = head((Seq<Pattern>) expr);
+                    exprTail = tail((Seq<Pattern>) expr);
                 }
-
                 exprType = VitryTokenTypes.tokenType(exprHead);
 
-            } catch (Exception _) {
-                throw new ParseError("Unknown form: "
-                        + Utils.limit( expr.toString(), TRACE_LIMIT) );
+            } catch (Exception e)
+            {
+                throwUnknownForm(expr);
             }
 
             /*
-             * Switch on type
-             *
              * Each case must either
-             *    - update expr and continue (i.e. self-call eval)
+             *    - update expr and continue
              *    - return
              *    - throw exception
              */
-            switch (exprType)
+            switch (exprType) 
             {
-
-                /*
-                 * Trivial forms
-                 */
                 case VitryParser.Natural: return evalNat(exprHead);
                 case VitryParser.Float:   return evalFloat(exprHead);
                 case VitryParser.Complex: return evalComplex(exprHead);
                 case VitryParser.String:  return evalString(exprHead);
 
-                /*
-                 * Symbols and operators
-                 *
-                 * May lookup or self-evaluate, depending on context
-                 */
                 case VitryParser.Op:      return maybeLookupEvalOp(exprHead, context, frame);
                 case VitryParser.Symbol:  return maybeLookupEval(exprHead, context, frame);
+                       
+                case VitryParser.Module:  throwNotSupported();
+                case VitryParser.Fn:      return new InterpretedFunction(init(exprTail), last(exprTail), frame, fixities, this);
+                
+                case VitryParser.Left:
+                    context = context.extend(SIDE, LEFT);
+                    expr = exprTail.head();
+                    continue;
 
+                case VitryParser.Quote:
+                    context = context.extend(QUOTED, TRUE);
+                    expr = exprTail.head();
+                    continue;
                 
                 /*
                  * Brackets
                  *
                  * The empty case is a symbol, while non-empty cases are context switches
-                 * They also reset quote context
-                 *
-                 * We have to duplicate some code in order to get the tail-call :(
+                 * This single case may also act as a unary constructor, see
+                 *     https://github.com/hanshoglund/Vitry/issues/12
                  */
                 case VitryParser.Par:
                 {
@@ -197,13 +253,13 @@ public class Interpreter implements Eval
                     }
                     Object bound = frame.lookup(PAR);
 
-                    if (!isOps(exprTail.head()) && bound instanceof Product)
+                    if (!isOperatorExpr(exprTail.head()) && bound instanceof Product)
                     {
                         return evalSingleDelimiter(exprTail, bound, context, frame, fixities);
                     }
                     context = context.extend(DELIMITER, PAR).define(QUOTED, FALSE);
                     expr = exprTail.head();
-                    continue interpreter;
+                    continue;
                 }
 
                 case VitryParser.Bra:
@@ -215,13 +271,13 @@ public class Interpreter implements Eval
                     }
                     Object bound = frame.lookup(BRA);
 
-                    if (!isOps(exprTail.head()) && bound instanceof Product)
+                    if (!isOperatorExpr(exprTail.head()) && bound instanceof Product)
                     {
                         return evalSingleDelimiter(exprTail, bound, context, frame, fixities);
                     }
                     context = context.extend(DELIMITER, BRA).define(QUOTED, FALSE);
                     expr = exprTail.head();
-                    continue interpreter;
+                    continue;
                 }
 
                 case VitryParser.Ang:
@@ -232,44 +288,14 @@ public class Interpreter implements Eval
                     }
                     Object bound = frame.lookup(ANG);
 
-                    if (!isOps(exprTail.head()) && bound instanceof Product)
+                    if (!isOperatorExpr(exprTail.head()) && bound instanceof Product)
                     {
                         return evalSingleDelimiter(exprTail, bound, context, frame, fixities);
                     }
                     context = context.extend(DELIMITER, ANG).define(QUOTED, FALSE);
                     expr = exprTail.head();
-                    continue interpreter;
-                }
-
-
-                /*
-                 * Context switches
-                 */
-                case VitryParser.Left:
-                    context = context.extend(SIDE, LEFT);
-                    expr = exprTail.head();
                     continue;
-
-                case VitryParser.Quote:
-                    context = context.extend(QUOTED, TRUE);
-                    expr = exprTail.head();
-                    continue interpreter;
-
-
-
-
-                case VitryParser.Module:
-                    // TODO
-
-                    
-
-
-                case VitryParser.Fn:
-                    {
-                        Seq<Pattern> params = init(exprTail);
-                        Pattern body = last(exprTail);
-                        return new InterpretedFunction(params, body, frame, fixities, this);
-                    }
+                }
 
 
                 /*
@@ -279,132 +305,142 @@ public class Interpreter implements Eval
                  * then tail-call so that the updated frame is discarded upon return
                  */
                 case VitryParser.Let:
-                    {
-                        Seq<Pattern> assignments = init(exprTail);
-                        expr = last(exprTail);
-                        frame = frame.extend();
-                        context = context.extend()
-                            .define(MUTABLE, FALSE)
-                            .define(DELIMITER, PAR)
-                            .define(QUOTED, FALSE)
-                            .define(SIDE, RIGHT);
+                {
+                     Seq<Pattern> assignments = init(exprTail);
+                     expr = last(exprTail);
+                     frame = frame.extend();
+                     context = context.extend(MUTABLE, FALSE).define(DELIMITER, PAR)
+                                      .define(QUOTED, FALSE).define(SIDE, RIGHT);
 
-                        for (Pattern a : assignments) 
+                    for (Pattern a : assignments)
+                    {
+                        eval(a, context, frame, fixities);
+                    }
+                    continue;
+                 }
+
+                case VitryParser.Do:
+                {
+                    Seq<Pattern> assignments = init(exprTail);
+
+                    // Actually, expr may be an assignment as well, but
+                    // we will discard its value anyway
+                    expr = last(exprTail);                                            
+                     
+                    frame = frame.extend();
+                    context = context.extend(MUTABLE, TRUE).define(DELIMITER, PAR)
+                                     .define(QUOTED, FALSE).define(SIDE, RIGHT);
+
+                    if (assignments != null)
+                    {
+                        for (Pattern a : assignments)
                         {
                             eval(a, context, frame, fixities);
                         }
                     }
-                    continue interpreter;
+                    continue;
+                }
 
-                case VitryParser.Do:
+                case VitryParser.Assign: 
+                {
+                    Object left = eval(first(exprTail), context, frame, fixities);
+                    Object right = eval(second(exprTail), context, frame, fixities);
+
+                    if (left instanceof LeftContinuation)
                     {
-                        Seq<Pattern> assignments = init(exprTail);
-                        expr = last(exprTail);                        
-                        // Actually, expr may be an assignment as well, but
-                        // we will discard its value anyway
-                        
-                        frame = frame.extend();
-                        context = context.extend()
-                            .define(MUTABLE, TRUE)
-                            .define(DELIMITER, PAR)
-                            .define(QUOTED, FALSE)
-                            .define(SIDE, RIGHT);
-
-                        if (assignments != null)
+                        ((LeftContinuation) left).invoke(right, frame);
+                    } 
+                    else
+                    {
+                        try
                         {
-                            for (Pattern a : assignments) 
+                            if (context.lookup(MUTABLE) == TRUE)
                             {
-                                eval(a, context, frame, fixities);
+                                frame.assoc((Symbol) left, right);
+                            } 
+                            else
+                            {
+                                frame.define((Symbol) left, right);
                             }
+                        } catch (ClassCastException e1)
+                        {
+                            throwAssignment(left);
                         }
                     }
-                    continue interpreter;
-
-
-
-                case VitryParser.Assign:
-                    {
-                        Object left = eval(first(exprTail), context, frame, fixities);
-                        Object right = eval(second(exprTail), context, frame, fixities);
-
-                        if (left instanceof LeftContinuation) {
-                            ((LeftContinuation) left).invoke(right, frame);
-
-                        } else {
-                            try {
-                                if (context.lookup(MUTABLE) == TRUE) {
-                                    frame.assoc((Symbol) left, right);
-                                } else {
-                                    frame.define((Symbol) left, right);
-                                }
-                            } catch (ClassCastException e) {
-                                throwAssignment(left);
-                            }
-                        }  
-                        // Discarded except in the final clause of a do-expression 
-                        return right;
-                    }
-                    
-
-
+                    return right;
+                }
 
                 case VitryParser.If:
+                {
+                    Object condition = eval(first(exprTail), context, frame, fixities);
+
+                    if (!(condition.equals(FALSE)))
                     {
-                        Object condition = eval(Seqs.first(exprTail), context, frame, fixities);
-                        
-                        if (!(condition.equals(FALSE)))
-                        {
-                            expr = Seqs.second(exprTail);
-                        } 
-                        else 
-                        {
-                            expr = Seqs.third(exprTail);
-                        }
-                        continue interpreter;
+                        expr = second(exprTail);
+                    } 
+                    else
+                    {
+                        expr = third(exprTail);
                     }
+                    continue;
+                }
                     
 
 
-                case VitryParser.Match:
+                case VitryParser.Match: 
+                {
+                    Object value = eval(exprTail.head(), context, frame, fixities);
+                    Seq<Pattern> cases = exprTail.tail();
+                    Env<Symbol, Object> topFrame = frame;
+
+                    match : for (Pattern c : cases)
                     {
-                        Object        value = eval(exprTail.head(), context, frame, fixities);
-                        Seq<Pattern> cases = exprTail.tail();
-                        Env<Symbol, Object> topFrame = frame;
+                        Seq<Pattern> caseTail = ((Seq<Pattern>) c).tail();
 
-                        match :
-                        for (Pattern c : cases) {
-                            Seq<Pattern> caseTail = ((Seq<Pattern>) c).tail();
-                            Object left = eval(first(caseTail), context, frame, fixities);
+                        Object left = eval(first(caseTail), context, frame, fixities);
+                        expr = second(caseTail);
+                        frame = topFrame.extend();
 
-                            frame = topFrame.extend();
-                            expr = second(caseTail);
-
-                            try {
-                                if (left instanceof LeftContinuation) {
-                                    ((LeftContinuation) left).invoke(value, frame);
-                                } else {
-                                    if (left instanceof Symbol) {
-                                        frame.define((Symbol) left, value);
-                                    } else {
-                                        if (value instanceof Pattern) {
-                                            if (!((Pattern) value).matchFor(Native.wrap(left)))
-                                                TypeError.throwMismatch(value, left);            // TODO throw something lighter...
-                                        } else {
-                                            if (!Native.wrap(value).matchFor(Native.wrap(left)))
-                                                TypeError.throwMismatch(value, left);
-                                        }
+                        try
+                        {
+                            if (left instanceof LeftContinuation)
+                            {
+                                ((LeftContinuation) left).invoke(value, frame);
+                            } 
+                            else
+                            {
+                                if (left instanceof Symbol)
+                                {
+                                    frame.define((Symbol) left, value);
+                                } 
+                                else
+                                {
+                                    if (value instanceof Pattern)
+                                    {
+                                        if (! ((Pattern) value).matchFor(Native.wrap(left)))
+                                            TypeError.throwMismatch(value, left); // TODO throw something lighter...
+                                    } 
+                                    else
+                                    {
+                                        if (!Native.wrap(value).matchFor(Native.wrap(left)))
+                                            TypeError.throwMismatch(value, left);
                                     }
                                 }
-                            } catch (TypeError e) {
-                                continue match;
-                            } catch (ClassCastException e) {
-                                throwAssignment(left);
                             }
-                            continue interpreter;
-
+                        } 
+                        catch (TypeError e)
+                        {
+                            continue match;
+                        } 
+                        catch (ClassCastException e)
+                        {
+                            throwAssignment(left);
                         }
-                        throw new MatchingError(value);
+                        continue main;
+
                     }
+                    throw new MatchingError(value);
+                }
 
 
 
@@ -412,19 +448,23 @@ public class Interpreter implements Eval
                 // Application and infix ops
 
                 case VitryParser.Apply:
-                    final Object        fn    = eval(exprTail.head(), context.extend(SIDE, RIGHT), frame, fixities);
+                    final Object fn = eval(exprTail.head(), context.extend(SIDE, RIGHT),
+                            frame, fixities);
                     final Seq<Pattern> args = exprTail.tail();
-                    final int          numArgs = length(args);
+                    final int numArgs = length(args);
 
-                    if (context.lookup(SIDE) == LEFT && (fn instanceof InvertibleFunction)) {
+                    if (context.lookup(SIDE) == LEFT && (fn instanceof InvertibleFunction))
+                    {
                         final Env<Symbol, Symbol> contextCs = context;
                         final Env<Symbol, Object> frameCs = frame;
                         final Env<Symbol, Fixity> fixitiesCs = fixities;
 
                         return new LeftContinuation()
                             {
-                                public void invoke(Object value, Env<Symbol, Object> frame) {
-                                    if (fn instanceof InvertibleFunction) {
+                                public void invoke(Object value, Env<Symbol, Object> frame)
+                                {
+                                    if (fn instanceof InvertibleFunction)
+                                    {
                                         InvertibleFunction ifn = (InvertibleFunction) fn;
 
                                         Seq<?> vals = ifn.applyVarInverse(value);
@@ -432,40 +472,53 @@ public class Interpreter implements Eval
                                         Iterator<Pattern> keyExprIt;
                                         Iterator<?> valIt;
 
-                                        for (keyExprIt = args.iterator(), valIt = vals.iterator();
-                                        keyExprIt.hasNext() && valIt.hasNext();)
+                                        for (keyExprIt = args.iterator(), valIt = vals
+                                                .iterator(); keyExprIt.hasNext()
+                                                && valIt.hasNext();)
                                         {
-                                            Object key = eval(keyExprIt.next(), contextCs, frameCs, fixitiesCs);
+                                            Object key = eval(keyExprIt.next(), contextCs,
+                                                    frameCs, fixitiesCs);
                                             Object val = valIt.next();
 
-                                            if (key instanceof LeftContinuation) {
+                                            if (key instanceof LeftContinuation)
+                                            {
                                                 ((LeftContinuation) key).invoke(val, frame);
 
-                                            } else {
-                                                try {
+                                            } 
+                                            else
+                                            {
+                                                try
+                                                {
                                                     frame.define((Symbol) key, val);
-                                                } catch (ClassCastException e) {
+                                                } catch (ClassCastException e)
+                                                {
                                                     throwAssignment(key);
                                                 }
                                             }
                                         }
 
-                                    } else {
+                                    } 
+                                    else
+                                    {
                                         assert false;
                                     }
                                 }
                             };
 
-                    } else {
+                    } 
+                    else
+                    {
 
-                        if (fn instanceof InterpretedFunction) {
+                        if (fn instanceof InterpretedFunction)
+                        {
 
                             // Interpreted call
 
                             InterpretedFunction ifn = (InterpretedFunction) fn;
                             int arity = ifn.getArity();
 
-                            if (numArgs < arity) {
+                            if (numArgs < arity)
+                            {
                                 context = STANDARD_CONTEXT;
                                 Env<Symbol, Object> callFrame = frame;
                                 frame = ifn.env.extend();
@@ -473,41 +526,47 @@ public class Interpreter implements Eval
                                 SeqIterator<?> param;
                                 Iterator<Pattern> arg;
 
-                                for (param = ifn.params.sequenceIterator(), arg = args.iterator();
-                                param.hasNext() && arg.hasNext();)
+                                for (param = ifn.params.sequenceIterator(), arg = args
+                                        .iterator(); param.hasNext() && arg.hasNext();)
                                 {
-                                    Object name = eval(param.next(), context, frame, ifn.fixities);
-                                    Object value = eval(arg.next(), context, callFrame, ifn.fixities);
-                                    try {
+                                    Object name = eval(param.next(), context, frame,
+                                            ifn.fixities);
+                                    Object value = eval(arg.next(), context, callFrame,
+                                            ifn.fixities);
+                                    try
+                                    {
                                         frame.define((Symbol) name, value);
-                                    } catch (ClassCastException e) {
+                                    } catch (ClassCastException e)
+                                    {
                                         throwAssignment(name);
                                     }
                                 }
-                                return new InterpretedFunction(param.following(),      // Remaining parameters
-                                                                ifn.body,
-                                                                frame,                  // Updated frame
-                                                                ifn.fixities,
-                                                                ifn.interpr);
+                                return new InterpretedFunction(param.following(), // Remaining parameters
+                                        ifn.body, frame, // Updated frame
+                                        ifn.fixities, ifn.interpr);
                             }
-                            if (numArgs == arity) {
+                            if (numArgs == arity)
+                            {
                                 context = STANDARD_CONTEXT;
                                 Env<Symbol, Object> callFrame = frame;
                                 frame = ifn.env.extend();
 
-                                for (Iterator<?> param = ifn.params.iterator(), arg = args.iterator();
-                                param.hasNext() && arg.hasNext();)
+                                for (Iterator<?> param = ifn.params.iterator(), arg = args
+                                        .iterator(); param.hasNext() && arg.hasNext();)
                                 {
                                     Object name = eval(param.next(), context, frame, fixities);
-                                    Object value = eval(arg.next(), context, callFrame, fixities);
-                                    try {
+                                    Object value = eval(arg.next(), context, callFrame,
+                                            fixities);
+                                    try
+                                    {
                                         frame.define((Symbol) name, value);
-                                    } catch (ClassCastException e) {
+                                    } catch (ClassCastException e)
+                                    {
                                         throwAssignment(name);
                                     }
                                 }
                                 expr = ifn.body;
-                                continue interpreter;
+                                continue;
                             }
                             assert (numArgs > arity);
                             {
@@ -516,14 +575,17 @@ public class Interpreter implements Eval
                                 // apply result to arg.currentSequence()
                             }
 
-                        } else {
+                        } 
+                        else
+                        {
 
                             // Standard call
 
                             // Doubly-linked, should be faster than a sequence
                             java.util.List<Object> vals = new java.util.LinkedList<Object>();
 
-                            for (Pattern arg : args) {
+                            for (Pattern arg : args)
+                            {
                                 vals.add(eval(arg, context, frame, fixities));
                             }
                             return ((Function) fn).applyVar(vals.toArray());
@@ -534,7 +596,7 @@ public class Interpreter implements Eval
                 case VitryParser.Ops:
                     OperatorRewrite rw = new OperatorRewrite(fixities, context);
                     expr = rw.rewrite(exprTail);
-                    continue interpreter;
+                    continue;
 
 
 
@@ -542,45 +604,58 @@ public class Interpreter implements Eval
                 // Type restr/spec
 
                 case VitryParser.Type:
+                {
+                    // TODO native types
+
+                    final Object left = eval(first(exprTail), context, frame, fixities);
+                    final Pattern right = Native.wrap(eval(second(exprTail),
+                            context.extend(SIDE, RIGHT), frame, fixities));
+
+                    if (context.lookup(SIDE) == LEFT)
                     {
-                        // TODO native types
 
-                        final Object left = eval(Seqs.first(exprTail), context, frame, fixities);
-                        final Pattern right = Native.wrap(eval(Seqs.second(exprTail), context.extend(SIDE, RIGHT), frame, fixities));
-
-                        if (context.lookup(SIDE) == LEFT) {
-
-                            return new LeftContinuation() {
-                                public void invoke(Object value, Env<Symbol, Object> frame) {
+                        return new LeftContinuation()
+                            {
+                                public void invoke(Object value, Env<Symbol, Object> frame)
+                                {
 
                                     // Check type
-                                    if (!Native.wrap(value).matchFor(right)) TypeError.throwMismatch(value, right);
+                                    if (!Native.wrap(value).matchFor(right))
+                                        TypeError.throwMismatch(value, right);
 
-                                    if (left instanceof LeftContinuation) {
+                                    if (left instanceof LeftContinuation)
+                                    {
                                         // Left may be a destructuring or other type check
                                         // It should do its work after we have verified the type of value
                                         ((LeftContinuation) left).invoke(value, frame);
-                                    } else {
+                                    } 
+                                    else
+                                    {
                                         // Finish pending assignment
-                                        try {
+                                        try
+                                        {
                                             frame.define((Symbol) left, value);
-                                        } catch (ClassCastException e) {
+                                        } catch (ClassCastException e)
+                                        {
                                             throwAssignment(left);
                                         }
                                     }
                                 }
                             };
 
-                        } else {
-                            if (right instanceof Type)
-                                return ((Type) right).tag(Native.wrap(left));
-                            else {
-                                if (!Native.wrap(left).matchFor(right))
-                                    TypeError.throwMismatch(left, right);
-                                return left;
-                            }
+                    } 
+                    else
+                    {
+                        if (right instanceof Type)
+                            return ((Type) right).tag(Native.wrap(left));
+                        else
+                        {
+                            if (!Native.wrap(left).matchFor(right))
+                                TypeError.throwMismatch(left, right);
+                            return left;
                         }
                     }
+                }
 
 
                 default:
@@ -588,118 +663,125 @@ public class Interpreter implements Eval
             }
         }
     }
-    
-    
-    
 
-    
-    final Object evalSingleDelimiter(Seq<Pattern> exprTail,
-                                     Object bound,
-                                     Env<Symbol, Symbol> context,
-                                     Env<Symbol, Object> frame,
-                                     Env<Symbol, Fixity> fixities) 
-    throws LinkageError {
-        Function f = (Function) Seqs.second((Product) bound);
-        Object    v = eval(exprTail.head(), context, frame, fixities);
-        if (context.lookup(SIDE) == LEFT && f instanceof InvertibleFunction) {
-            return new SingletonExprContinuation(f, v);
-        } else {
+    private Object evalSingleDelimiter(Seq<Pattern> exprTail, Object bound,
+            Env<Symbol, Symbol> context, Env<Symbol, Object> frame,
+            Env<Symbol, Fixity> fixities) throws LinkageError
+    {
+        Function f = (Function) second((Product) bound);
+        Object v = eval(exprTail.head(), context, frame, fixities);
+
+        if (context.lookup(SIDE) == LEFT && f instanceof InvertibleFunction)
+        {
+            return new SingletonExprContinuation((InvertibleFunction) f, v);
+        } 
+        else
+        {
             return f.apply(v);
         }
     }
 
-    
-    static final Object evalNullaryDelimiter(Symbol delim,
-                                             Env<Symbol, Symbol> context,
-                                             Env<Symbol, Object> frame) {
-        if (shouldLookup(context)) {
+    private Object evalNullaryDelimiter(Symbol delim, Env<Symbol, Symbol> context,
+            Env<Symbol, Object> frame)
+    {
+        if (!shouldLookup(context))
+        {
             return delim;
-        } else {
+        }
+        else
+        {
             Object obj = frame.lookup(delim);
-            if (obj instanceof Product) {
-                return Seqs.first((Product) obj);
-            } else {
+            if (obj instanceof Product)
+            {
+                return first((Product) obj);
+            }
+            else
+            {
                 return obj;
             }
         }
     }
 
-    
-    static final Object maybeLookup(Symbol expr,
-                                    Env<Symbol, Symbol> context,
-                                    Env<Symbol, Object> frame) {
-        if (shouldLookup(context)) {
+    private Object maybeLookup(Symbol expr, Env<Symbol, Symbol> context,
+            Env<Symbol, Object> frame)
+    {
+        if (!shouldLookup(context))
+        {
             return expr;
-        } else {
+        } 
+        else
+        {
             return frame.lookup(expr);
         }
     }
 
-    
-    static final Object maybeLookupEval(Pattern exprHead,
-                                    Env<Symbol, Symbol> context,
-                                    Env<Symbol, Object> frame) {
-        if (shouldLookup(context)) {
+    private Object maybeLookupEval(Pattern exprHead, Env<Symbol, Symbol> context,
+            Env<Symbol, Object> frame)
+    {
+        if (!shouldLookup(context))
+        {
             return evalSymbol(exprHead);
-        } else {
+        }
+        else
+        {
             return frame.lookup(evalSymbol(exprHead));
         }
     }
 
-    
-    static final Object maybeLookupEvalOp(Pattern exprHead,
-                                     Env<Symbol, Symbol> context,
-                                     Env<Symbol, Object> frame) {
-        if (shouldLookup(context)) {
-            return evalOperator(exprHead, context.lookup(DELIMITER) );
-        } else {
+    private Object maybeLookupEvalOp(Pattern exprHead, Env<Symbol, Symbol> context,
+            Env<Symbol, Object> frame)
+    {
+        if (!shouldLookup(context))
+        {
+            return evalOperator(exprHead, context.lookup(DELIMITER));
+        }
+        else
+        {
             return frame.lookup(evalOperator(exprHead, context.lookup(DELIMITER)));
         }
     }
 
-    static final boolean shouldLookup(Env<Symbol, Symbol> context) {
-        return context.lookup(SIDE) == LEFT || context.lookup(QUOTED) == TRUE;
+    private boolean shouldLookup(Env<Symbol, Symbol> context)
+    {
+        return context.lookup(SIDE) != LEFT && context.lookup(QUOTED) != TRUE;
     }
 
-
-
-
-    static final BigInteger evalNat(Pattern expr) {
+    
+    static final BigInteger evalNat(Object expr)
+    {
         return new BigInteger(expr.toString());
     }
 
-    static final Float evalFloat(Pattern expr) {
+    static final Float evalFloat(Object expr)
+    {
         return Float.valueOf(expr.toString());
     }
 
-    static final Object evalComplex(Pattern expr) {
+    static final Object evalComplex(Object expr)
+    {
         return throwComplex();
     }
 
-    static final Symbol evalOperator(Pattern expr, Symbol delimiter) {
+    static final Symbol evalOperator(Object expr, Symbol delimiter)
+    {
         if (delimiter == PAR) return Symbol.intern("(" + expr + ")");
         if (delimiter == BRA) return Symbol.intern("[" + expr + "]");
         if (delimiter == ANG) return Symbol.intern("{" + expr + "}");
-        
+
         // There should not be any other delimiters
         throw new AssertionError();
     }
 
-    static final Symbol evalSymbol(Pattern expr) {
+    static final Symbol evalSymbol(Object expr)
+    {
         return Symbol.intern(expr.toString());
     }
 
-    static final String evalString(Pattern expr) {
+    static final String evalString(Object expr)
+    {
         String str = Utils.unescape(expr.toString());
         return str.substring(1, str.length() - 1);
     }
-
-
-
-
-
-
-    // Predicates
 
     static final boolean isSelfEvaluating(Object expr)
     {
@@ -716,7 +798,7 @@ public class Interpreter implements Eval
      * Whether the given pattern is headed by an Ops token.
      * Note that this is not the same predicate as the one used in the rewriting class.
      */
-    static final boolean isOps(Object o)
+    static final boolean isOperatorExpr(Object o)
     {
         if (o instanceof Seq)
         {
@@ -727,18 +809,17 @@ public class Interpreter implements Eval
         return false;
     }
 
-    static final boolean isOpsToken(Object o)
+    private static boolean isOpsToken(Object o)
     {
         if (o instanceof Pattern)
         {
-            return VitryTokenTypes.tokenType((Pattern) o) == VitryParser.Ops;
+            return VitryTokenTypes.tokenType((Pattern) o) 
+                == VitryParser.Ops;
         }
         return false;
     }
 
 
-
-    // Errors
 
     static final <T> T throwAssignment(Object id)
     {
@@ -755,10 +836,16 @@ public class Interpreter implements Eval
         throw new ParseError("Does not support complex numbers yet");
     }
 
-    static final void throwUnknownForm(Object expr, Pattern exprHead)
+    static final void throwUnknownForm(Object tree)
     {
-        throw new ParseError("Unkown form '" + exprHead + "' in tree "
-            + Utils.limit(expr.toString(), TRACE_LIMIT));
+        throw new ParseError("Unknown form in tree "
+            + Utils.limit(tree.toString(), TRACE_LIMIT) );
+    }
+
+    static final void throwUnknownForm(Object tree, Object form)
+    {
+        throw new ParseError("Unkown form '" + form + "' in tree "
+            + Utils.limit(tree.toString(), TRACE_LIMIT));
     }
 }
 
@@ -785,27 +872,31 @@ interface LeftContinuation
  */
 class SingletonExprContinuation implements LeftContinuation
 {
-    private final Function constructor;
+    private final InvertibleFunction constructor;
+
     private final Object content;
 
-    public SingletonExprContinuation(Function constructor,
-                                     Object content) {
+    public SingletonExprContinuation(InvertibleFunction constructor, Object content) {
         this.constructor = constructor;
         this.content = content;
     }
 
     public void invoke(Object val, Env<Symbol, Object> frame)
     {
-        Object contentVal = ((InvertibleFunction) constructor).applyVarInverse(val).head();
+        Object contentVal = constructor.applyVarInverse(val).head();
+
         if (content instanceof LeftContinuation)
         {
             ((LeftContinuation) content).invoke(contentVal, frame);
+
         }
         else
         {
-            try {
+            try
+            {
                 frame.define((Symbol) content, contentVal);
-            } catch (ClassCastException e) {
+            } catch (ClassCastException e)
+            {
                 Interpreter.throwAssignment(content);
             }
         }
@@ -829,12 +920,8 @@ final class InterpretedFunction extends RestFunction implements Arity
      */
     final Interpreter interpr;
 
-    public InterpretedFunction(Seq<?> params,
-                                Pattern body,
-                                Env<Symbol, Object> env,
-                                Env<Symbol, Fixity> fixities,
-                                Interpreter interpreter)
-    {
+    public InterpretedFunction(Seq<?> params, Pattern body, Env<Symbol, Object> env,
+            Env<Symbol, Fixity> fixities, Interpreter interpreter) {
         super(env);
         this.body = body;
         this.params = params;
@@ -844,14 +931,15 @@ final class InterpretedFunction extends RestFunction implements Arity
     }
 
 
-    public int getArity() {
+    public int getArity()
+    {
         return arity;
     }
 
 
     public Object applyVar(Seq<?> args, int length)
     {
-        Env<Symbol, Symbol> context = Interpreter.STANDARD_CONTEXT;
+        Env<Symbol, Symbol> context = Interpreter.getStandardContext();
         Env<Symbol, Object> callFrame = this.env;
         Env<Symbol, Object> frame = this.env.extend();
 
@@ -862,9 +950,11 @@ final class InterpretedFunction extends RestFunction implements Arity
         {
             Object name = interpr.eval(param.next(), context, frame, fixities);
             Object value = interpr.eval(arg.next(), context, callFrame, fixities);
-            try {
+            try
+            {
                 frame.define((Symbol) name, value);
-            } catch (ClassCastException e) {
+            } catch (ClassCastException e)
+            {
                 Interpreter.throwAssignment(name);
             }
         }
@@ -896,8 +986,7 @@ final class InterpretedFunction extends RestFunction implements Arity
 
 final class InterpretedModule extends Module
 {
-    public InterpretedModule(Env<Symbol, Object> env)
-    {
+    public InterpretedModule(Env<Symbol, Object> env) {
         super(env); // TODO
     }
 }

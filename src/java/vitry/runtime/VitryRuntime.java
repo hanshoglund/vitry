@@ -19,6 +19,7 @@
 package vitry.runtime;
 
 import static vitry.runtime.VitryRuntime.*;
+import vitry.runtime.StandardFunction.*;
 
 import java.math.BigInteger;
 import java.util.Iterator;
@@ -320,10 +321,6 @@ public final class VitryRuntime implements Scope
             return interpreter;
         }
 
-        public BigInteger getUniqueState() {
-            return uniqueState;
-        }
-
         public void setClassLoader(ClassLoader classLoader) {
             this.classLoader = classLoader;
         }
@@ -373,6 +370,27 @@ public final class VitryRuntime implements Scope
 
 
         // General construction and conversion
+
+
+        /**
+         * Returns the current value of the state counter.
+         */
+        public BigInteger getUniqueState() {
+            return uniqueState;
+        }
+
+
+
+
+        /**
+         * Advances the state counter by one. Not synchronized.
+         */
+        public BigInteger advanceUniqueState() {
+            uniqueState = uniqueState.add(BigInteger.ONE);
+            return uniqueState;
+        }
+
+
 
 
         public static Symbol toVitryBool(boolean a) {
@@ -480,7 +498,7 @@ public final class VitryRuntime implements Scope
                     str[i / 2] = (char) ( (val[i] << 8) | val[i + 1]);
 
             }
-            uniqueState = uniqueState.add(BigInteger.ONE);
+            advanceUniqueState();
             return Symbol.intern(new String(str));
         }
     }
@@ -689,6 +707,10 @@ final class StdProduct extends AbstractProduct
         public boolean hasTail() {
             return elements.hasTail();
         }
+
+        public <U> Seq<U> map(Function fn) {
+            return elements.map(fn);
+        }
     }
 
 
@@ -793,25 +815,14 @@ final class StdList extends List
         public boolean hasTail() {
             return elements.hasTail();
         }
+        
+        public <U> Seq<U> map(Function fn) {
+            return elements.map(fn);
+        }
     }
 
 
 // Bootstrap prelude
-
-abstract class Unary extends StandardFunction
-    {
-        public Unary() {
-            super(1);
-        }
-    }
-
-abstract class Binary extends StandardFunction
-    {
-        public Binary() {
-            super(2);
-        }
-    }
-
 
 final class product_ extends InvertibleRestFunction
     {

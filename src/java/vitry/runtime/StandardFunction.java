@@ -43,6 +43,24 @@ abstract public class StandardFunction extends AbstractFunction implements Arity
         protected final int arity;
         
 
+        // Bootstrap prelude
+        
+        public static abstract class Unary extends StandardFunction
+            {
+                public Unary() {
+                    super(1);
+                }
+            }
+
+        // Bootstrap prelude
+        
+        public static abstract class Binary extends StandardFunction
+            {
+                public Binary() {
+                    super(2);
+                }
+            }
+
         public StandardFunction(int arity) {
             super();
             this.arity = checkArity(arity);

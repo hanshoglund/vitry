@@ -88,7 +88,7 @@ public class VitryTokenTypes
         }
 
 
-        public static int tokenType(Pattern p) {
+        public static final int tokenType(Pattern p) {
             try {
                 try {
                     return parserTokenType(p);
@@ -100,12 +100,12 @@ public class VitryTokenTypes
             }
         }
 
-        public static int parserTokenType(Pattern p) {
+        public static final  int parserTokenType(Pattern p) {
             return ((VitryToken) p).getTokenType();
         }
 
 
-        public static int symbolicTokenType(Pattern p) {
+        public static final int symbolicTokenType(Pattern p) {
             try {
                 return table.lookup(p);
             } catch (Exception e) {

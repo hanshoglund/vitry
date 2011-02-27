@@ -36,18 +36,18 @@ fn (x) x
 ((fn (x y) (+) x y) 1) 2
 (fn (a b c d e f g h i j k l m n o p q r) a) 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18
 
-((fn (a b c) 0) 1 2 3)
+(fn (a b c) 0) 1 2 3
 
-((fn (a b c d e) e) 1 2 3 4 5)
-((((((fn (a b c d e) e) 1) 2) 3) 4) 5)
+(fn (a b c d e) e) 1 2 3 4 5
+(((((fn (a b c d e) e) 1) 2) 3) 4) 5
 
 (fn (a b c d e f) f) 1 2 3 4 5 6
 (((((((fn (a b c d e f) f) 1) 2) 3) 4) 5) 6)
 ((((((((((((((((fn (a b c d e f g h i j k l m n o p) p) 1) 2) 3) 4) 5) 6) 7) 8) 9) 10) 11) 12) 13) 14) 15) 16
 
 
-let (add5 = ((+) 5)  add26 = ((+) 26)  mod5 = ((%) 5)  x = 0) (mod5 (add26 x) == add5 x)
-let (s = (fn (x y z) x z (y z))  k = const   i = id) s k k 3
+let (add5 = ((+) 5)) (add26 = ((+) 26)) (mod5 = ((%) 5)) (x = 0) (mod5 (add26 x) == add5 x)
+let (s = (fn (x y z) x z (y z))) (k = const) (i = id) s k k 3
 
 
 ; ======================================================================
