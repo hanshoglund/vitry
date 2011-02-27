@@ -74,7 +74,7 @@ public class Utils
         }
         
         
-        public static String unescapeJava(String str) {
+        public static String unescape(String str) {
             if (str == null) {
                 return null;
             }
