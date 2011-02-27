@@ -121,6 +121,7 @@ public class Interpreter implements Eval
             int exprType;
 
             
+            interpreter : 
             while (true) {
                 
                 if (isSelfEvaluating(expr)) {
@@ -415,7 +416,11 @@ public class Interpreter implements Eval
                             Seq<Pattern> assignments = init(exprTail);
                             expr = last(exprTail);
                             frame = frame.extend();
-                            context = context.extend(MUTABLE, FALSE);
+                            context = context.extend()
+                                .define(MUTABLE, FALSE)
+                                .define(DELIMITER, PAR)
+                                .define(QUOTED, FALSE)
+                                .define(SIDE, RIGHT);
                             
                             for (Pattern a : assignments) {
                                 eval(a, context, frame, fixities);              
@@ -429,7 +434,11 @@ public class Interpreter implements Eval
                             Seq<Pattern> assignments = init(exprTail);
                             expr = last(exprTail);
                             frame = frame.extend();
-                            context = context.extend(MUTABLE, TRUE);
+                            context = context.extend()
+                                .define(MUTABLE, TRUE)
+                                .define(DELIMITER, PAR)
+                                .define(QUOTED, FALSE)
+                                .define(SIDE, RIGHT);
                             
                             if (assignments != null) {
                                 for (Pattern a : assignments) {
@@ -438,6 +447,59 @@ public class Interpreter implements Eval
                             }
                         }
                         continue;
+                        
+
+                    case VitryParser.If:
+                        {
+                            Object condition = eval(Seqs.first(exprTail), context, frame, fixities);    
+                            if (! (condition.equals(FALSE)) ) {
+                                expr = Seqs.second(exprTail);
+                            } else {
+                                expr = Seqs.third(exprTail);
+                            }
+                            continue;
+                        }
+
+                    case VitryParser.Match:
+                        {
+                            Object       value = eval(exprTail.head(), context, frame, fixities);
+                            Seq<Pattern> cases = exprTail.tail();
+                            Env<Symbol, Object> topFrame = frame;
+                            
+                            match : 
+                            for (Pattern c : cases) {
+                                Seq<Pattern> caseTail = ((Seq<Pattern>) c).tail();
+                                Object left = eval(first(caseTail), context, frame, fixities);
+                                
+                                frame = topFrame.extend();
+                                expr = second(caseTail);
+                                
+                                try {
+                                    if (left instanceof LeftContinuation) {
+                                        ((LeftContinuation) left).invoke(value, frame);
+                                    } else {
+                                        if (left instanceof Symbol) {
+                                            frame.define((Symbol) left, value);                                            
+                                        } else {
+                                            if (value instanceof Pattern) {
+                                                if (!((Pattern) value).matchFor(Native.wrap(left)))
+                                                    TypeError.throwMismatch(value, left);           // TODO throw something lighter...
+                                            } else {
+                                                if (!Native.wrap(value).matchFor(Native.wrap(left)))
+                                                    TypeError.throwMismatch(value, left);
+                                            }
+                                        }
+                                    }
+                                } catch (TypeError e) {
+                                    continue match;
+                                } catch (ClassCastException e) {
+                                    throwAssignment(left);
+                                }
+                                continue interpreter;
+                                
+                            }
+                            throw new MatchingError(value);
+                        }
                         
 
                     case VitryParser.Assign:
@@ -472,7 +534,7 @@ public class Interpreter implements Eval
                         final int          numArgs = length(args);
 
                         if (context.lookup(SIDE) == LEFT && (fn instanceof InvertibleFunction)) {
-                            final Env<Symbol, Symbol> contextCs = context.extend(MUTABLE, FALSE);
+                            final Env<Symbol, Symbol> contextCs = context;
                             final Env<Symbol, Object> frameCs = frame;
                             final Env<Symbol, Fixity> fixitiesCs = fixities;
                             
@@ -591,36 +653,6 @@ public class Interpreter implements Eval
                         expr = rw.rewrite(exprTail);
                         continue;
                         
-                    
-                    
-                        // Branching
-
-                    case VitryParser.If:
-                        {
-                            Object condition = eval(Seqs.first(exprTail), context, frame, fixities);    
-                            if (! (condition.equals(FALSE)) ) {
-                                expr = Seqs.second(exprTail);
-                            } else {
-                                expr = Seqs.third(exprTail);
-                            }
-                            continue;
-                        }
-
-                    case VitryParser.Match:
-                        throwNotSupported();
-
-                        
-                        // Pattern input = op;
-                        // Sequence<Pattern> leftSide = null;
-                        // Sequence<Pattern> rightSide = null;
-                        // while (leftSide != null && rightSide != null) {
-                        //     if (input.matchFor(leftSide.head())) {
-                        //         return rightSide.head();
-                        //     }
-                        //     leftSide = leftSide.tail();
-                        //     rightSide = rightSide.tail();
-                        // }
-                        // throw new MatchingError(input); 
 
 
 

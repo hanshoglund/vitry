@@ -43,7 +43,7 @@ public class TypeError extends VitryError
         }
 
         
-        public static void throwMismatch(Object v, Pattern p) {
+        public static void throwMismatch(Object v, Object p) {
             throw new TypeError("" + v + " does not conform to " + p);            
         }
 

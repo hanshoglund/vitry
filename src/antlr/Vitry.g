@@ -92,13 +92,13 @@ tokens {
  */
 
 expr
-    : 'fn'  '(' leftType* ')'  expr                -> ^(Fn leftType* expr)
+    : 'fn'  '(' leftType+ ')'  expr                -> ^(Fn leftType+ expr)
     | 'let' ( ('(' left '=')=> assign )*  expr     -> ^(Let assign* expr)
     | 'do'  ( ('(' | '[' | '{' | '`' | literal )=> 
               ( ('(' left '=')=> assignOrExpr+=assign 
-                | assignOrExpr+=type) )*           -> ^(Do $assignOrExpr*)
+                | assignOrExpr+=type) )+           -> ^(Do $assignOrExpr+)
     | 'if' type type 'else'? expr                  -> ^(If type type expr)
-    | 'match' type assign*                         -> ^(Match type assign*)    
+    | 'match' type assign+                         -> ^(Match type assign+)    
     | inline
     ;
 
