@@ -53,8 +53,8 @@ public class PrintableSeq<T> extends AbstractSeq<T>
             return delegee.tail();
         }
         
-        public SeqIterator<T> sequenceIterator() {
-            return delegee.sequenceIterator();
+        public SeqIterator<T> seqIterator() {
+            return delegee.seqIterator();
         }
 
         public String toString() {

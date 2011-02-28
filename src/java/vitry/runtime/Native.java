@@ -58,19 +58,33 @@ public final class Native extends Atom
          * wrapping it otherwise.
          */
         public static Pattern wrap(Object o) {
-            if (o instanceof Pattern) return (Pattern) o;
+            if (o instanceof Pattern) 
+                return (Pattern) o;
             else
                 return new Native(o);
         }
+        
+        public static Object unwrap(Object o) {
+            if (o instanceof Native) 
+                return ((Native) o).obj;
+            else
+                return o;
+        }
 
-        /**
-         * Applies {@link #wrap(Object)} lazily to the given seq.
-         */
         public static Seq<Pattern> wrap(Seq<Object> values) {
-            return new MapSeq<Object, Pattern>(new StandardFunction(1){
+            return new MapSeq<Object, Pattern>(new StandardFunction.Unary() {
                 public Object apply(Object v) throws InvocationError {
                     return wrap(v);
                 }
             }, values);
         }
+
+        public static Seq<Object> unwrap(Seq<Object> values) {
+            return new MapSeq<Object, Object>(new StandardFunction.Unary() {
+                public Object apply(Object v) throws InvocationError {
+                    return unwrap(v);
+                }
+            }, values);
+        }
+
     }

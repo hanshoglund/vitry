@@ -30,7 +30,7 @@ abstract public class AbstractSeq<T> implements Seq<T>
             return new SeqIterator<T>(this);
         }
 
-        public SeqIterator<T> sequenceIterator() {
+        public SeqIterator<T> seqIterator() {
             return new SeqIterator<T>(this);
         }
         

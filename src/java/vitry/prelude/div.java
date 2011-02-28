@@ -1,8 +1,10 @@
+
 package vitry.prelude;
 
 import java.math.BigInteger;
 
 import vitry.runtime.BigRational;
+import vitry.runtime.Native;
 import vitry.runtime.StandardFunction;
 
 public class div extends StandardFunction
@@ -14,6 +16,8 @@ public class div extends StandardFunction
         
 
         public Object apply(Object a, Object b) {
+            a = Native.unwrap(a);
+            b = Native.unwrap(b);
             
             if (a instanceof BigRational) {
                 if (b instanceof BigRational) 

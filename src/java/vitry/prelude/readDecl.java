@@ -11,7 +11,7 @@ public class readDecl extends StandardFunction
         private VitryRuntime rt;
 
         public readDecl(VitryRuntime rt) {
-            super(1, rt);
+            super(1, rt.getPrelude());
             this.rt = rt;
         }
 

@@ -35,7 +35,7 @@ import vitry.runtime.struct.*;
  *
  * @author Hans Höglund
  */
-public final class VitryRuntime implements Scope
+public final class VitryRuntime
     {
 
         public static final Nil       NIL             = new Nil();
@@ -63,11 +63,17 @@ public final class VitryRuntime implements Scope
          *                                          
          * This is non-static so that bootstrap functions can access the runtime. 
          */
-        private final Env<Symbol, Object> prelude = new HashEnv<Symbol, Object>();
+        private final Module prelude;
            
-        private final Env<Symbol, Fixity> preludeFixities = new HashEnv<Symbol, Fixity>();
-
         {
+            // TODO
+            prelude = new Module(null);
+            
+            prelude.setValues(new HashEnv<Symbol, Object>());
+            prelude.setTypes(new HashEnv<Symbol, Type>());
+            prelude.setFixities(new HashEnv<Symbol, Fixity>());
+            
+            
             def("()",                 NIL);
             def("[]",                 productOf(NIL,    new list_()));
             def("{}",                 productOf(BOTTOM, new set_()));
@@ -218,7 +224,7 @@ public final class VitryRuntime implements Scope
 
             def("host",               NIL);
             def("class",              new class_(this));
-            def("method",             new method(this));
+            def("method",             NIL);
             def("classOf",            new classOf(this));
             def("methodsOf",          NIL);
             def("fieldsOf",           NIL);
@@ -329,30 +335,11 @@ public final class VitryRuntime implements Scope
             this.interpreter = interpreter;
         }
         
-        
-        public Env<Symbol, Object> getEnvironment() {
-            return getPrelude();
-        }
 
-        public Env<Symbol, Object> getPrelude() {
+
+        public Module getPrelude() {
             return prelude;
-        }
-
-        public Env<Symbol, Fixity> getPreludeFixities() {
-            return preludeFixities;
-        }
-
-        public Env<Symbol, Object> newTopLevelEnvironment() {
-            return prelude.extend();
-        }
-
-        public Object getPreludeValue(Symbol key) throws UndefinedError {
-            return prelude.lookup(key);
-        }
-
-        public Object getPreludeValue(String key) throws UndefinedError {
-            return prelude.lookup(Symbol.intern(key));
-        }
+        }        
 
 
         public Class<?> internClass(Symbol name) throws ClassNotFoundException {
@@ -478,15 +465,11 @@ public final class VitryRuntime implements Scope
         // Helper methods
 
         private void def(String name, Object val) {
-            prelude.define(Symbol.intern(name), val);
-        }
-
-        private  Object alias(String name) {
-            return prelude.lookup(Symbol.intern(name));
+            prelude.getValues().define(Symbol.intern(name), val);
         }
 
         private void defFix(String name, int precedence, boolean assoc, boolean gathering) {
-            preludeFixities.define(Symbol.intern(name), new Fixity(precedence, assoc, gathering));
+            prelude.getFixities().define(Symbol.intern(name), new Fixity(precedence, assoc, gathering));
         }
 
         private Symbol nextUnique() {
@@ -647,7 +630,7 @@ final class Nil extends Atom implements Finite<Pattern>
             return NilIterator.INSTANCE;
         }
 
-        public SeqIterator<Pattern> sequenceIterator() {
+        public SeqIterator<Pattern> seqIterator() {
             return NilIterator.INSTANCE;
         }
 
@@ -708,9 +691,9 @@ final class StdProduct extends AbstractProduct
             return elements.hasTail();
         }
 
-        public <U> Seq<U> map(Function fn) {
-            return elements.map(fn);
-        }
+        // public <U> Seq<U> map(Function fn) {
+        //     return elements.map(fn);
+        // } 
     }
 
 
@@ -816,9 +799,9 @@ final class StdList extends List
             return elements.hasTail();
         }
         
-        public <U> Seq<U> map(Function fn) {
-            return elements.map(fn);
-        }
+        // public <U> Seq<U> map(Function fn) {
+        //     return elements.map(fn);
+        // }    
     }
 
 
@@ -974,7 +957,7 @@ final class eval_ extends StandardFunction
         private VitryRuntime rt;
 
         public eval_(VitryRuntime rt) {
-            super(1, rt);
+            super(1, rt.getPrelude());
             this.rt = rt;
         }
 
@@ -993,6 +976,6 @@ final class head extends Unary
 final class tail extends Unary
     {
         public Object apply(Object a) {
-            return ((Seq) a).tail();
+            return ((Seq<?>) a).tail();
         }
     }

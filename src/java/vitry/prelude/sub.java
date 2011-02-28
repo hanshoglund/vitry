@@ -3,6 +3,7 @@ package vitry.prelude;
 import java.math.BigInteger;
 
 import vitry.runtime.BigRational;
+import vitry.runtime.Native;
 import vitry.runtime.RestFunction;
 import vitry.runtime.struct.Seq;
 import vitry.runtime.struct.Seqs;
@@ -25,17 +26,21 @@ public class sub extends RestFunction
             }
         }
 
-        private Object negate(Object v) {
-            if (v instanceof BigRational)
-                return ((BigRational) v).negate();
-            if (v instanceof BigInteger)
-                return ((BigInteger) v).negate();
-            if (v instanceof Float)
-                return ((Float) v).floatValue() * -1;
+        private Object negate(Object a) {
+            a = Native.unwrap(a);
+            
+            if (a instanceof BigRational)
+                return ((BigRational) a).negate();
+            if (a instanceof BigInteger)
+                return ((BigInteger) a).negate();
+            if (a instanceof Float)
+                return ((Float) a).floatValue() * -1;
             return throwArithmetic();
         }
 
         public Object apply(Object a, Object b) {
+            a = Native.unwrap(a);
+            b = Native.unwrap(b);
             
             if (a instanceof BigRational) {
                 if (b instanceof BigRational) 

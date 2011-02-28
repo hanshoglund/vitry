@@ -49,6 +49,12 @@ abstract public class Intersection extends InclusionPattern
                 if (!x.match(a)) return false;
             return true;
         }
+        
+        public boolean match(List a) {
+            for (Pattern x : this)
+                if (!x.match(a)) return false;
+            return true;
+        }
 
         public boolean match(Intersection a) {
             for (Pattern x : this)

@@ -46,7 +46,7 @@ abstract class AbstractFunction extends ConstructionPattern implements Function,
         }
 
         public AbstractFunction(Scope scope) {
-            this(scope.getEnvironment(), null, null);
+            this(scope.getValues(), null, null);
         }
 
         protected AbstractFunction(Env<Symbol, Object> env) {
@@ -61,7 +61,7 @@ abstract class AbstractFunction extends ConstructionPattern implements Function,
         }
 
 
-        public Env<Symbol, Object> getEnvironment() {
+        public Env<Symbol, Object> getValues() {
             return this.env;
         }
 

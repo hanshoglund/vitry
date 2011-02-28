@@ -31,7 +31,7 @@ public class Main
             
             VitryRuntime rt = new VitryRuntime(properties, classLoader, null);
             
-            Function repl = (Function) rt.getPreludeValue("repl");
+            Function repl = (Function) rt.getPrelude().getValue("repl");
             repl.applyVar(args);
         }
     }

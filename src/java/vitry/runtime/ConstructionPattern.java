@@ -51,7 +51,7 @@ abstract public class ConstructionPattern extends BasePattern implements Seq<Pat
             return new SeqIterator<Pattern>(this);
         }
 
-        public SeqIterator<Pattern> sequenceIterator() {
+        public SeqIterator<Pattern> seqIterator() {
             return new SeqIterator<Pattern>(this);
         }
     }

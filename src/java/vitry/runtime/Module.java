@@ -19,6 +19,7 @@
 package vitry.runtime;
 
 import vitry.runtime.struct.Seq;
+import vitry.runtime.struct.Seqs;
 
 /**
  * Implements run-time modules.
@@ -28,23 +29,59 @@ import vitry.runtime.struct.Seq;
 public class Module implements Scope
     {
                      
-        private Seq<Symbol> name;
-
-        private final Env<Symbol, Object> values;
-
+        private final Seq<Symbol> name;
+        private Env<Symbol, Object> values;
         private Env<Symbol, Type> types;
-
         private Env<Symbol, Fixity> fixities;
-
-        public Module(Env<Symbol, Object> env) {
-            this.values = env;
+        
+                
+        public Module(Seq<Symbol> name) {
+            this.name = name;
+        }
+        
+        public Module(Seq<Symbol> name, Env<Symbol, Object> values, Env<Symbol, Type> types,
+                Env<Symbol, Fixity> fixities) {
+            this.name = name;
+            this.values = values;
+            this.types = types;
+            this.fixities = fixities;
         }
 
-        public Env<Symbol, Object> getEnvironment() {
+        public Env<Symbol, Object> getValues() {
             return values;
         }
+        
+        public Object getValue(String name) {
+            return getValue(Symbol.intern(name));
+        }
+        public Object getValue(Symbol name) {
+            return values.lookup(name);
+        }
 
+        public Env<Symbol, Type> getTypes() {
+            return types;
+        }
 
-        // TODO implicit env
-        // TODO type env
+        public Env<Symbol, Fixity> getFixities() {
+            return fixities;
+        }
+
+        public Seq<Symbol> getName() {
+            return name;
+        }
+
+        public void setValues(Env<Symbol, Object> values) {
+            this.values = values;
+        }
+
+        public void setTypes(Env<Symbol, Type> types) {
+            this.types = types;
+        }
+
+        public void setFixities(Env<Symbol, Fixity> fixities) {
+            this.fixities = fixities;
+        }
+        
+        
+
     }

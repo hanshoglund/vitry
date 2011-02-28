@@ -7,7 +7,7 @@ public class print extends StandardFunction
         private VitryRuntime rt;
 
         public print(VitryRuntime rt) {
-            super(1, rt);
+            super(1, rt.getPrelude());
             this.rt = rt;
         }
 

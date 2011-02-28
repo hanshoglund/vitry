@@ -52,7 +52,7 @@ public class RestFunction extends AbstractFunction
         }
 
         public Object applyVar(Object[] args) {
-            return applyVar(Seqs.fromArray(args));
+            return applyVar(Seqs.from(args));
         }
 
         public Object apply(Object a0) throws InvocationError {

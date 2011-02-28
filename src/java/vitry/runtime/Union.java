@@ -49,6 +49,12 @@ abstract public class Union extends InclusionPattern
             for (Pattern x : this)
                 if (x.match(a)) return true;
             return false;
+        }                        
+        
+        public boolean match(List a) {
+            for (Pattern x : this)
+                if (x.match(a)) return true;
+            return false;
         }
 
         public boolean eqFor(Pattern p) {

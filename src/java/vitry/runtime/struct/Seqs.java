@@ -54,11 +54,18 @@ public class Seqs
                 return xs.cons(x);
         }
 
-        public static <T> Seq<T> fromArray(T[] a) {
+        public static <T> Seq<T> from(T[] a) {
             if (a.length == 0)
                 return null;
             else
                 return new ArraySeq<T>(a);
+        }
+        
+        public static <T> Seq<T> from(Iterable<T> a) {
+            if (!a.iterator().hasNext())
+                return null;
+            else
+                return new IterableSeq<T>(a);
         }
 
         public static <T> T head(Seq<T> xs) {

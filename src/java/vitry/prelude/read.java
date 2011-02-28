@@ -11,7 +11,7 @@ public class read extends StandardFunction
         private VitryRuntime rt;
 
         public read(VitryRuntime rt) {
-            super(1, rt);
+            super(1, rt.getPrelude());
             this.rt = rt;
         }
 

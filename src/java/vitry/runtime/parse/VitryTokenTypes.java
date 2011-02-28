@@ -88,7 +88,7 @@ public class VitryTokenTypes
         }
 
 
-        public static final int tokenType(Pattern p) {
+        public static final int tokenType(Object p) {
             try {
                 try {
                     return parserTokenType(p);
@@ -100,12 +100,12 @@ public class VitryTokenTypes
             }
         }
 
-        public static final  int parserTokenType(Pattern p) {
+        public static final  int parserTokenType(Object p) {
             return ((VitryToken) p).getTokenType();
         }
 
 
-        public static final int symbolicTokenType(Pattern p) {
+        public static final int symbolicTokenType(Object p) {
             try {
                 return table.lookup(p);
             } catch (Exception e) {
@@ -121,11 +121,11 @@ public class VitryTokenTypes
             return res;
         }
         
-        private static Env<Pattern, Integer> table;
+        private static HashEnv<Object, Integer> table;
 
         private static void def(String sym, int type) {
             if (table == null)
-                table = new HashEnv<Pattern, Integer>();
+                table = new HashEnv<Object, Integer>();
             table.define(Symbol.intern(sym), type);
         }
     }

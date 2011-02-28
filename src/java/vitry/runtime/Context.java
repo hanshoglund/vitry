@@ -16,21 +16,33 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime.struct;
+package vitry.runtime;
 
-import vitry.runtime.Function;
+import vitry.runtime.error.BindingError;
 
-public interface Seq<T> extends Iterable<T>
-    {
-        T head();
+public class Context extends HashEnv<Symbol, Symbol> {
 
-        Seq<T> tail();
-        
-        boolean hasTail();
-
-        Seq<T> cons(T head);
-
-        <U> Seq<U> map(Function fn);
-        
-        SeqIterator<T> seqIterator();
+    public Context() {
+        super();
     }
+    
+    public Context(Context context) {
+        super(context);
+    }
+
+    public Context define(Symbol key, Symbol val) throws BindingError
+    {
+        super.define(key, val);
+        return this;
+    }
+    
+    public Context extend()
+    {
+        return new Context(this);
+    }    
+
+    public Context extend(Symbol key, Symbol val)
+    {
+        return extend().define(key, val);
+    }
+}

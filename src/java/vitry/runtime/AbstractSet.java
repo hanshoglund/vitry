@@ -48,6 +48,12 @@ abstract class AbstractSet extends InclusionPattern implements Set
                 if (x.eq(a)) return true;
             return false;
         }
+        
+        public boolean match(List a) {
+            for (Pattern x : this)
+                if (x.eq(a)) return true;
+            return false;
+        }
 
         public boolean eqFor(Pattern p) {
             return p.eq(this);
