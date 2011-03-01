@@ -26,13 +26,12 @@ import vitry.runtime.misc.*;
  *
  * @author Hans Höglund
  */
-abstract class AbstractEnv<K, V> implements Env<K, V>
+abstract public class AbstractEnv<K, V> implements Env<K, V>
     {
         
+        private static Env<?, ?> GLOBAL = new GlobalEnvironment();
+
         private final Env<K, V> parent;
-
-        private static Env<?, ?> global = new GlobalEnvironment();
-
 
         public AbstractEnv() {
             this.parent = AbstractEnv.<K, V> empty();
@@ -48,20 +47,21 @@ abstract class AbstractEnv<K, V> implements Env<K, V>
 
         public V lookup(K key) throws UndefinedError {
             Env<K, V> env = this;
-            V val = this.getBinding(key);
             try {
-                while (val == null) {
+                while (env != null) {
+                    if (env.hasBinding(key)) {
+                        return env.getBinding(key);
+                    }
                     env = env.getParent();
-                    val = env.getBinding(key);
                 }
             } catch (UndefinedError e) {
-                throw new UndefinedError(key, this);
+                // Rethrow with this below
             }
-            return val;
+            throw new UndefinedError(key, this);
         }
 
         private static <K, V> Env<K, V> empty() {
-            return Utils.<Env<K, V>>unsafe(global);
+            return Utils.<Env<K, V>>unsafe(GLOBAL);
         }
 
         public Env<K, V> assoc(K key, V val) {

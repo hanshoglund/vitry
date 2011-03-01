@@ -36,7 +36,8 @@ abstract public class Atom extends BasePattern
         public boolean matchFor(Pattern p) {
             return p.match(this);
         }
-
+        
+        
         // Java stuff
 
         public boolean equals(Object o) {

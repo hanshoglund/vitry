@@ -787,6 +787,23 @@ final class StdList extends List
 
 // Bootstrap prelude
 
+
+final class eq extends Binary
+    {
+        public Object apply(Object a, Object b) {
+            if (b instanceof Pattern) {
+                if (a instanceof Pattern) {
+                    return toVitryBool( ((Pattern) a).eqFor((Pattern) b));
+                }
+                return toVitryBool( ((Pattern) b).eq(a));
+            }
+            if (a instanceof Pattern) {
+                return apply(b, a);
+            }
+            return a.equals(b);
+        }
+    }
+
 final class product_ extends InvertibleRestFunction
     {
         public Seq<?> applyVarInverse(Object a) throws InvocationError {
@@ -920,19 +937,6 @@ final class conc extends Binary
         }
     }
 
-final class eq extends Binary
-    {
-        public Object apply(Object a, Object b) {
-            a = Native.unwrap(a);
-            b = Native.unwrap(b);
-            if (b instanceof Pattern) {
-                if (a instanceof Pattern) { 
-                    return toVitryBool( ((Pattern) a).eqFor((Pattern) b)); }
-                return toVitryBool( ((Pattern) b).eq(a));
-            }
-            return toVitryBool(a.equals(b));
-        }
-    }
 
 final class eval_ extends StandardFunction
     {

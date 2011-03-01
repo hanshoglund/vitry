@@ -19,7 +19,6 @@
 package vitry.runtime;
 
 import vitry.runtime.error.InvocationError;
-import vitry.runtime.struct.MapSeq;
 import vitry.runtime.struct.Seq;
 
 
@@ -40,10 +39,18 @@ public final class Native extends Atom
             this.obj = obj;
         }
 
-        public boolean equals(Object o) {
-            if (o instanceof Native) return obj.equals( ((Native) o).obj);
+        public boolean eq(Object o) {
+            return obj.equals(o);
+        }
+
+        public boolean eq(Atom o) {
+            if (o instanceof Native) {
+                return o.equals(((Native) o).obj);
+            }
             return false;
         }
+
+        // TODO tagged
 
         public int hashCode() {
             return obj.hashCode();
@@ -72,19 +79,19 @@ public final class Native extends Atom
         }
 
         public static Seq<Pattern> wrap(Seq<Object> values) {
-            return new MapSeq<Object, Pattern>(new StandardFunction.Unary() {
+            return values.map(new StandardFunction.Unary() {
                 public Object apply(Object v) throws InvocationError {
                     return wrap(v);
                 }
-            }, values);
+            });
         }
 
         public static Seq<Object> unwrap(Seq<Object> values) {
-            return new MapSeq<Object, Object>(new StandardFunction.Unary() {
+            return values.map(new StandardFunction.Unary() {
                 public Object apply(Object v) throws InvocationError {
                     return unwrap(v);
                 }
-            }, values);
+            });
         }
 
     }

@@ -53,6 +53,8 @@ public class Tagged extends BasePattern implements Destructible
         
         
         // Eq and match
+        
+        // TODO match all other forms properly
 
         public boolean eq(Tagged o) {
             return (this == o) || (tag.equals(o.tag) && (val.eqFor(o.val)));

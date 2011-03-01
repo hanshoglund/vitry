@@ -22,7 +22,7 @@ import vitry.runtime.error.*;
 
 /**
  * A set of bindings possibly referencing an enclosing parent
- * environment.
+ * environment. Env does not allow null keys.
  * 
  * This interface supports both persistent (immutable) and 
  * non-persistent (mutable) environments. For persistent environments
@@ -61,17 +61,17 @@ public interface Env<K, V>
         Env<K, V> assoc(K key, V val);
         
         /**
-         * Returns the parent. Referentially transparent.
-         */
-        Env<K, V> getParent();
-
-        /**
          * Lookup the given key. Referentially transparent iff this is a
          * persistent environment.
          */
         V lookup(K key) throws UndefinedError;
 
         boolean isPersistent();
+
+        /**
+         * Returns the parent. Referentially transparent.
+         */
+        Env<K, V> getParent();
 
         /**
          * Returns the local binding for the given key, if any.
