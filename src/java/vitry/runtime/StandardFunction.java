@@ -71,6 +71,12 @@ abstract public class StandardFunction extends AbstractFunction implements Arity
             this.arity = checkArity(arity);
         }
         
+        public StandardFunction(int arity, Env<Symbol, Object> env) {
+            super(env);
+            this.arity = checkArity(arity);
+        }
+
+        
         public int getArity() {
             return arity;
         }

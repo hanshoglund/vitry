@@ -52,6 +52,9 @@ public interface Eval
      */
     public Object eval(Object expr) throws ParseError, ResolveError, TypeError;
     
+    public Object eval(Object expr, Module module) throws ParseError, ResolveError, TypeError;
+
+    
     /**
      * Whether this eval method accepts parser-generated tokens.
      */

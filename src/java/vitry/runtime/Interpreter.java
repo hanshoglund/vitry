@@ -52,7 +52,6 @@ public class Interpreter implements Eval {
     private static final int STR_EXPR     = VitryParser.String;
     private static final int OP_EXPR      = VitryParser.Op;
     private static final int SYMBOL_EXPR  = VitryParser.Symbol;
-    private static final int MODULE_EXPR  = VitryParser.Module;
     private static final int FN_EXPR      = VitryParser.Fn;
     private static final int LEFT_EXPR    = VitryParser.Left;
     private static final int QUOTE_EXPR   = VitryParser.Quote;
@@ -68,6 +67,14 @@ public class Interpreter implements Eval {
     private static final int OPS_EXPR     = VitryParser.Ops;
     private static final int TYPE_EXPR    = VitryParser.Type;
 
+    private static final int MODULE_DECL  = VitryParser.Module;
+    private static final int IMPORT_DECL   = VitryParser.Import;
+    private static final int EXPORT_DECL   = VitryParser.Export;
+    private static final int IMPLICIT_DECL = VitryParser.Implicit;
+    private static final int FIXITY_DECL   = VitryParser.Fixity;
+    private static final int TYPE_DECL     = VitryParser.TypeDecl;
+
+    
     /*
      * Sub-branches
      *
@@ -84,17 +91,11 @@ public class Interpreter implements Eval {
      */
     private static final int UNKNOWN        = Integer.MIN_VALUE;
 
+
     
-    
-    /*
-     * Internal state
-     */
     private final VitryRuntime runtime;
-
     private ModuleProvider moduleProvider;
-
     private Context standardContext;
-
 
     
     public Interpreter(VitryRuntime runtime) {
@@ -196,19 +197,22 @@ public class Interpreter implements Eval {
            
         main : while (true)
         {   
+ 
+            
             if (branch >= 0)
             {
                 try 
                 {
                     if (isSelfEvaluating(expr))
-                        if (expr instanceof Symbol)
-                            return maybeLookup((Symbol) expr, context, frame);
+                    {                        
+                        if (expr instanceof Symbol) return lookup((Symbol) expr, context, frame);
                         else return expr;
-                    else 
+                    }
+                    else
                     {
                         if (isAcceptedToken(expr))
                         {
-                            exOp = (Pattern) expr;
+                            exOp = expr;
                             exTail = null;
                         }
                         else
@@ -216,7 +220,7 @@ public class Interpreter implements Eval {
                             exOp = head((Seq<Pattern>) expr);
                             exTail = tail((Seq<Pattern>) expr);
                         }
-                        branch = VitryTokenTypes.tokenType(exOp);
+                        branch = Parsing.getTokenType(exOp);
                     }
                 } 
                 catch (Exception e) 
@@ -225,18 +229,17 @@ public class Interpreter implements Eval {
                 }
             }
                 
+            
             switch (branch) {
-                
+
                 case NAT_EXPR:      return evalNat(exOp);
                 case FLOAT_EXPR:    return evalFloat(exOp);
                 case COMPLEX_EXPR:  return evalComplex(exOp);
                 case STR_EXPR:      return evalString(exOp);
 
-                case OP_EXPR:       return maybeLookupEvalOp(exOp, context, frame);
-                case SYMBOL_EXPR:   return maybeLookupEval(exOp, context, frame);
+                case OP_EXPR:       return lookupOp(exOp, context, frame);
+                case SYMBOL_EXPR:   return lookupExpr(exOp, context, frame);
 
-                
-                case MODULE_EXPR:   throwNotSupported();                
                 case FN_EXPR:       return new InterpretedFunction(init(exTail), last(exTail), frame, module, this);
 
                 case LEFT_EXPR:
@@ -282,16 +285,15 @@ public class Interpreter implements Eval {
                     continue;
                     
                 case OPS_EXPR:
-                    expr = Rewriting.operators(module.getFixities(), context).rewrite(exTail);
-                    continue; 
+                    expr = Rewriting.ops(module.getFixities(), context).rewrite(exTail);
+                    continue;
                     
                 case IF_EXPR:
                     if (!(eval(first(exTail), context, frame, module).equals(FALSE)))
                         expr = second(exTail);
                     else
                         expr = third(exTail);
-                    continue;                   
-  
+                    continue;
                 
                 case DELIMITER_EXPR:
                 {
@@ -498,13 +500,35 @@ public class Interpreter implements Eval {
                     }
                 }
                 
+                case MODULE_DECL:
+                {
+                    Seq<Symbol> name = (Seq<Symbol>) evalAllQuoted(exTail.head(), context, frame, module);
+                    Seq<?>      declarations = exTail.tail();
+                    return new InterpretedModule(name, declarations, this);
+                }
+                
+                
+                case IMPORT_DECL:
+                {
+                    // TODO 'as' syntax
+                    Seq<Symbol> name = (Seq<Symbol>) evalAllQuoted(exTail.head(), context, frame, module);
+                    
+                    module.importModule(moduleProvider.forName(name));
+                    return module;
+                }
+                    
+                case EXPORT_DECL:   throwNotSupported();
+                case IMPLICIT_DECL: throwNotSupported();
+                case FIXITY_DECL:   throwNotSupported();
+                case TYPE_DECL:     throwNotSupported();
+
+                
+                
                 case UNKNOWN: default:            
                     throwUnknownForm(expr, exOp);
             }
         }
     }
-    
-
 
     static void match(Object a, Object b) throws TypeError
     {
@@ -512,24 +536,18 @@ public class Interpreter implements Eval {
         boolean m;
 
         if (b instanceof Pattern)
-        {
             bp = (Pattern) b;
-        }
         else
-        {
             bp = Native.wrap(b);
 
-        }
         if (a instanceof Pattern)
-        {
             m = ((Pattern) a).matchFor(bp);
-        }
         else
-        {
             m = bp.match(a);
-        }
+
         if (!m) TypeError.throwMismatch(a, b);
     }
+    
                     
     
     static BigInteger evalNat(Object expr)
@@ -604,19 +622,24 @@ public class Interpreter implements Eval {
             }
         });
     }
-
     
-    Object maybeLookupEval(Object expr, Context context, Env<Symbol, Object> frame)
+    Seq<?> evalAllQuoted(Object expr, Context context,
+                         Env<Symbol, Object> frame, Module module)
     {
-        return maybeLookup(evalSymbol(expr), context, frame);
+        return evalAll((Seq<?>) expr, context.extend(QUOTED, TRUE), frame, module);
     }
 
-    Object maybeLookupEvalOp(Object expr, Context context, Env<Symbol, Object> frame)
+    Object lookupExpr(Object expr, Context context, Env<Symbol, Object> frame)
     {
-        return maybeLookup(evalOperator(expr, context.getDelimiter()), context, frame);
+        return lookup(evalSymbol(expr), context, frame);
+    }
+
+    Object lookupOp(Object expr, Context context, Env<Symbol, Object> frame)
+    {
+        return lookup(evalOperator(expr, context.getDelimiter()), context, frame);
     }
     
-    Object maybeLookup(Symbol expr, Context context, Env<Symbol, Object> frame)
+    Object lookup(Symbol expr, Context context, Env<Symbol, Object> frame)
     {
         if (context.shouldLookup())
             return frame.lookup(expr);
@@ -657,7 +680,7 @@ public class Interpreter implements Eval {
     {
         if (o instanceof Pattern)
         {
-            return VitryTokenTypes.tokenType((Pattern) o) == VitryParser.Ops;
+            return Parsing.getTokenType((Pattern) o) == VitryParser.Ops;
         }
         return false;
     }
@@ -695,29 +718,33 @@ public class Interpreter implements Eval {
 
 
 
-final class InterpretedFunction extends RestFunction implements Arity {
-    
+final class InterpretedFunction extends RestFunction implements Arity
+{
+
+    /*
+     * Unevaluated parameters and body. 
+     */
     public final Seq<?> parameters;
     public final Object body;
-    public final int arity;
+
+    /**
+     * Containing module.
+     */
     public final Module module;
 
     /*
      * Creating interpreter
      */
     final Interpreter interpreter;
-    
-    public InterpretedFunction(Seq<?> params, 
-                               Object body, 
-                               Module module, 
-                               Interpreter interpreter) {
+    public final int arity;
+
+    public InterpretedFunction(Seq<?> params, Object body, Module module,
+            Interpreter interpreter) {
         this(params, body, module.getValues(), module, interpreter);
     }
 
-    public InterpretedFunction(Seq<?> params, 
-                               Object body, Env<Symbol, Object> env,
-                               Module module, 
-                               Interpreter interpreter) {
+    public InterpretedFunction(Seq<?> params, Object body, Env<Symbol, Object> env,
+            Module module, Interpreter interpreter) {
         super(env);
         this.body = body;
         this.parameters = params;
@@ -737,11 +764,10 @@ final class InterpretedFunction extends RestFunction implements Arity {
         return false;
     }
 
-    
+
     public Object applyVar(Seq<?> args)
     {
         Context context = interpreter.getStandardContext();
-        Env<Symbol, Object> callFrame = this.environment;
         Env<Symbol, Object> frame = this.environment.extend();
 
         SeqIterator<?> par = this.parameters.seqIterator();
@@ -750,9 +776,10 @@ final class InterpretedFunction extends RestFunction implements Arity {
         while (par.hasNext() && arg.hasNext())
         {
             Object name = interpreter.eval(par.next(), context, frame, this.module);
-            Object value = interpreter.eval(arg.next(), context, callFrame, this.module);
-            
-            if (name instanceof LeftCont) {
+            Object value = arg.next();
+
+            if (name instanceof LeftCont)
+            {
                 ((LeftCont) name).invoke(value, frame);
             }
             else
@@ -761,8 +788,7 @@ final class InterpretedFunction extends RestFunction implements Arity {
                 {
                     if (!name.equals(VitryRuntime.WILDCARD))
                         frame.define((Symbol) name, value);
-                }
-                catch (ClassCastException e)
+                } catch (ClassCastException e)
                 {
                     Interpreter.throwAssignment(name);
                 }
@@ -771,15 +797,17 @@ final class InterpretedFunction extends RestFunction implements Arity {
 
         if (par.hasNext())
         {
-            return new InterpretedFunction(par.following(), this.body, frame, this.module, this.interpreter);
+            return new InterpretedFunction(par.following(), this.body, frame, this.module,
+                    this.interpreter);
         }
         if (!arg.hasNext())
         {
             return this.interpreter.eval(this.body, context, frame, this.module);
         }
-        else 
+        else
         {
-            Function res = (Function) this.interpreter.eval(this.body, context, frame, this.module);
+            Function res = (Function) this.interpreter.eval(this.body, context, frame,
+                    this.module);
             return res.applyVar(arg.following());
         }
     }
@@ -787,21 +815,51 @@ final class InterpretedFunction extends RestFunction implements Arity {
 }
 
 
+final class InterpretedModule extends Module
+{
 
-
-final class InterpretedModule extends Module {
-
-    public InterpretedModule(Seq<Symbol> name) {
-        super(name);
-    }
+    /**
+     * Unevaluated declarations.
+     */
+    private Seq<?> declExprs;
     
+    final Interpreter interpreter;
+
+
+    public InterpretedModule(Seq<Symbol> name, Seq<?> declExprs, Interpreter interpreter) {
+        super(name);
+        this.declExprs = declExprs;
+        this.interpreter = interpreter;
+
+        importModule(interpreter.getRuntime().getPrelude());
+        evalDeclarations();
+    }
+
     public boolean isCompiled()
     {
         return false;
     }
+
+    private void evalDeclarations()
+    {
+        /*
+         * TODO
+         * 
+         * We have to sort and evaluate in the rough order
+         *  - exports
+         *  - imports
+         *  - types
+         *  - implicits
+         *  - values
+         */
+        for (Object expr : declExprs) {
+            Object decl = Rewriting.topLevel().rewrite((Seq<Pattern>) expr);
+System.err.println(decl);
+            Object val = interpreter.eval(decl, interpreter.getStandardContext(), values, this);
+        }
+
+    }
 }
-
-
 
 
 /**
@@ -810,19 +868,23 @@ final class InterpretedModule extends Module {
  * Evaluating left-side expression may result in a LeftCont instance, 
  * which is typically handled separately by the evaluator.
  */
-interface LeftCont {
-    
+interface LeftCont
+{
+
     /**
      * Invoke this continuation, passing a right-side value for further
      * processing.
      */
     public void invoke(Object value, Env<Symbol, Object> frame);
+
     public void invoke(Object value, Env<Symbol, Object> frame, boolean matching);
+
 }
 
 
-abstract class AbstractLeftCont implements LeftCont {
-    
+abstract class AbstractLeftCont implements LeftCont
+{
+
     private boolean matching = false;
 
     public void invoke(Object value, Env<Symbol, Object> frame, boolean matching)
@@ -832,7 +894,7 @@ abstract class AbstractLeftCont implements LeftCont {
     }
 
     protected void finish(Object key, Object val, Env<Symbol, Object> frame)
-    throws BindingError
+            throws BindingError
     {
         if (key instanceof LeftCont)
         {
@@ -840,7 +902,7 @@ abstract class AbstractLeftCont implements LeftCont {
         }
         else
         {
-            if (this.matching && !(key instanceof Symbol))
+            if (this.matching && ! (key instanceof Symbol))
             {
                 Interpreter.match(val, key);
             }
@@ -850,7 +912,7 @@ abstract class AbstractLeftCont implements LeftCont {
                 {
                     if (!key.equals(VitryRuntime.WILDCARD))
                         frame.define((Symbol) key, val);
-                    
+
                 } catch (ClassCastException e)
                 {
                     Interpreter.throwAssignment(key);
@@ -861,7 +923,8 @@ abstract class AbstractLeftCont implements LeftCont {
 }
 
 
-final class UnaryCont extends AbstractLeftCont {
+final class UnaryCont extends AbstractLeftCont
+{
 
     private final InvertibleFunction structor;
     private final Object key;
@@ -879,7 +942,8 @@ final class UnaryCont extends AbstractLeftCont {
 }
 
 
-final class TypeCont extends AbstractLeftCont {
+final class TypeCont extends AbstractLeftCont
+{
 
     private final Object left;
     private final Object right;
@@ -897,10 +961,11 @@ final class TypeCont extends AbstractLeftCont {
 }
 
 
-final class ApplyCont extends AbstractLeftCont {
-    
+final class ApplyCont extends AbstractLeftCont
+{
+
     private final InvertibleFunction fn;
-    private final Seq<?> args;
+    private final Seq<?> oarams;
     private final Context context;
     private final Env<Symbol, Object> frame;
     private Module module;
@@ -908,10 +973,9 @@ final class ApplyCont extends AbstractLeftCont {
 
 
     public ApplyCont(InvertibleFunction fn, Seq<?> args, Context context,
-            Env<Symbol, Object> frame, Module module,
-            Interpreter interpr) {
+            Env<Symbol, Object> frame, Module module, Interpreter interpr) {
         this.fn = fn;
-        this.args = args;
+        this.oarams = args;
         this.context = context;
         this.frame = frame;
         this.module = module;
@@ -920,20 +984,20 @@ final class ApplyCont extends AbstractLeftCont {
 
     public void invoke(Object value, Env<Symbol, Object> frame)
     {
-        Seq<?> vals = fn.applyVarInverse(value);
+        Seq<?> args = fn.applyVarInverse(value);
 
-        Iterator<?> keyExprIt = args.iterator();
-        Iterator<?> valIt     = vals.iterator();
+        Iterator<?> par = oarams.iterator();
+        Iterator<?> arg = args.iterator();
 
-        while (keyExprIt.hasNext() && valIt.hasNext())
+        while (par.hasNext() && arg.hasNext())
         {
-            Object key = interpr.eval(keyExprIt.next(), context, this.frame, module);
-            Object val = valIt.next();
+            Object key = interpr.eval(par.next(), context, this.frame, module);
+            Object val = arg.next();
             finish(key, val, frame);
         }
-        if (keyExprIt.hasNext() || valIt.hasNext()) {
+        if (par.hasNext() || arg.hasNext())
+        {
             TypeError.throwWrongCount(value);
         }
     }
-
 }

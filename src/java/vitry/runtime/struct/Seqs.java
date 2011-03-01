@@ -53,6 +53,10 @@ public class Seqs
             else
                 return xs.cons(x);
         }
+        
+        public static <T> Seq<T> seq(T... a) {
+            return from(a);
+        }
 
         public static <T> Seq<T> from(T[] a) {
             if (a.length == 0)

@@ -73,9 +73,8 @@ public class Indentation implements TokenSource
         /*
          * Tokens to emit at start and end of lines
          */
-        private Token startToken = new CommonToken(VitryTokenTypes.PL, "(");
-        
-        private Token endToken   = new CommonToken(VitryTokenTypes.PR, ")");
+        private Token startToken = new CommonToken(Parsing.PL, "(");
+        private Token endToken   = new CommonToken(Parsing.PR, ")");
         
         /**
          * If true, this class emits whitespace tokens mimicking the original
@@ -272,12 +271,12 @@ public class Indentation implements TokenSource
                     }
                     
                     int tt = t.getType();
-                    if (tt == VitryTokenTypes.LET
-                     || tt == VitryTokenTypes.DO
-                     || tt == VitryTokenTypes.IMPORT
-                     || tt == VitryTokenTypes.TYPE
-                     || tt == VitryTokenTypes.IMPLICIT
-                     || tt == VitryTokenTypes.INFIX) 
+                    if (tt == Parsing.LET
+                     || tt == Parsing.DO
+                     || tt == Parsing.IMPORT
+                     || tt == Parsing.TYPE
+                     || tt == Parsing.IMPLICIT
+                     || tt == Parsing.INFIX) 
                     {
                         if (nextIsLineSpace()) {
                             input.consume();
@@ -390,6 +389,10 @@ public class Indentation implements TokenSource
          * Emit closeing tokens for all levels on the stack and EOF.
          */
         private void finish() {
+            while (carry-- > 0) {
+                buffer.add(endToken);
+            }
+            
             while (levelStack.size() > 0) {
                 buffer.add(endToken);
                 levelStack.pop();
@@ -428,7 +431,7 @@ public class Indentation implements TokenSource
         
         static {
             SPACE.setChannel(Token.HIDDEN_CHANNEL);
-            SPACE.setChannel(Token.HIDDEN_CHANNEL);
+            BREAK.setChannel(Token.HIDDEN_CHANNEL);
         }
     }
 

@@ -18,71 +18,80 @@
  */
 package vitry.runtime;
 
+import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.Seq;
-import vitry.runtime.struct.Seqs;
 
 /**
  * Implements run-time modules.
+ * 
+ * TODO
+ *     import/export
+ *     implicits
  *
  * @author Hans Höglund
  */
 public class Module implements Scope, Compilable
     {
                      
-        private final Seq<Symbol> name;
-        private Env<Symbol, Object> values;
-        private Env<Symbol, Type> types;
-        private Env<Symbol, Fixity> fixities;
+        final Seq<Symbol> name;
+        final Rec<Symbol, Object> values = new HashRec<Symbol, Object>();
+        final Rec<Symbol, Type> types = new HashRec<Symbol, Type>();
+        final Rec<Symbol, Fixity> fixities = new HashRec<Symbol, Fixity>();
         
                 
         public Module(Seq<Symbol> name) {
             this.name = name;
-        }
-        
-        public Module(Seq<Symbol> name, Env<Symbol, Object> values, Env<Symbol, Type> types,
-                Env<Symbol, Fixity> fixities) {
-            this.name = name;
-            this.values = values;
-            this.types = types;
-            this.fixities = fixities;
         }
 
         public boolean isCompiled() {
             return true;
         }
 
-        public Env<Symbol, Object> getValues() {
-            return values;
-        }
-        
-        public Object getValue(String name) {
-            return getValue(Symbol.intern(name));
-        }
-        public Object getValue(Symbol name) {
-            return values.lookup(name);
-        }
-
-        public Env<Symbol, Type> getTypes() {
-            return types;
-        }
-
-        public Env<Symbol, Fixity> getFixities() {
-            return fixities;
-        }
-
         public Seq<Symbol> getName() {
             return name;
         }
 
-        public void setValues(Env<Symbol, Object> values) {
-            this.values = values;
+        public Object getValue(String name) {
+            return getValue(Symbol.intern(name));
         }
 
-        public void setTypes(Env<Symbol, Type> types) {
-            this.types = types;
+        public Object getValue(Symbol name) {
+            return values.lookup(name);
+        }
+        
+        public Rec<Symbol, Object> getValues() {
+            return values;
+        }
+        
+        public Rec<Symbol, Type> getTypes() {
+            return types;
         }
 
-        public void setFixities(Env<Symbol, Fixity> fixities) {
-            this.fixities = fixities;
+        public Rec<Symbol, Fixity> getFixities() {
+            return fixities;
         }
+
+        void addValue(Symbol name, Object value) {
+            values.define(name, value);
+        }
+        
+        void addFixity(Symbol name, Fixity fix) {
+            fixities.define(name, fix);
+        }
+        
+        void importValue(Module source, Symbol name, Symbol as) {
+            addValue(as, source.getValue(name));
+        }
+        
+        void importModule(Module source) {
+            for (Symbol name : source.getValues().getKeys())
+                importValue(source, name, name);
+        }
+
+        public String toString() {
+            return Utils.join(name, "", ".", "");
+        }
+        
+        
+        
     }

@@ -68,12 +68,7 @@ public final class VitryRuntime
            
         {
             // TODO
-            prelude = new Module(null);
-            
-            prelude.setValues(new HashEnv<Symbol, Object>());
-            prelude.setTypes(new HashEnv<Symbol, Type>());
-            prelude.setFixities(new HashEnv<Symbol, Fixity>());
-            
+            prelude = new Module(Seqs.seq(Symbol.intern("Vitry"), Symbol.intern("Prelude")));            
             
             def("()",                 NIL);
             def("[]",                 productOf(NIL,    new list_()));
@@ -204,11 +199,6 @@ public final class VitryRuntime
             def("print",              new print(this));
             def("error",              NIL);                   // TODO
 
-            def("repl",               new repl(this));
-            def("require",            NIL);                   // TODO
-            def("load",               NIL);                   // TODO
-            def("version",            NIL);                   // TODO
-            def("quit",               new quit());
             
             
 
@@ -217,7 +207,7 @@ public final class VitryRuntime
             def("__rt",               this);
             def("openFile",           NIL);
             def("closeFile",          NIL);
-            def("readFile",           NIL);
+            def("readFile",           new readFile(this));
             def("writeFile",          NIL);
             def("str2list",           NIL);
             def("list2str",           NIL);
@@ -229,6 +219,12 @@ public final class VitryRuntime
             def("classOf",            new classOf(this));
             def("methodsOf",          NIL);
             def("fieldsOf",           NIL);
+
+            def("repl",               new repl(this, prelude));
+            def("require",            NIL);                   // TODO
+            def("load",               new load(this, prelude));
+            def("version",            NIL);                   // TODO
+            def("quit",               new quit());
             
             defFix("(..)",            12, false, false);   // gathering?
             defFix("(.)",             12, false, false );  // gathering?
@@ -446,11 +442,11 @@ public final class VitryRuntime
         // Helper methods
 
         private void def(String name, Object val) {
-            prelude.getValues().define(Symbol.intern(name), val);
+            prelude.addValue(Symbol.intern(name), val);
         }
 
         private void defFix(String name, int precedence, boolean assoc, boolean gathering) {
-            prelude.getFixities().define(Symbol.intern(name), new Fixity(precedence, assoc, gathering));
+            prelude.addFixity(Symbol.intern(name), new Fixity(precedence, assoc, gathering));
         }
 
         private Symbol nextUnique() {

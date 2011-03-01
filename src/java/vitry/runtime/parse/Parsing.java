@@ -29,7 +29,7 @@ import vitry.runtime.error.*;
  *
  * @author Hans Höglund 
  */
-public class VitryTokenTypes
+public class Parsing
     {
 
         /*
@@ -88,24 +88,24 @@ public class VitryTokenTypes
         }
 
 
-        public static final int tokenType(Object p) {
+        public static final int getTokenType(Object p) {
             try {
                 try {
-                    return parserTokenType(p);
+                    return getParserTokenType(p);
                 } catch (Exception _) {
-                    return symbolicTokenType(p);
+                    return getSymbolicTokenType(p);
                 }
             } catch (VitryError e) {
                 throw e;
             }
         }
 
-        public static final  int parserTokenType(Object p) {
+        public static final  int getParserTokenType(Object p) {
             return ((VitryToken) p).getTokenType();
         }
 
 
-        public static final int symbolicTokenType(Object p) {
+        public static final int getSymbolicTokenType(Object p) {
             try {
                 return table.lookup(p);
             } catch (Exception e) {

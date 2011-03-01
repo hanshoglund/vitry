@@ -41,9 +41,10 @@ tokens {
     Do;
     Type;
     Import;
-    TypeDecl;
+    Export;
     Implicit;
     Fixity;
+    TypeDecl;
 }
 
 
@@ -61,13 +62,13 @@ tokens {
 //     public Object recoverFromMismatchedSet(IntStream input, RecognitionException ex, BitSet follow) 
 //          throws RecognitionException
 //     {
-//         throw new ParseError("", ex);
+//         throw new ParseError("Mismatched token", ex);
 //     }
 // }    
-
+// 
 // @rulecatch {
 //     catch (RecognitionException ex) {
-//         throw new ParseError("", ex);
+//         throw new ParseError("Recognition failed", ex);
 //     }
 // }        
 
@@ -150,17 +151,18 @@ literal
 
 
 file 
-    : decl+
+    : '(' 'module' moduleName exportDecl* ')' decl+ -> ^(Module moduleName ^(Export exportDecl)* decl+)
     ;
 
+
 decl 
-    : 'module' moduleName exportDecl*   -> ^(Module moduleName exportDecl*) 
-    | 'import' importDecl+              -> ^(Import importDecl)+
-    | 'implicit' simple+                -> ^(Implicit simple)+
-    | 'infix' infix+                    -> ^(Fixity infix)+          
+    : '(' 'import' importDecl+ ')'   -> ^(Import importDecl)+
+    | '(' 'implicit' simple+ ')'     -> ^(Implicit simple)+
+    | '(' 'infix' infix+ ')'         -> ^(Fixity infix)+          
 //    | 'type' ('(' assign ')')*
-//    | topLevel
+    | assign
     ;
+    
     
 exportDecl
     : Symbol

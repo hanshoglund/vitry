@@ -3,19 +3,14 @@ package vitry.prelude;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringReader;
-
-import org.antlr.runtime.ANTLRReaderStream;
-import org.antlr.runtime.CommonTokenStream;
 
 import vitry.Build;
-import vitry.runtime.Pattern;
+import vitry.runtime.Function;
+import vitry.runtime.Module;
 import vitry.runtime.RestFunction;
+import vitry.runtime.Scope;
 import vitry.runtime.VitryRuntime;
 import vitry.runtime.error.InvocationError;
-import vitry.runtime.parse.VitryTreeAdaptor;
-import vitry.runtime.parse.VitryLexer;
-import vitry.runtime.parse.VitryParser;
 import vitry.runtime.struct.Seq;
 
 
@@ -23,14 +18,19 @@ public class repl extends RestFunction
     {
 
         private VitryRuntime rt;
+        private Function read;
+        private Function print;
 
-        public repl(VitryRuntime rt) {
+        public repl(VitryRuntime rt, Scope prelude) {
+            super(prelude);
             this.rt = rt;
+            this.read = (Function) getValue("read");
+            this.print = (Function) getValue("print");
         }
 
         /**
          * args ... -> ()
-         * Standard read-eval print loop.
+         * Standard read-eval-print loop.
          * 
          * TODO break into actual methods read/eval/print
          * TODO let definitions, module loading etc.
@@ -40,29 +40,24 @@ public class repl extends RestFunction
             
 
             BufferedReader lineReader = new BufferedReader(new InputStreamReader(System.in));
+            Module module = rt.getPrelude();
             
             String line;
             try {
                 while(true) {
-                    System.out.print("> ");
+                    System.out.print(module + "> ");
                     line = lineReader.readLine();
                     
                     try {
                         if (line.length() == 0){
                             continue;
                         }
-                        
-                        VitryLexer lexer = new VitryLexer();
-                        lexer.setCharStream(new ANTLRReaderStream(new StringReader(line)));
 
-                        VitryParser parser = new VitryParser(new CommonTokenStream(lexer));
-                        parser.setTreeAdaptor(new VitryTreeAdaptor());
-
-                        
-                        Pattern read = (Pattern) parser.expr().getTree();
-                        
-                        Object value = rt.getInterpreter().eval(read);
-                        System.out.println(value);
+                        Object tree = read.apply(line);
+                        Object value = rt.getInterpreter().eval(tree, module);
+                        print.apply(value);
+                    } catch (ModuleLoaded e) {
+                        module = e.module;
                         
                     } catch (Exception e) {
                         if (Build.DEBUG) {

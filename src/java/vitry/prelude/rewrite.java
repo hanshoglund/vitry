@@ -14,7 +14,7 @@ public class rewrite extends StandardFunction
         }
 
         public Object apply(Object a) {
-        return Rewriting.operators(rt.getPrelude().getFixities(),
+        return Rewriting.ops(rt.getPrelude().getFixities(),
                 ((Interpreter) rt.getInterpreter()).getStandardContext()).rewrite(
                 (Seq<Pattern>) a);
         }

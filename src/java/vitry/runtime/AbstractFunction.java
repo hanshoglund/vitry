@@ -61,10 +61,18 @@ abstract class AbstractFunction extends ConstructionPattern implements Function,
         }
 
 
+        public Object getValue(String name) {
+            return getValue(Symbol.intern(name));
+        }
+        
+        public Object getValue(Symbol name) {
+            return environment.lookup(name);
+        }
+        
         public Env<Symbol, Object> getValues() {
             return this.environment;
         }
-
+        
         public synchronized Pattern getDomain() {
             return domain;
         }

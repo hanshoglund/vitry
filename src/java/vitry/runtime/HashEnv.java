@@ -21,6 +21,8 @@ package vitry.runtime;
 import java.util.HashMap;
 
 import vitry.runtime.error.BindingError;
+import vitry.runtime.struct.Seq;
+import vitry.runtime.struct.Seqs;
 
 /**
  * A basic non-persistent environment.
@@ -29,8 +31,7 @@ import vitry.runtime.error.BindingError;
  */
 public class HashEnv<K, V> extends AbstractEnv<K, V>
     {
-        private final HashMap<K, V> bindings = new HashMap<K, V>();
-        
+        protected final HashMap<K, V> bindings = new HashMap<K, V>();
         
         public HashEnv() {
             super();

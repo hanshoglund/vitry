@@ -33,27 +33,96 @@ import vitry.runtime.struct.*;
  */
 abstract public class Rewriting
 {
-    abstract public Product rewrite(Seq<Pattern> seq);
+    abstract public Seq<?> rewrite(Seq<Pattern> seq);
     
-    public static final Rewriting operators(Env<Symbol, Fixity> fix, 
-                                            Env<Symbol, Symbol> ctxt) 
+
+    public static final Rewriting topLevel()
     {
-        return new OperatorRewrite(fix, ctxt);
+        return new TopLevelRewriter();
     }
-}  
+
+    
+    public static final Rewriting ops(Env<Symbol, Fixity> fix, 
+                                      Env<Symbol, Symbol> ctxt) 
+    {
+        return new OpRewriter(fix, ctxt);
+    }
+}
+
+
+/**
+ * Rewrites
+ *   a = M     -> a = M
+ *   a b = M   -> a = (fn (b) M)
+ *   a b c = M -> a = (fn (b c) M)
+ *   ...
+ */
+class TopLevelRewriter extends Rewriting
+{
+    public Seq<?> rewrite(Seq<Pattern> seq)
+    {
+        if (isAssign(seq)) {
+            Pattern  assign = seq.head();
+            Pattern  leftSeq   = seq.tail().head();
+            Pattern  right  = seq.tail().tail().head();
+    
+            if (isApply(second((Seq<Pattern>) leftSeq))) {
+                Pattern left    = first((Seq<Pattern>)leftSeq);
+                Seq<Pattern> applySeq = (Seq<Pattern>) second((Seq<Pattern>) leftSeq);
+                Pattern apply    = applySeq.head();
+                Pattern name     = applySeq.tail().head();
+                Product params   = product(applySeq.tail().tail());
+//System.err.println(name);
+//System.err.println(params);
+//System.err.println(right);
+                params = params.mapProduct(new StandardFunction.Unary()
+                    {
+                        public Object apply(Object a) throws InvocationError
+                        {
+                            Object res = product(seq(Left,(Pattern) a));
+                            return res;
+                        }
+                    });
+                Product r = product(single(right));
+                Pattern val = product(append(params.cons(Fn), r));
+                return product(seq(assign, product(seq(left, name)), val));
+            }
+        }
+        return seq;
+    }
+    
+    boolean isAssign(Object o) {
+        if (o instanceof Seq) {
+            Object h = ((Seq<?>) o).head();
+            return Parsing.getTokenType(h) == VitryParser.Assign;
+        }
+        return false;
+    }
+    
+    boolean isApply(Object o) {
+        if (o instanceof Seq) {
+            Object h = ((Seq<?>) o).head();
+            return Parsing.getTokenType(h) == VitryParser.Apply;
+        }
+        return false;
+    }
+    
+    static final Symbol Fn = Symbol.intern("Fn");
+    static final Symbol Left = Symbol.intern("Left");
+}
 
 
 /**
  * Rewrites opererator-form syntax trees into application-form.
  */        
-class OperatorRewrite extends Rewriting
+class OpRewriter extends Rewriting
 {        
 
     final Env<Symbol, Fixity> fixities;
     final Env<Symbol, Symbol> context;
     final Symbol delimiter;
 
-    public OperatorRewrite(Env<Symbol, Fixity> fixities,
+    public OpRewriter(Env<Symbol, Fixity> fixities,
                            Env<Symbol, Symbol> context) 
     {
         this.fixities = fixities;
@@ -79,7 +148,7 @@ class OperatorRewrite extends Rewriting
      * 
      * Returns an (Apply, +, ...) expression.
      */
-    public Product rewrite(Seq<Pattern> seq) {
+    public Seq<Pattern> rewrite(Seq<Pattern> seq) {
         
         /*
          * If the expression is in normal form, convert it to application
@@ -181,24 +250,19 @@ class OperatorRewrite extends Rewriting
     
     
     
-    
-
-    
-    // Predicates
-    
 
     /**
      * If the given value is list on the form (Op, _), return the fixity of the operator.
      * Otherwise return null.
      */
-    private Fixity getFixity(Pattern p) {
+    Fixity getFixity(Pattern p) {
         if (p instanceof Seq) {
             return getFixity((Product) p);
         }
         return null;
     }
 
-    private Fixity getFixity(Product p) {
+    Fixity getFixity(Product p) {
         return fixities.lookup(Interpreter.evalOperator(p.head(), delimiter));
     }
     
@@ -207,7 +271,7 @@ class OperatorRewrite extends Rewriting
      * Matches sequences of length 2 or greater whose first 
      * element is an operator.
      */
-    private static boolean isOpTree(Pattern p) {
+    static boolean isOpTree(Pattern p) {
         if (p instanceof Seq) {
             Seq<?> s = (Seq<?>) p;
             
@@ -223,7 +287,7 @@ class OperatorRewrite extends Rewriting
      * Matches any sequence s where all elements in s are not
      * headed by an operator.
      */
-    private static boolean isShallow(Pattern p) {
+    static boolean isShallow(Pattern p) {
         if (p instanceof Seq) {
 
             return foldl(new Unary() {
@@ -244,10 +308,10 @@ class OperatorRewrite extends Rewriting
     /**
      * Matches op tokens.
      */
-    private static boolean isOperator(Object o) {
+    static boolean isOperator(Object o) {
         // TODO accept symbols parsing as operators
         if (o instanceof Pattern) {                
-            return VitryTokenTypes.tokenType((Pattern) o) == VitryParser.Op;
+            return Parsing.getTokenType((Pattern) o) == VitryParser.Op;
         } 
         return false;
     }
@@ -255,7 +319,7 @@ class OperatorRewrite extends Rewriting
     /**
      * Returns whether two sequences have the same head operator.
      */
-    private static boolean hasSameOperator(Object xs, Object ys) {
+    static boolean hasSameOperator(Object xs, Object ys) {
         if (xs instanceof Seq && ys instanceof Seq) {
             Object x = ((Seq<?>) xs).head();
             Object y = ((Seq<?>) ys).head();
@@ -266,14 +330,9 @@ class OperatorRewrite extends Rewriting
         return false;
     }
     
-
-
-
-
-    // Helper methods
     
 
-    private static Product insert(Pattern hoist, Product primary) {
+    static Product insert(Pattern hoist, Product primary) {
         return product(cons(primary.head(), cons(hoist, primary.tail())));
     }
 
@@ -282,7 +341,7 @@ class OperatorRewrite extends Rewriting
      * Deep-walks a sequence of patterns and/or sequences and replaces
      * all elements (+,...) with (Apply,+,...).
      */
-    private static Product rewriteAsApplication(Product seq) {
+    static Product rewriteAsApplication(Product seq) {
         
         if (!isOperator(first(seq))) {
             return seq;
@@ -299,5 +358,5 @@ class OperatorRewrite extends Rewriting
         return product(cons(Apply, map));
     }
     
-    private static final Symbol Apply = Symbol.intern("Apply");
+    static final Symbol Apply = Symbol.intern("Apply");
 }
