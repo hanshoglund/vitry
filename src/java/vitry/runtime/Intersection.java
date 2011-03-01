@@ -73,6 +73,6 @@ abstract public class Intersection extends InclusionPattern
         // Java stuff
 
         public String toString() {
-            return Utils.join(this, "(", " & ", ")");
+            return Utils.join(this, "", " & ", "");
         }
     }

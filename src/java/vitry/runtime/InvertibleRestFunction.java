@@ -35,6 +35,10 @@ public class InvertibleRestFunction extends RestFunction implements InvertibleFu
         public Object applyInverse(Object a) throws InvocationError {
             return applyVarInverse(Seqs.single(a));
         }
+        
+        public boolean isInvertible() {
+            return true;
+        }
 
         private final class Inv extends InvertibleRestFunction
         {

@@ -33,7 +33,7 @@ abstract class AbstractFunction extends ConstructionPattern implements Function,
         /**
          * Enclosing environment.
          */
-        final Env<Symbol, Object> env;
+        final Env<Symbol, Object> environment;
 
         private Pattern domain;
 
@@ -55,14 +55,14 @@ abstract class AbstractFunction extends ConstructionPattern implements Function,
         
         protected AbstractFunction(Env<Symbol, Object> env, Pattern domain,
                 Seq<Pattern> range) {
-            this.env = env;
+            this.environment = env;
             this.domain = domain;
             this.range = range;
         }
 
 
         public Env<Symbol, Object> getValues() {
-            return this.env;
+            return this.environment;
         }
 
         public synchronized Pattern getDomain() {
@@ -79,6 +79,14 @@ abstract class AbstractFunction extends ConstructionPattern implements Function,
 
         public synchronized void setRange(Seq<Pattern> range) {
             this.range = range;
+        }
+        
+        public boolean isCompiled() {
+            return true;
+        }
+
+        public boolean isInvertible() {
+            return false;
         }
 
         public boolean eqFor(Pattern o) {

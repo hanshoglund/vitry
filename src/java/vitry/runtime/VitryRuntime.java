@@ -229,31 +229,30 @@ public final class VitryRuntime
             def("methodsOf",          NIL);
             def("fieldsOf",           NIL);
             
-
-
             defFix("(..)",            12, false, false);   // gathering?
-            defFix("(.)",             12, false, false );   // gathering?
-            defFix("(^^)",            10, true,  false);
-            defFix("(^)",             10, true,  false);
-            defFix("(%)",             9,  true,  false);
-            defFix("(%%)",            9,  true,  false);
-            defFix("(/)",             9,  true,  false);
-            defFix("(*)",             9,  true,  false);
-            defFix("(-)",             8,  true,  false);
-            defFix("(+)",             8,  true,  false);
-            defFix("(++)",            8,  true,  false);
-            defFix("(<)",             6,  true,  false);
-            defFix("(<=)",            6,  true,  false);
-            defFix("(>=)",            6,  true,  false);
-            defFix("(>)",             6,  true,  false);
-            defFix("(/=)",            6,  true,  false);
-            defFix("(==)",            6,  true,  false);
-            defFix("[,]",             5,  true,  true);
-            defFix("{,}",             5,  true,  true);
-            defFix("(,)",             5,  true,  true);
-            defFix("(|)",             4,  true,  false);  // assoc?
-            defFix("(&)",             4,  true,  false);  // assoc?
-            defFix("(->)",            3,  false, false);
+            defFix("(.)",             12, false, false );  // gathering?
+            defFix("(^^)",            11, true,  false);
+            defFix("(^)",             11, true,  false);
+            defFix("(%)",             10, true,  false);
+            defFix("(%%)",            10, true,  false);
+            defFix("(/)",             10, true,  false);
+            defFix("(*)",             10, true,  false);
+            defFix("(-)",             9,  true,  false);
+            defFix("(+)",             9,  true,  false);
+            defFix("(++)",            9,  true,  false);
+            defFix("[,]",             8,  true,  true);
+            defFix("{,}",             8,  true,  true);
+            defFix("(,)",             8,  true,  true);
+            defFix("(&)",             7,  true,  false);  // assoc?
+            defFix("(|)",             6,  true,  false);  // assoc?
+            defFix("(->)",            5,  false, false);
+            defFix("(<->)",           4,  false, false);
+            defFix("(<)",             3,  true,  false);
+            defFix("(<=)",            3,  true,  false);
+            defFix("(>=)",            3,  true,  false);
+            defFix("(>)",             3,  true,  false);
+            defFix("(/=)",            3,  true,  false);
+            defFix("(==)",            3,  true,  false);
             defFix("(&&)",            2,  false, false);
             defFix("(||)",            1,  false, false);
             defFix("($!)",            0,  true,  false);
@@ -264,7 +263,7 @@ public final class VitryRuntime
         /**
          * Used to determine classpath etc.
          */
-        private final Properties  systemProperties;
+        private final Properties  setup;
 
         /**
          * Used to load modules.
@@ -292,31 +291,27 @@ public final class VitryRuntime
          */
         private final Env<Symbol, Class<?>> internedClasses = new HashEnv<Symbol, Class<?>>();
 
+        
+        public VitryRuntime() {
+            this(System.getProperties());
+        }
 
-
-        public VitryRuntime
-            (
-            Properties systemProperties,
-            ClassLoader classLoader,
-            Eval interpreter
-            )
+        public VitryRuntime(Properties setup) {
+            this(setup, Thread.currentThread().getContextClassLoader());
+        }
+        
+        public VitryRuntime(Properties setup, ClassLoader classLoader)
         {
-            this.systemProperties = systemProperties;
+            this.setup = setup;
             this.classLoader = classLoader;
-            this.interpreter = interpreter;
             
             if(this.interpreter == null)
                 this.interpreter = new Interpreter(this);
         }
 
 
-
-
-        // Accessors
-
-
         public Properties getSystemProperties() {
-            return systemProperties;
+            return setup;
         }
 
         public ClassLoader getClassLoader() {
@@ -334,13 +329,25 @@ public final class VitryRuntime
         public void setInterpreter(Eval interpreter) {
             this.interpreter = interpreter;
         }
-        
-
 
         public Module getPrelude() {
             return prelude;
         }        
 
+        /**
+         * Returns the current value of the state counter.
+         */
+        public BigInteger getUniqueState() {
+            return uniqueState;
+        }
+
+        /**
+         * Advances the state counter by one. Not synchronized.
+         */
+        public BigInteger advanceUniqueState() {
+            uniqueState = uniqueState.add(BigInteger.ONE);
+            return uniqueState;
+        }
 
         public Class<?> internClass(Symbol name) throws ClassNotFoundException {
             if (!internedClasses.hasBinding(name)) {
@@ -351,35 +358,6 @@ public final class VitryRuntime
         }
 
 
-
-
-
-
-
-        // General construction and conversion
-
-
-        /**
-         * Returns the current value of the state counter.
-         */
-        public BigInteger getUniqueState() {
-            return uniqueState;
-        }
-
-
-
-
-        /**
-         * Advances the state counter by one. Not synchronized.
-         */
-        public BigInteger advanceUniqueState() {
-            uniqueState = uniqueState.add(BigInteger.ONE);
-            return uniqueState;
-        }
-
-
-
-
         public static Symbol toVitryBool(boolean a) {
             return a ? TRUE : FALSE;
         }
@@ -388,7 +366,9 @@ public final class VitryRuntime
             return a != FALSE;
         }
         
-        
+        public static boolean isInvertible(Object f) {
+            return (f instanceof InvertibleFunction);
+        }
 
         public static Product product(Seq<Pattern> s) {
             if (Seqs.isNil(s)) return null;
@@ -943,6 +923,8 @@ final class conc extends Binary
 final class eq extends Binary
     {
         public Object apply(Object a, Object b) {
+            a = Native.unwrap(a);
+            b = Native.unwrap(b);
             if (b instanceof Pattern) {
                 if (a instanceof Pattern) { 
                     return toVitryBool( ((Pattern) a).eqFor((Pattern) b)); }

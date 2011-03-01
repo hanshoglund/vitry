@@ -18,6 +18,7 @@
  */
 package vitry.runtime;
 
+import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -36,7 +37,7 @@ import vitry.runtime.struct.Seq;
  *
  * @author Hans Höglund
  */
-public final class NativeSet extends AbstractSet
+public final class NativeSet extends InclusionPattern implements Set
     {
 
         private static final Map<Class<?>, Set> instanceMap = new WeakHashMap<Class<?>, Set>();
@@ -58,8 +59,18 @@ public final class NativeSet extends AbstractSet
         }
 
 
+        public Pattern union(Set b) {
+            return VitryRuntime.unionOf(this, b);
+        }
+        
+        public Pattern intersection(Set b) {
+            return VitryRuntime.intersectionOf(this, b);
+        }
+
+        
         
         // Eq and match
+
 
         public boolean eq(Set o) {
             if (o == this) return true;
@@ -134,4 +145,20 @@ public final class NativeSet extends AbstractSet
             return false;
             // TODO Auto-generated method stub
         }
+
+        public String toString() {
+            if (javaClass.equals(BigInteger.class))
+                return "... -1 | 0 | 1 ...";
+            if (javaClass.equals(Float.class))
+                return "-Inf ... 0.0 ... Inf";
+            if (javaClass.equals(Double.class))
+                return "-Inf ... 0.0 ... Inf";
+            if (javaClass.equals(String.class))
+                return "[char]";
+            if (javaClass.equals(Character.class))
+                return "char";
+            return javaClass.getName();
+        }
+        
+        
     }

@@ -58,7 +58,7 @@ class OperatorRewrite extends Rewriting
     {
         this.fixities = fixities;
         this.context = context;
-        this.delimiter = context.lookup(Interpreter.DELIMITER);
+        this.delimiter = context.lookup(Context.DELIMITER);
     }
 
     
@@ -245,6 +245,7 @@ class OperatorRewrite extends Rewriting
      * Matches op tokens.
      */
     private static boolean isOperator(Object o) {
+        // TODO accept symbols parsing as operators
         if (o instanceof Pattern) {                
             return VitryTokenTypes.tokenType((Pattern) o) == VitryParser.Op;
         } 

@@ -68,7 +68,7 @@ abstract public class Union extends InclusionPattern
         // Java stuff
 
         public String toString() {
-            return Utils.join(this, "(", " | ", ")");
+            return Utils.join(this, "", " | ", "");
             //            return Util.join(this, "", " | ", "");
         }
     }

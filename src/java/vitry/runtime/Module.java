@@ -26,7 +26,7 @@ import vitry.runtime.struct.Seqs;
  *
  * @author Hans Höglund
  */
-public class Module implements Scope
+public class Module implements Scope, Compilable
     {
                      
         private final Seq<Symbol> name;
@@ -45,6 +45,10 @@ public class Module implements Scope
             this.values = values;
             this.types = types;
             this.fixities = fixities;
+        }
+
+        public boolean isCompiled() {
+            return true;
         }
 
         public Env<Symbol, Object> getValues() {
@@ -81,7 +85,4 @@ public class Module implements Scope
         public void setFixities(Env<Symbol, Fixity> fixities) {
             this.fixities = fixities;
         }
-        
-        
-
     }

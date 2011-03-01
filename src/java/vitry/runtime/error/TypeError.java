@@ -41,9 +41,13 @@ public class TypeError extends VitryError
         public TypeError(Object v, Function structor) {
             super("Could not destruct " + v + " using " + structor);
         }
-
         
-        public static void throwMismatch(Object v, Object p) {
+        public synchronized Throwable fillInStackTrace() {
+            return this;
+        }
+        
+
+        public static void mismatch(Object v, Object p) {
             throw new TypeError("" + v + " does not conform to " + p);            
         }
 

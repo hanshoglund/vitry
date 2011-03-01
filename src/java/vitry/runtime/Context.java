@@ -20,29 +20,61 @@ package vitry.runtime;
 
 import vitry.runtime.error.BindingError;
 
-public class Context extends HashEnv<Symbol, Symbol> {
+
+public class Context extends HashEnv<Symbol, Symbol>
+{
+
+    static final Symbol DELIMITER = Symbol.intern("delimiter");
+    static final Symbol SIDE = Symbol.intern("side");
+    static final Symbol QUOTED = Symbol.intern("quoted");
+    static final Symbol MUTABLE = Symbol.intern("mutable");
+    static final Symbol PAR = Symbol.intern("()");
+    static final Symbol BRA = Symbol.intern("[]");
+    static final Symbol ANG = Symbol.intern("{}");
+    static final Symbol LEFT = Symbol.intern("left");
+    static final Symbol RIGHT = Symbol.intern("right");
+    static final Symbol TRUE = Symbol.intern("true");
+    static final Symbol FALSE = Symbol.intern("false");
 
     public Context() {
         super();
     }
-    
+
     public Context(Context context) {
         super(context);
     }
 
-    public Context define(Symbol key, Symbol val) throws BindingError
-    {
+    public Context define(Symbol key, Symbol val) throws BindingError {
         super.define(key, val);
         return this;
     }
-    
-    public Context extend()
-    {
-        return new Context(this);
-    }    
 
-    public Context extend(Symbol key, Symbol val)
-    {
+    public Context extend() {
+        return new Context(this);
+    }
+
+    public Context extend(Symbol key, Symbol val) {
         return extend().define(key, val);
     }
+
+    public boolean isLeftSide() {
+        return this.lookup(SIDE) == LEFT;
+    }
+
+    public boolean isMutable() {
+        return this.lookup(MUTABLE) == TRUE;
+    }
+
+    public boolean isQuoted() {
+        return this.lookup(QUOTED) == TRUE;
+    }
+
+    public Symbol getDelimiter() {
+        return this.lookup(DELIMITER);
+    }
+
+    public boolean shouldLookup() {
+        return !this.isLeftSide() && !this.isQuoted();
+    }
+
 }

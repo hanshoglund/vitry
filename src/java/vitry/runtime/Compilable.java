@@ -16,16 +16,9 @@
  *
  * See COPYING.txt for details.
  */
-package vitry;
+package vitry.runtime;
 
-import vitry.runtime.*;
-
-public class Main
-    {
-        public static void main(String[] args) {
-            VitryRuntime rt = new VitryRuntime();
-            
-            Function repl = (Function) rt.getPrelude().getValue("repl");
-            repl.applyVar(args);
-        }
-    }
+public interface Compilable
+{
+    public boolean isCompiled();
+}

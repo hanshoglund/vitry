@@ -18,14 +18,14 @@
  */
 package vitry.runtime.struct;
 
-import static vitry.Build.*;
+import static vitry.Build.MEMOIZE_SEQUENCES;
 
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import vitry.runtime.*;
-import vitry.runtime.misc.*;
+import vitry.runtime.Function;
+import vitry.runtime.VitryRuntime;
+import vitry.runtime.misc.Utils;
 
 
 /**
@@ -37,7 +37,7 @@ public class Seqs
         private static final Object[] EMPTY_ARRAY = new Object[0];
 
         private static final Map<Object, Object> MEMOIZE_LAST = new WeakHashMap<Object, Object>();
-        private static final Map<Object, Integer> MEMOIZE_LENGTH = new WeakHashMap<Object, Integer>();
+//        private static final Map<Object, Integer> MEMOIZE_LENGTH = new WeakHashMap<Object, Integer>();
 
         private Seqs() {}
 

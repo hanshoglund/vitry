@@ -43,8 +43,25 @@ abstract public class List extends ConstructionPattern
             return (left == null && right == null);
         }
 
-        public boolean match(List p) {
-            Seq<Pattern> left = p;
+        public boolean match(List o) {
+            if (!this.hasTail()) {
+                return matchPattern(o);
+            } 
+            return matchStructure(o);
+        }
+
+        protected boolean matchPattern(List o) {
+            Seq<Pattern> left = o;
+            Pattern right = this.head();
+            while (left != null) {
+                if (!left.head().matchFor(right)) return false;
+                left = left.tail();
+            }
+            return true;
+        }
+
+        protected boolean matchStructure(List o) {
+            Seq<Pattern> left = o;
             Seq<Pattern> right = this;
 
             while (left != null && right != null) {
