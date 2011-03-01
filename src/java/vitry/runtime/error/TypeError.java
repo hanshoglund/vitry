@@ -24,8 +24,6 @@ import vitry.runtime.Type;
 
 /**
  * Thrown to indicate a typing error.
- *
- * TODO
  */
 public class TypeError extends VitryError
     {

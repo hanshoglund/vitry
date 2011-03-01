@@ -45,13 +45,23 @@ public final class Native extends Atom
 
         public boolean eq(Atom o) {
             if (o instanceof Native) {
-                return o.equals(((Native) o).obj);
+                return obj.equals(((Native) o).obj);
             }
             return false;
         }
+        
+        public boolean match(Object o) {
+            return eq(o);
+        }
 
+        public boolean match(Atom o) {
+            return eq(o);
+        }
+
+        
+        
         // TODO tagged
-
+        
         public int hashCode() {
             return obj.hashCode();
         }

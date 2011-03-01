@@ -801,7 +801,7 @@ final class eq extends Binary
             if (a instanceof Pattern) {
                 return apply(b, a);
             }
-            return a.equals(b);
+            return toVitryBool(a.equals(b));
         }
     }
 

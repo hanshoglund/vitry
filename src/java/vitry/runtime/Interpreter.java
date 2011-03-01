@@ -336,7 +336,9 @@ public class Interpreter implements Eval {
                     Object right = eval(second(exTail), context, frame, module);
 
                     if (left instanceof LeftCont)
+                    {
                         ((LeftCont) left).invoke(right, frame);
+                    }
                     else
                     {
                         try 
@@ -438,14 +440,23 @@ public class Interpreter implements Eval {
                         try {
                             if (left instanceof LeftCont)
                             {
-                                ((LeftCont) left).invoke(value, frame);
+                                ((LeftCont) left).invoke(value, frame, true);
                             }
                             else
                             {
+                                // TODO allow other symbols pointing to types to evade matching
+                                // This must be implemented in AbstractLeftCont as well!
                                 if (left instanceof Symbol)
                                 {
-                                    if (!left.equals(VitryRuntime.WILDCARD))
-                                        frame.define((Symbol) left, value);
+                                    try 
+                                    {
+                                        if (!left.equals(VitryRuntime.WILDCARD))
+                                            frame.define((Symbol) left, value);
+                                    } 
+                                    catch (ClassCastException e)
+                                    {
+                                        throwAssignment(left);
+                                    }
                                 }
                                 else
                                 {
@@ -456,10 +467,6 @@ public class Interpreter implements Eval {
                         catch (TypeError e)
                         {
                             continue match;
-                        } 
-                        catch (ClassCastException e)
-                        {
-                            throwAssignment(left);
                         }
                         continue main;
 
@@ -496,22 +503,33 @@ public class Interpreter implements Eval {
             }
         }
     }
+    
 
 
-    static void match(Object value, Object pattern)
-        throws TypeError 
+    static void match(Object a, Object b) throws TypeError
+    {
+        Pattern bp;
+        boolean m;
+
+        if (b instanceof Pattern)
         {
-            if (value instanceof Pattern)
-            {
-                if (!((Pattern) value).matchFor(Native.wrap(pattern)))
-                    TypeError.throwMismatch(value, pattern);
-            }
-            else
-            {
-                if (!Native.wrap(pattern).match(value))
-                    TypeError.throwMismatch(value, pattern);
-            }
+            bp = (Pattern) b;
         }
+        else
+        {
+            bp = Native.wrap(b);
+
+        }
+        if (a instanceof Pattern)
+        {
+            m = ((Pattern) a).matchFor(bp);
+        }
+        else
+        {
+            m = bp.match(a);
+        }
+        if (!m) TypeError.throwMismatch(a, b);
+    }
                     
     
     static BigInteger evalNat(Object expr)
@@ -799,20 +817,44 @@ interface LeftCont {
      * processing.
      */
     public void invoke(Object value, Env<Symbol, Object> frame);
+    public void invoke(Object value, Env<Symbol, Object> frame, boolean matching);
 }
 
 
 abstract class AbstractLeftCont implements LeftCont {
     
-    protected void finish(Object key, Object val, Env<Symbol, Object> frame) throws BindingError {
-        if (key instanceof LeftCont) {
-            ((LeftCont) key).invoke(val, frame);
-        } else {
-            try {
-                if (!key.equals(VitryRuntime.WILDCARD))
-                    frame.define((Symbol) key, val);
-            } catch (ClassCastException e) {
-                Interpreter.throwAssignment(key);
+    private boolean matching = false;
+
+    public void invoke(Object value, Env<Symbol, Object> frame, boolean matching)
+    {
+        this.matching = matching;
+        this.invoke(value, frame);
+    }
+
+    protected void finish(Object key, Object val, Env<Symbol, Object> frame)
+    throws BindingError
+    {
+        if (key instanceof LeftCont)
+        {
+            ((LeftCont) key).invoke(val, frame, this.matching);
+        }
+        else
+        {
+            if (this.matching && !(key instanceof Symbol))
+            {
+                Interpreter.match(val, key);
+            }
+            else
+            {
+                try
+                {
+                    if (!key.equals(VitryRuntime.WILDCARD))
+                        frame.define((Symbol) key, val);
+                    
+                } catch (ClassCastException e)
+                {
+                    Interpreter.throwAssignment(key);
+                }
             }
         }
     }
@@ -849,7 +891,7 @@ final class TypeCont extends AbstractLeftCont {
 
     public void invoke(Object val, Env<Symbol, Object> frame)
     {
-        Interpreter.match(val, left);
+        Interpreter.match(val, right);
         finish(left, val, frame);
     }
 }
