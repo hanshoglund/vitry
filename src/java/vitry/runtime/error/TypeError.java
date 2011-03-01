@@ -28,7 +28,7 @@ import vitry.runtime.Type;
 public class TypeError extends VitryError
     {
 
-        private TypeError(String msg) {
+        public TypeError(String msg) {
             super(msg);
         }
         

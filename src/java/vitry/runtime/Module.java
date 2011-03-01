@@ -84,8 +84,9 @@ public class Module implements Scope, Compilable
         }
         
         void importModule(Module source) {
-            for (Symbol name : source.getValues().getKeys())
+            for (Symbol name : source.getValues().getKeys()) {
                 importValue(source, name, name);
+            }
         }
 
         public String toString() {

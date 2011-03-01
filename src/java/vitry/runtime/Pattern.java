@@ -35,7 +35,7 @@ public interface Pattern
 
         boolean eq(Function p);
 
-        boolean eq(List p);
+        boolean eq(AbstractList p);
 
         boolean eq(Set o);
 
@@ -55,7 +55,7 @@ public interface Pattern
 
         boolean match(Function p);
 
-        boolean match(List p);
+        boolean match(AbstractList p);
 
         boolean match(Set p);
 

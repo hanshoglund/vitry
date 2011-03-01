@@ -101,7 +101,7 @@ public final class VitryRuntime
 
             def("(==)",               new eq());
             def("(!=)",               NIL);                   // TODO
-            def("not",                NIL);                   // TODO 
+            def("not",                new not());             // TODO 
             def("(&&)",               NIL);                   // TODO 
             def("(||)",               NIL);                   // TODO 
             def("(<)",                NIL);
@@ -124,6 +124,7 @@ public final class VitryRuntime
             def("(%)",                new mod());
             def("(%%)",               new modp());
             def("(^)",                new pow());
+            def("random",             new random());                   // TODO
             def("abs",                NIL);                   // TODO
             def("signum",             NIL);                   // TODO
             def("sqrt",               NIL);                   // TODO
@@ -151,6 +152,7 @@ public final class VitryRuntime
             def("isZero",             NIL);                   // TODO
             def("isNegative",         NIL);                   // TODO
 
+            def("cons",               new cons());
             def("head",               new head());
             def("tail",               new tail());
             def("last",               NIL);                   // TODO
@@ -164,10 +166,10 @@ public final class VitryRuntime
             def("isSingle",           NIL);                   // TODO
 
             def("nth",                NIL);                   // TODO
-            def("map",                NIL);                   // TODO
+            def("map",                new map());             // TODO
             def("apply",              NIL);                   // TODO
-            def("foldl",              NIL);                   // TODO
-            def("foldr",              NIL);                   // TODO
+            def("foldl",              new foldl());
+            def("foldr",              new foldr());
             def("concat",             NIL);                   // TODO
 
             def("insert",             NIL);                   // TODO
@@ -177,6 +179,7 @@ public final class VitryRuntime
             def("take",               NIL);                   // TODO
             def("remove",             NIL);                   // TODO
             def("retain",             NIL);                   // TODO
+            def("range",              new range());
 
             def("reverse",            NIL);                   // TODO
             def("revappend",          NIL);                   // TODO
@@ -205,10 +208,8 @@ public final class VitryRuntime
             // Alpha - subject to change or disappear:
             
             def("__rt",               this);
-            def("openFile",           NIL);
-            def("closeFile",          NIL);
             def("readFile",           new readFile(this));
-            def("writeFile",          NIL);
+            def("writeFile",          new writeFile(this));
             def("str2list",           NIL);
             def("list2str",           NIL);
             def("rewrite",            new rewrite(this));
@@ -368,13 +369,13 @@ public final class VitryRuntime
         }
 
         public static Product product(Seq<Pattern> s) {
-            if (Seqs.isNil(s)) return null;
+            if (Seqs.isNil(s)) return null; // TODO should be NIL
             if (s instanceof Product) return (Product) s;
             return productFrom(s);
         }
 
         public static List list(Seq<Pattern> s) {
-            if (Seqs.isNil(s)) return null;
+            if (Seqs.isNil(s)) return NIL;
             if (s instanceof List) return (List) s;
             return listFrom(s);
         }
@@ -420,7 +421,7 @@ public final class VitryRuntime
             return new StdProduct(s);
         }
 
-        public static List listFrom(Seq<Pattern> s) {
+        public static AbstractList listFrom(Seq<Pattern> s) {
             return new StdList(s);
         }
         
@@ -562,7 +563,7 @@ final class Bottom extends AbstractSet
     }
 
 
-final class Nil extends Atom implements Finite<Pattern>
+final class Nil extends Atom implements List, Finite<Pattern>
     {
         Nil() {
         }
@@ -613,6 +614,10 @@ final class Nil extends Atom implements Finite<Pattern>
 
         private <T> T throwUnsupported() {
             throw new UnsupportedOperationException("() has no members.");
+        }
+
+        public List mapList(Function fn) {
+            return NIL;
         }
 
     }
@@ -752,7 +757,7 @@ final class StdIntersection extends Intersection
     }
 
 
-final class StdList extends List
+final class StdList extends AbstractList
     {
         final Seq<Pattern> elements;
 
@@ -786,171 +791,280 @@ final class StdList extends List
 
 
 final class eq extends Binary
+{
+    public Object apply(Object a, Object b)
     {
-        public Object apply(Object a, Object b) {
-            if (b instanceof Pattern) {
-                if (a instanceof Pattern) {
-                    return toVitryBool(((Pattern) a).eqFor((Pattern) b));
-                }
-                return toVitryBool(((Pattern) b).eq(a));
+        if (b instanceof Pattern)
+        {
+            if (a instanceof Pattern)
+            {
+                return toVitryBool( ((Pattern) a).eqFor((Pattern) b));
             }
-            if (a instanceof Pattern) {
-                return apply(b, a);
-            }
-            return toVitryBool(a.equals(b));
+            return toVitryBool( ((Pattern) b).eq(a));
         }
+        if (a instanceof Pattern)
+        {
+            return apply(b, a);
+        }
+        return toVitryBool(a.equals(b));
     }
+}
+
 
 final class product_ extends InvertibleRestFunction
+{
+    public Seq<?> applyVarInverse(Object a) throws InvocationError
     {
-        public Seq<?> applyVarInverse(Object a) throws InvocationError {
-            if (a instanceof Product)
-                return ((Destructible) a).destruct();
-            return TypeError.throwWrongStructor(a, this);
-        }
-
-        public Object applyVar(Seq<?> args) {
-            return VitryRuntime.productOf(Seqs.toArray(args));
-        }
-
-        public String toString() {
-            return "(,)";
-        }
+        if (a instanceof Product)
+            return ((Destructible) a).destruct();
+        return TypeError.throwWrongStructor(a, this);
     }
+
+    public Object applyVar(Seq<?> args)
+    {
+        return VitryRuntime.productOf(Seqs.toArray(args));
+    }
+
+    public String toString()
+    {
+        return "(,)";
+    }
+}
+
 
 final class list_ extends InvertibleRestFunction
+{
+    public Seq<?> applyVarInverse(Object a) throws InvocationError
     {
-        public Seq<?> applyVarInverse(Object a) throws InvocationError {
-            if (a instanceof List)
-                return ((Destructible) a).destruct();
-            return TypeError.throwWrongStructor(a, this);
-        }
-
-        public Object applyVar(Seq<?> args) {
-            return VitryRuntime.listOf(Seqs.toArray(args));
-        }
-
-        public String toString() {
-            return "[,]";
-        }
+        if (a instanceof List)
+            return ((Destructible) a).destruct();
+        return TypeError.throwWrongStructor(a, this);
     }
+
+    public Object applyVar(Seq<?> args)
+    {
+        return VitryRuntime.listOf(Seqs.toArray(args));
+    }
+
+    public String toString()
+    {
+        return "[,]";
+    }
+}
+
 
 final class set_ extends RestFunction
+{
+    public Object applyVar(Seq<?> args)
     {
-        public Object applyVar(Seq<?> args) {
-            return VitryRuntime.setOf(Seqs.toArray(args));
-        }
-        
-        public String toString() {
-            return "{,}";
-        }
+        return VitryRuntime.setOf(Seqs.toArray(args));
     }
+
+    public String toString()
+    {
+        return "{,}";
+    }
+}
+
 
 final class union_ extends RestFunction
+{
+    public Object applyVar(Seq<?> args)
     {
-        public Object applyVar(Seq<?> args) {
-            return VitryRuntime.unionOf(Seqs.toArray(args));
-        }
-        
-        public String toString() {
-            return "(|)";
-        }
+        return VitryRuntime.unionOf(Seqs.toArray(args));
     }
 
-final class intersection_ extends RestFunction
+    public String toString()
     {
-        public Object applyVar(Seq<?> args) {
-            return VitryRuntime.intersectionOf(Seqs.toArray(args));
-        }
-        
-        public String toString() {
-            return "(&)";
-        }
+        return "(|)";
     }
-    
+}
+
+
+final class intersection_ extends RestFunction
+{
+    public Object applyVar(Seq<?> args)
+    {
+        return VitryRuntime.intersectionOf(Seqs.toArray(args));
+    }
+
+    public String toString()
+    {
+        return "(&)";
+    }
+}
+
+
+final class not extends Unary
+{
+    public Object apply(Object a) throws InvocationError
+    {
+        if (a.equals(TRUE)) return FALSE;
+        if (a.equals(FALSE)) return TRUE;
+        throw new TypeError("Expected bool");
+    }
+}
+
 
 final class symbol_ extends Unary
 {
-    public Object apply(Object a) {
+    public Object apply(Object a)
+    {
         return Symbol.intern((String) a);
     }
 }
 
+
 final class string_ extends Unary
+{
+    public Object apply(Object a) throws InvocationError
     {
-        public Object apply(Object a) throws InvocationError {
-            return a.toString();
-        }
+        return a.toString();
     }
+}
+
 
 final class id extends Unary
+{
+    public Object apply(Object a)
     {
-        public Object apply(Object a) {
-            return a;
-        }
+        return a;
     }
+}
+
 
 final class const_ extends Unary
+{
+    public Object apply(final Object a)
     {
-        public Object apply(final Object a) {
-            return new Unary() {
-                public Object apply(Object b) {
+        return new Unary()
+            {
+                public Object apply(Object b)
+                {
                     return a;
                 }
             };
-        }
     }
+}
+
 
 final class compose extends Binary
+{
+    public Object apply(final Object f, final Object g)
     {
-        public Object apply(final Object f, final Object g) {
-            return new Unary() {
-                public Object apply(Object x) throws InvocationError {
+        return new Unary()
+            {
+                public Object apply(Object x) throws InvocationError
+                {
                     return ((Function) f).apply( ((Function) g).apply(x));
                 }
             };
-        }
     }
+}
+
 
 final class arity_ extends Unary
+{
+    public Object apply(Object a)
     {
-        public Object apply(Object a) {
-            return ((Arity) a).getArity();
-        }
+        return ((Arity) a).getArity();
     }
+}
+
 
 final class conc extends Binary
+{
+    public Object apply(Object a, Object b)
     {
-        public Object apply(Object a, Object b) {
-            return ((String) a).concat((String) b);
-        }
+        a = Native.unwrap(a);
+        b = Native.unwrap(b);
+        return ((String) a).concat((String) b);
     }
+}
 
 
 final class eval_ extends StandardFunction
-    {
-        private VitryRuntime rt;
+{
+    private VitryRuntime rt;
 
-        public eval_(VitryRuntime rt) {
-            super(1, rt.getPrelude());
-            this.rt = rt;
-        }
-
-        public Object apply(Object a) {
-            return rt.getInterpreter().eval(a);
-        }
+    public eval_(VitryRuntime rt) {
+        super(1, rt.getPrelude());
+        this.rt = rt;
     }
+
+    public Object apply(Object a)
+    {
+        return rt.getInterpreter().eval(a);
+    }
+}
+
+final class cons extends Binary
+{
+    public Object apply(Object x, Object xs)
+    {
+        return ((List) xs).cons(Native.wrap(x));
+    }
+}
+
 
 final class head extends Unary
+{
+    public Object apply(Object a)
     {
-        public Object apply(Object a) {
-            return ((Seq) a).head();
-        }
+        return ((Seq) a).head();
     }
+}
+
 
 final class tail extends Unary
+{
+    public Object apply(Object a)
     {
-        public Object apply(Object a) {
-            return ((Seq<?>) a).tail();
-        }
+        List l = (List) a;
+        return list(l.tail());
     }
+}
+
+final class map extends Binary
+{
+    public Object apply(Object a, Object f) {
+        return list(Native.wrap(((List) a).map((Function) f)));
+    }
+}
+
+
+final class foldl extends StandardFunction
+{
+    public foldl() {
+        super(3);
+    }
+    public Object apply(Object list, Object fn, Object init) {
+        return Seqs.foldl((Function) fn, init, (List) list);
+    }
+}
+
+final class foldr extends StandardFunction
+{
+    public foldr() {
+        super(3);
+    }
+    public Object apply(Object list, Object fn, Object init) {
+        return Seqs.foldr((Function) fn, init, (List) list);
+    }
+}
+
+final class range extends Binary {
+    public Object apply(Object min, Object max) {
+        return list(Native.wrap(new RangeSeq((BigInteger) min, (BigInteger) max)));
+    }
+}
+
+final class random extends Unary {
+
+    public Object apply(Object a) throws InvocationError
+    {
+        long max = ((Number) a).longValue();
+        long val = (long) (Math.random() * max);
+        return BigInteger.valueOf(val);
+    }
+}

@@ -42,7 +42,7 @@ abstract public class BasePattern implements Pattern
             return false;
         }
 
-        public boolean eq(List o) {
+        public boolean eq(AbstractList o) {
             return false;
         }
 
@@ -83,7 +83,7 @@ abstract public class BasePattern implements Pattern
             return false;
         }
 
-        public boolean match(List p) {
+        public boolean match(AbstractList p) {
             return false;
         }
 

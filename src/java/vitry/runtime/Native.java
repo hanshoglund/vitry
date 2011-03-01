@@ -88,7 +88,7 @@ public final class Native extends Atom
                 return o;
         }
 
-        public static Seq<Pattern> wrap(Seq<Object> values) {
+        public static Seq<Pattern> wrap(Seq<?> values) {
             return values.map(new StandardFunction.Unary() {
                 public Object apply(Object v) throws InvocationError {
                     return wrap(v);

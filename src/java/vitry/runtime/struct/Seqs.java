@@ -31,7 +31,7 @@ import vitry.runtime.misc.Utils;
 /**
  * Basic sequence operations.
  */
-public class Seqs
+public final class Seqs
     {
 
         private static final Object[] EMPTY_ARRAY = new Object[0];

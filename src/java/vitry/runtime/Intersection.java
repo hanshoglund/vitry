@@ -50,7 +50,7 @@ abstract public class Intersection extends InclusionPattern
             return true;
         }
         
-        public boolean match(List a) {
+        public boolean match(AbstractList a) {
             for (Pattern x : this)
                 if (!x.match(a)) return false;
             return true;

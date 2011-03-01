@@ -285,7 +285,9 @@ public class Interpreter implements Eval {
                     continue;
                     
                 case OPS_EXPR:
-                    expr = Rewriting.ops(module.getFixities(), context).rewrite(exTail);
+                    // FIXME only prelude fixities
+//                    expr = Rewriting.ops(module.getFixities(), context).rewrite(exTail);
+                    expr = Rewriting.ops(getRuntime().getPrelude().getFixities(), context).rewrite(exTail);
                     continue;
                     
                 case IF_EXPR:
@@ -831,8 +833,8 @@ final class InterpretedModule extends Module
         this.declExprs = declExprs;
         this.interpreter = interpreter;
 
-        importModule(interpreter.getRuntime().getPrelude());
-        evalDeclarations();
+        this.importModule(interpreter.getRuntime().getPrelude());
+        this.evalDeclarations();
     }
 
     public boolean isCompiled()
@@ -854,7 +856,6 @@ final class InterpretedModule extends Module
          */
         for (Object expr : declExprs) {
             Object decl = Rewriting.topLevel().rewrite((Seq<Pattern>) expr);
-System.err.println(decl);
             Object val = interpreter.eval(decl, interpreter.getStandardContext(), values, this);
         }
 
