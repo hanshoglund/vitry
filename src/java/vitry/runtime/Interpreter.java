@@ -341,10 +341,12 @@ public class Interpreter implements Eval {
                     {
                         try 
                         {
-                            if (context.isMutable()) 
-                                frame.assoc((Symbol) left, right);
-                            else 
-                                frame.define((Symbol) left, right);
+                            if (!left.equals(VitryRuntime.WILDCARD)) {                                
+                                if (context.isMutable()) 
+                                    frame.assoc((Symbol) left, right);
+                                else 
+                                    frame.define((Symbol) left, right);
+                            }
                         } 
                         catch (ClassCastException e)
                         {
@@ -389,7 +391,8 @@ public class Interpreter implements Eval {
                                 {
                                     try
                                     {
-                                        frame.define((Symbol) name, value);
+                                        if (!name.equals(VitryRuntime.WILDCARD))
+                                            frame.define((Symbol) name, value);
                                     }
                                     catch (ClassCastException e)
                                     {
@@ -441,7 +444,8 @@ public class Interpreter implements Eval {
                             {
                                 if (left instanceof Symbol)
                                 {
-                                    frame.define((Symbol) left, value);
+                                    if (!left.equals(VitryRuntime.WILDCARD))
+                                        frame.define((Symbol) left, value);
                                 }
                                 else
                                 {
@@ -500,12 +504,12 @@ public class Interpreter implements Eval {
             if (value instanceof Pattern)
             {
                 if (!((Pattern) value).matchFor(Native.wrap(pattern)))
-                    TypeError.mismatch(value, pattern);
+                    TypeError.throwMismatch(value, pattern);
             }
             else
             {
                 if (!Native.wrap(pattern).match(value))
-                    TypeError.mismatch(value, pattern);
+                    TypeError.throwMismatch(value, pattern);
             }
         }
                     
@@ -567,7 +571,7 @@ public class Interpreter implements Eval {
         Object v = eval(expr, context, frame, module);
         
         if (context.isLeftSide() && f.isInvertible())
-            return new SingleCont((InvertibleFunction) f, v);
+            return new UnaryCont((InvertibleFunction) f, v);
         else
             return f.apply(v);
     }
@@ -737,7 +741,8 @@ final class InterpretedFunction extends RestFunction implements Arity {
             {
                 try
                 {
-                    frame.define((Symbol) name, value);
+                    if (!name.equals(VitryRuntime.WILDCARD))
+                        frame.define((Symbol) name, value);
                 }
                 catch (ClassCastException e)
                 {
@@ -797,39 +802,42 @@ interface LeftCont {
 }
 
 
-final class SingleCont implements LeftCont {
-
-    private final InvertibleFunction structor;
-    private final Object content;
-
-    public SingleCont(InvertibleFunction constructor, Object content) {
-        this.structor = constructor;
-        this.content = content;
-    }
-
-    public void invoke(Object val, Env<Symbol, Object> frame)
-    {
-        Object contentVal = structor.applyVarInverse(val).head();
-
-        if (content instanceof LeftCont)
-        {
-            ((LeftCont) content).invoke(contentVal, frame);
-        } 
-        else
-        {
-            try
-            {
-                frame.define((Symbol) content, contentVal);
-            } catch (ClassCastException e)
-            {
-                Interpreter.throwAssignment(content);
+abstract class AbstractLeftCont implements LeftCont {
+    
+    protected void finish(Object key, Object val, Env<Symbol, Object> frame) throws BindingError {
+        if (key instanceof LeftCont) {
+            ((LeftCont) key).invoke(val, frame);
+        } else {
+            try {
+                if (!key.equals(VitryRuntime.WILDCARD))
+                    frame.define((Symbol) key, val);
+            } catch (ClassCastException e) {
+                Interpreter.throwAssignment(key);
             }
         }
     }
 }
 
 
-final class TypeCont implements LeftCont {
+final class UnaryCont extends AbstractLeftCont {
+
+    private final InvertibleFunction structor;
+    private final Object key;
+
+    public UnaryCont(InvertibleFunction structor, Object key) {
+        this.structor = structor;
+        this.key = key;
+    }
+
+    public void invoke(Object val, Env<Symbol, Object> frame)
+    {
+        Object v = structor.applyVarInverse(val).head();
+        finish(key, v, frame);
+    }
+}
+
+
+final class TypeCont extends AbstractLeftCont {
 
     private final Object left;
     private final Object right;
@@ -839,32 +847,15 @@ final class TypeCont implements LeftCont {
         this.right = right;
     }
 
-    public void invoke(Object value, Env<Symbol, Object> frame)
+    public void invoke(Object val, Env<Symbol, Object> frame)
     {
-
-        Interpreter.match(value, left);
-
-        if (left instanceof LeftCont)
-        {
-            // Left may be a destructuring or other type check
-            // It should do its work after we have verified the type of value
-            ((LeftCont) left).invoke(value, frame);
-        } 
-        else
-        {
-            try
-            {
-                frame.define((Symbol) left, value);
-            } catch (ClassCastException e)
-            {
-                Interpreter.throwAssignment(left);
-            }
-        }
+        Interpreter.match(val, left);
+        finish(left, val, frame);
     }
 }
 
 
-final class ApplyCont implements LeftCont {
+final class ApplyCont extends AbstractLeftCont {
     
     private final InvertibleFunction fn;
     private final Seq<?> args;
@@ -887,41 +878,20 @@ final class ApplyCont implements LeftCont {
 
     public void invoke(Object value, Env<Symbol, Object> frame)
     {
-        if (fn.isInvertible())
+        Seq<?> vals = fn.applyVarInverse(value);
+
+        Iterator<?> keyExprIt = args.iterator();
+        Iterator<?> valIt     = vals.iterator();
+
+        while (keyExprIt.hasNext() && valIt.hasNext())
         {
-            InvertibleFunction ifn = (InvertibleFunction) fn;
-
-            Seq<?> vals = ifn.applyVarInverse(value);
-
-            Iterator<?> keyExprIt;
-            Iterator<?> valIt;
-
-            for (keyExprIt = args.iterator(), valIt = vals.iterator(); keyExprIt.hasNext()
-                    && valIt.hasNext();)
-            {
-                Object key = interpr.eval(keyExprIt.next(), context, this.frame, module);
-                Object val = valIt.next();
-
-                if (key instanceof LeftCont)
-                {
-                    ((LeftCont) key).invoke(val, frame);
-                }
-                else
-                {
-                    try
-                    {
-                        frame.define((Symbol) key, val);
-                    } catch (ClassCastException e)
-                    {
-                        Interpreter.throwAssignment(key);
-                    }
-                }
-            }
-
+            Object key = interpr.eval(keyExprIt.next(), context, this.frame, module);
+            Object val = valIt.next();
+            finish(key, val, frame);
         }
-        else
-        {
-            assert false;
+        if (keyExprIt.hasNext() || valIt.hasNext()) {
+            TypeError.throwWrongCount(value);
         }
     }
+
 }

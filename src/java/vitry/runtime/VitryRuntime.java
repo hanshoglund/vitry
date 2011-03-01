@@ -41,6 +41,7 @@ public final class VitryRuntime
         public static final Nil       NIL             = new Nil();
         public static final Symbol    TRUE            = Symbol.intern("true");
         public static final Symbol    FALSE           = Symbol.intern("false");
+        public static final Symbol    WILDCARD        = Symbol.intern("_");
         public static final Any       ANY             = new Any();
         public static final Bottom    BOTTOM          = new Bottom();
         public static final Union     BOOL            = unionOf(TRUE, FALSE);
@@ -793,9 +794,9 @@ final class eq extends Binary
         public Object apply(Object a, Object b) {
             if (b instanceof Pattern) {
                 if (a instanceof Pattern) {
-                    return toVitryBool( ((Pattern) a).eqFor((Pattern) b));
+                    return toVitryBool(((Pattern) a).eqFor((Pattern) b));
                 }
-                return toVitryBool( ((Pattern) b).eq(a));
+                return toVitryBool(((Pattern) b).eq(a));
             }
             if (a instanceof Pattern) {
                 return apply(b, a);
@@ -809,15 +810,11 @@ final class product_ extends InvertibleRestFunction
         public Seq<?> applyVarInverse(Object a) throws InvocationError {
             if (a instanceof Product)
                 return ((Destructible) a).destruct();
-            return throwDestruct(a);
+            return TypeError.throwWrongStructor(a, this);
         }
 
         public Object applyVar(Seq<?> args) {
             return VitryRuntime.productOf(Seqs.toArray(args));
-        }
-
-        private <T> T throwDestruct(Object val) {
-            throw new TypeError(val, this);
         }
 
         public String toString() {
@@ -830,15 +827,11 @@ final class list_ extends InvertibleRestFunction
         public Seq<?> applyVarInverse(Object a) throws InvocationError {
             if (a instanceof List)
                 return ((Destructible) a).destruct();
-            return throwDestruct(a);
+            return TypeError.throwWrongStructor(a, this);
         }
 
         public Object applyVar(Seq<?> args) {
             return VitryRuntime.listOf(Seqs.toArray(args));
-        }
-
-        private <T> T throwDestruct(Object val) {
-            throw new TypeError(val, this);
         }
 
         public String toString() {

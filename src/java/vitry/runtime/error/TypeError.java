@@ -37,19 +37,23 @@ public class TypeError extends VitryError
         public TypeError(Type tag, Pattern v) {
             super("Can not apply tag " + tag + " to " + v);
         }
-
-        public TypeError(Object v, Function structor) {
-            super("Could not destruct " + v + " using " + structor);
-        }
         
         public synchronized Throwable fillInStackTrace() {
             return this;
         }
         
-
-        public static void mismatch(Object v, Object p) {
+        public static <T> T throwMismatch(Object v, Object p) {
             throw new TypeError("" + v + " does not conform to " + p);            
         }
+        
+        public static <T> T throwWrongStructor(Object v, Function structor) {
+            throw new TypeError("Could not destruct " + v + " using " + structor);
+        }
+        
+        public static <T> T throwWrongCount(Object v) {
+            throw new TypeError("Mismatching number of elements in " + v);
+        }
+
 
         private static final long serialVersionUID = 3634069213260367204L;
     }
