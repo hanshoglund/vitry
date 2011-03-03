@@ -21,16 +21,17 @@ package vitry.runtime;
 import vitry.runtime.error.*;
 import vitry.runtime.struct.*;
 
+
 /**
  * A function with a known inverse.
  *
  * @author Hans Höglund
  */
 public interface InvertibleFunction extends Function
-    {
-        Seq<?> applyVarInverse(Object a) throws InvocationError;
+{
+    Seq<?> applyVarInverse(Object a) throws InvocationError;
 
-        Object applyInverse(Object a) throws InvocationError;
+    Object applyInverse(Object a) throws InvocationError;
 
-        InvertibleFunction getInverse();
-    }
+    InvertibleFunction getInverse();
+}

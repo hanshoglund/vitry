@@ -22,53 +22,67 @@ import vitry.runtime.misc.Utils;
 
 
 abstract public class Union extends InclusionPattern
-    {          
-        
-        // Eq and match          
-            
-        public boolean match(Object o) {
-            if (o instanceof Pattern) throw new IllegalArgumentException();
-            for (Pattern x : this)
-                if (x.match(o)) return true;
-            return false;
-        }
+{
 
-        public boolean match(Atom a) {
-            for (Pattern x : this)
-                if (x.match(a)) return true;
-            return false;
-        }
+    // Eq and match          
 
-        public boolean match(Tagged p) {
-            for (Pattern x : this)
-                if (x.match(p)) return true;
-            return false;
-        }
-
-        public boolean match(Product a) {
-            for (Pattern x : this)
-                if (x.match(a)) return true;
-            return false;
-        }                        
-        
-        public boolean match(AbstractList a) {
-            for (Pattern x : this)
-                if (x.match(a)) return true;
-            return false;
-        }
-
-        public boolean eqFor(Pattern p) {
-            return p.eq(this);
-        }
-
-        public boolean matchFor(Pattern p) {
-            return p.match(this);
-        }
-        
-        // Java stuff
-
-        public String toString() {
-            return Utils.join(this, "", " | ", "");
-            //            return Util.join(this, "", " | ", "");
-        }
+    public boolean match(Object o)
+    {
+        if (o instanceof Pattern)
+            throw new IllegalArgumentException();
+        for (Pattern x : this)
+            if (x.match(o))
+                return true;
+        return false;
     }
+
+    public boolean match(Atom a)
+    {
+        for (Pattern x : this)
+            if (x.match(a))
+                return true;
+        return false;
+    }
+
+    public boolean match(Tagged p)
+    {
+        for (Pattern x : this)
+            if (x.match(p))
+                return true;
+        return false;
+    }
+
+    public boolean match(Product a)
+    {
+        for (Pattern x : this)
+            if (x.match(a))
+                return true;
+        return false;
+    }
+
+    public boolean match(AbstractList a)
+    {
+        for (Pattern x : this)
+            if (x.match(a))
+                return true;
+        return false;
+    }
+
+    public boolean eqFor(Pattern p)
+    {
+        return p.eq(this);
+    }
+
+    public boolean matchFor(Pattern p)
+    {
+        return p.match(this);
+    }
+
+    // Java stuff
+
+    public String toString()
+    {
+        return Utils.join(this, "", " | ", "");
+        //            return Util.join(this, "", " | ", "");
+    }
+}

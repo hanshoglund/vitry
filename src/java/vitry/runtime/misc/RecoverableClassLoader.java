@@ -38,166 +38,201 @@ import java.util.Map;
  * @author Hans Höglund
  */
 public class RecoverableClassLoader extends ClassLoader
+{
+
+    public RecoverableClassLoader() {
+        this.classes = new HashMap<String, Class<?>>();
+    }
+
+    public RecoverableClassLoader(Map<String, Class<?>> classes) {
+        this.classes = classes;
+    }
+
+    private final List<URL> paths;
+
+    {
+        paths = new LinkedList<URL>();
+        paths.addAll(JAVA_CLASS_PATH);
+    }
+
+
+    private final Map<String, Class<?>> classes;
+
+
+    public synchronized Class<?> loadClass(String name, boolean resolve)
+            throws ClassNotFoundException
     {
 
-        public RecoverableClassLoader() {
-            this.classes = new HashMap<String, Class<?>>();
-        }
+        boolean delegateEagerly = moduleLoaderShouldDelegate(name);
+        ClassNotFoundException ex = null;
+        Class<?> cl = findLoadedClass(name);
 
-        public RecoverableClassLoader(Map<String, Class<?>> classes) {
-            this.classes = classes;
-        }
-
-        private final List<URL> paths;
-
+        if (cl == null)
         {
-            paths = new LinkedList<URL>();
-            paths.addAll(JAVA_CLASS_PATH);
+            cl = classes.get(name);
         }
-
-
-        private final Map<String, Class<?>> classes;
-
-
-        public synchronized Class<?> loadClass(String name, boolean resolve)
-                throws ClassNotFoundException {
-
-            boolean delegateEagerly = moduleLoaderShouldDelegate(name);
-            ClassNotFoundException ex = null;
-            Class<?> cl = findLoadedClass(name);
-
-            if (cl == null) {
-                cl = classes.get(name);
-            }
-            if (cl == null && delegateEagerly) {
-                try {
-                    cl = this.getParent().loadClass(name);
-                } catch (ClassNotFoundException e) {
-                    ex = e;
-                }                
-            }
-            if (cl == null) {
-                try {
-                    cl = new DefiningClassLoader(getPathsArray()).loadClass(name, this);
-                } catch (ClassNotFoundException e) {                
-                }
-            }
-            if (cl == null) {
-                if (delegateEagerly) {
-                    // Only reached if delegation failed
-                    assert (ex != null);
-                    throw ex;
-                } else {
-                    cl = this.getParent().loadClass(name);
-                }
-            }
-
-            if (resolve) resolveClass(cl);
-            return cl;
-        }
-
-        public synchronized RecoverableClassLoader unloadClass(String name) {
-            // TODO use persistent collection
-            Map<String, Class<?>> removed = new HashMap<String, Class<?>>(classes);
-            removed.remove(name);
-            return new RecoverableClassLoader(removed);
-        }
-
-        public synchronized RecoverableClassLoader reloadClass(String name)
-                throws ClassNotFoundException {
-            RecoverableClassLoader mcl = this.unloadClass(name);
-            mcl.loadClass(name);
-            return mcl;
-        }
-
-        public void addPath(String path) {
-            addPath(new File(path));
-        }
-
-        public void addPath(File path) {
-            try {
-                addPath(path.toURI().toURL());
-            } catch (MalformedURLException e) {
-                throw new RuntimeException("Could not translate file name to URL.", e);
-            }
-        }
-
-        public void addPath(URL path) {
-            assert paths.add(path);
-        }
-
-
-        static class DefiningClassLoader extends URLClassLoader
+        if (cl == null && delegateEagerly)
+        {
+            try
             {
-                public DefiningClassLoader(URL[] paths) {
-                    super(paths, null);
-                }
-
-                private RecoverableClassLoader tempParent;
-
-                public Class<?> loadClass(String name) throws ClassNotFoundException {
-
-                    Class<?> c = findLoadedClass(name);
-
-                    if (c == null) {
-                        if (definingLoaderShouldDelegate(name)) c = tempParent.loadClass(name);
-                        else
-                            c = super.findClass(name);
-                    }
-                    return c;
-                }
-
-                public Class<?> loadClass(String name, RecoverableClassLoader parent)
-                        throws ClassNotFoundException {
-                    // Store parent temporarily for recursive invocations by the JVM                    
-                    tempParent = parent;
-                    Class<?> c = loadClass(name);
-                    tempParent.classes.put(name, c);
-
-                    // Set it to null before return, to allow outdated instances 
-                    // of ModuleClassLoader to be reclaimed.
-                    tempParent = null;
-                    return c;
-                }
+                cl = this.getParent().loadClass(name);
+            } catch (ClassNotFoundException e)
+            {
+                ex = e;
             }
-
-        URL[] getPathsArray() {
-            return paths.toArray(new URL[paths.size()]);
+        }
+        if (cl == null)
+        {
+            try
+            {
+                cl = new DefiningClassLoader(getPathsArray()).loadClass(name, this);
+            } catch (ClassNotFoundException e)
+            {
+            }
+        }
+        if (cl == null)
+        {
+            if (delegateEagerly)
+            {
+                // Only reached if delegation failed
+                assert (ex != null);
+                throw ex;
+            }
+            else
+            {
+                cl = this.getParent().loadClass(name);
+            }
         }
 
-        static boolean moduleLoaderShouldDelegate(String name) {
-            for (String prefix : DEFINING_DELEGATES) {
-                if (name.startsWith(prefix)) return true;
-            }
-            return false;
+        if (resolve)
+            resolveClass(cl);
+        return cl;
+    }
+
+    public synchronized RecoverableClassLoader unloadClass(String name)
+    {
+        // TODO use persistent collection
+        Map<String, Class<?>> removed = new HashMap<String, Class<?>>(classes);
+        removed.remove(name);
+        return new RecoverableClassLoader(removed);
+    }
+
+    public synchronized RecoverableClassLoader reloadClass(String name)
+            throws ClassNotFoundException
+    {
+        RecoverableClassLoader mcl = this.unloadClass(name);
+        mcl.loadClass(name);
+        return mcl;
+    }
+
+    public void addPath(String path)
+    {
+        addPath(new File(path));
+    }
+
+    public void addPath(File path)
+    {
+        try
+        {
+            addPath(path.toURI().toURL());
+        } catch (MalformedURLException e)
+        {
+            throw new RuntimeException("Could not translate file name to URL.", e);
+        }
+    }
+
+    public void addPath(URL path)
+    {
+        assert paths.add(path);
+    }
+
+
+    static class DefiningClassLoader extends URLClassLoader
+    {
+        public DefiningClassLoader(URL[] paths) {
+            super(paths, null);
         }
 
-        static boolean definingLoaderShouldDelegate(String name) {
-            for (String prefix : DEFINING_DELEGATES) {
-                if (name.startsWith(prefix)) return true;
+        private RecoverableClassLoader tempParent;
+
+        public Class<?> loadClass(String name) throws ClassNotFoundException
+        {
+
+            Class<?> c = findLoadedClass(name);
+
+            if (c == null)
+            {
+                if (definingLoaderShouldDelegate(name))
+                    c = tempParent.loadClass(name);
+                else
+                    c = super.findClass(name);
             }
-            return false;
+            return c;
         }
 
+        public Class<?> loadClass(String name, RecoverableClassLoader parent)
+                throws ClassNotFoundException
+        {
+            // Store parent temporarily for recursive invocations by the JVM                    
+            tempParent = parent;
+            Class<?> c = loadClass(name);
+            tempParent.classes.put(name, c);
 
-        static final String[] MODULE_DELEGATES = { "java.", "javax." };
+            // Set it to null before return, to allow outdated instances 
+            // of ModuleClassLoader to be reclaimed.
+            tempParent = null;
+            return c;
+        }
+    }
 
-        static final String[] DEFINING_DELEGATES = { "java.", "javax.", "vitry." };
+    URL[] getPathsArray()
+    {
+        return paths.toArray(new URL[paths.size()]);
+    }
+
+    static boolean moduleLoaderShouldDelegate(String name)
+    {
+        for (String prefix : DEFINING_DELEGATES)
+        {
+            if (name.startsWith(prefix))
+                return true;
+        }
+        return false;
+    }
+
+    static boolean definingLoaderShouldDelegate(String name)
+    {
+        for (String prefix : DEFINING_DELEGATES)
+        {
+            if (name.startsWith(prefix))
+                return true;
+        }
+        return false;
+    }
 
 
-        static final List<URL> JAVA_CLASS_PATH = new LinkedList<URL>();
+    static final String[] MODULE_DELEGATES = { "java.", "javax." };
 
-        static {
-            String cpStr = System.getProperty("java.class.path");
+    static final String[] DEFINING_DELEGATES = { "java.", "javax.", "vitry." };
 
-            assert (cpStr != null);
 
-            for (String pathStr : cpStr.split(File.pathSeparator)) {
-                try {
-                    JAVA_CLASS_PATH.add(new File(pathStr).toURI().toURL());
-                } catch (MalformedURLException e) {
-                    // Ignore invalid paths
-                }
+    static final List<URL> JAVA_CLASS_PATH = new LinkedList<URL>();
+
+    static
+    {
+        String cpStr = System.getProperty("java.class.path");
+
+        assert (cpStr != null);
+
+        for (String pathStr : cpStr.split(File.pathSeparator))
+        {
+            try
+            {
+                JAVA_CLASS_PATH.add(new File(pathStr).toURI().toURL());
+            } catch (MalformedURLException e)
+            {
+                // Ignore invalid paths
             }
         }
     }
+}

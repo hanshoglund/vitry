@@ -20,6 +20,7 @@ package vitry.runtime;
 
 import vitry.runtime.error.*;
 
+
 /**
  * The eval operation.
  * 
@@ -30,9 +31,8 @@ import vitry.runtime.error.*;
  *
  * @author Hans Höglund
  */
-public interface Eval
-  {
-
+public interface Eval {
+    
     /**
      * Evaluate the given pattern.
      *
@@ -51,18 +51,18 @@ public interface Eval
      * @throws ResolveError
      */
     public Object eval(Object expr) throws ParseError, ResolveError, TypeError;
-    
+
     public Object eval(Object expr, Module module) throws ParseError, ResolveError, TypeError;
 
-    
+
     /**
      * Whether this eval method accepts parser-generated tokens.
      */
     public boolean acceptsParserTokens();
-    
+
     /**
      * Whether this eval method accepts symbolic tokens.
      */
-    public boolean acceptsUserTokens();   
-        
-  }
+    public boolean acceptsUserTokens();
+
+}

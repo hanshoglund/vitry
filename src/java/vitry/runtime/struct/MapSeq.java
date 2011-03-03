@@ -32,64 +32,77 @@ import vitry.runtime.misc.Utils;
  * The function is applied on head lookup, not tail.
  */
 public class MapSeq<A, B> extends AbstractSeq<B>
+{
+    private final Function fn;
+    private final Seq<A> input;
+
+    public MapSeq(Function fn, Seq<A> input) {
+        Checks.checkNotNull(fn, input);
+        if (fn instanceof Arity)
+            Checks.checkArity((Arity) fn, 1);
+        this.fn = fn;
+        this.input = input;
+    }
+
+    public Iterator<B> iterator()
     {
-        private final Function fn;
-        private final Seq<A> input;
+        return new MapIterator<B>(fn, input.iterator());
+    }
 
-        public MapSeq(Function fn, Seq<A> input) {
-            Checks.checkNotNull(fn, input);
-            if (fn instanceof Arity) Checks.checkArity((Arity) fn, 1);
-            this.fn = fn;
-            this.input = input;
+    public B head()
+    {
+        A head = input.head();
+
+        if (head == null)
+            return null;
+        return Utils.<B> unsafe(fn.apply(head));
+    }
+
+    public Seq<B> tail()
+    {
+        if (input.hasTail())
+        {
+            return new MapSeq<A, B>(fn, input.tail());
         }
-
-        public Iterator<B> iterator() {
-            return new MapIterator<B>(fn, input.iterator());
-        }
-
-        public B head() {
-            A head = input.head();
-
-            if (head == null) return null;
-            return Utils.<B>unsafe(fn.apply(head));
-        }
-
-        public Seq<B> tail() {
-            if (input.hasTail()) {
-                return new MapSeq<A, B>(fn, input.tail());
-            } else {
-                return null;
-            }
-        }
-
-        public boolean hasTail() {
-            return input.hasTail();
+        else
+        {
+            return null;
         }
     }
+
+    public boolean hasTail()
+    {
+        return input.hasTail();
+    }
+}
 
 
 class MapIterator<T> implements Iterator<T>
-    {
+{
 
-        private Function fn;
-        private Iterator<?> input;
+    private Function fn;
+    private Iterator<?> input;
 
-        public MapIterator(Function fn, Iterator<?> input) {
-            if (fn instanceof Arity) Checks.checkArity((Arity) fn, 1);
-            this.fn = fn;
-            this.input = input;
-        }
-
-        public boolean hasNext() {
-            return input.hasNext();
-        }
-        
-        public T next() {
-            return Utils.<T>unsafe(fn.apply(input.next()));
-        }
-
-        public void remove() {
-            throw new UnsupportedOperationException("Can not remove from a MapIterator");
-        }
-
+    public MapIterator(Function fn, Iterator<?> input) {
+        if (fn instanceof Arity)
+            Checks.checkArity((Arity) fn, 1);
+        this.fn = fn;
+        this.input = input;
     }
+
+    public boolean hasNext()
+    {
+        return input.hasNext();
+    }
+
+    public T next()
+    {
+        return Utils.<T> unsafe(fn.apply(input.next()));
+    }
+
+    public void remove()
+    {
+        throw new UnsupportedOperationException("Can not remove from a MapIterator");
+    }
+
+}

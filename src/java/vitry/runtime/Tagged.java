@@ -21,6 +21,7 @@ package vitry.runtime;
 import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.Seq;
 
+
 /**
  * Implements tagged values.
  *
@@ -29,74 +30,86 @@ import vitry.runtime.struct.Seq;
  * @author Hans Höglund
  */
 public class Tagged extends BasePattern implements Destructible
-    {
-        private final Pattern  val;
+{
+    private final Pattern val;
 
-        private final Type tag;
+    private final Type tag;
 
-        public Tagged(Pattern val, Type tag) {
-            this.val = val;
-            this.tag = tag;
-        }
-        
-        public Pattern getValue() {
-            return val;
-        }
-
-        public Type getTag() {
-            return tag;
-        }
-        
-        public Tagged retag(Type type) {
-            return type.tag(val);
-        }
-        
-        
-        // Eq and match
-        
-        // TODO match all other forms properly
-
-        public boolean eq(Tagged o) {
-            return (this == o) || (tag.equals(o.tag) && (val.eqFor(o.val)));
-        }
-        
-        public boolean match(Tagged o) {
-            return (this == o) || (tag.equals(o.tag) && (val.eqFor(o.val)));
-        }
-
-        public boolean eqFor(Pattern o) {
-            return o.eq(this);
-        }
-
-        public boolean matchFor(Pattern p) {
-            return p.match(this);
-        }
-
-        public String toString() {
-            return val.toString();
-        }
-        
-        
-        
-        // Java stuff
-        
-        public boolean equals(Object o) {
-            if (o instanceof Tagged) return ((Tagged) o).eq(this);
-            return false;
-        }
-
-        public int hashCode() {
-            int hash = this.getClass().hashCode();
-            hash = Utils.hash(hash, val);
-            hash = Utils.hash(hash, tag);
-            return hash;
-        }
-
-        public boolean canDestruct() {
-            return (val instanceof Destructible) && ((Destructible) val).canDestruct();
-        }
-
-        public Seq<Pattern> destruct() {
-            return ((Destructible) val).destruct();
-        }        
+    public Tagged(Pattern val, Type tag) {
+        this.val = val;
+        this.tag = tag;
     }
+
+    public Pattern getValue()
+    {
+        return val;
+    }
+
+    public Type getTag()
+    {
+        return tag;
+    }
+
+    public Tagged retag(Type type)
+    {
+        return type.tag(val);
+    }
+
+
+    // Eq and match
+
+    // TODO match all other forms properly
+
+    public boolean eq(Tagged o)
+    {
+        return (this == o) || (tag.equals(o.tag) && (val.eqFor(o.val)));
+    }
+
+    public boolean match(Tagged o)
+    {
+        return (this == o) || (tag.equals(o.tag) && (val.eqFor(o.val)));
+    }
+
+    public boolean eqFor(Pattern o)
+    {
+        return o.eq(this);
+    }
+
+    public boolean matchFor(Pattern p)
+    {
+        return p.match(this);
+    }
+
+    public String toString()
+    {
+        return val.toString();
+    }
+
+
+    // Java stuff
+
+    public boolean equals(Object o)
+    {
+        if (o instanceof Tagged)
+            return ((Tagged) o).eq(this);
+        return false;
+    }
+
+    public int hashCode()
+    {
+        int hash = this.getClass().hashCode();
+        hash = Utils.hash(hash, val);
+        hash = Utils.hash(hash, tag);
+        return hash;
+    }
+
+    public boolean canDestruct()
+    {
+        return (val instanceof Destructible) && ((Destructible) val).canDestruct();
+    }
+
+    public Seq<Pattern> destruct()
+    {
+        return ((Destructible) val).destruct();
+    }
+}

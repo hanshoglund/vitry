@@ -21,6 +21,7 @@ package vitry.runtime.parse;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTreeAdaptor;
 
+
 /**
  * Creates antlr syntax-trees that implements Pattern and Product.
  * The root node (obtained from the parser) must be cast to VitryTree.
@@ -28,8 +29,9 @@ import org.antlr.runtime.tree.CommonTreeAdaptor;
  * @author Hans Höglund
  */
 public class VitryTreeAdaptor extends CommonTreeAdaptor
+{
+    public Object create(Token payload)
     {
-        public Object create(Token payload) {
-            return new VitryTree(payload);
-        }
+        return new VitryTree(payload);
     }
+}

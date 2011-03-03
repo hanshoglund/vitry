@@ -20,6 +20,7 @@ package vitry.runtime.struct;
 
 import java.util.Iterator;
 
+
 /**
  * Sequence adapted from an Iterable. Fetches a single iterator from the given
  * object at construction time and traverses it as required.
@@ -33,48 +34,55 @@ import java.util.Iterator;
  *  
  */
 public class IterableSeq<T> extends AbstractSeq<T>
-    {
-        private Iterable<T> itbl;   // Store for iterator in the leading node
-        private Iterator<T> it;
-        private T           head;
-        private Seq<T>      tail;
-        private boolean     headed = false;
-        private boolean     tailed = false;
+{
+    private Iterable<T> itbl; // Store for iterator in the leading node
+    private Iterator<T> it;
+    private T head;
+    private Seq<T> tail;
+    private boolean headed = false;
+    private boolean tailed = false;
 
-        public IterableSeq(Iterable<T> itbl) {
-            this.itbl = itbl;
-            this.it = itbl.iterator();
-        }
-
-        private IterableSeq(Iterable<T> itbl, Iterator<T> it) {
-            this.itbl = itbl;
-            this.it = it;
-        }
-
-        public Iterator<T> iterator() {
-            return itbl != null ? itbl.iterator() : super.iterator();
-        }
-
-        public T head() {
-            if (!headed) {
-                head = it.next();
-                headed = true;
-            }
-            return head;
-        }
-
-        public Seq<T> tail() {
-            if (!tailed) {
-                head();
-                if (it.hasNext())
-                    tail = new IterableSeq<T>(null, it);
-                tailed = true;
-            }
-            return tail;
-        }
-
-        public boolean hasTail() {
-            if (!tailed) tail();
-            return tail != null;
-        }
+    public IterableSeq(Iterable<T> itbl) {
+        this.itbl = itbl;
+        this.it = itbl.iterator();
     }
+
+    private IterableSeq(Iterable<T> itbl, Iterator<T> it) {
+        this.itbl = itbl;
+        this.it = it;
+    }
+
+    public Iterator<T> iterator()
+    {
+        return itbl != null ? itbl.iterator() : super.iterator();
+    }
+
+    public T head()
+    {
+        if (!headed)
+        {
+            head = it.next();
+            headed = true;
+        }
+        return head;
+    }
+
+    public Seq<T> tail()
+    {
+        if (!tailed)
+        {
+            head();
+            if (it.hasNext())
+                tail = new IterableSeq<T>(null, it);
+            tailed = true;
+        }
+        return tail;
+    }
+
+    public boolean hasTail()
+    {
+        if (!tailed)
+            tail();
+        return tail != null;
+    }
+}

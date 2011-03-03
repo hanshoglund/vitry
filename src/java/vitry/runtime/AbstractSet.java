@@ -23,57 +23,73 @@ import vitry.runtime.misc.Utils;
 
 
 abstract class AbstractSet extends InclusionPattern implements Set
+{
+    public boolean match(Object o)
     {
-        public boolean match(Object o) {
-            if (o instanceof Pattern) throw new IllegalArgumentException();
-            for (Pattern x : this)
-                if (x.eq(o)) return true;
-            return false;
-        }
-
-        public boolean match(Atom a) {
-            for (Pattern x : this)
-                if (x.eq(a)) return true;
-            return false;
-        }
-
-        public boolean match(Tagged p) {
-            for (Pattern x : this)
-                if (x.eq(p)) return true;
-            return false;
-        }
-
-        public boolean match(Product a) {
-            for (Pattern x : this)
-                if (x.eq(a)) return true;
-            return false;
-        }
-        
-        public boolean match(AbstractList a) {
-            for (Pattern x : this)
-                if (x.eq(a)) return true;
-            return false;
-        }
-
-        public boolean eqFor(Pattern p) {
-            return p.eq(this);
-        }
-
-        public boolean matchFor(Pattern p) {
-            return p.match(this);
-        }
-
-        public String toString() {
-            return Utils.join(this, "{", ", ", "}");
-        }
-
-        public Pattern union(Set b) {
-            return unionOf(this, b);
-        }
-
-        public Pattern intersection(Set b) {
-            return intersectionOf(this, b);
-        }
-        
-        
+        if (o instanceof Pattern)
+            throw new IllegalArgumentException();
+        for (Pattern x : this)
+            if (x.eq(o))
+                return true;
+        return false;
     }
+
+    public boolean match(Atom a)
+    {
+        for (Pattern x : this)
+            if (x.eq(a))
+                return true;
+        return false;
+    }
+
+    public boolean match(Tagged p)
+    {
+        for (Pattern x : this)
+            if (x.eq(p))
+                return true;
+        return false;
+    }
+
+    public boolean match(Product a)
+    {
+        for (Pattern x : this)
+            if (x.eq(a))
+                return true;
+        return false;
+    }
+
+    public boolean match(AbstractList a)
+    {
+        for (Pattern x : this)
+            if (x.eq(a))
+                return true;
+        return false;
+    }
+
+    public boolean eqFor(Pattern p)
+    {
+        return p.eq(this);
+    }
+
+    public boolean matchFor(Pattern p)
+    {
+        return p.match(this);
+    }
+
+    public String toString()
+    {
+        return Utils.join(this, "{", ", ", "}");
+    }
+
+    public Pattern union(Set b)
+    {
+        return unionOf(this, b);
+    }
+
+    public Pattern intersection(Set b)
+    {
+        return intersectionOf(this, b);
+    }
+
+
+}

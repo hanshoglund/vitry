@@ -36,755 +36,805 @@ import vitry.runtime.struct.*;
  * @author Hans Höglund
  */
 public final class VitryRuntime
+{
+
+    public static final Nil       NIL             = new Nil();
+    public static final Symbol    TRUE            = Symbol.intern("true");
+    public static final Symbol    FALSE           = Symbol.intern("false");
+    public static final Symbol    WILDCARD        = Symbol.intern("_");
+    public static final Any       ANY             = new Any();
+    public static final Bottom    BOTTOM          = new Bottom();
+    public static final Union     BOOL            = unionOf(TRUE, FALSE);
+    
+    public static final Set       NAT             = NativeSet.forClass(BigInteger.class);
+    public static final Set       INT             = NativeSet.forClass(BigInteger.class);
+    public static final Set       RAT             = NativeSet.forClass(BigRational.class);
+    public static final Set       FLOAT           = NativeSet.forClass(Float.class);
+    public static final Set       DOUBLE          = NativeSet.forClass(Double.class);
+    public static final Set       COMPLEX         = null;
+    public static final Set       CHAR            = NativeSet.forClass(Character.class);
+    public static final Set       STR             = NativeSet.forClass(String.class);
+
+    static final int              MIN_ARITY       = 1;
+    static final int              MAX_ARITY       = 0xf;
+
+
+    /**
+     * Standard prelude
+     *                                          
+     * This is non-static so that bootstrap functions can access the runtime. 
+     */
+    private final Module prelude;
+       
     {
-
-        public static final Nil       NIL             = new Nil();
-        public static final Symbol    TRUE            = Symbol.intern("true");
-        public static final Symbol    FALSE           = Symbol.intern("false");
-        public static final Symbol    WILDCARD        = Symbol.intern("_");
-        public static final Any       ANY             = new Any();
-        public static final Bottom    BOTTOM          = new Bottom();
-        public static final Union     BOOL            = unionOf(TRUE, FALSE);
+        // TODO
+        prelude = new Module(Seqs.seq(Symbol.intern("Vitry"), Symbol.intern("Prelude")));            
         
-        public static final Set       NAT             = NativeSet.forClass(BigInteger.class);
-        public static final Set       INT             = NativeSet.forClass(BigInteger.class);
-        public static final Set       RAT             = NativeSet.forClass(BigRational.class);
-        public static final Set       FLOAT           = NativeSet.forClass(Float.class);
-        public static final Set       DOUBLE          = NativeSet.forClass(Double.class);
-        public static final Set       COMPLEX         = null;
-        public static final Set       CHAR            = NativeSet.forClass(Character.class);
-        public static final Set       STR             = NativeSet.forClass(String.class);
+        def("()",                 NIL);
+        def("[]",                 productOf(NIL,    new list_()));
+        def("{}",                 productOf(BOTTOM, new set_()));
+        def("_",                  ANY);
+        
+        def("(,)",                new product_());        
+        def("[,]",                new list_());
+        def("{,}",                new set_());            
+        def("(|)",                new union_());          
+        def("(&)",                new intersection_());   
+        def("(->)",               NIL);                   // TODO 
+        def("(<->)",              NIL);                   // TODO 
+        
+        def("nil",                NIL);
+        def("true",               TRUE);
+        def("false",              FALSE);
+        def("bool",               BOOL);
+        def("nat",                NAT);
+        def("int",                INT);
+        def("rat",                RAT);
+        def("float",              FLOAT);
+        def("double",             DOUBLE);
+        def("complex",            COMPLEX);
+        def("char",               CHAR);
+        def("str",                STR);
+        
+        def("symbol",             new symbol_());
+        def("string",             new string_());
 
-        static final int              MIN_ARITY       = 1;
-        static final int              MAX_ARITY       = 0xf;
+        def("(==)",               new eq());
+        def("(!=)",               NIL);                   // TODO
+        def("not",                new not());             // TODO 
+        def("(&&)",               NIL);                   // TODO 
+        def("(||)",               NIL);                   // TODO 
+        def("(<)",                NIL);
+        def("(<=)",               NIL);
+        def("(=>)",               NIL);
+        def("(>)",                NIL);
 
+        def("arity",              new arity_());
+        def("id",                 new id());
+        def("const",              new const_());
+        def("(.)",                new compose());
+        def("(..)",               NIL);                   // TODO
+        def("power",              NIL);                   // TODO
+        def("flip",               NIL);                   // TODO
 
-        /**
-         * Standard prelude
-         *                                          
-         * This is non-static so that bootstrap functions can access the runtime. 
-         */
-        private final Module prelude;
-           
-        {
-            // TODO
-            prelude = new Module(Seqs.seq(Symbol.intern("Vitry"), Symbol.intern("Prelude")));            
-            
-            def("()",                 NIL);
-            def("[]",                 productOf(NIL,    new list_()));
-            def("{}",                 productOf(BOTTOM, new set_()));
-            def("_",                  ANY);
-            
-            def("(,)",                new product_());        
-            def("[,]",                new list_());
-            def("{,}",                new set_());            
-            def("(|)",                new union_());          
-            def("(&)",                new intersection_());   
-            def("(->)",               NIL);                   // TODO 
-            def("(<->)",              NIL);                   // TODO 
-            
-            def("nil",                NIL);
-            def("true",               TRUE);
-            def("false",              FALSE);
-            def("bool",               BOOL);
-            def("nat",                NAT);
-            def("int",                INT);
-            def("rat",                RAT);
-            def("float",              FLOAT);
-            def("double",             DOUBLE);
-            def("complex",            COMPLEX);
-            def("char",               CHAR);
-            def("str",                STR);
-            
-            def("symbol",             new symbol_());
-            def("string",             new string_());
+        def("(+)",                new add());
+        def("(-)",                new sub());
+        def("(*)",                new mul());
+        def("(/)",                new div());
+        def("(%)",                new mod());
+        def("(%%)",               new modp());
+        def("(^)",                new pow());
+        def("random",             new random());                   // TODO
+        def("abs",                NIL);                   // TODO
+        def("signum",             NIL);                   // TODO
+        def("sqrt",               NIL);                   // TODO
+        def("log",                NIL);                   // TODO
+        def("logn",               NIL);                   // TODO
+        def("ln",                 NIL);                   // TODO
+        def("sin",                NIL);                   // TODO
+        def("tan",                NIL);                   // TODO
+        def("cos",                NIL);                   // TODO
+        def("asin",               NIL);                   // TODO
+        def("atan",               NIL);                   // TODO
+        def("acos",               NIL);                   // TODO
+        def("round",              NIL);                   // TODO
+        def("ceil",               NIL);                   // TODO
+        def("floor",              NIL);                   // TODO
+        def("recip",              NIL);                   // TODO
+        def("sum",                NIL);                   // TODO
+        def("prod",               NIL);                   // TODO
+        def("gcd",                NIL);                   // TODO
+        def("lcm",                NIL);                   // TODO
 
-            def("(==)",               new eq());
-            def("(!=)",               NIL);                   // TODO
-            def("not",                new not());             // TODO 
-            def("(&&)",               NIL);                   // TODO 
-            def("(||)",               NIL);                   // TODO 
-            def("(<)",                NIL);
-            def("(<=)",               NIL);
-            def("(=>)",               NIL);
-            def("(>)",                NIL);
+        def("isOdd",              NIL);                   // TODO
+        def("isEven",             NIL);                   // TODO
+        def("isPrime",            NIL);                   // TODO
+        def("isZero",             NIL);                   // TODO
+        def("isNegative",         NIL);                   // TODO
 
-            def("arity",              new arity_());
-            def("id",                 new id());
-            def("const",              new const_());
-            def("(.)",                new compose());
-            def("(..)",               NIL);                   // TODO
-            def("power",              NIL);                   // TODO
-            def("flip",               NIL);                   // TODO
+        def("cons",               new cons());
+        def("head",               new head());
+        def("tail",               new tail());
+        def("last",               NIL);                   // TODO
+        def("init",               NIL);                   // TODO
+        def("prepend",            NIL);                   // TODO
+        def("append",             NIL);                   // TODO
 
-            def("(+)",                new add());
-            def("(-)",                new sub());
-            def("(*)",                new mul());
-            def("(/)",                new div());
-            def("(%)",                new mod());
-            def("(%%)",               new modp());
-            def("(^)",                new pow());
-            def("random",             new random());                   // TODO
-            def("abs",                NIL);                   // TODO
-            def("signum",             NIL);                   // TODO
-            def("sqrt",               NIL);                   // TODO
-            def("log",                NIL);                   // TODO
-            def("logn",               NIL);                   // TODO
-            def("ln",                 NIL);                   // TODO
-            def("sin",                NIL);                   // TODO
-            def("tan",                NIL);                   // TODO
-            def("cos",                NIL);                   // TODO
-            def("asin",               NIL);                   // TODO
-            def("atan",               NIL);                   // TODO
-            def("acos",               NIL);                   // TODO
-            def("round",              NIL);                   // TODO
-            def("ceil",               NIL);                   // TODO
-            def("floor",              NIL);                   // TODO
-            def("recip",              NIL);                   // TODO
-            def("sum",                NIL);                   // TODO
-            def("prod",               NIL);                   // TODO
-            def("gcd",                NIL);                   // TODO
-            def("lcm",                NIL);                   // TODO
+        def("length",             NIL);                   // TODO
+        def("rank",               NIL);                   // TODO
+        def("isEmpty",            NIL);                   // TODO
+        def("isSingle",           NIL);                   // TODO
 
-            def("isOdd",              NIL);                   // TODO
-            def("isEven",             NIL);                   // TODO
-            def("isPrime",            NIL);                   // TODO
-            def("isZero",             NIL);                   // TODO
-            def("isNegative",         NIL);                   // TODO
+        def("nth",                NIL);                   // TODO
+        def("map",                new map());             // TODO
+        def("apply",              NIL);                   // TODO
+        def("foldl",              new foldl());
+        def("foldr",              new foldr());
+        def("concat",             NIL);                   // TODO
 
-            def("cons",               new cons());
-            def("head",               new head());
-            def("tail",               new tail());
-            def("last",               NIL);                   // TODO
-            def("init",               NIL);                   // TODO
-            def("prepend",            NIL);                   // TODO
-            def("append",             NIL);                   // TODO
+        def("insert",             NIL);                   // TODO
+        def("substr",             NIL);                   // TODO
+        def("subseq",             NIL);                   // TODO
+        def("drop",               NIL);                   // TODO
+        def("take",               NIL);                   // TODO
+        def("remove",             NIL);                   // TODO
+        def("retain",             NIL);                   // TODO
+        def("range",              new range());
 
-            def("length",             NIL);                   // TODO
-            def("rank",               NIL);                   // TODO
-            def("isEmpty",            NIL);                   // TODO
-            def("isSingle",           NIL);                   // TODO
+        def("reverse",            NIL);                   // TODO
+        def("revappend",          NIL);                   // TODO
+        def("sort",               NIL);                   // TODO
+        def("search",             NIL);                   // TODO
+        def("shuffle",            NIL);                   // TODO
+        def("permute",            NIL);                   // TODO
+        def("partition",          NIL);                   // TODO
 
-            def("nth",                NIL);                   // TODO
-            def("map",                new map());             // TODO
-            def("apply",              NIL);                   // TODO
-            def("foldl",              new foldl());
-            def("foldr",              new foldr());
-            def("concat",             NIL);                   // TODO
+        def("some",               NIL);                   // TODO
+        def("every",              NIL);                   // TODO
+        def("none",               NIL);                   // TODO
 
-            def("insert",             NIL);                   // TODO
-            def("substr",             NIL);                   // TODO
-            def("subseq",             NIL);                   // TODO
-            def("drop",               NIL);                   // TODO
-            def("take",               NIL);                   // TODO
-            def("remove",             NIL);                   // TODO
-            def("retain",             NIL);                   // TODO
-            def("range",              new range());
+        def("(++)",               new conc());            
+        def("now",                NIL);                   // TODO
 
-            def("reverse",            NIL);                   // TODO
-            def("revappend",          NIL);                   // TODO
-            def("sort",               NIL);                   // TODO
-            def("search",             NIL);                   // TODO
-            def("shuffle",            NIL);                   // TODO
-            def("permute",            NIL);                   // TODO
-            def("partition",          NIL);                   // TODO
-
-            def("some",               NIL);                   // TODO
-            def("every",              NIL);                   // TODO
-            def("none",               NIL);                   // TODO
-
-            def("(++)",               new conc());            
-            def("now",                NIL);                   // TODO
-
-            def("read",               new read(this));
-            def("readDecl",           new readDecl(this));
-            def("eval",               new eval_(this));
-            def("print",              new print(this));
-            def("error",              NIL);                   // TODO
-
-            
-            
-
-            // Alpha - subject to change or disappear:
-            
-            def("__rt",               this);
-            def("readFile",           new readFile(this));
-            def("writeFile",          new writeFile(this));
-            def("str2list",           NIL);
-            def("list2str",           NIL);
-            def("rewrite",            new rewrite(this));
-
-            def("host",               NIL);
-            def("class",              new class_(this));
-            def("method",             NIL);
-            def("classOf",            new classOf(this));
-            def("methodsOf",          NIL);
-            def("fieldsOf",           NIL);
-
-            def("repl",               new repl(this, prelude));
-            def("require",            NIL);                   // TODO
-            def("load",               new load(this, prelude));
-            def("version",            NIL);                   // TODO
-            def("quit",               new quit());
-            
-            defFix("(..)",            12, false, false);   // gathering?
-            defFix("(.)",             12, false, false );  // gathering?
-            defFix("(^^)",            11, true,  false);
-            defFix("(^)",             11, true,  false);
-            defFix("(%)",             10, true,  false);
-            defFix("(%%)",            10, true,  false);
-            defFix("(/)",             10, true,  false);
-            defFix("(*)",             10, true,  false);
-            defFix("(-)",             9,  true,  false);
-            defFix("(+)",             9,  true,  false);
-            defFix("(++)",            9,  true,  false);
-            defFix("[,]",             8,  true,  true);
-            defFix("{,}",             8,  true,  true);
-            defFix("(,)",             8,  true,  true);
-            defFix("(&)",             7,  true,  false);  // assoc?
-            defFix("(|)",             6,  true,  false);  // assoc?
-            defFix("(->)",            5,  false, false);
-            defFix("(<->)",           4,  false, false);
-            defFix("(<)",             3,  true,  false);
-            defFix("(<=)",            3,  true,  false);
-            defFix("(>=)",            3,  true,  false);
-            defFix("(>)",             3,  true,  false);
-            defFix("(/=)",            3,  true,  false);
-            defFix("(==)",            3,  true,  false);
-            defFix("(&&)",            2,  false, false);
-            defFix("(||)",            1,  false, false);
-            defFix("($!)",            0,  true,  false);
-            defFix("($)",             0,  false, false);
-        }
-
-
-        /**
-         * Used to determine classpath etc.
-         */
-        private final Properties  setup;
-
-        /**
-         * Used to load modules.
-         */
-        private ClassLoader classLoader;
-
-        /**
-         * Loaded modules.
-         */
-        private Seq<Module> modules;
-
-        /**
-         * Used to execute interpreted code.
-         */
-        private Eval       interpreter;
-
-        /**
-         * This is for the gensym facility.
-         */
-        private BigInteger uniqueState = BigInteger.valueOf(0x2177375305f7L);
-
-        /**
-         * Classes interned for reflection.
-         * TODO unify with native set mechanism?
-         */
-        private final Env<Symbol, Class<?>> internedClasses = new HashEnv<Symbol, Class<?>>();
+        def("read",               new read(this));
+        def("readDecl",           new readDecl(this));
+        def("eval",               new eval_(this));
+        def("print",              new print(this));
+        def("error",              NIL);                   // TODO
 
         
-        public VitryRuntime() {
-            this(System.getProperties());
-        }
-
-        public VitryRuntime(Properties setup) {
-            this(setup, Thread.currentThread().getContextClassLoader());
-        }
         
-        public VitryRuntime(Properties setup, ClassLoader classLoader)
-        {
-            this.setup = setup;
-            this.classLoader = classLoader;
-            
-            if(this.interpreter == null)
-                this.interpreter = new Interpreter(this);
-        }
 
-
-        public Properties getSystemProperties() {
-            return setup;
-        }
-
-        public ClassLoader getClassLoader() {
-            return classLoader;
-        }
-
-        public Eval getInterpreter() {
-            return interpreter;
-        }
-
-        public void setClassLoader(ClassLoader classLoader) {
-            this.classLoader = classLoader;
-        }
-
-        public void setInterpreter(Eval interpreter) {
-            this.interpreter = interpreter;
-        }
-
-        public Module getPrelude() {
-            return prelude;
-        }        
-
-        /**
-         * Returns the current value of the state counter.
-         */
-        public BigInteger getUniqueState() {
-            return uniqueState;
-        }
-
-        /**
-         * Advances the state counter by one. Not synchronized.
-         */
-        public BigInteger advanceUniqueState() {
-            uniqueState = uniqueState.add(BigInteger.ONE);
-            return uniqueState;
-        }
-
-        public Class<?> internClass(Symbol name) throws ClassNotFoundException {
-            if (!internedClasses.hasBinding(name)) {
-                Class<?> c = Class.forName(name.toString());
-                internedClasses.define(name, c);
-            }
-            return internedClasses.lookup(name);
-        }
-
-
-        public static Symbol toVitryBool(boolean a) {
-            return a ? TRUE : FALSE;
-        }
-
-        public static boolean toPrimBool(Symbol a) {
-            return a != FALSE;
-        }
+        // Alpha - subject to change or disappear:
         
-        public static boolean isInvertible(Object f) {
-            return (f instanceof InvertibleFunction);
-        }
+        def("__rt",               this);
+        def("readFile",           new readFile(this));
+        def("writeFile",          new writeFile(this));
+        def("str2list",           NIL);
+        def("list2str",           NIL);
+        def("rewrite",            new rewrite(this));
 
-        public static Product product(Seq<Pattern> s) {
-            if (Seqs.isNil(s)) return null; // TODO should be NIL
-            if (s instanceof Product) return (Product) s;
-            return productFrom(s);
-        }
+        def("host",               NIL);
+        def("class",              new class_(this));
+        def("method",             NIL);
+        def("classOf",            new classOf(this));
+        def("methodsOf",          NIL);
+        def("fieldsOf",           NIL);
 
-        public static List list(Seq<Pattern> s) {
-            if (Seqs.isNil(s)) return NIL;
-            if (s instanceof List) return (List) s;
-            return listFrom(s);
-        }
-
-        public static Set set(Seq<Pattern> s) {
-            if (s instanceof Set) return (Set) s;
-            return setFrom(s);
-        }
-
-        public static Union union(Seq<Pattern> s) {
-            if (s instanceof Union) return (Union) s;
-            return unionFrom(s);
-        }
-
-        public static Intersection intersection(Seq<Pattern> s) {
-            if (s instanceof Intersection) return (Intersection) s;
-            return intersectionFrom(s);
-        }
+        def("repl",               new repl(this, prelude));
+        def("require",            NIL);                   // TODO
+        def("load",               new load(this, prelude));
+        def("version",            NIL);                   // TODO
+        def("quit",               new quit());
         
+        defFix("(..)",            12, false, false);   // gathering?
+        defFix("(.)",             12, false, false );  // gathering?
+        defFix("(^^)",            11, true,  false);
+        defFix("(^)",             11, true,  false);
+        defFix("(%)",             10, true,  false);
+        defFix("(%%)",            10, true,  false);
+        defFix("(/)",             10, true,  false);
+        defFix("(*)",             10, true,  false);
+        defFix("(-)",             9,  true,  false);
+        defFix("(+)",             9,  true,  false);
+        defFix("(++)",            9,  true,  false);
+        defFix("[,]",             8,  true,  true);
+        defFix("{,}",             8,  true,  true);
+        defFix("(,)",             8,  true,  true);
+        defFix("(&)",             7,  true,  false);  // assoc?
+        defFix("(|)",             6,  true,  false);  // assoc?
+        defFix("(->)",            5,  false, false);
+        defFix("(<->)",           4,  false, false);
+        defFix("(<)",             3,  true,  false);
+        defFix("(<=)",            3,  true,  false);
+        defFix("(>=)",            3,  true,  false);
+        defFix("(>)",             3,  true,  false);
+        defFix("(/=)",            3,  true,  false);
+        defFix("(==)",            3,  true,  false);
+        defFix("(&&)",            2,  false, false);
+        defFix("(||)",            1,  false, false);
+        defFix("($!)",            0,  true,  false);
+        defFix("($)",             0,  false, false);
+    }
+
+
+    /**
+     * Used to determine classpath etc.
+     */
+    private final Properties  setup;
+
+    /**
+     * Used to load modules.
+     */
+    private ClassLoader classLoader;
+
+    /**
+     * Loaded modules.
+     */
+    private Seq<Module> modules;
+
+    /**
+     * Used to execute interpreted code.
+     */
+    private Eval       interpreter;
+
+    /**
+     * This is for the gensym facility.
+     */
+    private BigInteger uniqueState = BigInteger.valueOf(0x2177375305f7L);
+
+    /**
+     * Classes interned for reflection.
+     * TODO unify with native set mechanism?
+     */
+    private final Env<Symbol, Class<?>> internedClasses = new HashEnv<Symbol, Class<?>>();
+
+    
+    public VitryRuntime() {
+        this(System.getProperties());
+    }
+
+    public VitryRuntime(Properties setup) {
+        this(setup, Thread.currentThread().getContextClassLoader());
+    }
+    
+    public VitryRuntime(Properties setup, ClassLoader classLoader)
+    {
+        this.setup = setup;
+        this.classLoader = classLoader;
         
-        public static Product productOf(Object... args) {
-            return productFrom(Native.wrap(new ArraySeq<Object>(args)));
+        if(this.interpreter == null)
+            this.interpreter = new Interpreter(this);
+    }
+
+
+    public Properties getSystemProperties() {
+        return setup;
+    }
+
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    public Eval getInterpreter() {
+        return interpreter;
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+
+    public void setInterpreter(Eval interpreter) {
+        this.interpreter = interpreter;
+    }
+
+    public Module getPrelude() {
+        return prelude;
+    }        
+
+    /**
+     * Returns the current value of the state counter.
+     */
+    public BigInteger getUniqueState() {
+        return uniqueState;
+    }
+
+    /**
+     * Advances the state counter by one. Not synchronized.
+     */
+    public BigInteger advanceUniqueState() {
+        uniqueState = uniqueState.add(BigInteger.ONE);
+        return uniqueState;
+    }
+
+    public Class<?> internClass(Symbol name) throws ClassNotFoundException {
+        if (!internedClasses.hasBinding(name)) {
+            Class<?> c = Class.forName(name.toString());
+            internedClasses.define(name, c);
         }
-
-        public static List listOf(Object... args) {
-            return listFrom(Native.wrap(new ArraySeq<Object>(args)));
-        }
-
-        public static Set setOf(Object... args) {
-            return setFrom(Native.wrap(new ArraySeq<Object>(args)));
-        }
-
-        public static Union unionOf(Object... args) {
-            return unionFrom(Native.wrap(new ArraySeq<Object>(args)));
-        }
-
-        public static Intersection intersectionOf(Object... args) {
-            return intersectionFrom(Native.wrap(new ArraySeq<Object>(args)));
-        }
-        
-        
-        public static Product productFrom(Seq<Pattern> s) {
-            return new StdProduct(s);
-        }
-
-        public static AbstractList listFrom(Seq<Pattern> s) {
-            return new StdList(s);
-        }
-        
-        public static Set setFrom(Seq<Pattern> s) {
-            return new StdSet(s);
-        }
-        
-        public static Union unionFrom(Seq<Pattern> s) {
-            return new StdUnion(s);
-        }
-
-        public static Intersection intersectionFrom(Seq<Pattern> s) {
-            return new StdIntersection(s);
-        }
+        return internedClasses.lookup(name);
+    }
 
 
+    public static Symbol toVitryBool(boolean a) {
+        return a ? TRUE : FALSE;
+    }
 
+    public static boolean toPrimBool(Symbol a) {
+        return a != FALSE;
+    }
+    
+    public static boolean isInvertible(Object f) {
+        return (f instanceof InvertibleFunction);
+    }
 
-        // Helper methods
+    public static Product product(Seq<Pattern> s) {
+        if (Seqs.isNil(s)) return null; // TODO should be NIL
+        if (s instanceof Product) return (Product) s;
+        return productFrom(s);
+    }
 
-        private void def(String name, Object val) {
-            prelude.addValue(Symbol.intern(name), val);
-        }
+    public static List list(Seq<Pattern> s) {
+        if (Seqs.isNil(s)) return NIL;
+        if (s instanceof List) return (List) s;
+        return listFrom(s);
+    }
 
-        private void defFix(String name, int precedence, boolean assoc, boolean gathering) {
-            prelude.addFixity(Symbol.intern(name), new Fixity(precedence, assoc, gathering));
-        }
+    public static Set set(Seq<Pattern> s) {
+        if (s instanceof Set) return (Set) s;
+        return setFrom(s);
+    }
 
-        private Symbol nextUnique() {
-            byte[] val = uniqueState.toByteArray();
-            char[] str = new char[val.length / 2 + 1];
-            for (int i = 0; i < val.length; i += 2) {
-                if ( (str.length & 1) == 1) str[i / 2] = (char) (val[i]);
-                else
-                    str[i / 2] = (char) ( (val[i] << 8) | val[i + 1]);
+    public static Union union(Seq<Pattern> s) {
+        if (s instanceof Union) return (Union) s;
+        return unionFrom(s);
+    }
 
-            }
-            advanceUniqueState();
-            return Symbol.intern(new String(str));
-        }
+    public static Intersection intersection(Seq<Pattern> s) {
+        if (s instanceof Intersection) return (Intersection) s;
+        return intersectionFrom(s);
+    }
+    
+    
+    public static Product productOf(Object... args) {
+        return productFrom(Native.wrap(new ArraySeq<Object>(args)));
+    }
+
+    public static List listOf(Object... args) {
+        return listFrom(Native.wrap(new ArraySeq<Object>(args)));
+    }
+
+    public static Set setOf(Object... args) {
+        return setFrom(Native.wrap(new ArraySeq<Object>(args)));
+    }
+
+    public static Union unionOf(Object... args) {
+        return unionFrom(Native.wrap(new ArraySeq<Object>(args)));
+    }
+
+    public static Intersection intersectionOf(Object... args) {
+        return intersectionFrom(Native.wrap(new ArraySeq<Object>(args)));
+    }
+    
+    
+    public static Product productFrom(Seq<Pattern> s) {
+        return new StdProduct(s);
+    }
+
+    public static AbstractList listFrom(Seq<Pattern> s) {
+        return new StdList(s);
+    }
+    
+    public static Set setFrom(Seq<Pattern> s) {
+        return new StdSet(s);
+    }
+    
+    public static Union unionFrom(Seq<Pattern> s) {
+        return new StdUnion(s);
+    }
+
+    public static Intersection intersectionFrom(Seq<Pattern> s) {
+        return new StdIntersection(s);
     }
 
 
 
 
+    // Helper methods
 
+    private void def(String name, Object val) {
+        prelude.addValue(Symbol.intern(name), val);
+    }
+
+    private void defFix(String name, int precedence, boolean assoc, boolean gathering) {
+        prelude.addFixity(Symbol.intern(name), new Fixity(precedence, assoc, gathering));
+    }
+
+    private Symbol nextUnique() {
+        byte[] val = uniqueState.toByteArray();
+        char[] str = new char[val.length / 2 + 1];
+        for (int i = 0; i < val.length; i += 2) {
+            if ( (str.length & 1) == 1) str[i / 2] = (char) (val[i]);
+            else
+                str[i / 2] = (char) ( (val[i] << 8) | val[i + 1]);
+
+        }
+        advanceUniqueState();
+        return Symbol.intern(new String(str));
+    }
+}
 
 
 // Built-in types
 
 
 final class Any extends Atom
-    {
-        Any() {
-        }
-
-        public boolean eq(Atom o) {
-            return o == this;
-        }
-
-        public boolean match(Atom o) {
-            return true;
-        }
-
-        public boolean match(Product p) {
-            return true;
-        }
-
-        public boolean match(Union p) {
-            return true;
-        }
-
-        public boolean match(Set p) {
-            return true;
-        }
-
-        public boolean match(Intersection p) {
-            return true;
-        }
-
-        public boolean match(Type p) {
-            return true;
-        }
-
-        public String toString() {
-            return "_";
-        }
+{
+    Any() {
     }
+
+    public boolean eq(Atom o)
+    {
+        return o == this;
+    }
+
+    public boolean match(Atom o)
+    {
+        return true;
+    }
+
+    public boolean match(Product p)
+    {
+        return true;
+    }
+
+    public boolean match(Union p)
+    {
+        return true;
+    }
+
+    public boolean match(Set p)
+    {
+        return true;
+    }
+
+    public boolean match(Intersection p)
+    {
+        return true;
+    }
+
+    public boolean match(Type p)
+    {
+        return true;
+    }
+
+    public String toString()
+    {
+        return "_";
+    }
+}
 
 
 final class Bottom extends AbstractSet
-    {
-        Bottom() {
-        }
-
-        public boolean eq(Set o) {
-            return o == this;
-        }
-        
-        public boolean match(Set a) {
-            return a == this;
-        }
-
-        public boolean match(Union a) {
-            return false;
-        }
-
-        public boolean match(Intersection a) {
-            return false;
-        }
-
-        public String toString() {
-            return "{}";
-        }
-
-        public int hashCode() {
-            return -1;
-        }
-
-        public boolean hasTail() {
-            return false;
-        }
-
-        public Pattern head() {
-            return throwUnsupported();
-        }
-
-        public Seq<Pattern> tail() {
-            return throwUnsupported();
-        }
-
-        public Iterator<Pattern> iterator() {
-            return NilIterator.INSTANCE;
-        }
-
-        private <T> T throwUnsupported() {
-            throw new UnsupportedOperationException("{} has no members.");
-        }
+{
+    Bottom() {
     }
+
+    public boolean eq(Set o)
+    {
+        return o == this;
+    }
+
+    public boolean match(Set a)
+    {
+        return a == this;
+    }
+
+    public boolean match(Union a)
+    {
+        return false;
+    }
+
+    public boolean match(Intersection a)
+    {
+        return false;
+    }
+
+    public String toString()
+    {
+        return "{}";
+    }
+
+    public int hashCode()
+    {
+        return -1;
+    }
+
+    public boolean hasTail()
+    {
+        return false;
+    }
+
+    public Pattern head()
+    {
+        return throwUnsupported();
+    }
+
+    public Seq<Pattern> tail()
+    {
+        return throwUnsupported();
+    }
+
+    public Iterator<Pattern> iterator()
+    {
+        return NilIterator.INSTANCE;
+    }
+
+    private <T> T throwUnsupported()
+    {
+        throw new UnsupportedOperationException("{} has no members.");
+    }
+}
 
 
 final class Nil extends Atom implements List, Finite<Pattern>
-    {
-        Nil() {
-        }
-
-        public boolean eq(Atom o) {
-            return o == this;
-        }
-
-        public String toString() {
-            return "()";
-        }
-
-        public Product cons(Pattern head) {
-            // TODO product by default?
-            return product(new Pair<Pattern>(head, this));
-        }
-
-        public <U> MapSeq<Pattern, U> map(Function fn) {
-            return new MapSeq<Pattern, U>(fn, this);
-        }
-
-        public boolean hasTail() {
-            return false;
-        }
-
-        public int length() {
-            return 0;
-        }
-
-        // Rest of interface unsupported...
-
-
-        public Pattern head() {
-            return throwUnsupported();
-        }
-
-        public Product tail() {
-            return throwUnsupported();
-        }
-
-        public Iterator<Pattern> iterator() {
-            return NilIterator.INSTANCE;
-        }
-
-        public SeqIterator<Pattern> seqIterator() {
-            return NilIterator.INSTANCE;
-        }
-
-        private <T> T throwUnsupported() {
-            throw new UnsupportedOperationException("() has no members.");
-        }
-
-        public List mapList(Function fn) {
-            return NIL;
-        }
-
+{
+    Nil() {
     }
+
+    public boolean eq(Atom o)
+    {
+        return o == this;
+    }
+
+    public String toString()
+    {
+        return "()";
+    }
+
+    public Product cons(Pattern head)
+    {
+        // TODO product by default?
+        return product(new Pair<Pattern>(head, this));
+    }
+
+    public <U> MapSeq<Pattern, U> map(Function fn)
+    {
+        return new MapSeq<Pattern, U>(fn, this);
+    }
+
+    public boolean hasTail()
+    {
+        return false;
+    }
+
+    public int length()
+    {
+        return 0;
+    }
+
+    // Rest of interface unsupported...
+
+
+    public Pattern head()
+    {
+        return throwUnsupported();
+    }
+
+    public Product tail()
+    {
+        return throwUnsupported();
+    }
+
+    public Iterator<Pattern> iterator()
+    {
+        return NilIterator.INSTANCE;
+    }
+
+    public SeqIterator<Pattern> seqIterator()
+    {
+        return NilIterator.INSTANCE;
+    }
+
+    private <T> T throwUnsupported()
+    {
+        throw new UnsupportedOperationException("() has no members.");
+    }
+
+    public List mapList(Function fn)
+    {
+        return NIL;
+    }
+
+}
 
 
 class NilIterator extends SeqIterator<Pattern>
-    {
-        static final SeqIterator<Pattern> INSTANCE = new NilIterator();
+{
+    static final SeqIterator<Pattern> INSTANCE = new NilIterator();
 
-        private NilIterator() {
-            super(VitryRuntime.NIL);
-        }
-
-        public boolean hasNext() {
-            return false;
-        }
-
-        public Pattern next() {
-            return throwUnsupported();
-        }
-
-        public void remove() {
-            throwUnsupported();
-        }
-
-        private <T> T throwUnsupported() {
-            throw new UnsupportedOperationException("() has no members.");
-        }
+    private NilIterator() {
+        super(VitryRuntime.NIL);
     }
+
+    public boolean hasNext()
+    {
+        return false;
+    }
+
+    public Pattern next()
+    {
+        return throwUnsupported();
+    }
+
+    public void remove()
+    {
+        throwUnsupported();
+    }
+
+    private <T> T throwUnsupported()
+    {
+        throw new UnsupportedOperationException("() has no members.");
+    }
+}
 
 
 final class StdProduct extends AbstractProduct
-    {
-        final Seq<Pattern> elements;
+{
+    final Seq<Pattern> elements;
 
-        public StdProduct(Seq<Pattern> elements) {
-            this.elements = elements;
-        }
-
-        public Iterator<Pattern> iterator() {
-            return elements.iterator();
-        }
-
-        final public Pattern head() {
-            return elements.head();
-        }
-
-        public Product tail() {
-            return product(elements.tail());
-        }
-
-        public boolean hasTail() {
-            return elements.hasTail();
-        }
-
-        // public <U> Seq<U> map(Function fn) {
-        //     return elements.map(fn);
-        // } 
+    public StdProduct(Seq<Pattern> elements) {
+        this.elements = elements;
     }
+
+    public Iterator<Pattern> iterator()
+    {
+        return elements.iterator();
+    }
+
+    final public Pattern head()
+    {
+        return elements.head();
+    }
+
+    public Product tail()
+    {
+        return product(elements.tail());
+    }
+
+    public boolean hasTail()
+    {
+        return elements.hasTail();
+    }
+
+    // public <U> Seq<U> map(Function fn) {
+    //     return elements.map(fn);
+    // } 
+}
 
 
 final class StdSet extends AbstractSet
-    {
-        final Seq<Pattern> elements;
+{
+    final Seq<Pattern> elements;
 
-        public StdSet(Seq<Pattern> elements) {
-            this.elements = elements;
-        }
-
-        public Iterator<Pattern> iterator() {
-            return elements.iterator();
-        }
-
-        public Pattern head() {
-            return elements.head();
-        }
-
-        public Seq<Pattern> tail() {
-            return elements.tail();
-        }
-
-        public boolean hasTail() {
-            return elements.hasTail();
-        }
+    public StdSet(Seq<Pattern> elements) {
+        this.elements = elements;
     }
+
+    public Iterator<Pattern> iterator()
+    {
+        return elements.iterator();
+    }
+
+    public Pattern head()
+    {
+        return elements.head();
+    }
+
+    public Seq<Pattern> tail()
+    {
+        return elements.tail();
+    }
+
+    public boolean hasTail()
+    {
+        return elements.hasTail();
+    }
+}
 
 
 final class StdUnion extends Union
-    {
-        final Seq<Pattern> elements;
+{
+    final Seq<Pattern> elements;
 
-        public StdUnion(Seq<Pattern> elements) {
-            this.elements = elements;
-        }
-
-        public Iterator<Pattern> iterator() {
-            return elements.iterator();
-        }
-
-        public Pattern head() {
-            return elements.head();
-        }
-
-        public Seq<Pattern> tail() {
-            return elements.tail();
-        }
-
-        public boolean hasTail() {
-            return elements.hasTail();
-        }
+    public StdUnion(Seq<Pattern> elements) {
+        this.elements = elements;
     }
+
+    public Iterator<Pattern> iterator()
+    {
+        return elements.iterator();
+    }
+
+    public Pattern head()
+    {
+        return elements.head();
+    }
+
+    public Seq<Pattern> tail()
+    {
+        return elements.tail();
+    }
+
+    public boolean hasTail()
+    {
+        return elements.hasTail();
+    }
+}
 
 
 final class StdIntersection extends Intersection
-    {
-        final Seq<Pattern> elements;
+{
+    final Seq<Pattern> elements;
 
-        public StdIntersection(Seq<Pattern> elements) {
-            this.elements = elements;
-        }
-
-        public Iterator<Pattern> iterator() {
-            return elements.iterator();
-        }
-
-        public Pattern head() {
-            return elements.head();
-        }
-
-        public Seq<Pattern> tail() {
-            return elements.tail();
-        }
-
-        public boolean hasTail() {
-            return elements.hasTail();
-        }
+    public StdIntersection(Seq<Pattern> elements) {
+        this.elements = elements;
     }
+
+    public Iterator<Pattern> iterator()
+    {
+        return elements.iterator();
+    }
+
+    public Pattern head()
+    {
+        return elements.head();
+    }
+
+    public Seq<Pattern> tail()
+    {
+        return elements.tail();
+    }
+
+    public boolean hasTail()
+    {
+        return elements.hasTail();
+    }
+}
 
 
 final class StdList extends AbstractList
-    {
-        final Seq<Pattern> elements;
+{
+    final Seq<Pattern> elements;
 
-        public StdList(Seq<Pattern> elements) {
-            this.elements = elements;
-        }
-
-        public Iterator<Pattern> iterator() {
-            return elements.iterator();
-        }
-
-        public Pattern head() {
-            return elements.head();
-        }
-
-        public Seq<Pattern> tail() {
-            return elements.tail();
-        }
-
-        public boolean hasTail() {
-            return elements.hasTail();
-        }
-        
-        // public <U> Seq<U> map(Function fn) {
-        //     return elements.map(fn);
-        // }    
+    public StdList(Seq<Pattern> elements) {
+        this.elements = elements;
     }
+
+    public Iterator<Pattern> iterator()
+    {
+        return elements.iterator();
+    }
+
+    public Pattern head()
+    {
+        return elements.head();
+    }
+
+    public Seq<Pattern> tail()
+    {
+        return elements.tail();
+    }
+
+    public boolean hasTail()
+    {
+        return elements.hasTail();
+    }
+
+    // public <U> Seq<U> map(Function fn) {
+    //     return elements.map(fn);
+    // }    
+}
 
 
 // Bootstrap prelude
@@ -899,8 +949,10 @@ final class not extends Unary
 {
     public Object apply(Object a) throws InvocationError
     {
-        if (a.equals(TRUE)) return FALSE;
-        if (a.equals(FALSE)) return TRUE;
+        if (a.equals(TRUE))
+            return FALSE;
+        if (a.equals(FALSE))
+            return TRUE;
         throw new TypeError("Expected bool");
     }
 }
@@ -998,6 +1050,7 @@ final class eval_ extends StandardFunction
     }
 }
 
+
 final class cons extends Binary
 {
     public Object apply(Object x, Object xs)
@@ -1025,10 +1078,12 @@ final class tail extends Unary
     }
 }
 
+
 final class map extends Binary
 {
-    public Object apply(Object a, Object f) {
-        return list(Native.wrap(((List) a).map((Function) f)));
+    public Object apply(Object a, Object f)
+    {
+        return list(Native.wrap( ((List) a).map((Function) f)));
     }
 }
 
@@ -1038,28 +1093,38 @@ final class foldl extends StandardFunction
     public foldl() {
         super(3);
     }
-    public Object apply(Object list, Object fn, Object init) {
+
+    public Object apply(Object list, Object fn, Object init)
+    {
         return Seqs.foldl((Function) fn, init, (List) list);
     }
 }
+
 
 final class foldr extends StandardFunction
 {
     public foldr() {
         super(3);
     }
-    public Object apply(Object list, Object fn, Object init) {
+
+    public Object apply(Object list, Object fn, Object init)
+    {
         return Seqs.foldr((Function) fn, init, (List) list);
     }
 }
 
-final class range extends Binary {
-    public Object apply(Object min, Object max) {
+
+final class range extends Binary
+{
+    public Object apply(Object min, Object max)
+    {
         return list(Native.wrap(new RangeSeq((BigInteger) min, (BigInteger) max)));
     }
 }
 
-final class random extends Unary {
+
+final class random extends Unary
+{
 
     public Object apply(Object a) throws InvocationError
     {

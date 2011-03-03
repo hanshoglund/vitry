@@ -21,6 +21,7 @@ package vitry.runtime;
 import java.util.HashMap;
 import java.util.Map;
 
+
 /**
  * Standard symbols. Note that Vitry symbols does not have 
  * namespaces, they are simply unique refences accessed by name.
@@ -28,44 +29,50 @@ import java.util.Map;
  * @author Hans Höglund
  */
 public class Symbol extends Atom
+{
+
+    public static Symbol intern(String name)
     {
-
-        public static Symbol intern(String name) {
-            if (symbols.containsKey(name)) return symbols.get(name);
-            else {
-                Symbol sym = new Symbol(name);
-                symbols.put(name, sym);
-                return sym;
-            }
+        if (symbols.containsKey(name))
+            return symbols.get(name);
+        else
+        {
+            Symbol sym = new Symbol(name);
+            symbols.put(name, sym);
+            return sym;
         }
-
-        // Eq, string and hashCode
-
-        public String toString() {
-            return name;
-        }
-
-        public boolean equals(Object o) {
-            // return o == this || o.toString() == this.name;
-            return o == this;
-        }
-
-        public int hashCode() {
-            if (cachedHashCode == 0)
-                cachedHashCode = this.name.hashCode();
-            return cachedHashCode;
-        }
-
-        private final String               name;
-        private int                        cachedHashCode;
-
-
-        private Symbol(String name) {
-            this.name = name;
-        }
-
-        /**
-         * Global symbol table
-         */
-        private static Map<String, Symbol> symbols = new HashMap<String, Symbol>();
     }
+
+    // Eq, string and hashCode
+
+    public String toString()
+    {
+        return name;
+    }
+
+    public boolean equals(Object o)
+    {
+        // return o == this || o.toString() == this.name;
+        return o == this;
+    }
+
+    public int hashCode()
+    {
+        if (cachedHashCode == 0)
+            cachedHashCode = this.name.hashCode();
+        return cachedHashCode;
+    }
+
+    private final String name;
+    private int cachedHashCode;
+
+
+    private Symbol(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Global symbol table
+     */
+    private static Map<String, Symbol> symbols = new HashMap<String, Symbol>();
+}

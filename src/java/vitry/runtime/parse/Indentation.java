@@ -24,6 +24,7 @@ import java.util.Stack;
 
 import org.antlr.runtime.*;
 
+
 /**
  * An implementation of TokenSource that inserts special tokens representing
  * indent levels. The rewriting rules are straightforward:
@@ -63,380 +64,420 @@ import org.antlr.runtime.*;
  * @author Hans Höglund
  */
 public class Indentation implements TokenSource
-    {       
-        
-        private final BufferedTokenStream input;
+{
 
-        
-        // Setup
-                 
-        /*
-         * Tokens to emit at start and end of lines
-         */
-        private Token startToken = new CommonToken(Parsing.PL, "(");
-        private Token endToken   = new CommonToken(Parsing.PR, ")");
-        
-        /**
-         * If true, this class emits whitespace tokens mimicking the original
-         * layout (useful for debugging)
-         */
-        private boolean preserveSpace = true;
-        
-        /**
-         * Enables or disables the inline rule.
-         */
-        private boolean inlineEnabled = true;
-        
-        /**
-         * Enables or disables the enclose rule.
-         */
-        private boolean encloseEnabled = true;
-        
+    private final BufferedTokenStream input;
 
-        // Internal state
-        
-        private Stack<Integer> levelStack = new Stack<Integer>();
-        
-        private List<Token> buffer = new ArrayList<Token>();
-        
-        /**
-         * Number of tokens read from buffer.
-         */
-        private int count = 0;
-        
-        /**
-         * Number of lines read from buffer.
-         * The number of lines written to buffer is always (lineCount + 1).
-         */
-        private int lineCount = -1;
-        
-        /**
-         * Indent levels carrying over from previous lines.
-         * (This is necessary for the inlining to work).
-         */
-        private int carry = 0;
-        
-        
-        
-        
-        public Indentation(TokenSource input) {
-            this(new BufferedTokenStream(input));
+
+    // Setup
+
+    /*
+     * Tokens to emit at start and end of lines
+     */
+    private Token startToken = new CommonToken(Parsing.PL, "(");
+    private Token endToken = new CommonToken(Parsing.PR, ")");
+
+    /**
+     * If true, this class emits whitespace tokens mimicking the original
+     * layout (useful for debugging)
+     */
+    private boolean preserveSpace = true;
+
+    /**
+     * Enables or disables the inline rule.
+     */
+    private boolean inlineEnabled = true;
+
+    /**
+     * Enables or disables the enclose rule.
+     */
+    private boolean encloseEnabled = true;
+
+
+    // Internal state
+
+    private Stack<Integer> levelStack = new Stack<Integer>();
+
+    private List<Token> buffer = new ArrayList<Token>();
+
+    /**
+     * Number of tokens read from buffer.
+     */
+    private int count = 0;
+
+    /**
+     * Number of lines read from buffer.
+     * The number of lines written to buffer is always (lineCount + 1).
+     */
+    private int lineCount = -1;
+
+    /**
+     * Indent levels carrying over from previous lines.
+     * (This is necessary for the inlining to work).
+     */
+    private int carry = 0;
+
+
+    public Indentation(TokenSource input) {
+        this(new BufferedTokenStream(input));
+    }
+
+    public Indentation(BufferedTokenStream input) {
+        this.input = input;
+        this.levelStack.push(0);
+    }
+
+
+    public String getSourceName()
+    {
+        return input.getSourceName();
+    }
+
+    public Token getStartToken()
+    {
+        return startToken;
+    }
+
+    public Token getEndToken()
+    {
+        return endToken;
+    }
+
+    public boolean isPreservingSpace()
+    {
+        return preserveSpace;
+    }
+
+    public boolean isInlineEnabled()
+    {
+        return inlineEnabled;
+    }
+
+    public boolean isEncloseEnabled()
+    {
+        return encloseEnabled;
+    }
+
+    public int getCount()
+    {
+        return count;
+    }
+
+    public int getLineCount()
+    {
+        return lineCount;
+    }
+
+    public void setStartToken(Token startToken)
+    {
+        this.startToken = startToken;
+    }
+
+    public void setEndToken(Token endToken)
+    {
+        this.endToken = endToken;
+    }
+
+    public void setPreserveSpace(boolean preserveSpace)
+    {
+        this.preserveSpace = preserveSpace;
+    }
+
+    public void setInlineEnabled(boolean inlineEnabled)
+    {
+        this.inlineEnabled = inlineEnabled;
+    }
+
+    public void setEncloseEnabled(boolean encloseEnabled)
+    {
+        this.encloseEnabled = encloseEnabled;
+    }
+
+
+    /**
+     * Returns the next token, pulling lines from the input
+     * as necessary.
+     */
+    public Token nextToken()
+    {
+        if (count >= buffer.size())
+        {
+            nextLine();
+            lineCount++;
         }
+        Token t = buffer.get(count);
 
-        public Indentation(BufferedTokenStream input) {
-            this.input = input;
-            this.levelStack.push(0);
+        if (t.getType() != Token.EOF)
+        {
+            count++;
         }
-        
-        
-        
-        public String getSourceName() {
-            return input.getSourceName();
-        }
-
-        public Token getStartToken() {
-            return startToken;
-        }
-
-        public Token getEndToken() {
-            return endToken;
-        }
-
-        public boolean isPreservingSpace() {
-            return preserveSpace;
-        }
-
-        public boolean isInlineEnabled() {
-            return inlineEnabled;
-        }
-
-        public boolean isEncloseEnabled() {
-            return encloseEnabled;
-        }
-
-        public int getCount() {
-            return count;
-        }
-
-        public int getLineCount() {
-            return lineCount;
-        }
-
-        public void setStartToken(Token startToken) {
-            this.startToken = startToken;
-        }
-
-        public void setEndToken(Token endToken) {
-            this.endToken = endToken;
-        }
-
-        public void setPreserveSpace(boolean preserveSpace) {
-            this.preserveSpace = preserveSpace;
-        }
-
-        public void setInlineEnabled(boolean inlineEnabled) {
-            this.inlineEnabled = inlineEnabled;
-        }
-
-        public void setEncloseEnabled(boolean encloseEnabled) {
-            this.encloseEnabled = encloseEnabled;
-        }
-        
-        
-        
-
-        /**
-         * Returns the next token, pulling lines from the input
-         * as necessary.
-         */
-        public Token nextToken() {
-            if (count >= buffer.size()) {
-                nextLine();
-                lineCount++;
-            }
-            Token t = buffer.get(count);
-
-            if (t.getType() != Token.EOF) {
-                count++;
-            }
-            return t;
-        }
+        return t;
+    }
 
 
-        /**
-         * Append the next line and eventual added tokens to the buffer.
-         */
-        private void nextLine() {
-            
-            // Clearing does not affect operation, this is CPU vs. heap
-//            buffer.clear();
-//            count = 0;
+    /**
+     * Append the next line and eventual added tokens to the buffer.
+     */
+    private void nextLine()
+    {
 
-            int indent = consumeIndent();
-            
-            if (nextIsEOF()) {
-                finish();
-                return;
-            }
+        // Clearing does not affect operation, this is CPU vs. heap
+        //            buffer.clear();
+        //            count = 0;
 
-            if (inlineEnabled && nextIsOp()) {
-                if (preserveSpace) {
-                    buffer.add(SPACE);
-                }
-                emitRestOfLine();
+        int indent = consumeIndent();
 
-                if (nextIsEOF()) {
-                    finish();
-                }
-                return;
-            }
-
-            int n = indent;
-            while (carry > 0) {
-                levelStack.push(++n);
-                carry--;
-            }
-
-            while (levelStack.size() > 1 && indent < levelStack.peek() && lineCount >= 0) {
-                buffer.add(endToken);
-                levelStack.pop();
-            }
-            if (levelStack.size() > 0 && indent == levelStack.peek() && lineCount >= 0) {
-                buffer.add(endToken);
-            }
-            if (levelStack.size() > 0 && indent > levelStack.peek()) {
-                levelStack.push(indent);
-            }       
-            if (preserveSpace) {
-                if (lineCount >= 0) {
-                    buffer.add(BREAK);
-                }
-                for (int i = 0; i < indent; i++) {
-                    buffer.add(SPACE);
-                }
-            }
-            buffer.add(startToken);
-        
-            
-            if (encloseEnabled) {
-                
-                Token t;
-                do {
-                    t = input.LT(1);
-                    buffer.add(t);
-                    input.consume();
-                    
-                    if (onlySpaceRemaining()) {
-                        continue;
-                    }
-                    
-                    int tt = t.getType();
-                    if (tt == Parsing.LET
-                     || tt == Parsing.DO
-                     || tt == Parsing.IMPORT
-                     || tt == Parsing.TYPE
-                     || tt == Parsing.IMPLICIT
-                     || tt == Parsing.INFIX) 
-                    {
-                        if (nextIsLineSpace()) {
-                            input.consume();
-                            buffer.add(SPACE);
-                        }
-                        buffer.add(startToken);
-                        carry++;
-                    }
-                } while (!nextIsEOF() && !nextIsLineBreak());
-            
-            } else {
-                emitRestOfLine();                
-            }
-
-            if (nextIsEOF()) {
-                finish();
-                return;
-            }
-        }
-            
-            
-            /**
-             * Possible if we are some special top level declarations
-             * Also possible if we see a keyword
-             */
-//            if (
-//                (levelStack.peek() == 0 && !isSingleTopLevel(input.LA(1))) 
-//                || isKeyword(input.LA(1))
-//            ) {    
-//                /**
-//                 * Track the next non-space token
-//                 * If this is a (OP) style expression, skip the token and pars
-//                 */
-//                if (isLeftDelim(input.LA(1))) {
-//                    encl = 4;
-//                } else {
-//                    encl= 2;
-//                }
-//                
-//                int la = -1;
-//                do {
-//                    la = input.LA(encl++);
-//                } while (isLineSpace(la));
-//
-//                if (!isLineBreak(input.LA(encl-1)) && !isEq(input.LA(encl-1))) {
-//                    for (int i=1; i < encl-1; i++) {
-//                        buffer.add(input.LT(i));
-//                    }
-//                    for (int i=1; i < encl-1; i++) {
-//                        input.consume();
-//                    }
-//                    buffer.add(startToken);
-//                    carry++;
-//                    
-//                }
-//                if (inputIsAtEnd()) {
-//                    finish();
-//                    return;
-//                }            
-//            }
-            
-
-        
-        
-
-        private int consumeIndent() {
-            int indent;
-            while (true) {
-                indent = 0;
-                while (nextIsLineBreak()) {
-                    input.consume();
-                }
-                while (nextIsLineSpace()) {
-                    input.consume();
-                    indent++;
-                }
-                if (nextIsComment()) // FIXME Assumes only line-comments
-                {
-                    input.consume();
-                    continue;
-                }
-                if (nextIsLineBreak()) {
-                    // Skip empty line
-                    continue;
-                }
-                break;
-            }
-            return indent;
-        }
-        
-        private boolean onlySpaceRemaining() {
-            int i = 0, t = 0;
-            do {
-                t = input.LA(++i);
-            } while (t == VitryParser.LineSpace || t == VitryParser.Comment);
-            return nextIsLineBreak();
-        }
-
-        private void emitRestOfLine() {
-            Token t;
-            do {
-                t = input.LT(1);
-                buffer.add(t);
-                input.consume();
-            } while (!nextIsEOF() && !nextIsLineBreak());
-        }
-        
-        
-        /**
-         * Emit closeing tokens for all levels on the stack and EOF.
-         */
-        private void finish() {
-            while (carry-- > 0) {
-                buffer.add(endToken);
-            }
-            
-            while (levelStack.size() > 0) {
-                buffer.add(endToken);
-                levelStack.pop();
-            }
-            if (preserveSpace) {
-                buffer.add(BREAK);
-            }
-            buffer.add(Token.EOF_TOKEN);
+        if (nextIsEOF())
+        {
+            finish();
             return;
         }
 
+        if (inlineEnabled && nextIsOp())
+        {
+            if (preserveSpace)
+            {
+                buffer.add(SPACE);
+            }
+            emitRestOfLine();
 
-        private boolean nextIsOp() {
-            return input.LA(1) == VitryParser.Op;
+            if (nextIsEOF())
+            {
+                finish();
+            }
+            return;
         }
 
-        private boolean nextIsComment() {
-            return input.LA(1) == VitryParser.Comment;
+        int n = indent;
+        while (carry > 0)
+        {
+            levelStack.push(++n);
+            carry--;
         }
 
-        private boolean nextIsLineSpace() {
-            return input.LA(1) == VitryParser.LineSpace;
+        while (levelStack.size() > 1 && indent < levelStack.peek() && lineCount >= 0)
+        {
+            buffer.add(endToken);
+            levelStack.pop();
+        }
+        if (levelStack.size() > 0 && indent == levelStack.peek() && lineCount >= 0)
+        {
+            buffer.add(endToken);
+        }
+        if (levelStack.size() > 0 && indent > levelStack.peek())
+        {
+            levelStack.push(indent);
+        }
+        if (preserveSpace)
+        {
+            if (lineCount >= 0)
+            {
+                buffer.add(BREAK);
+            }
+            for (int i = 0; i < indent; i++)
+            {
+                buffer.add(SPACE);
+            }
+        }
+        buffer.add(startToken);
+
+
+        if (encloseEnabled)
+        {
+
+            Token t;
+            do
+            {
+                t = input.LT(1);
+                buffer.add(t);
+                input.consume();
+
+                if (onlySpaceRemaining())
+                {
+                    continue;
+                }
+
+                int tt = t.getType();
+                if (tt == Parsing.LET || tt == Parsing.DO || tt == Parsing.IMPORT
+                        || tt == Parsing.TYPE || tt == Parsing.IMPLICIT || tt == Parsing.INFIX)
+                {
+                    if (nextIsLineSpace())
+                    {
+                        input.consume();
+                        buffer.add(SPACE);
+                    }
+                    buffer.add(startToken);
+                    carry++;
+                }
+            } while (!nextIsEOF() && !nextIsLineBreak());
+
+        }
+        else
+        {
+            emitRestOfLine();
         }
 
-        private boolean nextIsLineBreak() {
-            return input.LA(1) == VitryParser.LineBreak;
-        }
-
-        private boolean nextIsEOF() {
-            return input.LA(1) == Token.EOF;
-        }
-        
-        
-        private static final CommonToken SPACE = new CommonToken(VitryParser.LineSpace, " ");
-        private static final CommonToken BREAK = new CommonToken(VitryParser.LineBreak, System.getProperty("line.separator"));
-        
-        static {
-            SPACE.setChannel(Token.HIDDEN_CHANNEL);
-            BREAK.setChannel(Token.HIDDEN_CHANNEL);
+        if (nextIsEOF())
+        {
+            finish();
+            return;
         }
     }
 
 
+    /**
+     * Possible if we are some special top level declarations
+     * Also possible if we see a keyword
+     */
+    //            if (
+    //                (levelStack.peek() == 0 && !isSingleTopLevel(input.LA(1))) 
+    //                || isKeyword(input.LA(1))
+    //            ) {    
+    //                /**
+    //                 * Track the next non-space token
+    //                 * If this is a (OP) style expression, skip the token and pars
+    //                 */
+    //                if (isLeftDelim(input.LA(1))) {
+    //                    encl = 4;
+    //                } else {
+    //                    encl= 2;
+    //                }
+    //                
+    //                int la = -1;
+    //                do {
+    //                    la = input.LA(encl++);
+    //                } while (isLineSpace(la));
+    //
+    //                if (!isLineBreak(input.LA(encl-1)) && !isEq(input.LA(encl-1))) {
+    //                    for (int i=1; i < encl-1; i++) {
+    //                        buffer.add(input.LT(i));
+    //                    }
+    //                    for (int i=1; i < encl-1; i++) {
+    //                        input.consume();
+    //                    }
+    //                    buffer.add(startToken);
+    //                    carry++;
+    //                    
+    //                }
+    //                if (inputIsAtEnd()) {
+    //                    finish();
+    //                    return;
+    //                }            
+    //            }
 
+
+    private int consumeIndent()
+    {
+        int indent;
+        while (true)
+        {
+            indent = 0;
+            while (nextIsLineBreak())
+            {
+                input.consume();
+            }
+            while (nextIsLineSpace())
+            {
+                input.consume();
+                indent++;
+            }
+            if (nextIsComment()) // FIXME Assumes only line-comments
+            {
+                input.consume();
+                continue;
+            }
+            if (nextIsLineBreak())
+            {
+                // Skip empty line
+                continue;
+            }
+            break;
+        }
+        return indent;
+    }
+
+    private boolean onlySpaceRemaining()
+    {
+        int i = 0, t = 0;
+        do
+        {
+            t = input.LA(++i);
+        } while (t == VitryParser.LineSpace || t == VitryParser.Comment);
+        return nextIsLineBreak();
+    }
+
+    private void emitRestOfLine()
+    {
+        Token t;
+        do
+        {
+            t = input.LT(1);
+            buffer.add(t);
+            input.consume();
+        } while (!nextIsEOF() && !nextIsLineBreak());
+    }
+
+
+    /**
+     * Emit closeing tokens for all levels on the stack and EOF.
+     */
+    private void finish()
+    {
+        while (carry-- > 0)
+        {
+            buffer.add(endToken);
+        }
+
+        while (levelStack.size() > 0)
+        {
+            buffer.add(endToken);
+            levelStack.pop();
+        }
+        if (preserveSpace)
+        {
+            buffer.add(BREAK);
+        }
+        buffer.add(Token.EOF_TOKEN);
+        return;
+    }
+
+
+    private boolean nextIsOp()
+    {
+        return input.LA(1) == VitryParser.Op;
+    }
+
+    private boolean nextIsComment()
+    {
+        return input.LA(1) == VitryParser.Comment;
+    }
+
+    private boolean nextIsLineSpace()
+    {
+        return input.LA(1) == VitryParser.LineSpace;
+    }
+
+    private boolean nextIsLineBreak()
+    {
+        return input.LA(1) == VitryParser.LineBreak;
+    }
+
+    private boolean nextIsEOF()
+    {
+        return input.LA(1) == Token.EOF;
+    }
+
+
+    private static final CommonToken SPACE = new CommonToken(VitryParser.LineSpace, " ");
+    private static final CommonToken BREAK = new CommonToken(VitryParser.LineBreak,
+            System.getProperty("line.separator"));
+
+    static
+    {
+        SPACE.setChannel(Token.HIDDEN_CHANNEL);
+        BREAK.setChannel(Token.HIDDEN_CHANNEL);
+    }
+}
 
 
 //class TracingTokenStream extends BufferedTokenStream

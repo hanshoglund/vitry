@@ -23,39 +23,47 @@ import vitry.runtime.struct.*;
 
 
 public class InvertibleRestFunction extends RestFunction implements InvertibleFunction
+{
+    public Seq<?> applyVarInverse(Object a) throws InvocationError
     {
-        public Seq<?> applyVarInverse(Object a) throws InvocationError {
-            throw new NoImplementationException();
-        }
+        throw new NoImplementationException();
+    }
 
-        public InvertibleRestFunction getInverse() {
-            return new Inv();
-        }
+    public InvertibleRestFunction getInverse()
+    {
+        return new Inv();
+    }
 
-        public Object applyInverse(Object a) throws InvocationError {
-            return applyVarInverse(Seqs.single(a));
-        }
-        
-        public boolean isInvertible() {
-            return true;
-        }
+    public Object applyInverse(Object a) throws InvocationError
+    {
+        return applyVarInverse(Seqs.single(a));
+    }
 
-        private final class Inv extends InvertibleRestFunction
+    public boolean isInvertible()
+    {
+        return true;
+    }
+
+    private final class Inv extends InvertibleRestFunction
+    {
+        public Object apply(Object a) throws InvocationError
         {
-            public Object apply(Object a) throws InvocationError {
-                return InvertibleRestFunction.this.applyInverse(a);
-            }
-        
-            public Object applyInverse(Object a) throws InvocationError {
-                return InvertibleRestFunction.this.apply(a);
-            }
-        
-            public Object applyVar(Seq<?> args) {
-                return InvertibleRestFunction.this.applyVarInverse(args.head()).head();
-            }
-        
-            public Seq<Object> applyVarInverse(Object a) throws InvocationError {
-                return Seqs.cons(InvertibleRestFunction.this.applyVar(Seqs.single(a)), null);
-            }
+            return InvertibleRestFunction.this.applyInverse(a);
+        }
+
+        public Object applyInverse(Object a) throws InvocationError
+        {
+            return InvertibleRestFunction.this.apply(a);
+        }
+
+        public Object applyVar(Seq<?> args)
+        {
+            return InvertibleRestFunction.this.applyVarInverse(args.head()).head();
+        }
+
+        public Seq<Object> applyVarInverse(Object a) throws InvocationError
+        {
+            return Seqs.cons(InvertibleRestFunction.this.applyVar(Seqs.single(a)), null);
         }
     }
+}

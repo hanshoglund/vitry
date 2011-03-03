@@ -20,17 +20,18 @@ package vitry.runtime.struct;
 
 import vitry.runtime.Function;
 
+
 public interface Seq<T> extends Iterable<T>
-    {
-        T head();
+{
+    T head();
 
-        Seq<T> tail();
-        
-        boolean hasTail();
+    Seq<T> tail();
 
-        Seq<T> cons(T head);
+    boolean hasTail();
 
-        <U> Seq<U> map(Function fn);
-        
-        SeqIterator<T> seqIterator();
-    }
+    Seq<T> cons(T head);
+
+    <U> Seq<U> map(Function fn);
+
+    SeqIterator<T> seqIterator();
+}

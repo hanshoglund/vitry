@@ -44,36 +44,44 @@ public class Context extends HashEnv<Symbol, Symbol>
         super(context);
     }
 
-    public Context define(Symbol key, Symbol val) throws BindingError {
+    public Context define(Symbol key, Symbol val) throws BindingError
+    {
         super.define(key, val);
         return this;
     }
 
-    public Context extend() {
+    public Context extend()
+    {
         return new Context(this);
     }
 
-    public Context extend(Symbol key, Symbol val) {
+    public Context extend(Symbol key, Symbol val)
+    {
         return extend().define(key, val);
     }
 
-    public boolean isLeftSide() {
+    public boolean isLeftSide()
+    {
         return this.lookup(SIDE) == LEFT;
     }
 
-    public boolean isMutable() {
+    public boolean isMutable()
+    {
         return this.lookup(MUTABLE) == TRUE;
     }
 
-    public boolean isQuoted() {
+    public boolean isQuoted()
+    {
         return this.lookup(QUOTED) == TRUE;
     }
 
-    public Symbol getDelimiter() {
+    public Symbol getDelimiter()
+    {
         return this.lookup(DELIMITER);
     }
 
-    public boolean shouldLookup() {
+    public boolean shouldLookup()
+    {
         return !this.isLeftSide() && !this.isQuoted();
     }
 

@@ -22,8 +22,8 @@ import vitry.runtime.struct.Seq;
 
 
 public interface Destructible
-    {
-        boolean canDestruct();
+{
+    boolean canDestruct();
 
-        Seq<Pattern> destruct();
-    }
+    Seq<Pattern> destruct();
+}

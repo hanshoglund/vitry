@@ -26,32 +26,36 @@ import vitry.runtime.struct.Seq;
 import vitry.runtime.struct.SeqIterator;
 
 
-abstract public class ConstructionPattern extends BasePattern implements Seq<Pattern>, Destructible
+abstract public class ConstructionPattern extends BasePattern
+implements Seq<Pattern>, Destructible
+{
+    public Seq<Pattern> destruct()
     {
-        /**
-         * Instances destructs on their elements.
-         */
-        public Seq<Pattern> destruct() {
-            return this;
-        }
-
-        public boolean canDestruct() {
-            return true;
-        }
-
-        public Seq<Pattern> cons(Pattern head) {
-            return new Pair<Pattern>(head, this);
-        }
-
-        public <U> Seq<U> map(Function fn) {
-            return new MapSeq<Pattern, U>(fn, this);
-        }
-
-        public Iterator<Pattern> iterator() {
-            return new SeqIterator<Pattern>(this);
-        }
-
-        public SeqIterator<Pattern> seqIterator() {
-            return new SeqIterator<Pattern>(this);
-        }
+        return this;
     }
+
+    public boolean canDestruct()
+    {
+        return true;
+    }
+
+    public Seq<Pattern> cons(Pattern head)
+    {
+        return new Pair<Pattern>(head, this);
+    }
+
+    public <U> Seq<U> map(Function fn)
+    {
+        return new MapSeq<Pattern, U>(fn, this);
+    }
+
+    public Iterator<Pattern> iterator()
+    {
+        return new SeqIterator<Pattern>(this);
+    }
+
+    public SeqIterator<Pattern> seqIterator()
+    {
+        return new SeqIterator<Pattern>(this);
+    }
+}

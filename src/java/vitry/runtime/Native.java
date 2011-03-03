@@ -32,76 +32,90 @@ import vitry.runtime.struct.Seq;
  * @author Hans Höglund
  */
 public final class Native extends Atom
+{
+    final Object obj;
+
+    private Native(Object obj) {
+        this.obj = obj;
+    }
+
+    public boolean eq(Object o)
     {
-        final Object obj;
+        return obj.equals(o);
+    }
 
-        private Native(Object obj) {
-            this.obj = obj;
+    public boolean eq(Atom o)
+    {
+        if (o instanceof Native)
+        {
+            return obj.equals( ((Native) o).obj);
         }
+        return false;
+    }
 
-        public boolean eq(Object o) {
-            return obj.equals(o);
-        }
+    public boolean match(Object o)
+    {
+        return eq(o);
+    }
 
-        public boolean eq(Atom o) {
-            if (o instanceof Native) {
-                return obj.equals(((Native) o).obj);
-            }
-            return false;
-        }
-        
-        public boolean match(Object o) {
-            return eq(o);
-        }
+    public boolean match(Atom o)
+    {
+        return eq(o);
+    }
 
-        public boolean match(Atom o) {
-            return eq(o);
-        }
 
-        
-        
-        // TODO tagged
-        
-        public int hashCode() {
-            return obj.hashCode();
-        }
+    // TODO tagged
 
-        public String toString() {
-            return obj.toString();
-        }
+    public int hashCode()
+    {
+        return obj.hashCode();
+    }
 
-        /**
-         * Returns the given object iff it is a pattern, or a Native instance
-         * wrapping it otherwise.
-         */
-        public static Pattern wrap(Object o) {
-            if (o instanceof Pattern) 
-                return (Pattern) o;
-            else
-                return new Native(o);
-        }
-        
-        public static Object unwrap(Object o) {
-            if (o instanceof Native) 
-                return ((Native) o).obj;
-            else
-                return o;
-        }
+    public String toString()
+    {
+        return obj.toString();
+    }
 
-        public static Seq<Pattern> wrap(Seq<?> values) {
-            return values.map(new StandardFunction.Unary() {
-                public Object apply(Object v) throws InvocationError {
+    /**
+     * Returns the given object iff it is a pattern, or a Native instance
+     * wrapping it otherwise.
+     */
+    public static Pattern wrap(Object o)
+    {
+        if (o instanceof Pattern)
+            return (Pattern) o;
+        else
+            return new Native(o);
+    }
+
+    public static Object unwrap(Object o)
+    {
+        if (o instanceof Native)
+            return ((Native) o).obj;
+        else
+            return o;
+    }
+
+    public static Seq<Pattern> wrap(Seq<?> values)
+    {
+        return values.map(new StandardFunction.Unary()
+            {
+                public Object apply(Object v) throws InvocationError
+                {
                     return wrap(v);
                 }
             });
-        }
+    }
 
-        public static Seq<Object> unwrap(Seq<Object> values) {
-            return values.map(new StandardFunction.Unary() {
-                public Object apply(Object v) throws InvocationError {
+    public static Seq<Object> unwrap(Seq<Object> values)
+    {
+        return values.map(new StandardFunction.Unary()
+            {
+                public Object apply(Object v) throws InvocationError
+                {
                     return unwrap(v);
                 }
             });
-        }
-
     }
+
+}

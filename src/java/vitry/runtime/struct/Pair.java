@@ -20,24 +20,27 @@ package vitry.runtime.struct;
 
 
 public class Pair<T> extends AbstractSeq<T>
-    {        
-        private T head;
-        private Seq<T> tail;
+{
+    private T head;
+    private Seq<T> tail;
 
-        public Pair(T head, Seq<T> tail) {
-            this.head = head;
-            this.tail = tail;
-        }
-
-        public T head() {
-            return head;
-        }
-
-        public Seq<T> tail() {
-            return tail;
-        }
-
-        public boolean hasTail() {
-            return tail != null;
-        }
+    public Pair(T head, Seq<T> tail) {
+        this.head = head;
+        this.tail = tail;
     }
+
+    public T head()
+    {
+        return head;
+    }
+
+    public Seq<T> tail()
+    {
+        return tail;
+    }
+
+    public boolean hasTail()
+    {
+        return tail != null;
+    }
+}

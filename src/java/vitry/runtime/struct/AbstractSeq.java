@@ -25,34 +25,43 @@ import vitry.runtime.Function;
 
 
 abstract public class AbstractSeq<T> implements Seq<T>
+{
+    public Iterator<T> iterator()
     {
-        public Iterator<T> iterator() {
-            return new SeqIterator<T>(this);
-        }
+        return new SeqIterator<T>(this);
+    }
 
-        public SeqIterator<T> seqIterator() {
-            return new SeqIterator<T>(this);
-        }
-        
-        public boolean hasTail() {
-            return this.tail() == null;
-        }
+    public SeqIterator<T> seqIterator()
+    {
+        return new SeqIterator<T>(this);
+    }
 
-        public Seq<T> cons(T head) {
-            return new Pair<T>(head, this);
-        }
+    public boolean hasTail()
+    {
+        return this.tail() == null;
+    }
 
-        public <U> Seq<U> map(Function fn) {
-            if (Build.MEMOIZE_SEQUENCES) {
-                return new MemoizedSeq<U>(new MapSeq<T, U>(fn, this));                
-            } else {
-                return new MapSeq<T, U>(fn, this);                
-            }
+    public Seq<T> cons(T head)
+    {
+        return new Pair<T>(head, this);
+    }
+
+    public <U> Seq<U> map(Function fn)
+    {
+        if (Build.MEMOIZE_SEQUENCES)
+        {
+            return new MemoizedSeq<U>(new MapSeq<T, U>(fn, this));
         }
-        
-        
-        // DEBUG
-        public String toString() {
-            return Seqs.printable(this).toString();
+        else
+        {
+            return new MapSeq<T, U>(fn, this);
         }
     }
+
+
+    // DEBUG
+    public String toString()
+    {
+        return Seqs.printable(this).toString();
+    }
+}

@@ -1,5 +1,7 @@
 package vitry.runtime.struct;
 
+import vitry.runtime.misc.Checks;
+
 
 public class MemoizedSeq<T> extends AbstractSeq<T>
 {
@@ -10,12 +12,14 @@ public class MemoizedSeq<T> extends AbstractSeq<T>
     private boolean tailed;
 
     public MemoizedSeq(Seq<T> s) {
+        Checks.checkNotNull(s);
         this.s = s;
     }
 
     public T head()
     {
-        if (!this.headed) {
+        if (!this.headed)
+        {
             this.head = s.head();
         }
         return this.head;
@@ -23,7 +27,8 @@ public class MemoizedSeq<T> extends AbstractSeq<T>
 
     public Seq<T> tail()
     {
-        if (!this.tailed) {
+        if (!this.tailed)
+        {
             this.tail = s.tail();
         }
         return this.tail;
@@ -31,9 +36,12 @@ public class MemoizedSeq<T> extends AbstractSeq<T>
 
     public boolean hasTail()
     {
-        if (this.tailed) {
+        if (this.tailed)
+        {
             return this.tail != null;
-        } else {
+        }
+        else
+        {
             return s.hasTail();
         }
     }

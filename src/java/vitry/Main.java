@@ -20,12 +20,14 @@ package vitry;
 
 import vitry.runtime.*;
 
+
 public class Main
+{
+    public static void main(String[] args)
     {
-        public static void main(String[] args) {
-            VitryRuntime rt = new VitryRuntime();
-            
-            Function repl = (Function) rt.getPrelude().getValue("repl");
-            repl.applyVar(args);
-        }
+        VitryRuntime rt = new VitryRuntime();
+
+        Function repl = (Function) rt.getPrelude().getValue("repl");
+        repl.applyVar(args);
     }
+}

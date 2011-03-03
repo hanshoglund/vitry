@@ -22,93 +22,115 @@ import static vitry.runtime.VitryRuntime.*;
 import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.Seq;
 
+
 /**
  * Implements native lists.
  *
  * @author Hans Höglund
  */
 abstract public class AbstractList extends ConstructionPattern implements List
-    {   
-        // Eq and match
+{
+    // Eq and match
 
-        public boolean eq(AbstractList o) {
-            Seq<Pattern> left = o;
-            Seq<Pattern> right = this;
+    public boolean eq(AbstractList o)
+    {
+        Seq<Pattern> left = o;
+        Seq<Pattern> right = this;
 
-            while (left != null && right != null) {
-                if (!left.head().eqFor(right.head())) return false;
-                left = left.tail();
-                right = right.tail();
-            }
-            return (left == null && right == null);
+        while (left != null && right != null)
+        {
+            if (!left.head().eqFor(right.head()))
+                return false;
+            left = left.tail();
+            right = right.tail();
         }
-
-        public boolean match(AbstractList o) {
-            if (!this.hasTail()) {
-                return matchPattern(o);
-            } 
-            return matchStructure(o);
-        }
-
-        protected boolean matchPattern(AbstractList o) {
-            Seq<Pattern> left = o;
-            Pattern right = this.head();
-            while (left != null) {
-                if (!left.head().matchFor(right)) return false;
-                left = left.tail();
-            }
-            return true;
-        }
-
-        protected boolean matchStructure(AbstractList o) {
-            Seq<Pattern> left = o;
-            Seq<Pattern> right = this;
-
-            while (left != null && right != null) {
-                if (!left.head().matchFor(right.head())) return false;
-                left = left.tail();
-                right = right.tail();
-            }
-            return (left == null && right == null);
-        }
-
-        public boolean match(Intersection a) {
-            for (Pattern x : a)
-                if (x.matchFor(this)) return true;
-            return false;
-        }
-
-        public boolean eqFor(Pattern p) {
-            return p.eq(this);
-        }
-
-        public boolean matchFor(Pattern p) {
-            return p.match(this);
-        }
-
-        public AbstractList cons(Pattern head) {
-            return listFrom(super.cons(head));
-        }
-
-        public List mapList(Function fn) {
-            return listFrom(this.<Pattern>map(fn));
-        }
-        
-        
-        
-        // Java stuff
-        
-        public boolean equals(Object o) {
-            if (o == this) return true;
-            if (o instanceof AbstractList) return eq((AbstractList) o);
-            return false;
-        }
-
-        public int hashCode() {
-            return Utils.hash(this.getClass().hashCode(), this);
-        }
-
-        public String toString() {
-            return Utils.join(this, "[", ", ", "]");
-        }
+        return (left == null && right == null);
     }
+
+    public boolean match(AbstractList o)
+    {
+        if (!this.hasTail())
+        {
+            return matchPattern(o);
+        }
+        return matchStructure(o);
+    }
+
+    protected boolean matchPattern(AbstractList o)
+    {
+        Seq<Pattern> left = o;
+        Pattern right = this.head();
+        while (left != null)
+        {
+            if (!left.head().matchFor(right))
+                return false;
+            left = left.tail();
+        }
+        return true;
+    }
+
+    protected boolean matchStructure(AbstractList o)
+    {
+        Seq<Pattern> left = o;
+        Seq<Pattern> right = this;
+
+        while (left != null && right != null)
+        {
+            if (!left.head().matchFor(right.head()))
+                return false;
+            left = left.tail();
+            right = right.tail();
+        }
+        return (left == null && right == null);
+    }
+
+    public boolean match(Intersection a)
+    {
+        for (Pattern x : a)
+            if (x.matchFor(this))
+                return true;
+        return false;
+    }
+
+    public boolean eqFor(Pattern p)
+    {
+        return p.eq(this);
+    }
+
+    public boolean matchFor(Pattern p)
+    {
+        return p.match(this);
+    }
+
+    public AbstractList cons(Pattern head)
+    {
+        return listFrom(super.cons(head));
+    }
+
+    public List mapList(Function fn)
+    {
+        return listFrom(this.<Pattern> map(fn));
+    }
+
+
+    // Java stuff
+
+    public boolean equals(Object o)
+    {
+        if (o == this)
+            return true;
+        if (o instanceof AbstractList)
+            return eq((AbstractList) o);
+        return false;
+    }
+
+    public int hashCode()
+    {
+        return Utils.hash(this.getClass().hashCode(), this);
+    }
+
+    public String toString()
+    {
+        return Utils.join(this, "[", ", ", "]");
+    }
+}

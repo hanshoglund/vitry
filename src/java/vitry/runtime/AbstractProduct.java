@@ -22,6 +22,7 @@ import static vitry.runtime.VitryRuntime.*;
 import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.Seq;
 
+
 /**
  * Base implementation, relying on a sequence.
  * 
@@ -31,68 +32,84 @@ import vitry.runtime.struct.Seq;
  * @author Hans Höglund
  */
 abstract class AbstractProduct extends ConstructionPattern implements Product
+{
+    public boolean eq(Product o)
     {
-        public boolean eq(Product o) {
-            Seq<Pattern> left = o;
-            Seq<Pattern> right = this;
+        Seq<Pattern> left = o;
+        Seq<Pattern> right = this;
 
-            while (left != null && right != null) {
-                if (!left.head().eqFor(right.head())) return false;
-                left = left.tail();
-                right = right.tail();
-            }
-            return (left == null && right == null);
+        while (left != null && right != null)
+        {
+            if (!left.head().eqFor(right.head()))
+                return false;
+            left = left.tail();
+            right = right.tail();
         }
-
-        public boolean match(Product p) {
-            Seq<Pattern> left = p;
-            Seq<Pattern> right = this;
-
-            while (left != null && right != null) {
-                if (!left.head().matchFor(right.head())) return false;
-                left = left.tail();
-                right = right.tail();
-            }
-            return (left == null && right == null);
-        }
-
-        public boolean match(Intersection a) {
-            for (Pattern x : a)
-                if (x.matchFor(this)) return true;
-            return false;
-        }
-
-        public boolean eqFor(Pattern p) {
-            return p.eq(this);
-        }
-
-        public boolean matchFor(Pattern p) {
-            return p.match(this);
-        }
-        
-        public Product cons(Pattern head) {
-            return productFrom(super.cons(head));
-        }
-
-        public Product mapProduct(Function fn) {
-            return productFrom(this.<Pattern>map(fn));
-        }
-        
-        
-        
-        // Java stuff
-
-        public boolean equals(Object o) {
-            if (o == this) return true;
-            if (o instanceof Product) return eq((Product) o);
-            return false;
-        }
-
-        public int hashCode() {
-            return Utils.hash(this.getClass().hashCode(), this);
-        }
-
-        public String toString() {
-            return Utils.join(this, "(", ", ", ")");
-        }
+        return (left == null && right == null);
     }
+
+    public boolean match(Product p)
+    {
+        Seq<Pattern> left = p;
+        Seq<Pattern> right = this;
+
+        while (left != null && right != null)
+        {
+            if (!left.head().matchFor(right.head()))
+                return false;
+            left = left.tail();
+            right = right.tail();
+        }
+        return (left == null && right == null);
+    }
+
+    public boolean match(Intersection a)
+    {
+        for (Pattern x : a)
+            if (x.matchFor(this))
+                return true;
+        return false;
+    }
+
+    public boolean eqFor(Pattern p)
+    {
+        return p.eq(this);
+    }
+
+    public boolean matchFor(Pattern p)
+    {
+        return p.match(this);
+    }
+
+    public Product cons(Pattern head)
+    {
+        return productFrom(super.cons(head));
+    }
+
+    public Product mapProduct(Function fn)
+    {
+        return productFrom(this.<Pattern> map(fn));
+    }
+
+
+    // Java stuff
+
+    public boolean equals(Object o)
+    {
+        if (o == this)
+            return true;
+        if (o instanceof Product)
+            return eq((Product) o);
+        return false;
+    }
+
+    public int hashCode()
+    {
+        return Utils.hash(this.getClass().hashCode(), this);
+    }
+
+    public String toString()
+    {
+        return Utils.join(this, "(", ", ", ")");
+    }
+}

@@ -24,51 +24,32 @@ package vitry.runtime;
  * @author Hans Höglund
  */
 public interface Pattern
-    {
-        boolean eq(Object o);
+{
+    boolean eq(Object o);
+    boolean eq(Atom o);
+    boolean eq(Tagged o);
+    boolean eq(Product o);
+    boolean eq(Function p);
+    boolean eq(AbstractList p);
+    boolean eq(Set o);
+    boolean eq(Union o);
+    boolean eq(Intersection o);
+    boolean eq(Type o);
+    
+    boolean match(Object o);
+    boolean match(Atom o);
+    boolean match(Tagged o);
+    boolean match(Product p);
+    boolean match(Function p);
+    boolean match(AbstractList p);
+    boolean match(Set p);
+    boolean match(Union p);
+    boolean match(Intersection p);
+    boolean match(Type p);
 
-        boolean eq(Atom o);
 
-        boolean eq(Tagged o);
+    // Main dispatchers
 
-        boolean eq(Product o);
-
-        boolean eq(Function p);
-
-        boolean eq(AbstractList p);
-
-        boolean eq(Set o);
-
-        boolean eq(Union o);
-
-        boolean eq(Intersection o);
-
-        boolean eq(Type o);
-
-        boolean match(Object o);
-
-        boolean match(Atom o);
-
-        boolean match(Tagged o);
-
-        boolean match(Product p);
-
-        boolean match(Function p);
-
-        boolean match(AbstractList p);
-
-        boolean match(Set p);
-
-        boolean match(Union p);
-
-        boolean match(Intersection p);
-
-        boolean match(Type p);
-                           
-                           
-        // Main dispatchers
-        
-        boolean eqFor(Pattern o);
-
-        boolean matchFor(Pattern p);
-    }
+    boolean eqFor(Pattern o);
+    boolean matchFor(Pattern p);
+}

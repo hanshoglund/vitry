@@ -20,6 +20,7 @@ package vitry.runtime;
 
 import vitry.runtime.struct.Seq;
 
+
 /**
  * This class implements most aspects of a function, except invocation.
  * Requires scope upon construction, however domain and range are mutable 
@@ -27,115 +28,126 @@ import vitry.runtime.struct.Seq;
  *
  * @author Hans Höglund 
  */
-abstract class AbstractFunction extends ConstructionPattern implements Function, Scope, TypableFunction
-    {
+abstract class AbstractFunction extends ConstructionPattern 
+implements Function, Scope, TypableFunction
+{
+    final Env<Symbol, Object> environment;
 
-        /**
-         * Enclosing environment.
-         */
-        final Env<Symbol, Object> environment;
+    private Pattern domain;
 
-        private Pattern domain;
-
-        private Seq<Pattern> range;
-
-        
-
-        public AbstractFunction() {
-            this(null, null, null);
-        }
-
-        public AbstractFunction(Scope scope) {
-            this(scope.getValues(), null, null);
-        }
-
-        protected AbstractFunction(Env<Symbol, Object> env) {
-            this(env, null, null);
-        }
-        
-        protected AbstractFunction(Env<Symbol, Object> env, Pattern domain,
-                Seq<Pattern> range) {
-            this.environment = env;
-            this.domain = domain;
-            this.range = range;
-        }
+    private Seq<Pattern> range;
 
 
-        public Object getValue(String name) {
-            return getValue(Symbol.intern(name));
-        }
-        
-        public Object getValue(Symbol name) {
-            return environment.lookup(name);
-        }
-        
-        public Env<Symbol, Object> getValues() {
-            return this.environment;
-        }
-        
-        public synchronized Pattern getDomain() {
-            return domain;
-        }
-
-        public synchronized Seq<Pattern> getRange() {
-            return range;
-        }
-
-        public synchronized void setDomain(Pattern domain) {
-            this.domain = domain;
-        }
-
-        public synchronized void setRange(Seq<Pattern> range) {
-            this.range = range;
-        }
-        
-        public boolean isCompiled() {
-            return true;
-        }
-
-        public boolean isInvertible() {
-            return false;
-        }
-
-        public boolean eqFor(Pattern o) {
-            return o.eq(this);
-        }
-
-        public Pattern head() {
-            return this.getDomain();
-        }
-
-
-        public Seq<Pattern> tail() {
-            return this.getRange();
-        }
-
-
-        public boolean hasTail() {
-            return this.getRange() != null;
-        }
-
-        public boolean matchFor(Pattern p) {
-            return p.eq(this);
-        }
-
-
-        public String toString() {
-            if (domain == null)
-                return super.toString();
-            if (range == null) 
-                return domain.toString();
-            else
-                return domain.toString() + " -> " + range.toString();
-        }
-
-
-        protected static int checkArity(int arity) {
-            if (arity < VitryRuntime.MIN_ARITY || arity > VitryRuntime.MAX_ARITY)
-                throw new IllegalArgumentException("Function must have arity a where "
-                        + VitryRuntime.MIN_ARITY + " < a < " + VitryRuntime.MAX_ARITY);
-            return arity;
-        }
-
-
+    public AbstractFunction() {
+        this(null, null, null);
     }
+
+    public AbstractFunction(Scope scope) {
+        this(scope.getValues(), null, null);
+    }
+
+    protected AbstractFunction(Env<Symbol, Object> env) {
+        this(env, null, null);
+    }
+
+    protected AbstractFunction(Env<Symbol, Object> env, Pattern domain, Seq<Pattern> range) {
+        this.environment = env;
+        this.domain = domain;
+        this.range = range;
+    }
+
+
+    public Object getValue(String name)
+    {
+        return getValue(Symbol.intern(name));
+    }
+
+    public Object getValue(Symbol name)
+    {
+        return environment.lookup(name);
+    }
+
+    public Env<Symbol, Object> getValues()
+    {
+        return this.environment;
+    }
+
+    public synchronized Pattern getDomain()
+    {
+        return domain;
+    }
+
+    public synchronized Seq<Pattern> getRange()
+    {
+        return range;
+    }
+
+    public synchronized void setDomain(Pattern domain)
+    {
+        this.domain = domain;
+    }
+
+    public synchronized void setRange(Seq<Pattern> range)
+    {
+        this.range = range;
+    }
+
+    public boolean isCompiled()
+    {
+        return true;
+    }
+
+    public boolean isInvertible()
+    {
+        return false;
+    }
+
+    public boolean eqFor(Pattern o)
+    {
+        return o.eq(this);
+    }
+
+    public Pattern head()
+    {
+        return this.getDomain();
+    }
+
+
+    public Seq<Pattern> tail()
+    {
+        return this.getRange();
+    }
+
+
+    public boolean hasTail()
+    {
+        return this.getRange() != null;
+    }
+
+    public boolean matchFor(Pattern p)
+    {
+        return p.eq(this);
+    }
+
+
+    public String toString()
+    {
+        if (domain == null)
+            return super.toString();
+        if (range == null)
+            return domain.toString();
+        else
+            return domain.toString() + " -> " + range.toString();
+    }
+
+
+    protected static int checkArity(int arity)
+    {
+        if (arity < VitryRuntime.MIN_ARITY || arity > VitryRuntime.MAX_ARITY)
+            throw new IllegalArgumentException("Function must have arity a where "
+                    + VitryRuntime.MIN_ARITY + " < a < " + VitryRuntime.MAX_ARITY);
+        return arity;
+    }
+
+
+}

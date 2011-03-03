@@ -20,6 +20,7 @@ package vitry.runtime;
 
 import vitry.runtime.error.*;
 
+
 /**
  * A set of bindings possibly referencing an enclosing parent
  * environment. Env does not allow null keys.
@@ -34,52 +35,52 @@ import vitry.runtime.error.*;
  * @author Hans Höglund
  */
 public interface Env<K, V>
-    {
-        /**
-         * Define the given key in this environment.
-         * @return A modified environment, which is this if this is a 
-         * non-persistent environment.
-         * @throws BindingError If the given key already exists.
-         */
-        Env<K, V> define(K key, V val) throws BindingError;
+{
+    /**
+     * Define the given key in this environment.
+     * @return A modified environment, which is this if this is a 
+     * non-persistent environment.
+     * @throws BindingError If the given key already exists.
+     */
+    Env<K, V> define(K key, V val) throws BindingError;
 
-        /**
-         * Returns an extension of this environment containing the given 
-         * binding. Does not modify this environment.
-         */
-        Env<K, V> extend(K key, V val);
+    /**
+     * Returns an extension of this environment containing the given 
+     * binding. Does not modify this environment.
+     */
+    Env<K, V> extend(K key, V val);
 
-        /**
-         * Returns an extension of this environment.          
-         */
-        Env<K, V> extend();
-        
-        /**
-         * Update this environment to associate the given key with the given
-         * value. Not supported by persistent environments.
-         */
-        Env<K, V> assoc(K key, V val);
-        
-        /**
-         * Lookup the given key. Referentially transparent iff this is a
-         * persistent environment.
-         */
-        V lookup(K key) throws UndefinedError;
+    /**
+     * Returns an extension of this environment.          
+     */
+    Env<K, V> extend();
 
-        boolean isPersistent();
+    /**
+     * Update this environment to associate the given key with the given
+     * value. Not supported by persistent environments.
+     */
+    Env<K, V> assoc(K key, V val);
 
-        /**
-         * Returns the parent. Referentially transparent.
-         */
-        Env<K, V> getParent();
+    /**
+     * Lookup the given key. Referentially transparent iff this is a
+     * persistent environment.
+     */
+    V lookup(K key) throws UndefinedError;
 
-        /**
-         * Returns the local binding for the given key, if any.
-         */
-        V getBinding(K key);
+    boolean isPersistent();
 
-        /**
-         * Returns whether a local binding exists for the given key.
-         */
-        boolean hasBinding(K key);
-    }
+    /**
+     * Returns the parent. Referentially transparent.
+     */
+    Env<K, V> getParent();
+
+    /**
+     * Returns the local binding for the given key, if any.
+     */
+    V getBinding(K key);
+
+    /**
+     * Returns whether a local binding exists for the given key.
+     */
+    boolean hasBinding(K key);
+}

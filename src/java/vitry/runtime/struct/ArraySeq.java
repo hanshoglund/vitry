@@ -25,53 +25,62 @@ import vitry.runtime.misc.ArrayIterator;
 
 /**
  * Adapts an array as a sequence. Mutating the array is not recommended.
+ * 
+ * @author Hans Höglund
  */
 public class ArraySeq<T> extends AbstractSeq<T> implements Finite<T>
-    {
-        private final T[]   array;
-        private final int   offset;
-        private Seq<T>      tail;
-        private boolean     tailed = false;
+{
+    private final T[] array;
+    private final int offset;
+    private Seq<T> tail;
+    private boolean tailed = false;
 
-        public ArraySeq(T... elements) {
-            this(elements, 0);
-        }
-
-        public ArraySeq(T[] elements, int offset) {
-            if (offset >= elements.length) 
-                throw new IllegalArgumentException("Offset must be less than than length");
-            this.array = elements;
-            this.offset = offset;
-        }
-        
-        private ArraySeq(T[] elements, int offset, Object dummy) {
-            this.array = elements;
-            this.offset = offset;
-        }
-
-        public Iterator<T> iterator() {
-            return new ArrayIterator<T>(array, offset);
-        }
-
-        public T head() {
-            return array[offset];
-        }
-
-        public Seq<T> tail() {
-            if (!tailed) {
-                if (hasTail()) {
-                    tail = new ArraySeq<T>(array, offset + 1, null);                    
-                }
-                tailed = true;
-            }
-            return tail;
-        }
-        
-        public boolean hasTail() {
-            return offset + 1 < array.length;
-        }
-
-        public int length() {
-            return array.length - offset;
-        }
+    public ArraySeq(T... elements) {
+        this(elements, 0);
     }
+
+    public ArraySeq(T[] elements, int offset) {
+        if (offset >= elements.length)
+            throw new IllegalArgumentException("Offset must be less than than length");
+        this.array = elements;
+        this.offset = offset;
+    }
+
+    private ArraySeq(T[] elements, int offset, Object dummy) {
+        this.array = elements;
+        this.offset = offset;
+    }
+
+    public Iterator<T> iterator()
+    {
+        return new ArrayIterator<T>(array, offset);
+    }
+
+    public T head()
+    {
+        return array[offset];
+    }
+
+    public Seq<T> tail()
+    {
+        if (!tailed)
+        {
+            if (hasTail())
+            {
+                tail = new ArraySeq<T>(array, offset + 1, null);
+            }
+            tailed = true;
+        }
+        return tail;
+    }
+
+    public boolean hasTail()
+    {
+        return offset + 1 < array.length;
+    }
+
+    public int length()
+    {
+        return array.length - offset;
+    }
+}

@@ -20,9 +20,10 @@ package vitry.runtime;
 
 import vitry.runtime.struct.Seq;
 
+
 public interface Set extends Pattern, Seq<Pattern>
-    {
-        Pattern union(Set b);
-        
-        Pattern intersection(Set b);
-    }
+{
+    Pattern union(Set b);
+
+    Pattern intersection(Set b);
+}

@@ -20,14 +20,16 @@ package vitry.runtime.struct;
 
 import vitry.runtime.Product;
 
+
 /**
  * Generatates concrete <em>n</em>-tuples.
  */
 public class Blocks
-    {
-        
-        public static Product generate(int n) {
-            throw new UnsupportedOperationException("Not implemented");
-        }
+{
 
+    public static Product generate(int n)
+    {
+        throw new UnsupportedOperationException("Not implemented");
     }
+
+}

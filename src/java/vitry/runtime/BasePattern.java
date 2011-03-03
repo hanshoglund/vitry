@@ -17,92 +17,115 @@
  * See COPYING.txt for details.
  */
 package vitry.runtime;
-                                      
+
 
 abstract public class BasePattern implements Pattern
+{
+    public boolean eq(Object o)
     {
-        public boolean eq(Object o) {
-            if (o instanceof Pattern) throw new IllegalArgumentException();
-            return false;
-        }
-
-        public boolean eq(Atom o) {
-            return false;
-        }
-
-        public boolean eq(Tagged o) {
-            return false;
-        }
-
-        public boolean eq(Product o) {
-            return false;
-        }
-
-        public boolean eq(Function o) {
-            return false;
-        }
-
-        public boolean eq(AbstractList o) {
-            return false;
-        }
-
-        public boolean eq(Set o) {
-            return false;
-        }
-
-        public boolean eq(Union o) {
-            return false;
-        }
-
-        public boolean eq(Intersection o) {
-            return false;
-        }
-
-        public boolean eq(Type o) {
-            return false;
-        }
-
-        public boolean match(Object o) {
-            if (o instanceof Pattern) throw new IllegalArgumentException();
-            return false;
-        }
-
-        public boolean match(Atom o) {
-            return false;
-        }
-
-        public boolean match(Tagged p) {
-            return false;
-        }
-
-        public boolean match(Product p) {
-            return false;
-        }
-
-        public boolean match(Function p) {
-            return false;
-        }
-
-        public boolean match(AbstractList p) {
-            return false;
-        }
-
-        public boolean match(Set p) {
-            return false;
-        }
-
-        public boolean match(Union p) {
-            return false;
-        }
-
-        public boolean match(Intersection a) {
-            for (Pattern x : a)
-                if (x.matchFor(this)) return true;
-            return false;
-        }
-
-        public boolean match(Type p) {
-            return false;
-        }
-
+        if (o instanceof Pattern)
+            throw new IllegalArgumentException();
+        return false;
     }
+
+    public boolean eq(Atom o)
+    {
+        return false;
+    }
+
+    public boolean eq(Tagged o)
+    {
+        return false;
+    }
+
+    public boolean eq(Product o)
+    {
+        return false;
+    }
+
+    public boolean eq(Function o)
+    {
+        return false;
+    }
+
+    public boolean eq(AbstractList o)
+    {
+        return false;
+    }
+
+    public boolean eq(Set o)
+    {
+        return false;
+    }
+
+    public boolean eq(Union o)
+    {
+        return false;
+    }
+
+    public boolean eq(Intersection o)
+    {
+        return false;
+    }
+
+    public boolean eq(Type o)
+    {
+        return false;
+    }
+
+    public boolean match(Object o)
+    {
+        if (o instanceof Pattern)
+            throw new IllegalArgumentException();
+        return false;
+    }
+
+    public boolean match(Atom o)
+    {
+        return false;
+    }
+
+    public boolean match(Tagged p)
+    {
+        return false;
+    }
+
+    public boolean match(Product p)
+    {
+        return false;
+    }
+
+    public boolean match(Function p)
+    {
+        return false;
+    }
+
+    public boolean match(AbstractList p)
+    {
+        return false;
+    }
+
+    public boolean match(Set p)
+    {
+        return false;
+    }
+
+    public boolean match(Union p)
+    {
+        return false;
+    }
+
+    public boolean match(Intersection a)
+    {
+        for (Pattern x : a)
+            if (x.matchFor(this))
+                return true;
+        return false;
+    }
+
+    public boolean match(Type p)
+    {
+        return false;
+    }
+
+}

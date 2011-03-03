@@ -25,7 +25,7 @@ import java.util.WeakHashMap;
 
 import vitry.runtime.struct.MapSeq;
 import vitry.runtime.struct.Seq;
-     
+
 
 /**
  * A set of host values, defined by a class or interface. 
@@ -38,127 +38,148 @@ import vitry.runtime.struct.Seq;
  * @author Hans Höglund
  */
 public final class NativeSet extends InclusionPattern implements Set
-    {
+{
 
-        private static final Map<Class<?>, Set> instanceMap = new WeakHashMap<Class<?>, Set>();
+    private static final Map<Class<?>, Set> instanceMap = new WeakHashMap<Class<?>, Set>();
 
-        private final Class<?> javaClass;
-
-
-        private NativeSet(Class<?> javaClass) {
-            this.javaClass = javaClass;
-        }
-
-        public static Set forClass(Class<?> javaClass) {
-            Set obj = instanceMap.get(javaClass);
-            if (obj == null) {
-                obj = new NativeSet(javaClass);
-                instanceMap.put(javaClass, obj);
-            }
-            return obj;
-        }
+    private final Class<?> javaClass;
 
 
-        public Pattern union(Set b) {
-            return VitryRuntime.unionOf(this, b);
-        }
-        
-        public Pattern intersection(Set b) {
-            return VitryRuntime.intersectionOf(this, b);
-        }
-
-        
-        
-        // Eq and match
-
-
-        public boolean eq(Set o) {
-            if (o == this) return true;
-            if (o instanceof NativeSet) return ((NativeSet) o).javaClass == this.javaClass;
-            return false;
-        }
-
-        public boolean match(Object o) {
-            return javaClass.isAssignableFrom(o.getClass());
-        }
-
-        public boolean match(Atom o) {
-            if (o instanceof Native) return javaClass.isInstance( ((Native) o).obj);
-            return false;
-        }
-        
-        public boolean match(Set a) {
-            // iff a <: this
-            if (a instanceof NativeSet)
-                return this.javaClass.isAssignableFrom(((NativeSet) a).javaClass);
-            return false;
-        }
-
-        public boolean eq(Product o) {
-            return false;
-        }
-
-        public boolean eq(Tagged o) {
-            // ?
-            return false;
-        }
-
-        public boolean eqFor(Pattern o) {
-            return o.eq(this);
-        }
-
-        public boolean matchFor(Pattern p) {
-            return p.match(this);
-        }
-        
-        
-
-        // Throw on enumeration
-        
-        // TODO implement this using an interface EnumerableNativeType + registration?
-
-        public Pattern head() {
-            return throwEnumeration();
-        }
-
-        public Seq<Pattern> tail() {
-            return throwEnumeration();
-        }
-
-        public Iterator<Pattern> iterator() {
-            return throwEnumeration();
-        }
-
-        public Seq<Pattern> cons(Pattern head) {
-            return throwEnumeration();
-        }
-
-        public <U> MapSeq<Pattern, U> map(Function fn) {
-            return throwEnumeration();
-        }
-
-        private <T> T throwEnumeration() {
-            throw new UnsupportedOperationException("Can not enumerate a native type");
-        }
-
-        public boolean hasTail() {
-            return false;
-            // TODO Auto-generated method stub
-        }
-
-        public String toString() {
-            if (javaClass.equals(BigInteger.class))
-                return "... -1 | 0 | 1 ...";
-            if (javaClass.equals(Float.class))
-                return "-Inf ... 0.0 ... Inf";
-            if (javaClass.equals(Double.class))
-                return "-Inf ... 0.0 ... Inf";
-            if (javaClass.equals(String.class))
-                return "[char]";
-            if (javaClass.equals(Character.class))
-                return "char";
-            return javaClass.getName();
-        }
-        
-        
+    private NativeSet(Class<?> javaClass) {
+        this.javaClass = javaClass;
     }
+
+    public static Set forClass(Class<?> javaClass)
+    {
+        Set obj = instanceMap.get(javaClass);
+        if (obj == null)
+        {
+            obj = new NativeSet(javaClass);
+            instanceMap.put(javaClass, obj);
+        }
+        return obj;
+    }
+
+
+    public Pattern union(Set b)
+    {
+        return VitryRuntime.unionOf(this, b);
+    }
+
+    public Pattern intersection(Set b)
+    {
+        return VitryRuntime.intersectionOf(this, b);
+    }
+
+
+    // Eq and match
+
+
+    public boolean eq(Set o)
+    {
+        if (o == this)
+            return true;
+        if (o instanceof NativeSet)
+            return ((NativeSet) o).javaClass == this.javaClass;
+        return false;
+    }
+
+    public boolean match(Object o)
+    {
+        return javaClass.isAssignableFrom(o.getClass());
+    }
+
+    public boolean match(Atom o)
+    {
+        if (o instanceof Native)
+            return javaClass.isInstance( ((Native) o).obj);
+        return false;
+    }
+
+    public boolean match(Set a)
+    {
+        // iff a <: this
+        if (a instanceof NativeSet)
+            return this.javaClass.isAssignableFrom( ((NativeSet) a).javaClass);
+        return false;
+    }
+
+    public boolean eq(Product o)
+    {
+        return false;
+    }
+
+    public boolean eq(Tagged o)
+    {
+        // ?
+        return false;
+    }
+
+    public boolean eqFor(Pattern o)
+    {
+        return o.eq(this);
+    }
+
+    public boolean matchFor(Pattern p)
+    {
+        return p.match(this);
+    }
+
+
+    // Throw on enumeration
+
+    // TODO implement this using an interface EnumerableNativeType + registration?
+
+    public Pattern head()
+    {
+        return throwEnumeration();
+    }
+
+    public Seq<Pattern> tail()
+    {
+        return throwEnumeration();
+    }
+
+    public Iterator<Pattern> iterator()
+    {
+        return throwEnumeration();
+    }
+
+    public Seq<Pattern> cons(Pattern head)
+    {
+        return throwEnumeration();
+    }
+
+    public <U> MapSeq<Pattern, U> map(Function fn)
+    {
+        return throwEnumeration();
+    }
+
+    private <T> T throwEnumeration()
+    {
+        throw new UnsupportedOperationException("Can not enumerate a native type");
+    }
+
+    public boolean hasTail()
+    {
+        return false;
+        // TODO Auto-generated method stub
+    }
+
+    public String toString()
+    {
+        if (javaClass.equals(BigInteger.class))
+            return "... -1 | 0 | 1 ...";
+        if (javaClass.equals(Float.class))
+            return "-Inf ... 0.0 ... Inf";
+        if (javaClass.equals(Double.class))
+            return "-Inf ... 0.0 ... Inf";
+        if (javaClass.equals(String.class))
+            return "[char]";
+        if (javaClass.equals(Character.class))
+            return "char";
+        return javaClass.getName();
+    }
+
+
+}

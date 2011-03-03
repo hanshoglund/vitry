@@ -20,25 +20,29 @@ package vitry.runtime.misc;
 
 import vitry.runtime.Arity;
 
+
 /**
  * Static methods to check function arguments.
  * 
  * All throw IllegalArgumentException upon failure.
  */
 public class Checks
+{
+    private Checks() {
+    }
+
+    public static void checkArity(Arity a, int arity)
     {
-        private Checks() {
-        }
+        if (a.getArity() != arity)
+            throw new IllegalArgumentException("Function must have arity " + arity);
+    }
 
-        public static void checkArity(Arity a, int arity) {
-            if (a.getArity() != arity)
-                throw new IllegalArgumentException("Function must have arity " + arity);
-        }
-
-        public static void checkNotNull(Object... args) {
-            for (Object o : args) {
-                if (o == null)
-                    throw new IllegalArgumentException("Excepted non-null argument");
-            }
+    public static void checkNotNull(Object... args)
+    {
+        for (Object o : args)
+        {
+            if (o == null)
+                throw new IllegalArgumentException("Excepted non-null argument");
         }
     }
+}

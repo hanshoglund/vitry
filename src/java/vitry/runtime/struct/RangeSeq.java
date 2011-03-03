@@ -7,7 +7,7 @@ public class RangeSeq extends AbstractSeq<BigInteger>
 {
     private final BigInteger min;
     private final BigInteger max;
-    
+
     public RangeSeq(BigInteger min, BigInteger max) {
         this.min = min;
         this.max = max;
@@ -30,6 +30,6 @@ public class RangeSeq extends AbstractSeq<BigInteger>
     {
         return max.subtract(BigInteger.ONE).compareTo(min) > 0;
     }
-    
-    
+
+
 }

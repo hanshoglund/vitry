@@ -25,8 +25,8 @@ import vitry.runtime.struct.Seq;
  * An object that provides modules.
  */
 public interface ModuleProvider
-    {
-        Module forName(String name);
+{
+    Module forName(String name);
 
-        Module forName(Seq<Symbol> name);
-    }
+    Module forName(Seq<Symbol> name);
+}

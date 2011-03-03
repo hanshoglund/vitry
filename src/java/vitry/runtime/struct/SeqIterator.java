@@ -21,6 +21,7 @@ package vitry.runtime.struct;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+
 /**
  * A generic iterator over sequences.
  * 
@@ -28,37 +29,42 @@ import java.util.NoSuchElementException;
  * implementation is available.
  */
 public class SeqIterator<T> implements Iterator<T>
-    {
-        /**
-         * Current sequence, or null if we are finished. Updated for each pass.
-         */
-        protected Seq<T> seq;
+{
+    /**
+     * Current sequence, or null if we are finished. Updated for each pass.
+     */
+    protected Seq<T> seq;
 
-        public SeqIterator(Seq<T> seq) {
-            this.seq = seq;
-        }
-
-        public boolean hasNext() {
-            return seq != null;
-        }
-
-        public T next() {
-            if (seq == null) throw new NoSuchElementException();
-
-            T head = seq.head();
-            seq = seq.tail();
-            return head;
-        }
-
-        public void remove() {
-            throw new UnsupportedOperationException("Can not modify a Sequence");
-        }
-        
-        /**
-         * Returns a sequence of all remaining elements (its head is the
-         * first element returned by next etc).
-         */
-        public Seq<T> following() {
-            return seq;
-        }
+    public SeqIterator(Seq<T> seq) {
+        this.seq = seq;
     }
+
+    public boolean hasNext()
+    {
+        return seq != null;
+    }
+
+    public T next()
+    {
+        if (seq == null)
+            throw new NoSuchElementException();
+
+        T head = seq.head();
+        seq = seq.tail();
+        return head;
+    }
+
+    public void remove()
+    {
+        throw new UnsupportedOperationException("Can not modify a Sequence");
+    }
+
+    /**
+     * Returns a sequence of all remaining elements (its head is the
+     * first element returned by next etc).
+     */
+    public Seq<T> following()
+    {
+        return seq;
+    }
+}

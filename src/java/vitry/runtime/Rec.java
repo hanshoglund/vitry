@@ -20,6 +20,7 @@ package vitry.runtime;
 
 import vitry.runtime.struct.Seq;
 
+
 public interface Rec<K, V> extends Env<K, V>
 {
     Seq<K> getKeys();

@@ -28,30 +28,33 @@ package vitry.runtime;
  * @author Hans Höglund
  */
 public class Fixity
-    {
-        private final int precedence;
-        private final boolean assoc;
-        private final boolean gathering;
-        
-        public Fixity(int precedence, boolean assoc) {
-            this(precedence, assoc, false);
-        }
-        
-        public Fixity(int precedence, boolean assoc, boolean gathering) {
-            this.precedence = precedence;
-            this.assoc = assoc;
-            this.gathering = gathering;
-        }
-        
-        public int getPrecedence() {
-            return precedence;
-        }
-        
-        public boolean getAssociativity() {
-            return assoc;
-        }
+{
+    private final int precedence;
+    private final boolean assoc;
+    private final boolean gathering;
 
-        public boolean isGathering() {
-            return gathering;
-        }
+    public Fixity(int precedence, boolean assoc) {
+        this(precedence, assoc, false);
     }
+
+    public Fixity(int precedence, boolean assoc, boolean gathering) {
+        this.precedence = precedence;
+        this.assoc = assoc;
+        this.gathering = gathering;
+    }
+
+    public int getPrecedence()
+    {
+        return precedence;
+    }
+
+    public boolean getAssociativity()
+    {
+        return assoc;
+    }
+
+    public boolean isGathering()
+    {
+        return gathering;
+    }
+}

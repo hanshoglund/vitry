@@ -21,86 +21,96 @@ package vitry.runtime;
 import vitry.runtime.error.*;
 import vitry.runtime.misc.*;
 
-/**         
- * Base environment.
- *
- * @author Hans Höglund
- */
+
 abstract public class AbstractEnv<K, V> implements Env<K, V>
-    {
-        
-        private static Env<?, ?> GLOBAL = new GlobalEnvironment();
+{
+    private static Env<?, ?> GLOBAL = new GlobalEnvironment();
+    private final Env<K, V> parent;
 
-        private final Env<K, V> parent;
-
-        public AbstractEnv() {
-            this.parent = AbstractEnv.<K, V> empty();
-        }
-
-        public AbstractEnv(Env<K, V> parent) {
-            this.parent = parent;
-        }
-
-        public Env<K, V> getParent() {
-            return parent;
-        }
-
-        public V lookup(K key) throws UndefinedError {
-            Env<K, V> env = this;
-            try {
-                while (env != null) {
-                    if (env.hasBinding(key)) {
-                        return env.getBinding(key);
-                    }
-                    env = env.getParent();
-                }
-            } catch (UndefinedError e) {
-                // Rethrow with this below
-            }
-            throw new UndefinedError(key, this);
-        }
-
-        private static <K, V> Env<K, V> empty() {
-            return Utils.<Env<K, V>>unsafe(GLOBAL);
-        }
-
-        public Env<K, V> assoc(K key, V val) {
-            return throwUnsupported();
-        }
-
-        private <T> T throwUnsupported() {
-            throw new UnsupportedOperationException();
-        }
+    public AbstractEnv() {
+        this.parent = AbstractEnv.<K, V> empty();
     }
+
+    public AbstractEnv(Env<K, V> parent) {
+        this.parent = parent;
+    }
+
+    public Env<K, V> getParent()
+    {
+        return parent;
+    }
+
+    public V lookup(K key) throws UndefinedError
+    {
+        Env<K, V> env = this;
+        try
+        {
+            while (env != null)
+            {
+                if (env.hasBinding(key))
+                {
+                    return env.getBinding(key);
+                }
+                env = env.getParent();
+            }
+        } catch (UndefinedError e)
+        {
+            // Rethrow with this below
+        }
+        throw new UndefinedError(key, this);
+    }
+
+    private static <K, V> Env<K, V> empty()
+    {
+        return Utils.<Env<K, V>> unsafe(GLOBAL);
+    }
+
+    public Env<K, V> assoc(K key, V val)
+    {
+        return throwUnsupported();
+    }
+
+    private <T> T throwUnsupported()
+    {
+        throw new UnsupportedOperationException();
+    }
+}
 
 
 class GlobalEnvironment extends AbstractEnv<Object, Object>
+{
+    public Env<Object, Object> define(Object key, Object val) throws BindingError
     {
-        public Env<Object, Object> define(Object key, Object val) throws BindingError {
-            return throwUnsupported();
-        }
-
-        public Env<Object, Object> extend(Object key, Object val) {
-            return throwUnsupported();
-        }
-
-        public Env<Object, Object> extend() {
-            return throwUnsupported();
-        }
-
-        public boolean isPersistent() {
-            return true;
-        }
-
-        public boolean hasBinding(Object key) {
-            return false;
-        }
-
-        public Object getBinding(Object key) {
-            throw new UndefinedError(key, this);        // TODO throw something lighter
-        }
-
-        private <T> T throwUnsupported() {
-            throw new UnsupportedOperationException();
-        }
+        return throwUnsupported();
     }
+
+    public Env<Object, Object> extend(Object key, Object val)
+    {
+        return throwUnsupported();
+    }
+
+    public Env<Object, Object> extend()
+    {
+        return throwUnsupported();
+    }
+
+    public boolean isPersistent()
+    {
+        return true;
+    }
+
+    public boolean hasBinding(Object key)
+    {
+        return false;
+    }
+
+    public Object getBinding(Object key)
+    {
+        throw new UndefinedError(key, this); // TODO throw something lighter
+    }
+
+    private <T> T throwUnsupported()
+    {
+        throw new UnsupportedOperationException();
+    }
+}

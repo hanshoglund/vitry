@@ -31,112 +31,129 @@ import vitry.runtime.struct.Seqs;
  * @author Hans Höglund
  */
 public class RestFunction extends AbstractFunction
-    {    
-        public RestFunction() {
-            super();
-        }
-
-        public RestFunction(Scope scope) {
-            super(scope);
-        }
-
-        public RestFunction(Env<Symbol, Object> env) {
-            super(env);
-        }
-        
-        /**
-         * Throws a NoImplementationException.
-         */
-        public Object applyVar(Seq<?> args) {
-            throw new NoImplementationException();
-        }
-
-        public Object applyVar(Object[] args) {
-            return applyVar(Seqs.from(args));
-        }
-
-        public Object apply(Object a0) throws InvocationError {
-            return applyVar(new Object[]{ a0 });
-        }
-
-        public Object apply(Object a0, Object a1) throws InvocationError {
-            return applyVar(new Object[]{ a0, a1 });
-        }
-
-        public Object apply(Object a0, Object a1, Object a2) throws InvocationError {
-            return applyVar(new Object[]{ a0, a1, a2 });
-        }
-
-        public Object apply(Object a0, Object a1, Object a2, Object a3) throws InvocationError {
-            return applyVar(new Object[]{ a0, a1, a2, a3 });
-        }
-
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4)
-                throws InvocationError {
-            return applyVar(new Object[]{ a0, a1, a2, a3, a4 });
-        }
-
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5)
-                throws InvocationError {
-            return applyVar(new Object[]{ a0, a1, a2, a3, a4, a5 });
-        }
-
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
-                Object a6) throws InvocationError {
-            return applyVar(new Object[]{ a0, a1, a2, a3, a4, a5, a6 });
-        }
-
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
-                Object a6, Object a7) throws InvocationError {
-            return applyVar(new Object[]{ a0, a1, a2, a3, a4, a5, a6, a7 });
-        }
-
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
-                Object a6, Object a7, Object a8) throws InvocationError {
-            return applyVar(new Object[]{ a0, a1, a2, a3, a4, a5, a6, a7, a8 });
-        }
-
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
-                Object a6, Object a7, Object a8, Object a9) throws InvocationError {
-            return applyVar(new Object[]{ a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 });
-        }
-
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
-                Object a6, Object a7, Object a8, Object a9, Object a10) throws InvocationError {
-            return applyVar(new Object[]{ a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10 });
-        }
-
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
-                Object a6, Object a7, Object a8, Object a9, Object a10, Object a11)
-                throws InvocationError {
-            return applyVar(new Object[]{ a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11 });
-        }
-
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
-                Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12)
-                throws InvocationError {
-            return applyVar(new Object[]{ a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11,
-                a12 });
-        }
-
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
-                Object a6, Object a7, Object a8, Object a9, Object a10, Object a11,
-                Object a12, Object a13) throws InvocationError {
-            return applyVar(new Object[]{ a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11,
-                a12, a13 });
-        }
-
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
-                Object a6, Object a7, Object a8, Object a9, Object a10, Object a11,
-                Object a12, Object a13, Object a14) throws InvocationError {
-            return applyVar(new Object[]{ a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11,
-                a12, a13, a14 });
-        }
-
-        public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
-                Object a6, Object a7, Object a8, Object a9, Object a10, Object a11,
-                Object a12, Object a13, Object a14, Object a15) throws InvocationError {
-            return applyVar(new Object[]{ a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11,
-                a12, a13, a14, a15 });
-        }
+{
+    public RestFunction() {
+        super();
     }
+
+    public RestFunction(Scope scope) {
+        super(scope);
+    }
+
+    public RestFunction(Env<Symbol, Object> env) {
+        super(env);
+    }
+
+    /**
+     * Evaluate the function. Throws an exception by default.
+     */
+    public Object applyVar(Seq<?> args)
+    {
+        throw new NoImplementationException();
+    }
+
+    public Object applyVar(Object[] args)
+    {
+        return applyVar(Seqs.from(args));
+    }
+
+    public Object apply(Object a0) throws InvocationError
+    {
+        return applyVar(new Object[]{ a0 });
+    }
+
+    public Object apply(Object a0, Object a1) throws InvocationError
+    {
+        return applyVar(new Object[]{ a0, a1 });
+    }
+
+    public Object apply(Object a0, Object a1, Object a2) throws InvocationError
+    {
+        return applyVar(new Object[]{ a0, a1, a2 });
+    }
+
+    public Object apply(Object a0, Object a1, Object a2, Object a3) throws InvocationError
+    {
+        return applyVar(new Object[]{ a0, a1, a2, a3 });
+    }
+
+    public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4)
+            throws InvocationError
+    {
+        return applyVar(new Object[]{ a0, a1, a2, a3, a4 });
+    }
+
+    public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5)
+            throws InvocationError
+    {
+        return applyVar(new Object[]{ a0, a1, a2, a3, a4, a5 });
+    }
+
+    public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
+            Object a6) throws InvocationError
+    {
+        return applyVar(new Object[]{ a0, a1, a2, a3, a4, a5, a6 });
+    }
+
+    public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
+            Object a6, Object a7) throws InvocationError
+    {
+        return applyVar(new Object[]{ a0, a1, a2, a3, a4, a5, a6, a7 });
+    }
+
+    public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
+            Object a6, Object a7, Object a8) throws InvocationError
+    {
+        return applyVar(new Object[]{ a0, a1, a2, a3, a4, a5, a6, a7, a8 });
+    }
+
+    public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
+            Object a6, Object a7, Object a8, Object a9) throws InvocationError
+    {
+        return applyVar(new Object[]{ a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 });
+    }
+
+    public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
+            Object a6, Object a7, Object a8, Object a9, Object a10) throws InvocationError
+    {
+        return applyVar(new Object[]{ a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10 });
+    }
+
+    public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
+            Object a6, Object a7, Object a8, Object a9, Object a10, Object a11)
+            throws InvocationError
+    {
+        return applyVar(new Object[]{ a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11 });
+    }
+
+    public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
+            Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12)
+            throws InvocationError
+    {
+        return applyVar(new Object[]{ a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12 });
+    }
+
+    public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
+            Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12,
+            Object a13) throws InvocationError
+    {
+        return applyVar(new Object[]{ a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12,
+            a13 });
+    }
+
+    public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
+            Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12,
+            Object a13, Object a14) throws InvocationError
+    {
+        return applyVar(new Object[]{ a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12,
+            a13, a14 });
+    }
+
+    public Object apply(Object a0, Object a1, Object a2, Object a3, Object a4, Object a5,
+            Object a6, Object a7, Object a8, Object a9, Object a10, Object a11, Object a12,
+            Object a13, Object a14, Object a15) throws InvocationError
+    {
+        return applyVar(new Object[]{ a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12,
+            a13, a14, a15 });
+    }
+}

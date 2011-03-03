@@ -20,49 +20,56 @@ package vitry.runtime;
 
 import vitry.runtime.struct.Seq;
 
+
 /**
  * Implements type inference.
  * 
  * Based on <em>Basic Polymorphic Typechecking</em> by Luca Cardelli
  */
 public class Typing
+{
+    public TypeExpr prune(TypeExpr t)
     {
-        public TypeExpr prune(TypeExpr t) {
-            // TODO
-            return null;
-        }
+        // TODO
+        return null;
     }
-
-interface TypeExpr {
-        
 }
+
+
+interface TypeExpr
+{
+
+}
+
 
 /**
  * A mutable reference to domain and range of a function.
  */
 interface TypableFunction
-    {
+{
 
-        Pattern getDomain();
+    Pattern getDomain();
 
-        Seq<Pattern> getRange();
+    Seq<Pattern> getRange();
 
-        void setDomain(Pattern domain);
+    void setDomain(Pattern domain);
 
-        void setRange(Seq<Pattern> range);
+    void setRange(Seq<Pattern> range);
 
-    }
+}
 
 
 class TypeVar extends BasePattern implements TypeExpr
+{
+    public boolean eqFor(Pattern o)
     {
-        public boolean eqFor(Pattern o) {
-            return false;
-        }
-
-        public boolean matchFor(Pattern p) {
-            // TODO if type checking is finished, throw exception
-            // TypeVars should be initiated/removed before runtime
-            return false;
-        }
+        return false;
     }
+
+    public boolean matchFor(Pattern p)
+    {
+        // TODO if type checking is finished, throw exception
+        // TypeVars should be initiated/removed before runtime
+        return false;
+    }
+}

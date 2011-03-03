@@ -22,42 +22,50 @@ import java.util.Iterator;
 
 import vitry.runtime.misc.Utils;
 
+
 /**
  * For debugging. Prints like a product.
  */
-public class PrintableSeq<T> extends AbstractSeq<T>
-    {
-        private Seq<T> delegee;
+class PrintableSeq<T> extends AbstractSeq<T>
+{
+    private Seq<T> delegee;
 
-        public PrintableSeq(Seq<T> delegee) {
-            this.delegee = delegee;
-        }
-
-        public T head() {
-            return delegee.head();
-        }
-
-        public boolean hasTail() {
-            return delegee.hasTail();
-        }
-
-        public Seq<T> cons(T head) {
-            return delegee.cons(head);
-        }
-
-        public Iterator<T> iterator() {
-            return delegee.iterator();
-        }
-
-        public Seq<T> tail() {
-            return delegee.tail();
-        }
-        
-        public SeqIterator<T> seqIterator() {
-            return delegee.seqIterator();
-        }
-
-        public String toString() {
-            return Utils.join(this, "(", ", ", ")");
-        }
+    public PrintableSeq(Seq<T> delegee) {
+        this.delegee = delegee;
     }
+
+    public T head()
+    {
+        return delegee.head();
+    }
+
+    public boolean hasTail()
+    {
+        return delegee.hasTail();
+    }
+
+    public Seq<T> cons(T head)
+    {
+        return delegee.cons(head);
+    }
+
+    public Iterator<T> iterator()
+    {
+        return delegee.iterator();
+    }
+
+    public Seq<T> tail()
+    {
+        return delegee.tail();
+    }
+
+    public SeqIterator<T> seqIterator()
+    {
+        return delegee.seqIterator();
+    }
+
+    public String toString()
+    {
+        return Utils.join(this, "(", ", ", ")");
+    }
+}

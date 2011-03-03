@@ -25,68 +25,87 @@ import vitry.runtime.struct.*;
 
 
 abstract public class InclusionPattern extends BasePattern implements Seq<Pattern>
+{
+    public boolean eq(Set o)
     {
-        public boolean eq(Set o) {
-            return o == this || this.match(o) && this.matchFor(o);
-        }
-
-        public boolean eq(Union o) {
-            return o == this || this.match(o) && this.matchFor(o);
-        }
-
-        public boolean eq(Intersection o) {
-            return o == this || this.match(o) && this.matchFor(o);
-        }
-
-        public boolean match(Set a) {
-            if (a == VitryRuntime.BOTTOM) return true;
-            for (Pattern x : a)
-                if (!x.matchFor(this)) return false;
-            return true;
-        }
-
-        public boolean match(Union a) {
-            for (Pattern x : a)
-                if (!x.matchFor(this)) return false;
-            return true;
-        }
-
-        public boolean match(Intersection a) {
-            for (Pattern x : a)
-                if (x.matchFor(this)) return true;
-            return false;
-        }
-        
-        public Seq<Pattern> cons(Pattern head) {
-            return new Pair<Pattern>(head, this);
-        }
-
-        public <U> MapSeq<Pattern, U> map(Function fn) {
-            return new MapSeq<Pattern,U>(fn, this);
-        }
-
-        public Iterator<Pattern> iterator() {
-            return new SeqIterator<Pattern>(this);
-        }
-
-        public SeqIterator<Pattern> seqIterator() {
-            return new SeqIterator<Pattern>(this);
-        }
-        
-        
-        
-        // Java stuff
-
-        public boolean equals(Object o) {
-            if (o == this) return true;
-
-            if (o instanceof Set) return this.eq((Set) o);
-            if (o instanceof Union) return this.eq((Union) o);
-            if (o instanceof Intersection) return this.eq((Intersection) o);
-            return false;
-        }
-
-        public int hashCode() {
-            return Utils.hash(this.getClass().hashCode(), this);
-        }
+        return o == this || this.match(o) && this.matchFor(o);
     }
+
+    public boolean eq(Union o)
+    {
+        return o == this || this.match(o) && this.matchFor(o);
+    }
+
+    public boolean eq(Intersection o)
+    {
+        return o == this || this.match(o) && this.matchFor(o);
+    }
+
+    public boolean match(Set a)
+    {
+        if (a == VitryRuntime.BOTTOM)
+            return true;
+        for (Pattern x : a)
+            if (!x.matchFor(this))
+                return false;
+        return true;
+    }
+
+    public boolean match(Union a)
+    {
+        for (Pattern x : a)
+            if (!x.matchFor(this))
+                return false;
+        return true;
+    }
+
+    public boolean match(Intersection a)
+    {
+        for (Pattern x : a)
+            if (x.matchFor(this))
+                return true;
+        return false;
+    }
+
+    public Seq<Pattern> cons(Pattern head)
+    {
+        return new Pair<Pattern>(head, this);
+    }
+
+    public <U> MapSeq<Pattern, U> map(Function fn)
+    {
+        return new MapSeq<Pattern, U>(fn, this);
+    }
+
+    public Iterator<Pattern> iterator()
+    {
+        return new SeqIterator<Pattern>(this);
+    }
+
+    public SeqIterator<Pattern> seqIterator()
+    {
+        return new SeqIterator<Pattern>(this);
+    }
+
+
+    // Java stuff
+
+    public boolean equals(Object o)
+    {
+        if (o == this)
+            return true;
+
+        if (o instanceof Set)
+            return this.eq((Set) o);
+        if (o instanceof Union)
+            return this.eq((Union) o);
+        if (o instanceof Intersection)
+            return this.eq((Intersection) o);
+        return false;
+    }
+
+    public int hashCode()
+    {
+        return Utils.hash(this.getClass().hashCode(), this);
+    }
+}

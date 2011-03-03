@@ -799,8 +799,7 @@ final class InterpretedFunction extends RestFunction implements Arity
 
         if (par.hasNext())
         {
-            return new InterpretedFunction(par.following(), this.body, frame, this.module,
-                    this.interpreter);
+            return new InterpretedFunction(par.following(), this.body, frame, this.module, this.interpreter);
         }
         if (!arg.hasNext())
         {
@@ -808,8 +807,7 @@ final class InterpretedFunction extends RestFunction implements Arity
         }
         else
         {
-            Function res = (Function) this.interpreter.eval(this.body, context, frame,
-                    this.module);
+            Function res = (Function) this.interpreter.eval(this.body, context, frame, this.module);
             return res.applyVar(arg.following());
         }
     }

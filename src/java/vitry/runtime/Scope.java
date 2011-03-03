@@ -20,6 +20,6 @@ package vitry.runtime;
 
 
 public interface Scope
-    {
-        public Env<Symbol, Object> getValues();
-    }
+{
+    public Env<Symbol, Object> getValues();
+}

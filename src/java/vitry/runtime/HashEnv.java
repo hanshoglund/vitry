@@ -24,51 +24,60 @@ import vitry.runtime.error.BindingError;
 import vitry.runtime.struct.Seq;
 import vitry.runtime.struct.Seqs;
 
+
 /**
- * A basic non-persistent environment.
+ * Basic non-persistent environment.
  *
  * @author Hans Höglund
  */
 public class HashEnv<K, V> extends AbstractEnv<K, V>
-    {
-        protected final HashMap<K, V> bindings = new HashMap<K, V>();
-        
-        public HashEnv() {
-            super();
-        }
+{
+    protected final HashMap<K, V> bindings = new HashMap<K, V>();
 
-        public HashEnv(Env<K, V> env) {
-            super(env);
-        }
-
-        public Env<K, V> define(K key, V val) throws BindingError {
-            if (this.hasBinding(key)) throw new BindingError(key, this);
-            bindings.put(key, val);
-            return this;
-        }
-        
-        public Env<K, V> extend(K key, V val) {
-            return extend().define(key, val);
-        }
-
-        public Env<K, V> extend() {
-            return new HashEnv<K, V>(this);
-        }
-
-        public V getBinding(K key) {
-            return bindings.get(key);
-        }
-
-        public boolean hasBinding(K key) {
-            return bindings.containsKey(key);
-        }
-
-        public boolean isPersistent() {
-            return false;
-        }
-
-        public Env<K, V> assoc(K key, V val) {
-            bindings.put(key, val);
-            return this;
-        }
+    public HashEnv() {
+        super();
     }
+
+    public HashEnv(Env<K, V> env) {
+        super(env);
+    }
+
+    public Env<K, V> define(K key, V val) throws BindingError
+    {
+        if (this.hasBinding(key))
+            throw new BindingError(key, this);
+        bindings.put(key, val);
+        return this;
+    }
+
+    public Env<K, V> extend(K key, V val)
+    {
+        return extend().define(key, val);
+    }
+
+    public Env<K, V> extend()
+    {
+        return new HashEnv<K, V>(this);
+    }
+
+    public V getBinding(K key)
+    {
+        return bindings.get(key);
+    }
+
+    public boolean hasBinding(K key)
+    {
+        return bindings.containsKey(key);
+    }
+
+    public boolean isPersistent()
+    {
+        return false;
+    }
+
+    public Env<K, V> assoc(K key, V val)
+    {
+        bindings.put(key, val);
+        return this;
+    }
+}
