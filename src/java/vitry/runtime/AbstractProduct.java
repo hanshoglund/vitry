@@ -21,6 +21,7 @@ package vitry.runtime;
 import static vitry.runtime.VitryRuntime.*;
 import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.Seq;
+import vitry.runtime.struct.Seqs;
 
 
 /**
@@ -38,14 +39,14 @@ abstract class AbstractProduct extends ConstructionPattern implements Product
         Seq<Pattern> left = o;
         Seq<Pattern> right = this;
 
-        while (left != null && right != null)
+        while (!Seqs.isNil(left) && !Seqs.isNil(right))
         {
             if (!left.head().eqFor(right.head()))
                 return false;
             left = left.tail();
             right = right.tail();
         }
-        return (left == null && right == null);
+        return (Seqs.isNil(left) && Seqs.isNil(right));
     }
 
     public boolean match(Product p)
@@ -53,14 +54,14 @@ abstract class AbstractProduct extends ConstructionPattern implements Product
         Seq<Pattern> left = p;
         Seq<Pattern> right = this;
 
-        while (left != null && right != null)
+        while (!Seqs.isNil(left) && !Seqs.isNil(right))
         {
             if (!left.head().matchFor(right.head()))
                 return false;
             left = left.tail();
             right = right.tail();
         }
-        return (left == null && right == null);
+        return (Seqs.isNil(left) && Seqs.isNil(right));
     }
 
     public boolean match(Intersection a)

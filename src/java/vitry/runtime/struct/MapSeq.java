@@ -53,8 +53,7 @@ public class MapSeq<A, B> extends AbstractSeq<B>
     {
         A head = input.head();
 
-        if (head == null)
-            return null;
+//        if (head == null) return null;
         return Utils.<B> unsafe(fn.apply(head));
     }
 

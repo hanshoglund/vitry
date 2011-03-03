@@ -33,12 +33,15 @@ import vitry.runtime.struct.*;
  */
 abstract public class Rewriting
 {
+    private static final TopLevelRewriter TOP_LEVEL_REWRITER = new TopLevelRewriter();
+
+
     abstract public Seq<?> rewrite(Seq<Pattern> seq);
     
 
     public static final Rewriting topLevel()
     {
-        return new TopLevelRewriter();
+        return TOP_LEVEL_REWRITER;
     }
 
     

@@ -16,31 +16,20 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime.struct;
+package vitry.runtime.error;
 
-
-public class Pair<T> extends AbstractSeq<T>
+public class StandardError extends VitryError
 {
-    private T head;
-    private Seq<T> tail;
-
-    public Pair(T head, Seq<T> tail) {
-        this.head = head;
-        this.tail = tail;
+    public StandardError(String string, Throwable cause) {
+        super(string, cause);
+        // TODO Auto-generated constructor stub
     }
 
-    public T head()
-    {
-        return head;
+    public StandardError(String string) {
+        super(string);
+        // TODO Auto-generated constructor stub
     }
 
-    public Seq<T> tail()
-    {
-        return tail;
-    }
+    private static final long serialVersionUID = 2943769355726244676L;
 
-    public boolean hasTail()
-    {
-        return !Seqs.isNil(tail);
-    }
 }

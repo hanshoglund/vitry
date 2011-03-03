@@ -1,0 +1,106 @@
+
+[a] = (t, [a]) | ()
+´[a] = (t, ´[a], ´[a]) | ()
+´[a] = (t, ´[a]... ´[a]) | ()
+'[a] = ('[a], '[a]) | a | ()
+''[a] = ('[a], ''[a] ... ''[a]) | a | ()
+
+
+Core interfaces
+Some of these have typevars of N-ary elements.
+We auto-generate most cases above 2.
+
+
+Seq
+    isNil()
+    head()
+    tail()
+    iterator()
+Tree
+    isNil()
+    isSingle()
+    get()
+    left()
+    right()
+Tree3
+    isNil()
+    isSingle()
+    get()
+    _1()
+    _2()
+    _3()
+[Tree3
+    isNil()
+    isSingle()
+    get()
+    _1()
+    _2()
+    ...
+    _N()]
+    
+Iterator<T>
+    ? hasNext()
+    T next()
+    
+Traversor<T>
+    ? hasNext()
+    T next()
+    Traversor<T> split()
+    join(Traversor<T> t)
+    
+        
+Value
+    Fn    getEq()
+    Fn    getMatch()
+    ? isAtom()
+    
+    ?     isCompound()
+    Fn    getStructor()
+    Iterator iterate()
+    Traversor traverse()
+    
+    ?     isTagged()
+    Value tag(t)
+    Value getForm()
+    Value getTag()
+
+    ?     isFunction()          ; We should allow ourselves to cast Values to Fns when necessary
+    
+Fn
+    ? isCompiled()
+    ? isInvertible()
+    T   applyVar(Seq)
+    Seq applyVarInverse(T)
+    T apply(T)
+    T applyInverse(T)
+    copyEnv(Env)                ; Called from constructor to capture current bindings when defined
+    
+Fn2
+    T apply(A,B)
+    Seq applyInverse(T)
+FnN
+    T apply(T,T...)
+    Seq applyInverse(T)
+
+
+
+Exceptions:
+    TrampolineException
+        value()
+
+                         
+
+The RT can generate:
+    SeqN
+    TreeN
+    FnN     for different type combinations
+    
+    
+The compiler generates:
+    One class for each module
+    One class for each fn
+    
+    
+
+
+

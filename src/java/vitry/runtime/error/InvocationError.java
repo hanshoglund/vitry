@@ -32,5 +32,12 @@ public class InvocationError extends VitryError
             super(string, cause);
         }
         
+        /**
+         * @param e
+         */
+        public InvocationError(ClassNotFoundException e) {
+            super(e);
+        }
+
         private static final long serialVersionUID = -6117454140018535837L;
     }

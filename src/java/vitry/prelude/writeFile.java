@@ -15,7 +15,7 @@ public class writeFile extends StandardFunction
         private VitryRuntime rt;
 
         public writeFile(VitryRuntime rt) {
-            super(1, rt.getPrelude());
+            super(2, rt.getPrelude());
             this.rt = rt;
         }
 

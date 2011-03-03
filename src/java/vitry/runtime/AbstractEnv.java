@@ -60,14 +60,18 @@ abstract public class AbstractEnv<K, V> implements Env<K, V>
         throw new UndefinedError(key, this);
     }
 
-    private static <K, V> Env<K, V> empty()
-    {
-        return Utils.<Env<K, V>> unsafe(GLOBAL);
-    }
-
     public Env<K, V> assoc(K key, V val)
     {
         return throwUnsupported();
+    }
+
+    /**
+     * Returns an persistent, empty environment. All operations except
+     * hasBinding and isPersistent are unsupported.
+     */
+    public static <K, V> Env<K, V> empty()
+    {
+        return Utils.<Env<K, V>>unsafe(GLOBAL);
     }
 
     private <T> T throwUnsupported()

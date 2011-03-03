@@ -181,7 +181,7 @@ class VitryTree extends CommonTree implements Product
         return delegee.eq(p);
     }
 
-    public boolean eq(AbstractList p)
+    public boolean eq(List p)
     {
         return delegee.eq(p);
     }
@@ -236,7 +236,7 @@ class VitryTree extends CommonTree implements Product
         return delegee.match(p);
     }
 
-    public boolean match(AbstractList p)
+    public boolean match(List p)
     {
         return delegee.match(p);
     }

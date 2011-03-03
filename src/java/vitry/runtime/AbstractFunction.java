@@ -39,7 +39,7 @@ implements Function, Scope, TypableFunction
 
 
     public AbstractFunction() {
-        this(null, null, null);
+        this(AbstractEnv.<Symbol, Object>empty());
     }
 
     public AbstractFunction(Scope scope) {

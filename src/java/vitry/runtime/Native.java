@@ -82,6 +82,7 @@ public final class Native extends Atom
      */
     public static Pattern wrap(Object o)
     {
+        if (o == null) return VitryRuntime.NIL;
         if (o instanceof Pattern)
             return (Pattern) o;
         else
@@ -107,7 +108,7 @@ public final class Native extends Atom
             });
     }
 
-    public static Seq<Object> unwrap(Seq<Object> values)
+    public static Seq<Object> unwrap(Seq<?> values)
     {
         return values.map(new StandardFunction.Unary()
             {

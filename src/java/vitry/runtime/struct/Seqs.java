@@ -18,11 +18,6 @@
  */
 package vitry.runtime.struct;
 
-import static vitry.Build.*;
-
-import java.util.Map;
-import java.util.WeakHashMap;
-
 import vitry.runtime.Function;
 import vitry.runtime.VitryRuntime;
 import vitry.runtime.misc.Utils;
@@ -35,10 +30,6 @@ public final class Seqs
 {
 
     private static final Object[] EMPTY_ARRAY = new Object[0];
-
-    private static final Map<Object, Object> MEMOIZE_LAST = new WeakHashMap<Object, Object>();
-
-    //        private static final Map<Object, Integer> MEMOIZE_LENGTH = new WeakHashMap<Object, Integer>();
 
     private Seqs() {
     }
@@ -88,155 +79,145 @@ public final class Seqs
         return xs.tail();
     }
 
-    public static <T> T last(Seq<T> s)
+    public static <T> T last(Seq<T> xs)
     {
-        if (MEMOIZE_SEQUENCES)
+        while (!isNil(xs.tail()))
         {
-            Object m = MEMOIZE_LAST.get(s);
-            if (m != null)
-                return Utils.<T> unsafe(m);
+            xs = tail(xs);
         }
-        while (!isNil(s.tail()))
-        {
-            s = tail(s);
-        }
-        T r = s.head();
-
-        if (MEMOIZE_SEQUENCES)
-        {
-            MEMOIZE_LAST.put(s, r);
-        }
+        T r = xs.head();
         return r;
     }
 
-    public static <T> Seq<T> init(Seq<T> s)
+    public static <T> Seq<T> init(Seq<T> xs)
     {
-        if (isNil(s.tail()))
+        if (isNil(xs.tail()))
         {
-            if (MEMOIZE_SEQUENCES)
-            {
-                MEMOIZE_LAST.put(s, s.head());
-            }
             return null;
         }
         else
         {
-            return cons(head(s), init(tail(s)));
+            return cons(head(xs), init(tail(xs)));
         }
     }
 
-    public static <T> Seq<T> until(Seq<T> s, Seq<T> t)
+    public static <T> Seq<T> until(Seq<T> xs, Seq<T> ys)
     {
-        if (isNil(s) || s == t)
+        // TODO non-stack consuming version
+        if (isNil(xs) || xs == ys)
             return null;
         else
-            return cons(head(s), until(tail(s), t));
+            return cons(head(xs), until(tail(xs), ys));
     }
 
-    public static <T> Seq<T> untilElement(Seq<T> s, T e)
+    public static <T> Seq<T> untilElement(Seq<T> xs, T y)
     {
-        if (isNil(s) || s.head().equals(e))
+        // TODO non-stack consuming version
+        if (isNil(xs) || xs.head().equals(y))
             return null;
         else
-            return cons(head(s), untilElement(tail(s), e));
+            return cons(head(xs), untilElement(tail(xs), y));
     }
 
 
-    public static boolean isNil(Seq<?> s)
+    public static boolean isNil(Object xs)
     {
-        return s == null || s == VitryRuntime.NIL;
+        return xs == null || xs == VitryRuntime.NIL;
     }
 
-    public static int length(Seq<?> s)
+    public static int length(Seq<?> xs)
     {
-        if (s instanceof Finite)
-            return ((Finite<?>) s).length();
-
-        // if (MEMOIZE_SEQUENCES) {
-        //     Integer l = MEMOIZE_LENGTH.get(s);
-        //     if (l != null) return l;
-        // }      
+        if (xs instanceof Finite)
+            return ((Finite<?>) xs).length();
         int length = 0;
         do
         {
             length++;
-            s = s.tail();
-        } while (!isNil(s));
-        // if (MEMOIZE_SEQUENCES) {
-        //     MEMOIZE_LENGTH.put(s, length);
-        // }  
+            xs = xs.tail();
+        } while (!isNil(xs));
         return length;
     }
 
-    public static <T> T first(Seq<T> s)
+    public static <T> T first(Seq<T> xs)
     {
-        return s.head();
+        return xs.head();
     }
 
-    public static <T> T second(Seq<T> s)
+    public static <T> T second(Seq<T> xs)
     {
-        return s.tail().head();
+        return xs.tail().head();
     }
 
-    public static <T> T third(Seq<T> s)
+    public static <T> T third(Seq<T> xs)
     {
-        return s.tail().tail().head();
+        return xs.tail().tail().head();
     }
 
-    public static <T> T nth(Seq<T> s, int i)
+    public static <T> T nth(Seq<T> xs, int n)
     {
-        for (int j = 0; j < i; j++)
-            s = tail(s);
-        return s.head();
+        for (int i = 0; i < n; i++)
+            xs = tail(xs);
+        return xs.head();
     }
 
-    public static <T> T nthLast(Seq<T> s, int i)
+    public static <T> T nthLast(Seq<T> xs, int n)
     {
-        return nth(reverse(s), i);
+        return nth(reverse(xs), n);
     }
 
-    public static <U, T> U foldl(Function fn, U init, Seq<T> s)
+    public static <U, T> U foldl(Function f, U z, Seq<T> xs)
     {
-        U res = init;
-        while (!isNil(s))
+        U res = z;
+        while (!isNil(xs))
         {
-            res = Utils.<U> unsafe(fn.apply(res, s.head()));
-            s = s.tail();
+            res = Utils.<U> unsafe(f.apply(res, xs.head()));
+            xs = xs.tail();
         }
         return res;
     }
 
-    public static <U, T> U foldr(Function fn, U init, Seq<T> s)
+    public static <U, T> U foldr(Function f, U z, Seq<T> xs)
     {
-        U res = init;
-        while (!isNil(s))
+//        if (isNil(xs)) return z;
+//        return (U) f.apply(head(xs), foldr(f, z, tail(xs)));
+        
+        U res = z;
+        xs = reverse(xs);
+        while (!isNil(xs))
         {
-            res = Utils.<U> unsafe(fn.apply(s.head(), res));
-            s = s.tail();
+            res = Utils.<U> unsafe(f.apply(xs.head(), res));
+            xs = xs.tail();
         }
         return res;
     }
 
     public static <T> Seq<T> reverse(Seq<T> xs)
     {
-        return reverseAppend(xs, null);
+//        return reverseAppend(xs, null);
+        Seq<T> ys = null;
+        while (!isNil(xs)) {
+            ys = cons(xs.head(), ys);
+            xs = xs.tail();
+        }
+        return ys;
     }
-
+    
     public static <T> Seq<T> append(Seq<T> xs, Seq<T> ys)
     {
+        // TODO non-stack consuming version
         if (isNil(xs))
             return ys;
         else
             return cons(head(xs), append(tail(xs), ys));
     }
 
-    public static <T> Seq<T> reverseAppend(Seq<T> xs, Seq<T> ys)
-    {
-        if (isNil(xs))
-            return ys;
-        else
-            return reverseAppend(xs.tail(), cons(xs.head(), ys));
-    }
+//    public static <T> Seq<T> reverseAppend(Seq<T> xs, Seq<T> ys)
+//    {
+//        if (isNil(xs))
+//            return ys;
+//        else
+//            return reverseAppend(xs.tail(), cons(xs.head(), ys));
+//    }
 
     public static <T> Seq<T> printable(Seq<T> s)
     {

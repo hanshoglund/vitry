@@ -24,7 +24,7 @@ public class repl extends RestFunction
         public repl(VitryRuntime rt, Scope prelude) {
             super(prelude);
             this.rt = rt;
-            this.read = (Function) getValue("read");
+            this.read = (Function) getValue("parse");
             this.print = (Function) getValue("print");
         }
 

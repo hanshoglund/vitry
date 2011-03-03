@@ -35,4 +35,11 @@ abstract public class VitryError extends RuntimeException
         public VitryError(String string, Throwable cause) {
             super(string, cause);
         }
+
+        /**
+         * @param e
+         */
+        public VitryError(ClassNotFoundException e) {
+            super(e);
+        }
     }

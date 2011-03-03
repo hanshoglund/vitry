@@ -30,7 +30,7 @@ public interface Pattern
     boolean eq(Tagged o);
     boolean eq(Product o);
     boolean eq(Function p);
-    boolean eq(AbstractList p);
+    boolean eq(List p);
     boolean eq(Set o);
     boolean eq(Union o);
     boolean eq(Intersection o);
@@ -41,7 +41,7 @@ public interface Pattern
     boolean match(Tagged o);
     boolean match(Product p);
     boolean match(Function p);
-    boolean match(AbstractList p);
+    boolean match(List p);
     boolean match(Set p);
     boolean match(Union p);
     boolean match(Intersection p);

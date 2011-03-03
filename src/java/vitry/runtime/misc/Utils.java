@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 
+import vitry.runtime.Symbol;
 import vitry.runtime.error.ParseError;
 
 
@@ -193,6 +194,11 @@ public class Utils
             // string, let's output it anyway.
             out.write('\\');
         }
+    }
+    
+    public static Symbol maybeIntern(Object s) {
+        if (s instanceof Symbol) return (Symbol) s;
+        return Symbol.intern((String) s);
     }
 
     public static <U> U unsafe(Object val)

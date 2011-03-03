@@ -63,7 +63,7 @@ public class InvertibleRestFunction extends RestFunction implements InvertibleFu
 
         public Seq<Object> applyVarInverse(Object a) throws InvocationError
         {
-            return Seqs.cons(InvertibleRestFunction.this.applyVar(Seqs.single(a)), null);
+            return Seqs.single(InvertibleRestFunction.this.applyVar(Seqs.single(a)));
         }
     }
 }

@@ -1,0 +1,38 @@
+; test/vitry/test.vitry
+
+module Vitry.Test
+
+
+
+
+main _ =
+     writePitches
+        map (fn (x) (x % 40) + random 12 + 42)
+            (range 0 2000)
+
+
+
+
+
+
+
+
+
+
+
+
+; ======================================================================
+; Generate file
+
+writePitches ps =
+    writeFile
+        "~/Documents/Musik/fomus/out.fms"
+        foldl (++) "" (strFromPitches ps)
+    
+strFromPitches ps =
+    cons
+        "time 0 dur 1 pitch " 
+            ++ (string (head ps)) 
+            ++ "\n"
+        map (fn (p) "time + dur 1 pitch " ++ (string p) ++ ";\n")
+            (tail ps)

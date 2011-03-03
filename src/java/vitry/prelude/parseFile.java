@@ -10,20 +10,23 @@ import vitry.runtime.*;
 import vitry.runtime.error.*;
 import vitry.runtime.parse.*;
 
-public class readFile extends StandardFunction
+public class parseFile extends StandardFunction
     {
         private VitryRuntime rt;
 
-        public readFile(VitryRuntime rt) {
+        public parseFile(VitryRuntime rt) {
             super(1, rt.getPrelude());
             this.rt = rt;
         }
 
         public Object apply(Object a) {
+            String name = a.toString();
+            name = name.replace("~", System.getProperty("user.home"));
+            
             VitryLexer lexer = new VitryLexer();
             try
             {
-                lexer.setCharStream(new ANTLRFileStream(a.toString()));
+                lexer.setCharStream(new ANTLRFileStream(name));
             } catch (IOException e)
             {
                 throw new IOError(a);

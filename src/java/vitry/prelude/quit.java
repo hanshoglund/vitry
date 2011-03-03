@@ -14,8 +14,8 @@ public class quit extends StandardFunction
                 System.exit(((Number) a).intValue());
             else
                 System.exit(-1);
-            
+
             // Never reached
-            return null;
+            throw new AssertionError();
         }
     }

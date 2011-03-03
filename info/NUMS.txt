@@ -1,0 +1,18 @@
+
+
+class add extends StandardFunction
+    apply(Nat a, Nat b)
+        return applyNatNat(a.lower(), a.rest(), b.lower(), b.rest());
+    
+    applyNatNat(int a, int[] as, int b, int[] bs)
+        if (a == MAX_INT)
+            if (b == MAX_INT)
+                add(a, as, b, bs)
+            else
+                add(a, as, b)
+        if (b == MAX_INT)
+            if (a == MAX_INT)
+                add(a, as, b, bs)
+            else
+                add(a, b, bs)   
+        a + b

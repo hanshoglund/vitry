@@ -38,7 +38,7 @@ abstract public class AbstractSeq<T> implements Seq<T>
 
     public boolean hasTail()
     {
-        return this.tail() == null;
+        return !Seqs.isNil(this.tail());
     }
 
     public Seq<T> cons(T head)

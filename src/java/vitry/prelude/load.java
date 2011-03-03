@@ -11,20 +11,20 @@ public class load extends StandardFunction
 {
     private VitryRuntime rt;
     private Function compose;
-    private Function readFile;
+    private Function parseFile;
     private Function eval;
 
     public load(VitryRuntime rt, Module prelude) {
         super(1, prelude);
         this.rt = rt;
         this.compose = (Function) getValue("(.)");
-        this.readFile = (Function) getValue("readFile");
+        this.parseFile = (Function) getValue("parseFile");
         this.eval = (Function) getValue("eval");
     }
 
     public Object apply(Object a) throws InvocationError
     {
-        Module m = (Module) ((Function) compose.apply(eval, readFile)).apply(a);
+        Module m = (Module) ((Function) compose.apply(eval, parseFile)).apply(a);
         throw new ModuleLoaded(m);
     }
 }

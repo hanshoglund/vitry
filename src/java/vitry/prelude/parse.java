@@ -6,11 +6,11 @@ import vitry.runtime.*;
 import vitry.runtime.error.*;
 import vitry.runtime.parse.*;
 
-public class read extends StandardFunction
+public class parse extends StandardFunction
     {
         private VitryRuntime rt;
 
-        public read(VitryRuntime rt) {
+        public parse(VitryRuntime rt) {
             super(1, rt.getPrelude());
             this.rt = rt;
         }

@@ -21,6 +21,7 @@ package vitry.runtime;
 import static vitry.runtime.VitryRuntime.*;
 import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.Seq;
+import vitry.runtime.struct.Seqs;
 
 
 /**
@@ -37,17 +38,17 @@ abstract public class AbstractList extends ConstructionPattern implements List
         Seq<Pattern> left = o;
         Seq<Pattern> right = this;
 
-        while (left != null && right != null)
+        while (!Seqs.isNil(left) && !Seqs.isNil(right))
         {
             if (!left.head().eqFor(right.head()))
                 return false;
             left = left.tail();
             right = right.tail();
         }
-        return (left == null && right == null);
+        return (Seqs.isNil(left) && Seqs.isNil(right));
     }
 
-    public boolean match(AbstractList o)
+    public boolean match(List o)
     {
         if (!this.hasTail())
         {
@@ -56,11 +57,11 @@ abstract public class AbstractList extends ConstructionPattern implements List
         return matchStructure(o);
     }
 
-    protected boolean matchPattern(AbstractList o)
+    protected boolean matchPattern(List o)
     {
         Seq<Pattern> left = o;
         Pattern right = this.head();
-        while (left != null)
+        while (!Seqs.isNil(left))
         {
             if (!left.head().matchFor(right))
                 return false;
@@ -69,19 +70,19 @@ abstract public class AbstractList extends ConstructionPattern implements List
         return true;
     }
 
-    protected boolean matchStructure(AbstractList o)
+    protected boolean matchStructure(List o)
     {
         Seq<Pattern> left = o;
         Seq<Pattern> right = this;
 
-        while (left != null && right != null)
+        while (!Seqs.isNil(left) && !Seqs.isNil(right))
         {
             if (!left.head().matchFor(right.head()))
                 return false;
             left = left.tail();
             right = right.tail();
         }
-        return (left == null && right == null);
+        return (Seqs.isNil(left) && Seqs.isNil(right));
     }
 
     public boolean match(Intersection a)

@@ -38,7 +38,7 @@ public class MemoizedSeq<T> extends AbstractSeq<T>
     {
         if (this.tailed)
         {
-            return this.tail != null;
+            return !Seqs.isNil(this.tail);
         }
         else
         {

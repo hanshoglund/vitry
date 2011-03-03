@@ -326,7 +326,7 @@ public class Interpreter implements Eval {
                     expr = last(exTail);                    
                     frame = frame.extend();
 
-                    if (assignments != null)
+                    if (!Seqs.isNil(assignments))
                     {
                         for (Object a : assignments)
                             eval(a, context, frame, module);
@@ -450,7 +450,7 @@ public class Interpreter implements Eval {
                             {
                                 // TODO allow other symbols pointing to types to evade matching
                                 // This must be implemented in AbstractLeftCont as well!
-                                if (left instanceof Symbol)
+                                if (shouldBind(left))
                                 {
                                     try 
                                     {
@@ -552,6 +552,14 @@ public class Interpreter implements Eval {
     
                     
     
+    static final boolean shouldBind(Object left)
+    {
+//        if (left.equals(Context.PAR)) return false;
+//        if (left.equals(Context.BRA)) return false;
+//        if (left.equals(Context.ANG)) return false;
+        return (left instanceof Symbol);
+    }
+
     static BigInteger evalNat(Object expr)
     {
         return new BigInteger(expr.toString());
@@ -901,7 +909,7 @@ abstract class AbstractLeftCont implements LeftCont
         }
         else
         {
-            if (this.matching && ! (key instanceof Symbol))
+            if (this.matching && !(Interpreter.shouldBind(key)))
             {
                 Interpreter.match(val, key);
             }
@@ -964,7 +972,7 @@ final class ApplyCont extends AbstractLeftCont
 {
 
     private final InvertibleFunction fn;
-    private final Seq<?> oarams;
+    private final Seq<?> params;
     private final Context context;
     private final Env<Symbol, Object> frame;
     private Module module;
@@ -974,7 +982,7 @@ final class ApplyCont extends AbstractLeftCont
     public ApplyCont(InvertibleFunction fn, Seq<?> args, Context context,
             Env<Symbol, Object> frame, Module module, Interpreter interpr) {
         this.fn = fn;
-        this.oarams = args;
+        this.params = args;
         this.context = context;
         this.frame = frame;
         this.module = module;
@@ -985,7 +993,7 @@ final class ApplyCont extends AbstractLeftCont
     {
         Seq<?> args = fn.applyVarInverse(value);
 
-        Iterator<?> par = oarams.iterator();
+        Iterator<?> par = params.iterator();
         Iterator<?> arg = args.iterator();
 
         while (par.hasNext() && arg.hasNext())

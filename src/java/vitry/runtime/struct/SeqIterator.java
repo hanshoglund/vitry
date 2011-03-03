@@ -41,12 +41,12 @@ public class SeqIterator<T> implements Iterator<T>
 
     public boolean hasNext()
     {
-        return seq != null;
+        return !Seqs.isNil(seq);
     }
 
     public T next()
     {
-        if (seq == null)
+        if (Seqs.isNil(seq))
             throw new NoSuchElementException();
 
         T head = seq.head();

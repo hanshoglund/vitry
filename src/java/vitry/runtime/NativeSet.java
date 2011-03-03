@@ -40,22 +40,21 @@ import vitry.runtime.struct.Seq;
 public final class NativeSet extends InclusionPattern implements Set
 {
 
-    private static final Map<Class<?>, Set> instanceMap = new WeakHashMap<Class<?>, Set>();
-
-    private final Class<?> javaClass;
+    private static final Map<Class<?>, Set> instances = new WeakHashMap<Class<?>, Set>();
+    private final Class<?> hostClass;
 
 
     private NativeSet(Class<?> javaClass) {
-        this.javaClass = javaClass;
+        this.hostClass = javaClass;
     }
 
     public static Set forClass(Class<?> javaClass)
     {
-        Set obj = instanceMap.get(javaClass);
+        Set obj = instances.get(javaClass);
         if (obj == null)
         {
             obj = new NativeSet(javaClass);
-            instanceMap.put(javaClass, obj);
+            instances.put(javaClass, obj);
         }
         return obj;
     }
@@ -80,19 +79,19 @@ public final class NativeSet extends InclusionPattern implements Set
         if (o == this)
             return true;
         if (o instanceof NativeSet)
-            return ((NativeSet) o).javaClass == this.javaClass;
+            return ((NativeSet) o).hostClass == this.hostClass;
         return false;
     }
 
     public boolean match(Object o)
     {
-        return javaClass.isAssignableFrom(o.getClass());
+        return hostClass.isAssignableFrom(o.getClass());
     }
 
     public boolean match(Atom o)
     {
         if (o instanceof Native)
-            return javaClass.isInstance( ((Native) o).obj);
+            return hostClass.isInstance( ((Native) o).obj);
         return false;
     }
 
@@ -100,7 +99,7 @@ public final class NativeSet extends InclusionPattern implements Set
     {
         // iff a <: this
         if (a instanceof NativeSet)
-            return this.javaClass.isAssignableFrom( ((NativeSet) a).javaClass);
+            return this.hostClass.isAssignableFrom( ((NativeSet) a).hostClass);
         return false;
     }
 
@@ -168,17 +167,17 @@ public final class NativeSet extends InclusionPattern implements Set
 
     public String toString()
     {
-        if (javaClass.equals(BigInteger.class))
+        if (hostClass.equals(BigInteger.class))
             return "... -1 | 0 | 1 ...";
-        if (javaClass.equals(Float.class))
+        if (hostClass.equals(Float.class))
             return "-Inf ... 0.0 ... Inf";
-        if (javaClass.equals(Double.class))
+        if (hostClass.equals(Double.class))
             return "-Inf ... 0.0 ... Inf";
-        if (javaClass.equals(String.class))
+        if (hostClass.equals(String.class))
             return "[char]";
-        if (javaClass.equals(Character.class))
+        if (hostClass.equals(Character.class))
             return "char";
-        return javaClass.getName();
+        return hostClass.getName();
     }
 
 

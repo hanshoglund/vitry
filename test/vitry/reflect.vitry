@@ -1,0 +1,27 @@
+
+module Test.Reflect
+
+
+math = class "Math"
+cos_ = method math "cos" [class "double"]
+sin_ = method math "cos" [class "double"]
+
+ArrayList = class "java.util.ArrayList"
+add   = method ArrayList   "add"     [class "Object"]
+clear = method ArrayList   "clear"   []
+
+main _ = 
+    do  a = new ArrayList
+        add a (random 10)
+        add a (random 10)
+        add a (random 10)
+        add a (random 10)
+        add a (random 10)
+        add a (random 10)
+        add a (random 10)
+        add a (random 10)
+        add a (random 10)
+        add a (random 10)
+        a
+        
+        

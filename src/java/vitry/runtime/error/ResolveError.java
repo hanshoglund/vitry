@@ -22,7 +22,7 @@ package vitry.runtime.error;
 
 public class ResolveError extends VitryError
     {
-        private ResolveError(String string, Throwable cause) {
+        public ResolveError(String string, Throwable cause) {
             super(string, cause);
         }
 
