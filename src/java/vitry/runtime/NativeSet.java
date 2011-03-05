@@ -167,12 +167,22 @@ public final class NativeSet extends InclusionPattern implements Set
 
     public String toString()
     {
+//        if (hostClass.equals(BigInteger.class))
+//            return "... -1 | 0 | 1 ...";
+//        if (hostClass.equals(BigRational.class))
+//            return "int / nat";
+//        if (hostClass.equals(Float.class))
+//            return "-Inf ... 0.0 ... Inf";
+//        if (hostClass.equals(Double.class))
+//            return "-Inf ... 0.0 ... Inf";
         if (hostClass.equals(BigInteger.class))
-            return "... -1 | 0 | 1 ...";
+            return "int";
+        if (hostClass.equals(BigRational.class))
+            return "rat";
         if (hostClass.equals(Float.class))
-            return "-Inf ... 0.0 ... Inf";
+            return "float";
         if (hostClass.equals(Double.class))
-            return "-Inf ... 0.0 ... Inf";
+            return "double";
         if (hostClass.equals(String.class))
             return "[char]";
         if (hostClass.equals(Character.class))

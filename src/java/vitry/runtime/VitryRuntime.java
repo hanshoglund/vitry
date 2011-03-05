@@ -20,15 +20,20 @@ package vitry.runtime;
 
 import static vitry.runtime.VitryRuntime.*;
 import static vitry.runtime.struct.Seqs.isNil;
-import vitry.Build;
-import vitry.runtime.StandardFunction.*;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.Properties;
 
+import vitry.Build;
+import vitry.runtime.StandardFunction.Binary;
+import vitry.runtime.StandardFunction.Unary;
+
 import vitry.prelude.*;
 import vitry.runtime.error.*;
+import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.*;
 
 
@@ -40,34 +45,34 @@ import vitry.runtime.struct.*;
 public final class VitryRuntime
 {
 
-    public static final List      NIL             = new Nil();
-    public static final Symbol    TRUE            = Symbol.intern("true");
-    public static final Symbol    FALSE           = Symbol.intern("false");
-    public static final Symbol    WILDCARD        = Symbol.intern("_");
-    public static final Atom      ANY             = new Any();
-    public static final Set       BOTTOM          = new Bottom();
-    public static final Union     BOOL            = unionOf(TRUE, FALSE);
+    public static final List     NIL            = new Nil();
+    public static final Symbol   TRUE           = Symbol.intern("true");
+    public static final Symbol   FALSE          = Symbol.intern("false");
+    public static final Symbol   WILDCARD       = Symbol.intern("_");
+    public static final Atom     ANY            = new Any();
+    public static final Set      BOTTOM         = new Bottom();
+    public static final Union    BOOL           = unionOf(TRUE, FALSE);
     
-    public static final Set       NAT             = NativeSet.forClass(BigInteger.class);
-    public static final Set       INT             = NativeSet.forClass(BigInteger.class);
-    public static final Set       RAT             = NativeSet.forClass(BigRational.class);
-    public static final Set       FLOAT           = NativeSet.forClass(Float.class);
-    public static final Set       DOUBLE          = NativeSet.forClass(Double.class);
-    public static final Set       COMPLEX         = null;
-    public static final Set       CHAR            = NativeSet.forClass(Character.class);
-    public static final Set       STR             = NativeSet.forClass(String.class);
+    public static final Set      NAT            = NativeSet.forClass(BigInteger.class);
+    public static final Set      INT            = NativeSet.forClass(BigInteger.class);
+    public static final Set      RAT            = NativeSet.forClass(BigRational.class);
+    public static final Set      FLOAT          = NativeSet.forClass(Float.class);
+    public static final Set      DOUBLE         = NativeSet.forClass(Double.class);
+    public static final Set      COMPLEX        = null;
+    public static final Set      CHAR           = NativeSet.forClass(Character.class);
+    public static final Set      STR            = NativeSet.forClass(String.class);
 
-    static final int              MIN_ARITY       = 1;
-    static final int              MAX_ARITY       = 0xf;
+    static final int             MIN_ARITY      = 1;
+    static final int             MAX_ARITY      = 0xf;
 
-    private static final Symbol   PRIM_DOUBLE     = Symbol.intern("double");
-    private static final Symbol   PRIM_FLOAT      = Symbol.intern("float");
-    private static final Symbol   PRIM_LONG       = Symbol.intern("long");
-    private static final Symbol   PRIM_INT        = Symbol.intern("int");
-    private static final Symbol   PRIM_CHAR       = Symbol.intern("char");
-    private static final Symbol   PRIM_SHORT      = Symbol.intern("short");
-    private static final Symbol   PRIM_BYTE       = Symbol.intern("byte");
-    private static final Symbol   PRIM_BOOLEAN    = Symbol.intern("boolean");
+    private static final Symbol  PRIM_DOUBLE    = Symbol.intern("double");
+    private static final Symbol  PRIM_FLOAT     = Symbol.intern("float");
+    private static final Symbol  PRIM_LONG      = Symbol.intern("long");
+    private static final Symbol  PRIM_INT       = Symbol.intern("int");
+    private static final Symbol  PRIM_CHAR      = Symbol.intern("char");
+    private static final Symbol  PRIM_SHORT     = Symbol.intern("short");
+    private static final Symbol  PRIM_BYTE      = Symbol.intern("byte");
+    private static final Symbol  PRIM_BOOLEAN   = Symbol.intern("boolean");
     
 
     /**
@@ -181,22 +186,17 @@ public final class VitryRuntime
         prelude.def("char",       CHAR);
         prelude.def("str",        STR);
         
-        prelude.def("symbol",     new symbol_());
-        prelude.def("string",     new string_());
-
         prelude.def("(==)",       new eq());
-        prelude.def("not",        new not());
-        prelude.def("(<)",        NIL);
-        prelude.def("(<=)",       NIL);
-        prelude.def("(=>)",       NIL);
-        prelude.def("(>)",        NIL);
+        prelude.def("(<)",        NIL);                   // TODO
+        prelude.def("(<=)",       NIL);                   // TODO
+        prelude.def("(=>)",       NIL);                   // TODO
+        prelude.def("(>)",        NIL);                   // TODO
 
         prelude.def("arity",      new arity_());
         prelude.def("id",         new id());
         prelude.def("const",      new const_());
         prelude.def("(.)",        new compose());
         prelude.def("(..)",       new follow());
-        prelude.def("power",      NIL);                   // TODO
         prelude.def("flip",       new flip());
 
         prelude.def("(+)",        new add());
@@ -212,16 +212,15 @@ public final class VitryRuntime
         prelude.def("gcd",        NIL);                   // TODO
         prelude.def("lcm",        NIL);                   // TODO
 
-        prelude.def("cons",       new cons());
+        prelude.def("(++)",       new conc());
+        prelude.def("cons",       new prepend());
+        prelude.def("append",     NIL);                   // TODO
         prelude.def("head",       new head());
         prelude.def("tail",       new tail());
         prelude.def("last",       NIL);                   // TODO
         prelude.def("init",       NIL);                   // TODO
-        prelude.def("prepend",    NIL);                   // TODO
-        prelude.def("append",     NIL);                   // TODO
 
         prelude.def("rank",       NIL);                   // TODO
-        prelude.def("isEmpty",    NIL);                   // TODO
         prelude.def("isSingle",   NIL);                   // TODO
 
         prelude.def("nth",        new nth());
@@ -253,27 +252,30 @@ public final class VitryRuntime
         prelude.def("every",      NIL);                   // TODO
         prelude.def("none",       NIL);                   // TODO
 
-        prelude.def("(++)",       new conc());            
         prelude.def("now",        new now(this));
 
         prelude.def("parse",      new parse(this));
-        prelude.def("parseDecl",  new parseDecl(this));
+        prelude.def("print",      new print(this));
         prelude.def("parseFile",  new parseFile(this));
         prelude.def("eval",       new eval_(this));
-        prelude.def("print",      new print(this));
-        prelude.def("error",      new error(this));
+        prelude.def("error",      new error_(this));
+        prelude.def("writeFile",  new writeFile(this));
 
         prelude.def("repl",       new repl(this, prelude));
-        prelude.def("load",       new load(this, prelude));
+        prelude.def("load",       new load(prelude));
         prelude.def("quit",       new quit());
         
+
         // Non-standard
         
         prelude.def("__rt",       this);
-        prelude.def("writeFile",  new writeFile(this));
         prelude.def("rewrite",    new rewrite(this));
+
         prelude.def("seq",        new seq());
         prelude.def("array",      new array());
+        prelude.def("symbol",     new symbol_());
+        prelude.def("string",     new string_());
+        prelude.def("parseDecl",  new parseDecl(this));
 
         prelude.def("class",      new class_(this));
         prelude.def("new",        new new_(this));
@@ -282,11 +284,13 @@ public final class VitryRuntime
         prelude.def("methodsOf",  NIL);
         prelude.def("fieldsOf",   NIL);
 
-        
+
+        // Fixities
+
         prelude.defFix("[...]",   12, true,  false);
         prelude.defFix("(...)",   12, true,  false);
-        prelude.defFix("(..)",    12, false, false);  // gathering?
-        prelude.defFix("(.)",     12, false, false);  // gathering?
+        prelude.defFix("(..)",    12, false, false);
+        prelude.defFix("(.)",     12, false, false);
         prelude.defFix("(^^)",    11, true,  false);
         prelude.defFix("(^)",     11, true,  false);
         prelude.defFix("(%)",     10, true,  false);
@@ -299,8 +303,8 @@ public final class VitryRuntime
         prelude.defFix("[,]",     8,  true,  true);
         prelude.defFix("{,}",     8,  true,  true);
         prelude.defFix("(,)",     8,  true,  true);
-        prelude.defFix("(&)",     7,  true,  false);  // assoc?
-        prelude.defFix("(|)",     6,  true,  false);  // assoc?
+        prelude.defFix("(&)",     7,  true,  false);
+        prelude.defFix("(|)",     6,  true,  false);
         prelude.defFix("(->)",    5,  false, false);
         prelude.defFix("(<->)",   4,  false, false);
         prelude.defFix("(<)",     3,  true,  false);
@@ -1006,35 +1010,24 @@ final class intersection_ extends RestFunction
 }
 
 
-final class not extends Unary
-{
-    public Object apply(Object a) throws InvocationError
-    {
-        if (a.equals(TRUE))
-            return FALSE;
-        if (a.equals(FALSE))
-            return TRUE;
-        throw new TypeError("Expected bool");
-    }
-}
+//final class not extends Unary
+//{
+//    public Object apply(Object a) throws InvocationError
+//    {
+//        if (a.equals(TRUE))
+//            return FALSE;
+//        if (a.equals(FALSE))
+//            return TRUE;
+//        throw new TypeError("Expected bool");
+//    }
+//}
 
 
-final class symbol_ extends Unary
+final class arity_ extends Unary
 {
     public Object apply(Object a)
     {
-        if (a instanceof Seq) 
-            a = CharSeq.toString((Seq<?>) a);
-        return Symbol.intern((String) a);
-    }
-}
-
-
-final class string_ extends Unary
-{
-    public Object apply(Object a) throws InvocationError
-    {
-        return a.toString();
+        return ((Arity) a).getArity();
     }
 }
 
@@ -1063,6 +1056,24 @@ final class const_ extends Unary
 }
 
 
+final class flip extends Unary
+{
+    public Object apply(final Object f)
+    {
+        return new Binary() {
+            public Object apply(Object x, Object y) throws InvocationError
+            {
+                return ((Function) f).apply(y, x);
+            }
+        };
+    }
+}
+
+
+
+
+
+
 final class compose extends Binary
 {
     public Object apply(final Object f, final Object g)
@@ -1087,45 +1098,7 @@ final class follow extends Binary
         };
     }
 }
-final class flip extends Unary
-{
-    public Object apply(final Object f)
-    {
-        return new Binary() {
-            public Object apply(Object x, Object y) throws InvocationError
-            {
-                return ((Function) f).apply(y, x);
-            }
-        };
-    }
-}
-
-final class arity_ extends Unary
-{
-    public Object apply(Object a)
-    {
-        return ((Arity) a).getArity();
-    }
-}
-
-
-final class eval_ extends StandardFunction
-{
-    private VitryRuntime rt;
-
-    public eval_(VitryRuntime rt) {
-        super(1, rt.getPrelude());
-        this.rt = rt;
-    }
-
-    public Object apply(Object a)
-    {
-        return rt.getInterpreter().eval(a);
-    }
-}
-
-
-final class cons extends Binary
+final class prepend extends Binary
 {
     public Object apply(Object x, Object xs)
     {
@@ -1159,6 +1132,47 @@ final class tail extends Unary
         return ((List) xs).tail();
     }
 }
+
+
+final class conc extends Binary
+{
+    public Object apply(Object a, Object b)
+    {
+        if (a instanceof List)
+        {
+            if (b instanceof List)
+            {
+                return list(Seqs.concat((List) a, (List) b));
+            }
+            else
+            {
+                String a2 = CharSeq.toString(Native.unwrap((Seq<Pattern>) a));
+                String b2 = (String) Native.unwrap(b);
+                return (a2).concat(b2);
+            }
+        }
+        else
+        {
+
+            if (b instanceof List)
+            {
+                String a2 = (String) Native.unwrap(a);
+                String b2 = CharSeq.toString(Native.unwrap((Seq<Pattern>) b));
+                return (a2).concat(b2);
+            }
+            else
+            {
+                a = Native.unwrap(a);
+                b = Native.unwrap(b);
+                return ((String) a).concat((String) b);
+            }
+        }
+    }
+}
+
+
+
+
 
 
 final class map extends Binary
@@ -1234,53 +1248,26 @@ final class range extends Binary
 }
 
 
-final class random extends Unary
-{
 
+
+
+final class symbol_ extends Unary
+{
+    public Object apply(Object a)
+    {
+        if (a instanceof Seq) 
+            a = CharSeq.toString((Seq<?>) a);
+        return Symbol.intern((String) a);
+    }
+}
+
+final class string_ extends Unary
+{
     public Object apply(Object a) throws InvocationError
     {
-        a = Native.unwrap(a);
-        return BigInteger.valueOf((long) (Math.random() * ((Number) a).longValue()));
+        return a.toString();
     }
 }
-
-
-final class conc extends Binary
-{
-    public Object apply(Object a, Object b)
-    {
-        if (a instanceof List)
-        {
-            if (b instanceof List)
-            {
-                return list(Seqs.concat((List) a, (List) b));
-            }
-            else
-            {
-                String a2 = CharSeq.toString(Native.unwrap((Seq<Pattern>) a));
-                String b2 = (String) Native.unwrap(b);
-                return (a2).concat(b2);
-            }
-        }
-        else
-        {
-
-            if (b instanceof List)
-            {
-                String a2 = (String) Native.unwrap(a);
-                String b2 = CharSeq.toString(Native.unwrap((Seq<Pattern>) b));
-                return (a2).concat(b2);
-            }
-            else
-            {
-                a = Native.unwrap(a);
-                b = Native.unwrap(b);
-                return ((String) a).concat((String) b);
-            }
-        }
-    }
-}
-
 
 final class seq extends StandardFunction.Unary
 {
@@ -1293,5 +1280,380 @@ final class array extends StandardFunction.Unary
 {
     public Object apply(Object a) {
         return Seqs.toArray((Seq<?>) a);
+    }
+}
+
+final class random extends Unary
+{
+
+    public Object apply(Object a) throws InvocationError
+    {
+        a = Native.unwrap(a);
+        return BigInteger.valueOf((long) (Math.random() * ((Number) a).longValue()));
+    }
+}
+
+final class eval_ extends StandardFunction
+{
+    private VitryRuntime rt;
+
+    public eval_(VitryRuntime rt) {
+        super(1, rt.getPrelude());
+        this.rt = rt;
+    }
+
+    public Object apply(Object a)
+    {
+        return rt.getInterpreter().eval(a);
+    }
+}
+
+class print extends StandardFunction
+{
+    private VitryRuntime rt;
+
+    public print(VitryRuntime rt) {
+        super(1, rt.getPrelude());
+        this.rt = rt;
+    }
+
+    public Object apply(Object a) {
+        System.out.println(a);
+        return a;
+    }
+}
+
+class error_ extends StandardFunction
+{
+    private VitryRuntime rt;
+
+    public error_(VitryRuntime rt) {
+        super(1, rt.getPrelude());
+        this.rt = rt;
+    }
+
+    public Object apply(Object a) {
+        throw new StandardError((String) a);
+    }
+}
+
+class now extends StandardFunction
+{
+    private VitryRuntime rt;
+
+    public now(VitryRuntime rt) {
+        super(1, rt.getPrelude());
+        this.rt = rt;
+    }
+
+    public Object apply(Object a) {
+        return BigInteger.valueOf(System.currentTimeMillis());
+    }
+}
+
+class class_ extends StandardFunction
+{
+    private static final String[] AUTO_PREFIXES = { 
+        "", 
+        "java.lang.", 
+        "vitry.runtime.",
+        "vitry.prelude." 
+    };
+
+    final VitryRuntime rt;
+
+    public class_(VitryRuntime rt) {
+        super(1);
+        this.rt = rt;
+    }
+
+
+    /**
+     * type class = symbol
+     * 
+     * class : str -> class
+     * 
+     * Loads the given class using reflection and returns a symbol
+     * referencing it.
+     */
+    public Object apply(Object nameStr) throws InvocationError
+    {
+        Object res = null;
+        for (String p : AUTO_PREFIXES)
+        {
+            try
+            {
+                res = Seqs.first(rt.internSymbolAndClass(p + ((String) nameStr)));
+            }
+            catch (ClassNotFoundException _)
+            {
+            }
+        }
+        if (res != null)
+            return res;
+        else
+            throw new ResolveError("Could not find class " + nameStr);
+    }
+}
+
+class classOf extends StandardFunction
+{
+    final VitryRuntime rt;
+
+    public classOf(VitryRuntime rt) {
+        super(1);
+        this.rt = rt;
+    }
+
+    /**
+     * a:_ -> class
+     * Returns a reference to the class of a.
+     */
+    public Object apply(Object obj) throws InvocationError {
+        Symbol ref = Symbol.intern(obj.getClass().getName());
+        try {
+            rt.internClass(ref);
+        } catch (ClassNotFoundException e) {
+            throw new AssertionError("Failed interning a loaded class");
+        }
+        return ref;
+    }
+}
+
+final class method extends StandardFunction
+{
+
+    private static final Class<?>[] dummy = new Class<?>[0];
+
+    private final VitryRuntime rt;
+
+    public method(VitryRuntime rt, Scope prelude) {
+        super(3, prelude);
+        this.rt = rt;
+    }
+
+    /**
+     * class, name:str, [types] -> (... -> a)
+     * 
+     * Returns a function wrapping a method.
+     */
+    public Object apply(Object r, Object n, Object t) throws InvocationError
+    {
+        Symbol className = Utils.maybeIntern(r);
+        String methodName = n.toString();
+        Seq<Symbol> typeNames = (Seq<Symbol>) t;
+        final Method m;
+
+        try
+        {
+            Class<?> clazz = rt.internClass(className);
+            Class<?>[] types = null;
+            if (typeNames != null)
+            {
+                types = Seqs.toArray(typeNames.<Class<?>> map(new StandardFunction.Unary()
+                    {
+                        public Object apply(Object n) throws InvocationError
+                        {
+                            try
+                            {
+                                return rt.internClass((Symbol) n);
+                            }
+                            catch (ClassNotFoundException _)
+                            {
+                            }
+                            return throwResolveClass(n);
+                        }
+                    }), dummy);
+            }
+
+            m = clazz.getMethod(methodName, types);
+            final int arity = types.length + (isStatic(m) ? 0 : 1);
+
+//            System.err.println(m);
+
+            switch (arity) {
+                case 0:
+                    return new StandardFunction(1) {
+                        public Object apply(Object _) throws InvocationError
+                        {
+                            try
+                            {
+                                return m.invoke(null);
+                            }
+                            catch (Exception e)
+                            {
+                            }
+                            return throwInvoke(m);
+                        }
+                    };
+                case 1:
+                    return new StandardFunction(1) {
+                        public Object apply(Object a) throws InvocationError
+                        {
+                            a = Native.unwrap(a);
+                            try
+                            {
+                                if (isStatic(m))
+                                    return m.invoke(null, a);
+                                else
+                                    return m.invoke(a);
+                            }
+                            catch (Exception e)
+                            {
+                            }
+                            return throwInvoke(m, a);
+                        }
+                    };
+                case 2:
+                    return new StandardFunction(2) {
+                        public Object apply(Object a, Object b) throws InvocationError
+                        {
+                            a = Native.unwrap(a);
+                            b = Native.unwrap(b);
+                            try
+                            {
+                                if (isStatic(m))
+                                    return m.invoke(null, a, b);
+                                else
+                                    return m.invoke(a, b);
+                            }
+                            catch (Exception e)
+                            {
+                            }
+                            return throwInvoke(m, a);
+                        }
+                    };
+                case 3:
+                    return new StandardFunction(3) {
+                        public Object apply(Object a, Object b, Object c) throws InvocationError
+                        {
+                            a = Native.unwrap(a);
+                            b = Native.unwrap(b);
+                            c = Native.unwrap(c);
+                            try
+                            {
+                                if (isStatic(m))
+                                    return m.invoke(null, a, b, c);
+                                else
+                                    return m.invoke(a, b, c);
+                            }
+                            catch (Exception e)
+                            {
+                            }
+                            return throwInvoke(m, a);
+                        }
+                    };
+                case 4:
+                    return new StandardFunction(4) {
+                        public Object apply(Object a, Object b, Object c, Object d) throws InvocationError
+                        {
+                            a = Native.unwrap(a);
+                            b = Native.unwrap(b);
+                            c = Native.unwrap(c);
+                            d = Native.unwrap(d);
+                            try
+                            {
+                                if (isStatic(m))
+                                    return m.invoke(null, a, b, c, d);
+                                else
+                                    return m.invoke(a, b, c, d);
+                            }
+                            catch (Exception e)
+                            {
+                            }
+                            return throwInvoke(m, a);
+                        }
+                    };
+                case 5:
+                    return new StandardFunction(5) {
+                        public Object apply(Object a, Object b, Object c, Object d, Object e) throws InvocationError
+                        {
+                            a = Native.unwrap(a);
+                            b = Native.unwrap(b);
+                            c = Native.unwrap(c);
+                            d = Native.unwrap(d);
+                            e = Native.unwrap(e);
+                            try
+                            {
+                                if (isStatic(m))
+                                    return m.invoke(null, a, b, c, d, e);
+                                else
+                                    return m.invoke(a, b, c, d, e);
+                            }
+                            catch (Exception ex)
+                            {
+                            }
+                            return throwInvoke(m, a);
+                        }
+                    };
+                default:
+                    throw new RuntimeException("Has not implemented reflection for arity > 5");
+            }
+        }
+        catch (ClassNotFoundException e)
+        {
+            return throwResolveClass(className);
+        }
+        catch (SecurityException e)
+        {
+            return throwResolveMethod(methodName);
+        }
+        catch (NoSuchMethodException e)
+        {
+            return throwResolveMethod(methodName);
+        }
+    }
+
+    boolean isStatic(final Method m)
+    {
+        return Modifier.isStatic(m.getModifiers());
+    }
+    
+    
+
+    <T> T throwInvoke(Method method)
+    {
+        throw new InvocationError("Could not call method " + method + " for no arguments");
+    }
+
+    <T> T throwInvoke(Method method, Object args) throws InvocationError
+    {
+        throw new InvocationError("Could not call method " + method + " for arguments " + args);
+    }
+    
+    <T> T throwResolveMethod(Object name) throws ResolveError
+    {
+        throw new ResolveError("Could not find method " + name);
+    }
+
+    <T> T throwResolveClass(Object name) throws ResolveError
+    {
+        throw new ResolveError("Could not find class " + name);
+    }
+}
+
+class new_ extends StandardFunction
+{
+    private VitryRuntime rt;
+
+    public new_(VitryRuntime rt) {
+        super(1, rt.getPrelude());
+        this.rt = rt;
+    }
+
+    /**
+     * sym -> instance
+     * 
+     * TODO arguments to constructors 
+     */
+    public Object apply(Object c) {
+        try
+        {
+            return rt.internClass((Symbol) c).newInstance();
+        }
+        catch (Exception _)
+        {
+            throw new ResolveError("Could not initiate class" + c);
+        }
     }
 }

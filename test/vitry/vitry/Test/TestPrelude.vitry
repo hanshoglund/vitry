@@ -82,12 +82,11 @@ not  false     = true
 
 id    x       = x
 const x       = fn (y) x
+flip  f x y   = f y x
 (.)   f g     = fn (x) f (g x)
 (..)  f g     = g . f
 iter  f i     = f . (iter f (i-1))
       0 f     = f
-
-flip  f x y z = f y x z
 ;domain
 ;range
 ;arity

@@ -3,20 +3,17 @@ package vitry.prelude;
 import vitry.runtime.Function;
 import vitry.runtime.Module;
 import vitry.runtime.StandardFunction;
-import vitry.runtime.VitryRuntime;
 import vitry.runtime.error.InvocationError;
 
 
 public class load extends StandardFunction
 {
-    private VitryRuntime rt;
     private Function compose;
     private Function parseFile;
     private Function eval;
 
-    public load(VitryRuntime rt, Module prelude) {
+    public load(Module prelude) {
         super(1, prelude);
-        this.rt = rt;
         this.compose = (Function) getValue("(.)");
         this.parseFile = (Function) getValue("parseFile");
         this.eval = (Function) getValue("eval");
@@ -30,6 +27,7 @@ public class load extends StandardFunction
 }
 
 
+@SuppressWarnings("serial")
 final class ModuleLoaded extends RuntimeException
 {
     final Module module;

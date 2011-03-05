@@ -16,46 +16,79 @@
 ; See COPYING.txt for details.
 
 
-; Vitry JVM prelude.
-;
-; @author Hans
-
-
 module Vitry.Prelude
 
+; native: nil true false bool empty
+;         () [] {} _
+;         (,) [,] {,} (|) (&) (->) (<->)
+;         ==
 
-; TODO non-double versions (where appropriate)
+not  x = match x
+    _ : true = false
+    _ : false = true
+
+(!=) x y = not (x == y)
+
+(&&) x y = match (x, y)
+    (_:true, _:true) = true
+    (_:bool, _:bool) = false
+
+(||) x y = match (x, y)
+    (_:true, _:bool) = true
+    (_:bool, _:true) = true
+    (_:bool, _:bool) = false
+
+; native: arity id const flip (.) (..)
+
+iter f n = match (f, n)
+    (f, 0) = f
+    (f, i) = f . (iter f (i - 1))
 
 
-Math       = class "Math"
-BigInteger = class "java.math.BigInteger"
+; native: nat int rat float
+;         double complex 
+;         char str
 
-sqrt    = method Math "sqrt"  [`double]
-ln      = method Math "log"   [`double]
-logn n  = ln .. (* (1. / ln n))
-log     = logn 10.
-log2    = logn 2.
-abs     = method Math "abs"   [`double]
-sin     = method Math "sin"   [`double]
-tan     = method Math "tan"   [`double]
-cos     = method Math "cos"   [`double]
-asin    = method Math "asin"  [`double]
-atan    = method Math "atan"  [`double]
-acos    = method Math "acos"  [`double]
-round   = method Math "round" [`double] .. method BigInteger "valueOf" [`long]
-ceil    = method Math "ceil"  [`double]
-floor   = method Math "floor" [`double]
+prec = nat
+     | int
+     | rat
+real = float
+     | double
+     | complex
+num  = prec
+     | real
+        
 
-isOdd x  = x % 2 == 1
+__Math       = class "Math"
+__BigInteger = class "java.math.BigInteger"
+
+sqrt    =  method __Math        "sqrt"    [ `double ]
+ln      =  method __Math        "log"     [ `double ]
+abs     =  method __Math        "abs"     [ `double ]
+sin     =  method __Math        "sin"     [ `double ]
+tan     =  method __Math        "tan"     [ `double ]
+cos     =  method __Math        "cos"     [ `double ]
+asin    =  method __Math        "asin"    [ `double ]
+atan    =  method __Math        "atan"    [ `double ]
+acos    =  method __Math        "acos"    [ `double ]
+round   =  method __Math        "round"   [ `double ] 
+        .. method __BigInteger  "valueOf" [ `long   ]
+ceil    =  method __Math        "ceil"    [ `double ]
+floor   =  method __Math        "floor"   [ `double ]
+logn n  =  ln .. (* (1. / ln n))
+log     =  logn 10.
+log2    =  logn 2.
+
+isOdd  x = x % 2 == 1
 isEven x = x % 2 == 0
-; isPrime
 isZero x = match x
     _:0  = true
     _:0. = true
     _    = false
-isPositive x   = x > 0
-isNegative x   = x < 0
- 
+isPositive x = x > 0
+isNegative x = x < 0 
+; TODO isPrime
+
 sum     = foldl (+) 0
 product = foldl (*) 1
 
@@ -63,7 +96,14 @@ product = foldl (*) 1
 
 
 
-length    = foldl (fn (x y) x+1) 0
+
+
+
+isEmpty xs = xs == {} || xs == ()
+
+
+
+length    = foldl (fn (x y) x + 1) 0
 find pred = foldl (fn (x y) if (pred y) y else x) ()
 
 
@@ -81,9 +121,6 @@ interleave xs ys = foldr (fn ((x,y) zs) [x] ++ [y] ++ zs) [] (zip xs ys)
 ; map_ f    = foldr (cons . f) ()
 
 
-(&&) x y = match true (_ : (x & y) = true) (_ = false)
-(||) x y = match true (_ : (x | y) = true) (_ = false)
-(!=) x y = not (x == y)
 
 
 
