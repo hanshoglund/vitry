@@ -191,10 +191,10 @@ max x y = if (x > y) x else y
 ; (/)
 ; (%)
 ; (%%)
+; (^)
 ; negate
 ; abs
 ; signum
-; (^)
 ; sqrt
 ; log
 ; logn

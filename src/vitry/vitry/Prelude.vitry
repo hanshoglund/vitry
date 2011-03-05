@@ -30,13 +30,13 @@ not  x = match x
 (!=) x y = not (x == y)
 
 (&&) x y = match (x, y)
-    (_:true, _:true) = true
-    (_:bool, _:bool) = false
+    ( _ : true, _ : true ) = true
+    ( _ : bool, _ : bool ) = false
 
 (||) x y = match (x, y)
-    (_:true, _:bool) = true
-    (_:bool, _:true) = true
-    (_:bool, _:bool) = false
+    ( _ : true, _ : bool ) = true
+    ( _ : bool, _ : true ) = true
+    ( _ : bool, _ : bool ) = false
 
 ; native: arity id const flip (.) (..)
 
@@ -61,10 +61,10 @@ num  = prec
 
 __Math       = class "Math"
 __BigInteger = class "java.math.BigInteger"
+__abs        =  method __Math "abs" [ `double ]
 
 sqrt    =  method __Math        "sqrt"    [ `double ]
 ln      =  method __Math        "log"     [ `double ]
-abs     =  method __Math        "abs"     [ `double ]
 sin     =  method __Math        "sin"     [ `double ]
 tan     =  method __Math        "tan"     [ `double ]
 cos     =  method __Math        "cos"     [ `double ]
@@ -75,18 +75,29 @@ round   =  method __Math        "round"   [ `double ]
         .. method __BigInteger  "valueOf" [ `long   ]
 ceil    =  method __Math        "ceil"    [ `double ]
 floor   =  method __Math        "floor"   [ `double ]
+
+abs x = match x
+    x:real = __abs x
+    x:prec = if (x < 0) (-x) else x
+
+negate x = -x
+
 logn n  =  ln .. (* (1. / ln n))
 log     =  logn 10.
 log2    =  logn 2.
 
-isOdd  x = x % 2 == 1
-isEven x = x % 2 == 0
-isZero x = match x
-    _:0  = true
-    _:0. = true
-    _    = false
+isOdd      x = x % 2 == 1
+isEven     x = x % 2 == 0
+isZero     x = match x
+                   _ : 0   = true
+                   _ : 0.0 = true
+                   _       = false
 isPositive x = x > 0
 isNegative x = x < 0 
+isNan      x = (x == NaN)
+isInfinite x = (x == Infinity)
+isNumber   x = not (isNan x)
+isFinite   x = not (isInfinite x)
 ; TODO isPrime
 
 sum     = foldl (+) 0

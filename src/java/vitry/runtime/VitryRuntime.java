@@ -211,6 +211,8 @@ public final class VitryRuntime
         prelude.def("recip",      NIL);                   // TODO
         prelude.def("gcd",        NIL);                   // TODO
         prelude.def("lcm",        NIL);                   // TODO
+        prelude.def("NaN",        Double.NaN);
+        prelude.def("Infinity",   Double.POSITIVE_INFINITY);
 
         prelude.def("(++)",       new conc());
         prelude.def("cons",       new prepend());
@@ -241,7 +243,6 @@ public final class VitryRuntime
         prelude.def("[...]",      new range());
 
         prelude.def("reverse",    NIL);                   // TODO
-        prelude.def("revappend",  NIL);                   // TODO
         prelude.def("sort",       NIL);                   // TODO
         prelude.def("search",     NIL);                   // TODO
         prelude.def("shuffle",    NIL);                   // TODO
