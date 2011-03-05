@@ -61,7 +61,7 @@ import org.antlr.runtime.*;
  * </pre>
  * 
  * 
- * @author Hans Höglund
+ * @author Hans Hoglund
  */
 public class Indentation implements TokenSource
 {

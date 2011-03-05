@@ -32,7 +32,7 @@ import vitry.runtime.StandardFunction.Unary;
  * Reflects antlr syntax trees into Vitry. Each node is a Product containing
  * its children. The head token is the first child.
  *
- * @author Hans Höglund
+ * @author Hans Hoglund
  */
 class VitryTree extends CommonTree implements Product
 {

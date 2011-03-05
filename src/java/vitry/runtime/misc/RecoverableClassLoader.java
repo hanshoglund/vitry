@@ -35,7 +35,7 @@ import java.util.Map;
  * The unload and reload methods return a new class loader. For classes to be
  * reclaimed, the old classloader must go out of scope.
  * 
- * @author Hans Höglund
+ * @author Hans Hoglund
  */
 public class RecoverableClassLoader extends ClassLoader
 {

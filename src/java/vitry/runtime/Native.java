@@ -29,7 +29,7 @@ import vitry.runtime.struct.Seq;
  *
  * Wrapping mutable objects is not recommended.
  *
- * @author Hans Höglund
+ * @author Hans Hoglund
  */
 public final class Native extends Atom
 {

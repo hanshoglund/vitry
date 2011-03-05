@@ -25,7 +25,7 @@ import vitry.runtime.struct.*;
 /**
  * A function with a known inverse.
  *
- * @author Hans Höglund
+ * @author Hans Hoglund
  */
 public interface InvertibleFunction extends Function
 {

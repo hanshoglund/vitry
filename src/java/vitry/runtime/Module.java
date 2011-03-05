@@ -29,7 +29,7 @@ import vitry.runtime.struct.Seq;
  *     import/export
  *     implicits
  *
- * @author Hans Höglund
+ * @author Hans Hoglund
  */
 public class Module implements Scope, Compilable
 {

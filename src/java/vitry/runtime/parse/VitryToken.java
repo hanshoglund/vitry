@@ -27,7 +27,7 @@ import vitry.runtime.*;
  * its text. The string constructor is used to construct dummy tokens
  * (for matching).   
  *
- * @author Hans Höglund 
+ * @author Hans Hoglund 
  */
 public class VitryToken extends Atom
 {

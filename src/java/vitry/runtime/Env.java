@@ -32,7 +32,7 @@ import vitry.runtime.error.*;
  * to add bindings, but not to override previous bindings. The assoc
  * operation is used to mutate non-persistent environments explicitly.
  *
- * @author Hans Höglund
+ * @author Hans Hoglund
  */
 public interface Env<K, V>
 {

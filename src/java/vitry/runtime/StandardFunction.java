@@ -32,7 +32,7 @@ import vitry.runtime.struct.Seqs;
  * 
  * The applyVar() method delegates to apply().
  *
- * @author Hans Höglund
+ * @author Hans Hoglund
  */
 abstract public class StandardFunction extends AbstractFunction implements Arity
 {

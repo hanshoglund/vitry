@@ -29,7 +29,7 @@ import vitry.runtime.struct.*;
 /**
  * Combined interface and factory for syntax-tree rewriting.
  *
- * @author Hans Höglund
+ * @author Hans Hoglund
  */
 abstract public class Rewriting
 {

@@ -25,7 +25,7 @@ package vitry.runtime;
  * Gathering operators are resolved to n-ary function calls when 
  * repeated.
  *
- * @author Hans Höglund
+ * @author Hans Hoglund
  */
 public class Fixity
 {

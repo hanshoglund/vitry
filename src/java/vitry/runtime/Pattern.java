@@ -21,7 +21,7 @@ package vitry.runtime;
 /**
  * Represents basic matching logic.
  *
- * @author Hans Höglund
+ * @author Hans Hoglund
  */
 public interface Pattern
 {

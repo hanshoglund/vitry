@@ -28,7 +28,7 @@ import vitry.runtime.struct.Seqs;
 /**
  * Basic non-persistent environment.
  *
- * @author Hans Höglund
+ * @author Hans Hoglund
  */
 public class HashEnv<K, V> extends AbstractEnv<K, V>
 {

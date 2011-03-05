@@ -28,7 +28,7 @@ import vitry.runtime.struct.Seqs;
  * 
  * All methods delegate to applyVar(Sequence)
  *
- * @author Hans Höglund
+ * @author Hans Hoglund
  */
 public class RestFunction extends AbstractFunction
 {

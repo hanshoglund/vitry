@@ -19,7 +19,7 @@
 package vitry.runtime;
 
 
-abstract public class BasePattern implements Pattern
+abstract class BasePattern implements Pattern
 {
     public boolean eq(Object o)
     {

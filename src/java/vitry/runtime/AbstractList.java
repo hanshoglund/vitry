@@ -27,7 +27,7 @@ import vitry.runtime.struct.Seqs;
 /**
  * Implements native lists.
  *
- * @author Hans Höglund
+ * @author Hans Hoglund
  */
 abstract public class AbstractList extends ConstructionPattern implements List
 {

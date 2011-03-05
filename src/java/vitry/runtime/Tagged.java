@@ -27,7 +27,7 @@ import vitry.runtime.struct.Seq;
  *
  * TODO do something special with Native/NativeSet etc etc to avoid double wrapping
  *
- * @author Hans Höglund
+ * @author Hans Hoglund
  */
 public class Tagged extends BasePattern implements Destructible
 {

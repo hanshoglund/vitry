@@ -26,7 +26,7 @@ import java.util.Map;
  * Standard symbols. Note that Vitry symbols does not have 
  * namespaces, they are simply unique refences accessed by name.
  *
- * @author Hans Höglund
+ * @author Hans Hoglund
  */
 public class Symbol extends Atom
 {

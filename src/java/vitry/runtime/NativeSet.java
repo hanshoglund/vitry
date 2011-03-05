@@ -35,7 +35,7 @@ import vitry.runtime.struct.Seq;
  *
  * Does not work for other Pattern instances other than Native.
  *
- * @author Hans Höglund
+ * @author Hans Hoglund
  */
 public final class NativeSet extends InclusionPattern implements Set
 {

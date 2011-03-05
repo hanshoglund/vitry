@@ -29,7 +29,7 @@ import vitry.runtime.error.*;
  * to the value represented. Compound structures evaluate as the 
  * expression they represent.
  *
- * @author Hans Höglund
+ * @author Hans Hoglund
  */
 public interface Eval {
     

@@ -30,7 +30,7 @@ import vitry.runtime.struct.Seqs;
  * For the reified block types, we have to override the sequence
  * methods to adapt traversal to the generated accessors.
  *
- * @author Hans Höglund
+ * @author Hans Hoglund
  */
 abstract class AbstractProduct extends ConstructionPattern implements Product
 {

@@ -34,17 +34,17 @@ import vitry.runtime.struct.*;
 /**
  * Runtime system for the Vitry programming language.
  *
- * @author Hans Höglund
+ * @author Hans Hoglund
  */
 public final class VitryRuntime
 {
 
-    public static final Nil       NIL             = new Nil();
+    public static final List      NIL             = new Nil();
     public static final Symbol    TRUE            = Symbol.intern("true");
     public static final Symbol    FALSE           = Symbol.intern("false");
     public static final Symbol    WILDCARD        = Symbol.intern("_");
-    public static final Any       ANY             = new Any();
-    public static final Bottom    BOTTOM          = new Bottom();
+    public static final Atom      ANY             = new Any();
+    public static final Set       BOTTOM          = new Bottom();
     public static final Union     BOOL            = unionOf(TRUE, FALSE);
     
     public static final Set       NAT             = NativeSet.forClass(BigInteger.class);
@@ -75,11 +75,9 @@ public final class VitryRuntime
      * This is non-static so that bootstrap functions can access the runtime. 
      */
     private final Module prelude;
-       
-    {
-        // TODO
-        prelude = new Module(Seqs.seq(Symbol.intern("Vitry"), Symbol.intern("Prelude")));            
-        
+
+    private void initPrelude() 
+    {    
         def("()",                 NIL);
         def("[]",                 productOf(NIL,    new list_()));
         def("{}",                 productOf(BOTTOM, new set_()));
@@ -264,6 +262,11 @@ public final class VitryRuntime
         defFix("($)",             0,  false, false);
     }
 
+    private Module makeBootstrapPrelude()
+    {
+        return new Module(Seqs.seq(Symbol.intern("Vitry"), Symbol.intern("Prelude")));
+    }
+
 
     /**
      * Used to determine classpath etc.
@@ -310,8 +313,10 @@ public final class VitryRuntime
         this.setup = setup;
         this.classLoader = classLoader;
         
-        if(this.interpreter == null)
-            this.interpreter = new Interpreter(this);
+        this.interpreter = new Interpreter(this);
+        
+        this.prelude = makeBootstrapPrelude();
+        initPrelude();
     }
 
 

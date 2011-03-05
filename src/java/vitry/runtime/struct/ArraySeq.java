@@ -26,7 +26,7 @@ import vitry.runtime.misc.ArrayIterator;
 /**
  * Adapts an array as a sequence. Mutating the array is not recommended.
  * 
- * @author Hans Höglund
+ * @author Hans Hoglund
  */
 public class ArraySeq<T> extends AbstractSeq<T> implements Finite<T>
 {

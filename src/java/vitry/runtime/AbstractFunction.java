@@ -26,7 +26,7 @@ import vitry.runtime.struct.Seq;
  * Requires scope upon construction, however domain and range are mutable 
  * to allow for in-place type reconstruction.
  *
- * @author Hans Höglund 
+ * @author Hans Hoglund 
  */
 abstract class AbstractFunction extends ConstructionPattern 
 implements Function, Scope, TypableFunction
