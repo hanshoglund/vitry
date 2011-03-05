@@ -72,9 +72,9 @@ abstract public class InclusionPattern extends BasePattern implements Seq<Patter
         return new Pair<Pattern>(head, this);
     }
 
-    public <U> MapSeq<Pattern, U> map(Function fn)
+    public <U> MappedSeq<Pattern, U> map(Function fn)
     {
-        return new MapSeq<Pattern, U>(fn, this);
+        return new MappedSeq<Pattern, U>(fn, this);
     }
 
     public Iterator<Pattern> iterator()

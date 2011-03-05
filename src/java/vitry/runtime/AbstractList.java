@@ -33,7 +33,7 @@ abstract public class AbstractList extends ConstructionPattern implements List
 {
     // Eq and match
 
-    public boolean eq(AbstractList o)
+    public boolean eq(List o)
     {
         Seq<Pattern> left = o;
         Seq<Pattern> right = this;
@@ -103,7 +103,7 @@ abstract public class AbstractList extends ConstructionPattern implements List
         return p.match(this);
     }
 
-    public AbstractList cons(Pattern head)
+    public List cons(Pattern head)
     {
         return listFrom(super.cons(head));
     }
@@ -120,8 +120,8 @@ abstract public class AbstractList extends ConstructionPattern implements List
     {
         if (o == this)
             return true;
-        if (o instanceof AbstractList)
-            return eq((AbstractList) o);
+        if (o instanceof List)
+            return eq((List) o);
         return false;
     }
 

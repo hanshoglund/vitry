@@ -96,6 +96,18 @@ implements Function, Scope, TypableFunction
     {
         return true;
     }
+    
+    @Override
+    public boolean eq(Function o)
+    {
+        return o == this;
+    }
+
+    @Override
+    public boolean match(Function p)
+    {
+        return p == this;
+    }
 
     public boolean isInvertible()
     {

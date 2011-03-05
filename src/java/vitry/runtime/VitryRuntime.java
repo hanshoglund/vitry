@@ -39,15 +39,6 @@ import vitry.runtime.struct.*;
 public final class VitryRuntime
 {
 
-    private static final Symbol PRIM_DOUBLE = Symbol.intern("double");
-    private static final Symbol PRIM_FLOAT = Symbol.intern("float");
-    private static final Symbol PRIM_LONG = Symbol.intern("long");
-    private static final Symbol PRIM_INT = Symbol.intern("int");
-    private static final Symbol PRIM_CHAR = Symbol.intern("char");
-    private static final Symbol PRIM_SHORT = Symbol.intern("short");
-    private static final Symbol PRIM_BYTE = Symbol.intern("byte");
-    private static final Symbol PRIM_BOOLEAN = Symbol.intern("boolean");
-
     public static final Nil       NIL             = new Nil();
     public static final Symbol    TRUE            = Symbol.intern("true");
     public static final Symbol    FALSE           = Symbol.intern("false");
@@ -68,6 +59,15 @@ public final class VitryRuntime
     static final int              MIN_ARITY       = 1;
     static final int              MAX_ARITY       = 0xf;
 
+    private static final Symbol   PRIM_DOUBLE     = Symbol.intern("double");
+    private static final Symbol   PRIM_FLOAT      = Symbol.intern("float");
+    private static final Symbol   PRIM_LONG       = Symbol.intern("long");
+    private static final Symbol   PRIM_INT        = Symbol.intern("int");
+    private static final Symbol   PRIM_CHAR       = Symbol.intern("char");
+    private static final Symbol   PRIM_SHORT      = Symbol.intern("short");
+    private static final Symbol   PRIM_BYTE       = Symbol.intern("byte");
+    private static final Symbol   PRIM_BOOLEAN    = Symbol.intern("boolean");
+    
 
     /**
      * Standard prelude
@@ -110,10 +110,7 @@ public final class VitryRuntime
         def("string",             new string_());
 
         def("(==)",               new eq());
-//        def("(!=)",               NIL);                   // TODO
-        def("not",                new not());             // TODO 
-//        def("(&&)",               NIL);                 // TODO 
-//        def("(||)",               NIL);                 // TODO 
+        def("not",                new not());
         def("(<)",                NIL);
         def("(<=)",               NIL);
         def("(=>)",               NIL);
@@ -447,7 +444,7 @@ public final class VitryRuntime
         return new StdProduct(s);
     }
 
-    public static AbstractList listFrom(Seq<Pattern> s) {
+    public static List listFrom(Seq<Pattern> s) {
         return new StdList(s);
     }
     
@@ -618,10 +615,10 @@ final class Nil extends Atom implements List, Finite<Pattern>
         return "()";
     }
 
-    public Product cons(Pattern head)
+    public List cons(Pattern head)
     {
         // TODO product by default?
-        return product(new Pair<Pattern>(head, this));
+        return list(new Pair<Pattern>(head, this));
     }
 
     public boolean hasTail()
@@ -1223,7 +1220,7 @@ final class conc extends Binary
         {
             if (b instanceof List)
             {
-                return list(Seqs.append((List) a, (List) b));
+                return list(Seqs.concat((List) a, (List) b));
             }
             else
             {

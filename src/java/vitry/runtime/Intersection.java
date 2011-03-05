@@ -24,6 +24,7 @@ import vitry.runtime.misc.*;
 abstract public class Intersection extends InclusionPattern
 {
 
+    @Override
     public boolean match(Object o)
     {
         if (o instanceof Pattern)
@@ -34,6 +35,7 @@ abstract public class Intersection extends InclusionPattern
         return true;
     }
 
+    @Override
     public boolean match(Atom a)
     {
         for (Pattern x : this)
@@ -42,6 +44,7 @@ abstract public class Intersection extends InclusionPattern
         return true;
     }
 
+    @Override
     public boolean match(Tagged p)
     {
         for (Pattern x : this)
@@ -50,6 +53,7 @@ abstract public class Intersection extends InclusionPattern
         return true;
     }
 
+    @Override
     public boolean match(Product a)
     {
         for (Pattern x : this)
@@ -58,7 +62,8 @@ abstract public class Intersection extends InclusionPattern
         return true;
     }
 
-    public boolean match(AbstractList a)
+    @Override
+    public boolean match(List a)
     {
         for (Pattern x : this)
             if (!x.match(a))
@@ -66,6 +71,7 @@ abstract public class Intersection extends InclusionPattern
         return true;
     }
 
+    @Override
     public boolean match(Intersection a)
     {
         for (Pattern x : this)

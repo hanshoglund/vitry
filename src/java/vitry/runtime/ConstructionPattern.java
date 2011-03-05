@@ -20,7 +20,7 @@ package vitry.runtime;
 
 import java.util.Iterator;
 
-import vitry.runtime.struct.MapSeq;
+import vitry.runtime.struct.MappedSeq;
 import vitry.runtime.struct.Pair;
 import vitry.runtime.struct.Seq;
 import vitry.runtime.struct.SeqIterator;
@@ -46,7 +46,7 @@ implements Seq<Pattern>, Destructible
 
     public <U> Seq<U> map(Function fn)
     {
-        return new MapSeq<Pattern, U>(fn, this);
+        return new MappedSeq<Pattern, U>(fn, this);
     }
 
     public Iterator<Pattern> iterator()

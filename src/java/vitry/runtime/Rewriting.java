@@ -87,7 +87,7 @@ class TopLevelRewriter extends Rewriting
                         }
                     });
                 Product r = product(single(right));
-                Pattern val = product(append(params.cons(Fn), r));
+                Pattern val = product(concat(params.cons(Fn), r));
                 return product(seq(assign, product(seq(left, name)), val));
             }
         }
@@ -223,7 +223,7 @@ class OpRewriter extends Rewriting
             /*
              * Simply concatenate
              */
-            unify = product(append((Product) pred, ((Product) prim).tail()));
+            unify = product(concat((Product) pred, ((Product) prim).tail()));
 
         } 
         else 
@@ -234,7 +234,7 @@ class OpRewriter extends Rewriting
              * Hoist and reinsert
              */
             Pattern hoist = last((Product) pred);                
-            unify = product(append
+            unify = product(concat
                     (init((Product) pred), 
                      product(single
                          ((Pattern) insert(hoist, (Product) prim)))));
@@ -248,7 +248,7 @@ class OpRewriter extends Rewriting
             unify = insert(pred, (Product) prim);
         }
 
-        return rewrite(product(append(before, cons((Pattern) unify, after))));
+        return rewrite(product(concat(before, cons((Pattern) unify, after))));
     }
     
     

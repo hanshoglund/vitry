@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import vitry.runtime.struct.MapSeq;
+import vitry.runtime.struct.MappedSeq;
 import vitry.runtime.struct.Seq;
 
 
@@ -149,7 +149,7 @@ public final class NativeSet extends InclusionPattern implements Set
         return throwEnumeration();
     }
 
-    public <U> MapSeq<Pattern, U> map(Function fn)
+    public <U> MappedSeq<Pattern, U> map(Function fn)
     {
         return throwEnumeration();
     }

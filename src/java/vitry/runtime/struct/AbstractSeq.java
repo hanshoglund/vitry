@@ -50,11 +50,11 @@ abstract public class AbstractSeq<T> implements Seq<T>
     {
         if (Build.MEMOIZE_SEQUENCES)
         {
-            return new MemoizedSeq<U>(new MapSeq<T, U>(fn, this));
+            return new MemoizedSeq<U>(new MappedSeq<T, U>(fn, this));
         }
         else
         {
-            return new MapSeq<T, U>(fn, this);
+            return new MappedSeq<T, U>(fn, this);
         }
     }
 

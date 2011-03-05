@@ -21,11 +21,13 @@ package vitry.runtime;
 
 abstract public class Atom extends BasePattern
 {
+    @Override
     public boolean eq(Atom o)
     {
         return this.equals(o);
     }
 
+    @Override
     public boolean match(Atom o)
     {
         return this.eq(o);

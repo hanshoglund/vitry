@@ -125,10 +125,12 @@ public final class Seqs
         return xs == null || xs == VitryRuntime.NIL;
     }
 
+    public static int length(Finite<?> xs) {
+        return xs.length();        
+    }
+    
     public static int length(Seq<?> xs)
     {
-        if (xs instanceof Finite)
-            return ((Finite<?>) xs).length();
         int length = 0;
         do
         {
@@ -193,7 +195,6 @@ public final class Seqs
 
     public static <T> Seq<T> reverse(Seq<T> xs)
     {
-//        return reverseAppend(xs, null);
         Seq<T> ys = null;
         while (!isNil(xs)) {
             ys = cons(xs.head(), ys);
@@ -202,22 +203,11 @@ public final class Seqs
         return ys;
     }
     
-    public static <T> Seq<T> append(Seq<T> xs, Seq<T> ys)
+    public static <T> Seq<T> concat(Seq<T> xs, Seq<T> ys)
     {
-        // TODO non-stack consuming version
-        if (isNil(xs))
-            return ys;
-        else
-            return cons(head(xs), append(tail(xs), ys));
+        if (isNil(xs)) return ys;
+        return new ConcedSeq<T>(xs, ys);
     }
-
-//    public static <T> Seq<T> reverseAppend(Seq<T> xs, Seq<T> ys)
-//    {
-//        if (isNil(xs))
-//            return ys;
-//        else
-//            return reverseAppend(xs.tail(), cons(xs.head(), ys));
-//    }
 
     public static <T> Seq<T> printable(Seq<T> s)
     {

@@ -7,10 +7,12 @@ public class Range extends AbstractSeq<BigInteger>
 {
     private final BigInteger min;
     private final BigInteger max;
+    private final BigInteger last;
 
     public Range(BigInteger min, BigInteger max) {
         this.min = min;
         this.max = max;
+        this.last = max.subtract(BigInteger.ONE);
     }
 
     public BigInteger head()
@@ -28,6 +30,6 @@ public class Range extends AbstractSeq<BigInteger>
 
     public boolean hasTail()
     {
-        return max.subtract(BigInteger.ONE).compareTo(min) > 0;
+        return last.compareTo(min) > 0;
     }
 }

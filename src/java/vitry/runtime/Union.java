@@ -26,6 +26,7 @@ abstract public class Union extends InclusionPattern
 
     // Eq and match          
 
+    @Override
     public boolean match(Object o)
     {
         if (o instanceof Pattern)
@@ -36,6 +37,7 @@ abstract public class Union extends InclusionPattern
         return false;
     }
 
+    @Override
     public boolean match(Atom a)
     {
         for (Pattern x : this)
@@ -44,6 +46,7 @@ abstract public class Union extends InclusionPattern
         return false;
     }
 
+    @Override
     public boolean match(Tagged p)
     {
         for (Pattern x : this)
@@ -52,6 +55,7 @@ abstract public class Union extends InclusionPattern
         return false;
     }
 
+    @Override
     public boolean match(Product a)
     {
         for (Pattern x : this)
@@ -60,7 +64,8 @@ abstract public class Union extends InclusionPattern
         return false;
     }
 
-    public boolean match(AbstractList a)
+    @Override
+    public boolean match(List a)
     {
         for (Pattern x : this)
             if (x.match(a))
@@ -68,11 +73,13 @@ abstract public class Union extends InclusionPattern
         return false;
     }
 
+    @Override
     public boolean eqFor(Pattern p)
     {
         return p.eq(this);
     }
 
+    @Override
     public boolean matchFor(Pattern p)
     {
         return p.match(this);
@@ -80,6 +87,7 @@ abstract public class Union extends InclusionPattern
 
     // Java stuff
 
+    @Override
     public String toString()
     {
         return Utils.join(this, "", " | ", "");

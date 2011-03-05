@@ -39,11 +39,13 @@ public final class Native extends Atom
         this.obj = obj;
     }
 
+    @Override
     public boolean eq(Object o)
     {
         return obj.equals(o);
     }
 
+    @Override
     public boolean eq(Atom o)
     {
         if (o instanceof Native)
@@ -53,11 +55,13 @@ public final class Native extends Atom
         return false;
     }
 
+    @Override
     public boolean match(Object o)
     {
         return eq(o);
     }
 
+    @Override
     public boolean match(Atom o)
     {
         return eq(o);

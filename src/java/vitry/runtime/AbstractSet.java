@@ -58,7 +58,8 @@ abstract class AbstractSet extends InclusionPattern implements Set
         return false;
     }
 
-    public boolean match(AbstractList a)
+    @Override
+    public boolean match(List a)
     {
         for (Pattern x : this)
             if (x.eq(a))
