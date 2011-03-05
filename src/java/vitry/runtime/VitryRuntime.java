@@ -70,214 +70,15 @@ public final class VitryRuntime
     
 
     /**
-     * Standard prelude
-     *                                          
-     * This is non-static so that bootstrap functions can access the runtime. 
-     */
-    private final Module prelude;
-
-    private void initPrelude() 
-    {    
-        def("()",                 NIL);
-        def("[]",                 productOf(NIL,    new list_()));
-        def("{}",                 productOf(BOTTOM, new set_()));
-        def("_",                  ANY);
-        
-        def("(,)",                new product_());        
-        def("[,]",                new list_());
-        def("{,}",                new set_());            
-        def("(|)",                new union_());          
-        def("(&)",                new intersection_());   
-        def("(->)",               NIL);                   // TODO 
-        def("(<->)",              NIL);                   // TODO 
-        
-        def("nil",                NIL);
-        def("true",               TRUE);
-        def("false",              FALSE);
-        def("bool",               BOOL);
-        def("nat",                NAT);
-        def("int",                INT);
-        def("rat",                RAT);
-        def("float",              FLOAT);
-        def("double",             DOUBLE);
-        def("complex",            COMPLEX);
-        def("char",               CHAR);
-        def("str",                STR);
-        
-        def("symbol",             new symbol_());
-        def("string",             new string_());
-
-        def("(==)",               new eq());
-        def("not",                new not());
-        def("(<)",                NIL);
-        def("(<=)",               NIL);
-        def("(=>)",               NIL);
-        def("(>)",                NIL);
-
-        def("arity",              new arity_());
-        def("id",                 new id());
-        def("const",              new const_());
-        def("(.)",                new compose());
-        def("(..)",               new follow());
-        def("power",              NIL);                   // TODO
-        def("flip",               new flip());
-
-        def("(+)",                new add());
-        def("(-)",                new sub());
-        def("(*)",                new mul());
-        def("(/)",                new div());
-        def("(%)",                new mod());
-        def("(%%)",               new modp());
-        def("(^)",                new pow());
-        def("random",             new random());
-        def("abs",                NIL);                   // TODO
-        def("signum",             NIL);                   // TODO
-        def("sqrt",               NIL);                   // TODO
-        def("log",                NIL);                   // TODO
-        def("logn",               NIL);                   // TODO
-        def("ln",                 NIL);                   // TODO
-        def("sin",                NIL);                   // TODO
-        def("tan",                NIL);                   // TODO
-        def("cos",                NIL);                   // TODO
-        def("asin",               NIL);                   // TODO
-        def("atan",               NIL);                   // TODO
-        def("acos",               NIL);                   // TODO
-        def("round",              NIL);                   // TODO
-        def("ceil",               NIL);                   // TODO
-        def("floor",              NIL);                   // TODO
-        def("recip",              NIL);                   // TODO
-        def("sum",                NIL);                   // TODO
-        def("prod",               NIL);                   // TODO
-        def("gcd",                NIL);                   // TODO
-        def("lcm",                NIL);                   // TODO
-
-        def("isOdd",              NIL);                   // TODO
-        def("isEven",             NIL);                   // TODO
-        def("isPrime",            NIL);                   // TODO
-        def("isZero",             NIL);                   // TODO
-        def("isNegative",         NIL);                   // TODO
-
-        def("cons",               new cons());
-        def("head",               new head());
-        def("tail",               new tail());
-        def("last",               NIL);                   // TODO
-        def("init",               NIL);                   // TODO
-        def("prepend",            NIL);                   // TODO
-        def("append",             NIL);                   // TODO
-
-//        def("length",             NIL);                   // TODO
-        def("rank",               NIL);                   // TODO
-        def("isEmpty",            NIL);                   // TODO
-        def("isSingle",           NIL);                   // TODO
-
-        def("nth",                new nth());
-        def("map",                new map());
-        def("apply",              NIL);                   // TODO
-        def("foldl",              new foldl());
-        def("foldr",              new foldr());
-
-        def("insert",             NIL);                   // TODO
-        def("substr",             NIL);                   // TODO
-        def("subseq",             NIL);                   // TODO
-        def("drop",               NIL);                   // TODO
-        def("take",               NIL);                   // TODO
-        def("remove",             NIL);                   // TODO
-        def("retain",             NIL);                   // TODO
-        def("range",              new range());
-        def("(...)",              new range());
-        def("[...]",              new range());
-
-        def("reverse",            NIL);                   // TODO
-        def("revappend",          NIL);                   // TODO
-        def("sort",               NIL);                   // TODO
-        def("search",             NIL);                   // TODO
-        def("shuffle",            NIL);                   // TODO
-        def("permute",            NIL);                   // TODO
-        def("partition",          NIL);                   // TODO
-
-        def("some",               NIL);                   // TODO
-        def("every",              NIL);                   // TODO
-        def("none",               NIL);                   // TODO
-
-        def("(++)",               new conc());            
-        def("now",                new now(this));
-
-        def("parse",              new parse(this));
-        def("parseDecl",          new parseDecl(this));
-        def("parseFile",          new parseFile(this));
-        def("eval",               new eval_(this));
-        def("print",              new print(this));
-        def("error",              new error(this));
-
-        def("repl",               new repl(this, prelude));
-        def("load",               new load(this, prelude));
-        def("version",            NIL);                   // TODO
-        def("quit",               new quit());
-        
-        // Non-standard
-        
-        def("__rt",               this);
-        def("writeFile",          new writeFile(this));
-        def("rewrite",            new rewrite(this));
-        def("seq",                new seq());
-        def("array",              new array());
-
-        def("class",              new class_(this));
-        def("new",                new new_(this));
-        def("method",             new method(this, prelude));
-        def("classOf",            new classOf(this));
-        def("methodsOf",          NIL);
-        def("fieldsOf",           NIL);
-
-        
-        defFix("[...]",           12, true, false);
-        defFix("(...)",           12, true, false);
-        defFix("(..)",            12, false, false);   // gathering?
-        defFix("(.)",             12, false, false );  // gathering?
-        defFix("(^^)",            11, true,  false);
-        defFix("(^)",             11, true,  false);
-        defFix("(%)",             10, true,  false);
-        defFix("(%%)",            10, true,  false);
-        defFix("(/)",             10, true,  false);
-        defFix("(*)",             10, true,  false);
-        defFix("(-)",             9,  true,  false);
-        defFix("(+)",             9,  true,  false);
-        defFix("(++)",            9,  true,  false);
-        defFix("[,]",             8,  true,  true);
-        defFix("{,}",             8,  true,  true);
-        defFix("(,)",             8,  true,  true);
-        defFix("(&)",             7,  true,  false);  // assoc?
-        defFix("(|)",             6,  true,  false);  // assoc?
-        defFix("(->)",            5,  false, false);
-        defFix("(<->)",           4,  false, false);
-        defFix("(<)",             3,  true,  false);
-        defFix("(<=)",            3,  true,  false);
-        defFix("(>=)",            3,  true,  false);
-        defFix("(>)",             3,  true,  false);
-        defFix("(!=)",            3,  true,  false);
-        defFix("(==)",            3,  true,  false);
-        defFix("(&&)",            2,  false, false);
-        defFix("(||)",            1,  false, false);
-        defFix("($!)",            0,  true,  false);
-        defFix("($)",             0,  false, false);
-    }
-
-    private Module makeBootstrapPrelude()
-    {
-        return new Module(Seqs.seq(Symbol.intern("Vitry"), Symbol.intern("Prelude")));
-    }
-
-
-    /**
      * Used to determine classpath etc.
      */
     private final Properties  setup;
-
+    
     /**
      * Used to load modules.
      */
     private ClassLoader classLoader;
-
+    
     /**
      * Loaded modules.
      */
@@ -289,13 +90,21 @@ public final class VitryRuntime
     private Eval       interpreter;
 
     /**
-     * This is for the gensym facility.
+     * For the gensym facility and other things.
      */
     private BigInteger uniqueState = BigInteger.valueOf(0x2177375305f7L);
 
     /**
+     * Standard prelude
+     *                                          
+     * This is non-static so that bootstrap functions can access the runtime. 
+     */
+    private Module prelude;
+    
+    /**
      * Classes interned for reflection.
-     * TODO unify with native set mechanism?
+     * 
+     * The symbol is full class name or java primitive (int, boolean etc).
      */
     private final Env<Symbol, Class<?>> internedClasses = new HashEnv<Symbol, Class<?>>();
 
@@ -315,11 +124,224 @@ public final class VitryRuntime
         
         this.interpreter = new Interpreter(this);
         
-        this.prelude = makeBootstrapPrelude();
-        initPrelude();
+        this.prelude = bootstrapPrelude();
+        initPrelude(this.prelude);
+        this.prelude = loadPrelude(this.prelude);
     }
 
 
+    private Module bootstrapPrelude()
+    {
+        return new Module(Seqs.seq(Symbol.intern("Vitry"), Symbol.intern("Prelude")));
+    }
+    
+    private Module loadPrelude(Module bootstrapPrelude)
+    {
+        /* 
+         * TODO Naive version
+         * We should probably obtain interpreted modules from 
+         * getResourceAsStream() instead
+         */
+        
+        Function parseFile = (Function) bootstrapPrelude.getValue("parseFile");
+        Function eval = (Function) bootstrapPrelude.getValue("eval");
+        
+        Object ast = parseFile.apply("bin/vitry/Prelude.vitry");
+        Module m   = (Module) eval.apply(ast);
+        
+        return m;
+    }
+
+    private void initPrelude(Module prelude) 
+    {    
+        prelude.def("()",                 NIL);
+        prelude.def("[]",                 productOf(NIL,    new list_()));
+        prelude.def("{}",                 productOf(BOTTOM, new set_()));
+        prelude.def("_",                  ANY);
+        
+        prelude.def("(,)",                new product_());        
+        prelude.def("[,]",                new list_());
+        prelude.def("{,}",                new set_());            
+        prelude.def("(|)",                new union_());          
+        prelude.def("(&)",                new intersection_());   
+        prelude.def("(->)",               NIL);                   // TODO 
+        prelude.def("(<->)",              NIL);                   // TODO 
+        
+        prelude.def("nil",                NIL);
+        prelude.def("true",               TRUE);
+        prelude.def("false",              FALSE);
+        prelude.def("bool",               BOOL);
+        prelude.def("nat",                NAT);
+        prelude.def("int",                INT);
+        prelude.def("rat",                RAT);
+        prelude.def("float",              FLOAT);
+        prelude.def("double",             DOUBLE);
+        prelude.def("complex",            COMPLEX);
+        prelude.def("char",               CHAR);
+        prelude.def("str",                STR);
+        
+        prelude.def("symbol",             new symbol_());
+        prelude.def("string",             new string_());
+
+        prelude.def("(==)",               new eq());
+        prelude.def("not",                new not());
+        prelude.def("(<)",                NIL);
+        prelude.def("(<=)",               NIL);
+        prelude.def("(=>)",               NIL);
+        prelude.def("(>)",                NIL);
+
+        prelude.def("arity",              new arity_());
+        prelude.def("id",                 new id());
+        prelude.def("const",              new const_());
+        prelude.def("(.)",                new compose());
+        prelude.def("(..)",               new follow());
+        prelude.def("power",              NIL);                   // TODO
+        prelude.def("flip",               new flip());
+
+        prelude.def("(+)",                new add());
+        prelude.def("(-)",                new sub());
+        prelude.def("(*)",                new mul());
+        prelude.def("(/)",                new div());
+        prelude.def("(%)",                new mod());
+        prelude.def("(%%)",               new modp());
+        prelude.def("(^)",                new pow());
+        prelude.def("random",             new random());
+        prelude.def("abs",                NIL);                   // TODO
+        prelude.def("signum",             NIL);                   // TODO
+        prelude.def("sqrt",               NIL);                   // TODO
+        prelude.def("log",                NIL);                   // TODO
+        prelude.def("logn",               NIL);                   // TODO
+        prelude.def("ln",                 NIL);                   // TODO
+        prelude.def("sin",                NIL);                   // TODO
+        prelude.def("tan",                NIL);                   // TODO
+        prelude.def("cos",                NIL);                   // TODO
+        prelude.def("asin",               NIL);                   // TODO
+        prelude.def("atan",               NIL);                   // TODO
+        prelude.def("acos",               NIL);                   // TODO
+        prelude.def("round",              NIL);                   // TODO
+        prelude.def("ceil",               NIL);                   // TODO
+        prelude.def("floor",              NIL);                   // TODO
+        prelude.def("recip",              NIL);                   // TODO
+//            prelude.def("sum",                NIL);                   // TODO
+//            prelude.def("prod",               NIL);                   // TODO
+        prelude.def("gcd",                NIL);                   // TODO
+        prelude.def("lcm",                NIL);                   // TODO
+
+        prelude.def("isOdd",              NIL);                   // TODO
+        prelude.def("isEven",             NIL);                   // TODO
+        prelude.def("isPrime",            NIL);                   // TODO
+        prelude.def("isZero",             NIL);                   // TODO
+        prelude.def("isNegative",         NIL);                   // TODO
+
+        prelude.def("cons",               new cons());
+        prelude.def("head",               new head());
+        prelude.def("tail",               new tail());
+        prelude.def("last",               NIL);                   // TODO
+        prelude.def("init",               NIL);                   // TODO
+        prelude.def("prepend",            NIL);                   // TODO
+        prelude.def("append",             NIL);                   // TODO
+
+//        prelude.def("length",             NIL);                   // TODO
+        prelude.def("rank",               NIL);                   // TODO
+        prelude.def("isEmpty",            NIL);                   // TODO
+        prelude.def("isSingle",           NIL);                   // TODO
+
+        prelude.def("nth",                new nth());
+        prelude.def("map",                new map());
+        prelude.def("apply",              NIL);                   // TODO
+        prelude.def("foldl",              new foldl());
+        prelude.def("foldr",              new foldr());
+
+        prelude.def("insert",             NIL);                   // TODO
+        prelude.def("substr",             NIL);                   // TODO
+        prelude.def("subseq",             NIL);                   // TODO
+        prelude.def("drop",               NIL);                   // TODO
+        prelude.def("take",               NIL);                   // TODO
+        prelude.def("remove",             NIL);                   // TODO
+        prelude.def("retain",             NIL);                   // TODO
+        prelude.def("range",              new range());
+        prelude.def("(...)",              new range());
+        prelude.def("[...]",              new range());
+
+        prelude.def("reverse",            NIL);                   // TODO
+        prelude.def("revappend",          NIL);                   // TODO
+        prelude.def("sort",               NIL);                   // TODO
+        prelude.def("search",             NIL);                   // TODO
+        prelude.def("shuffle",            NIL);                   // TODO
+        prelude.def("permute",            NIL);                   // TODO
+        prelude.def("partition",          NIL);                   // TODO
+
+        prelude.def("some",               NIL);                   // TODO
+        prelude.def("every",              NIL);                   // TODO
+        prelude.def("none",               NIL);                   // TODO
+
+        prelude.def("(++)",               new conc());            
+        prelude.def("now",                new now(this));
+
+        prelude.def("parse",              new parse(this));
+        prelude.def("parseDecl",          new parseDecl(this));
+        prelude.def("parseFile",          new parseFile(this));
+        prelude.def("eval",               new eval_(this));
+        prelude.def("print",              new print(this));
+        prelude.def("error",              new error(this));
+
+        prelude.def("repl",               new repl(this, prelude));
+        prelude.def("load",               new load(this, prelude));
+        prelude.def("version",            NIL);                   // TODO
+        prelude.def("quit",               new quit());
+        
+        // Non-standard
+        
+        prelude.def("__rt",               this);
+        prelude.def("writeFile",          new writeFile(this));
+        prelude.def("rewrite",            new rewrite(this));
+        prelude.def("seq",                new seq());
+        prelude.def("array",              new array());
+
+        prelude.def("class",              new class_(this));
+        prelude.def("new",                new new_(this));
+        prelude.def("method",             new method(this, prelude));
+        prelude.def("classOf",            new classOf(this));
+        prelude.def("methodsOf",          NIL);
+        prelude.def("fieldsOf",           NIL);
+
+        
+        prelude.defFix("[...]",           12, true, false);
+        prelude.defFix("(...)",           12, true, false);
+        prelude.defFix("(..)",            12, false, false);   // gathering?
+        prelude.defFix("(.)",             12, false, false );  // gathering?
+        prelude.defFix("(^^)",            11, true,  false);
+        prelude.defFix("(^)",             11, true,  false);
+        prelude.defFix("(%)",             10, true,  false);
+        prelude.defFix("(%%)",            10, true,  false);
+        prelude.defFix("(/)",             10, true,  false);
+        prelude.defFix("(*)",             10, true,  false);
+        prelude.defFix("(-)",             9,  true,  false);
+        prelude.defFix("(+)",             9,  true,  false);
+        prelude.defFix("(++)",            9,  true,  false);
+        prelude.defFix("[,]",             8,  true,  true);
+        prelude.defFix("{,}",             8,  true,  true);
+        prelude.defFix("(,)",             8,  true,  true);
+        prelude.defFix("(&)",             7,  true,  false);  // assoc?
+        prelude.defFix("(|)",             6,  true,  false);  // assoc?
+        prelude.defFix("(->)",            5,  false, false);
+        prelude.defFix("(<->)",           4,  false, false);
+        prelude.defFix("(<)",             3,  true,  false);
+        prelude.defFix("(<=)",            3,  true,  false);
+        prelude.defFix("(>=)",            3,  true,  false);
+        prelude.defFix("(>)",             3,  true,  false);
+        prelude.defFix("(!=)",            3,  true,  false);
+        prelude.defFix("(==)",            3,  true,  false);
+        prelude.defFix("(&&)",            2,  false, false);
+        prelude.defFix("(||)",            1,  false, false);
+        prelude.defFix("($!)",            0,  true,  false);
+        prelude.defFix("($)",             0,  false, false);
+    }
+
+    
+    
+    // Accessors
+    
     public Properties getSystemProperties() {
         return setup;
     }
@@ -381,6 +403,8 @@ public final class VitryRuntime
     }
 
 
+    // Data
+    
     public static Symbol toVitryBool(boolean a) {
         return a ? TRUE : FALSE;
     }
@@ -468,15 +492,15 @@ public final class VitryRuntime
 
 
 
-    // Helper methods
+    // Private
 
-    private void def(String name, Object val) {
-        prelude.addValue(Symbol.intern(name), val);
-    }
-
-    private void defFix(String name, int precedence, boolean assoc, boolean gathering) {
-        prelude.addFixity(Symbol.intern(name), new Fixity(precedence, assoc, gathering));
-    }
+//    private void def(Module mod, String name, Object val) {
+//        mod.addValue(Symbol.intern(name), val);
+//    }
+//
+//    private void defFix(Module mod, String name, int precedence, boolean assoc, boolean gathering) {
+//        mod.addFixity(Symbol.intern(name), new Fixity(precedence, assoc, gathering));
+//    }
 
     private Symbol nextUnique() {
         byte[] val = uniqueState.toByteArray();
@@ -493,7 +517,8 @@ public final class VitryRuntime
 }
 
 
-// Built-in types
+
+
 
 
 final class Any extends Atom
@@ -595,12 +620,39 @@ final class Bottom extends AbstractSet
 
     public Iterator<Pattern> iterator()
     {
-        return NilIterator.INSTANCE;
+        return ITER;
     }
 
-    private <T> T throwUnsupported()
+    static <T> T throwUnsupported()
     {
         throw new UnsupportedOperationException("{} has no members.");
+    }
+    
+    static final SeqIterator<Pattern> ITER = new Iter();
+    
+    static class Iter extends SeqIterator<Pattern>
+    {
+        private Iter() {
+            super(VitryRuntime.NIL);
+        }
+        
+        @Override
+        public boolean hasNext()
+        {
+            return false;
+        }
+        
+        @Override
+        public Pattern next()
+        {
+            return Bottom.throwUnsupported();
+        }
+        
+        @Override
+        public void remove()
+        {
+            Bottom.throwUnsupported();
+        }
     }
 }
 
@@ -651,9 +703,6 @@ final class Nil extends Atom implements List, Finite<Pattern>
     {
         return 0;
     }
-
-    // Rest of interface unsupported...
-    
     
     public Pattern head()
     {
@@ -667,50 +716,48 @@ final class Nil extends Atom implements List, Finite<Pattern>
 
     public Iterator<Pattern> iterator()
     {
-        return NilIterator.INSTANCE;
+        return ITER;
     }
 
     public SeqIterator<Pattern> seqIterator()
     {
-        return NilIterator.INSTANCE;
+        return ITER;
     }
 
-    private <T> T throwUnsupported()
+    static <T> T throwUnsupported()
     {
         throw new UnsupportedOperationException("() has no members.");
     }
 
+    static final SeqIterator<Pattern> ITER = new Iter();
+    
+    static class Iter extends SeqIterator<Pattern>
+    {
+        private Iter() {
+            super(VitryRuntime.NIL);
+        }
+        
+        @Override
+        public boolean hasNext()
+        {
+            return false;
+        }
+        
+        @Override
+        public Pattern next()
+        {
+            return Nil.throwUnsupported();
+        }
+        
+        @Override
+        public void remove()
+        {
+            Nil.throwUnsupported();
+        }
+    }
 }
 
 
-class NilIterator extends SeqIterator<Pattern>
-{
-    static final SeqIterator<Pattern> INSTANCE = new NilIterator();
-
-    private NilIterator() {
-        super(VitryRuntime.NIL);
-    }
-
-    public boolean hasNext()
-    {
-        return false;
-    }
-
-    public Pattern next()
-    {
-        return throwUnsupported();
-    }
-
-    public void remove()
-    {
-        throwUnsupported();
-    }
-
-    private <T> T throwUnsupported()
-    {
-        throw new UnsupportedOperationException("() has no members.");
-    }
-}
 
 
 final class StdProduct extends AbstractProduct

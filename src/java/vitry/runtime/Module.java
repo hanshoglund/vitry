@@ -84,22 +84,46 @@ public class Module implements Scope, Compilable
         values.define(name, value);
     }
 
+    void addFixity(String name, Fixity fix)
+    {
+        fixities.define(Symbol.intern(name), fix);
+    }
+    
     void addFixity(Symbol name, Fixity fix)
     {
         fixities.define(name, fix);
+    }
+    
+    void def(String name, Object value)
+    {
+        values.define(Symbol.intern(name), value);
+    }
+
+    void defFix(String name, int precedence, boolean assoc, boolean gathering) {
+        addFixity(name, new Fixity(precedence, assoc, gathering));
+    }
+
+
+    void importModule(Module source)
+    {
+        for (Symbol name : source.getValues().getKeys())
+        {
+            importValue(source, name, name);            
+        }
+        for (Symbol name : source.getFixities().getKeys())
+        {
+            importFixity(source, name);            
+        }
     }
 
     void importValue(Module source, Symbol name, Symbol as)
     {
         addValue(as, source.getValue(name));
     }
-
-    void importModule(Module source)
+    
+    void importFixity(Module source, Symbol name)
     {
-        for (Symbol name : source.getValues().getKeys())
-        {
-            importValue(source, name, name);
-        }
+        addFixity(name, source.getFixities().lookup(name));
     }
 
     public String toString()

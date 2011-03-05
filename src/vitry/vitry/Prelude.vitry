@@ -1,0 +1,52 @@
+; Vitry, copyright (C) Hans Hoglund 2011
+;
+; This program is free software: you can redistribute it and/or modify
+; it under the terms of the GNU General Public License as published by
+; the Free Software Foundation, either version 3 of the License, or
+; at your option) any later version.
+;
+; This program is distributed in the hope that it will be useful,
+; but WITHOUT ANY WARRANTY; without even the implied warranty of
+; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+; GNU General Public License for more details.
+;
+; You should have received a copy of the GNU General Public License
+; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+;
+; See COPYING.txt for details.
+
+
+; Vitry JVM prelude.
+;
+; @author Hans
+
+
+module Vitry.Prelude
+     
+sum     = foldl (+) 0
+product = foldl (*) 1
+
+
+length    = foldl (fn (x y) x+1) 0
+find pred = foldl (fn (x y) if (pred y) y else x) ()
+
+zipWith f xs ys =
+    match (f, xs, ys)
+        (f, (x, xs), (y, ys))     = cons (f x y) (zipWith f xs ys)
+        (_, _, _)                 = ()
+    
+map_ f    = foldr (cons . f) ()
+
+
+(&&) x y =
+    match (x, y)
+        (_:true, _:true) = true
+        (_:bool, _:bool) = false
+
+(||) x y =
+    match (x, y)
+        (_:true, _:bool) = true
+        (_:bool, _:true) = true
+        (_:bool, _:bool) = false
+
+(!=) x y = not (x == y)
