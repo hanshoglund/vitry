@@ -20,6 +20,7 @@ package vitry.runtime;
 
 import static vitry.runtime.VitryRuntime.*;
 import static vitry.runtime.struct.Seqs.isNil;
+import vitry.Build;
 import vitry.runtime.StandardFunction.*;
 
 import java.math.BigInteger;
@@ -154,188 +155,164 @@ public final class VitryRuntime
 
     private void initPrelude(Module prelude) 
     {    
-        prelude.def("()",                 NIL);
-        prelude.def("[]",                 productOf(NIL,    new list_()));
-        prelude.def("{}",                 productOf(BOTTOM, new set_()));
-        prelude.def("_",                  ANY);
+        prelude.def("()",         NIL);
+        prelude.def("[]",         productOf(NIL,    new list_()));
+        prelude.def("{}",         productOf(BOTTOM, new set_()));
+        prelude.def("_",          ANY);
         
-        prelude.def("(,)",                new product_());        
-        prelude.def("[,]",                new list_());
-        prelude.def("{,}",                new set_());            
-        prelude.def("(|)",                new union_());          
-        prelude.def("(&)",                new intersection_());   
-        prelude.def("(->)",               NIL);                   // TODO 
-        prelude.def("(<->)",              NIL);                   // TODO 
+        prelude.def("(,)",        new product_());        
+        prelude.def("[,]",        new list_());
+        prelude.def("{,}",        new set_());            
+        prelude.def("(|)",        new union_());          
+        prelude.def("(&)",        new intersection_());   
+        prelude.def("(->)",       NIL);                   // TODO 
+        prelude.def("(<->)",      NIL);                   // TODO 
         
-        prelude.def("nil",                NIL);
-        prelude.def("true",               TRUE);
-        prelude.def("false",              FALSE);
-        prelude.def("bool",               BOOL);
-        prelude.def("nat",                NAT);
-        prelude.def("int",                INT);
-        prelude.def("rat",                RAT);
-        prelude.def("float",              FLOAT);
-        prelude.def("double",             DOUBLE);
-        prelude.def("complex",            COMPLEX);
-        prelude.def("char",               CHAR);
-        prelude.def("str",                STR);
+        prelude.def("nil",        NIL);
+        prelude.def("true",       TRUE);
+        prelude.def("false",      FALSE);
+        prelude.def("bool",       BOOL);
+        prelude.def("nat",        NAT);
+        prelude.def("int",        INT);
+        prelude.def("rat",        RAT);
+        prelude.def("float",      FLOAT);
+        prelude.def("double",     DOUBLE);
+        prelude.def("complex",    COMPLEX);
+        prelude.def("char",       CHAR);
+        prelude.def("str",        STR);
         
-        prelude.def("symbol",             new symbol_());
-        prelude.def("string",             new string_());
+        prelude.def("symbol",     new symbol_());
+        prelude.def("string",     new string_());
 
-        prelude.def("(==)",               new eq());
-        prelude.def("not",                new not());
-        prelude.def("(<)",                NIL);
-        prelude.def("(<=)",               NIL);
-        prelude.def("(=>)",               NIL);
-        prelude.def("(>)",                NIL);
+        prelude.def("(==)",       new eq());
+        prelude.def("not",        new not());
+        prelude.def("(<)",        NIL);
+        prelude.def("(<=)",       NIL);
+        prelude.def("(=>)",       NIL);
+        prelude.def("(>)",        NIL);
 
-        prelude.def("arity",              new arity_());
-        prelude.def("id",                 new id());
-        prelude.def("const",              new const_());
-        prelude.def("(.)",                new compose());
-        prelude.def("(..)",               new follow());
-        prelude.def("power",              NIL);                   // TODO
-        prelude.def("flip",               new flip());
+        prelude.def("arity",      new arity_());
+        prelude.def("id",         new id());
+        prelude.def("const",      new const_());
+        prelude.def("(.)",        new compose());
+        prelude.def("(..)",       new follow());
+        prelude.def("power",      NIL);                   // TODO
+        prelude.def("flip",       new flip());
 
-        prelude.def("(+)",                new add());
-        prelude.def("(-)",                new sub());
-        prelude.def("(*)",                new mul());
-        prelude.def("(/)",                new div());
-        prelude.def("(%)",                new mod());
-        prelude.def("(%%)",               new modp());
-        prelude.def("(^)",                new pow());
-        prelude.def("random",             new random());
-        prelude.def("abs",                NIL);                   // TODO
-        prelude.def("signum",             NIL);                   // TODO
-        prelude.def("sqrt",               NIL);                   // TODO
-        prelude.def("log",                NIL);                   // TODO
-        prelude.def("logn",               NIL);                   // TODO
-        prelude.def("ln",                 NIL);                   // TODO
-        prelude.def("sin",                NIL);                   // TODO
-        prelude.def("tan",                NIL);                   // TODO
-        prelude.def("cos",                NIL);                   // TODO
-        prelude.def("asin",               NIL);                   // TODO
-        prelude.def("atan",               NIL);                   // TODO
-        prelude.def("acos",               NIL);                   // TODO
-        prelude.def("round",              NIL);                   // TODO
-        prelude.def("ceil",               NIL);                   // TODO
-        prelude.def("floor",              NIL);                   // TODO
-        prelude.def("recip",              NIL);                   // TODO
-//            prelude.def("sum",                NIL);                   // TODO
-//            prelude.def("prod",               NIL);                   // TODO
-        prelude.def("gcd",                NIL);                   // TODO
-        prelude.def("lcm",                NIL);                   // TODO
+        prelude.def("(+)",        new add());
+        prelude.def("(-)",        new sub());
+        prelude.def("(*)",        new mul());
+        prelude.def("(/)",        new div());
+        prelude.def("(%)",        new mod());
+        prelude.def("(%%)",       new modp());
+        prelude.def("(^)",        new pow());
+        prelude.def("random",     new random());
+        prelude.def("signum",     NIL);                   // TODO
+        prelude.def("recip",      NIL);                   // TODO
+        prelude.def("gcd",        NIL);                   // TODO
+        prelude.def("lcm",        NIL);                   // TODO
 
-        prelude.def("isOdd",              NIL);                   // TODO
-        prelude.def("isEven",             NIL);                   // TODO
-        prelude.def("isPrime",            NIL);                   // TODO
-        prelude.def("isZero",             NIL);                   // TODO
-        prelude.def("isNegative",         NIL);                   // TODO
+        prelude.def("cons",       new cons());
+        prelude.def("head",       new head());
+        prelude.def("tail",       new tail());
+        prelude.def("last",       NIL);                   // TODO
+        prelude.def("init",       NIL);                   // TODO
+        prelude.def("prepend",    NIL);                   // TODO
+        prelude.def("append",     NIL);                   // TODO
 
-        prelude.def("cons",               new cons());
-        prelude.def("head",               new head());
-        prelude.def("tail",               new tail());
-        prelude.def("last",               NIL);                   // TODO
-        prelude.def("init",               NIL);                   // TODO
-        prelude.def("prepend",            NIL);                   // TODO
-        prelude.def("append",             NIL);                   // TODO
+        prelude.def("rank",       NIL);                   // TODO
+        prelude.def("isEmpty",    NIL);                   // TODO
+        prelude.def("isSingle",   NIL);                   // TODO
 
-//        prelude.def("length",             NIL);                   // TODO
-        prelude.def("rank",               NIL);                   // TODO
-        prelude.def("isEmpty",            NIL);                   // TODO
-        prelude.def("isSingle",           NIL);                   // TODO
+        prelude.def("nth",        new nth());
+        prelude.def("map",        new map());
+        prelude.def("apply",      NIL);                   // TODO
+        prelude.def("foldl",      new foldl());
+        prelude.def("foldr",      new foldr());
 
-        prelude.def("nth",                new nth());
-        prelude.def("map",                new map());
-        prelude.def("apply",              NIL);                   // TODO
-        prelude.def("foldl",              new foldl());
-        prelude.def("foldr",              new foldr());
+        prelude.def("insert",     NIL);                   // TODO
+        prelude.def("substr",     NIL);                   // TODO
+        prelude.def("subseq",     NIL);                   // TODO
+        prelude.def("drop",       NIL);                   // TODO
+        prelude.def("take",       NIL);                   // TODO
+        prelude.def("remove",     NIL);                   // TODO
+        prelude.def("retain",     NIL);                   // TODO
+        prelude.def("range",      new range());
+        prelude.def("(...)",      new range());
+        prelude.def("[...]",      new range());
 
-        prelude.def("insert",             NIL);                   // TODO
-        prelude.def("substr",             NIL);                   // TODO
-        prelude.def("subseq",             NIL);                   // TODO
-        prelude.def("drop",               NIL);                   // TODO
-        prelude.def("take",               NIL);                   // TODO
-        prelude.def("remove",             NIL);                   // TODO
-        prelude.def("retain",             NIL);                   // TODO
-        prelude.def("range",              new range());
-        prelude.def("(...)",              new range());
-        prelude.def("[...]",              new range());
+        prelude.def("reverse",    NIL);                   // TODO
+        prelude.def("revappend",  NIL);                   // TODO
+        prelude.def("sort",       NIL);                   // TODO
+        prelude.def("search",     NIL);                   // TODO
+        prelude.def("shuffle",    NIL);                   // TODO
+        prelude.def("permute",    NIL);                   // TODO
+        prelude.def("partition",  NIL);                   // TODO
 
-        prelude.def("reverse",            NIL);                   // TODO
-        prelude.def("revappend",          NIL);                   // TODO
-        prelude.def("sort",               NIL);                   // TODO
-        prelude.def("search",             NIL);                   // TODO
-        prelude.def("shuffle",            NIL);                   // TODO
-        prelude.def("permute",            NIL);                   // TODO
-        prelude.def("partition",          NIL);                   // TODO
+        prelude.def("some",       NIL);                   // TODO
+        prelude.def("every",      NIL);                   // TODO
+        prelude.def("none",       NIL);                   // TODO
 
-        prelude.def("some",               NIL);                   // TODO
-        prelude.def("every",              NIL);                   // TODO
-        prelude.def("none",               NIL);                   // TODO
+        prelude.def("(++)",       new conc());            
+        prelude.def("now",        new now(this));
 
-        prelude.def("(++)",               new conc());            
-        prelude.def("now",                new now(this));
+        prelude.def("parse",      new parse(this));
+        prelude.def("parseDecl",  new parseDecl(this));
+        prelude.def("parseFile",  new parseFile(this));
+        prelude.def("eval",       new eval_(this));
+        prelude.def("print",      new print(this));
+        prelude.def("error",      new error(this));
 
-        prelude.def("parse",              new parse(this));
-        prelude.def("parseDecl",          new parseDecl(this));
-        prelude.def("parseFile",          new parseFile(this));
-        prelude.def("eval",               new eval_(this));
-        prelude.def("print",              new print(this));
-        prelude.def("error",              new error(this));
-
-        prelude.def("repl",               new repl(this, prelude));
-        prelude.def("load",               new load(this, prelude));
-        prelude.def("version",            NIL);                   // TODO
-        prelude.def("quit",               new quit());
+        prelude.def("repl",       new repl(this, prelude));
+        prelude.def("load",       new load(this, prelude));
+        prelude.def("quit",       new quit());
         
         // Non-standard
         
-        prelude.def("__rt",               this);
-        prelude.def("writeFile",          new writeFile(this));
-        prelude.def("rewrite",            new rewrite(this));
-        prelude.def("seq",                new seq());
-        prelude.def("array",              new array());
+        prelude.def("__rt",       this);
+        prelude.def("writeFile",  new writeFile(this));
+        prelude.def("rewrite",    new rewrite(this));
+        prelude.def("seq",        new seq());
+        prelude.def("array",      new array());
 
-        prelude.def("class",              new class_(this));
-        prelude.def("new",                new new_(this));
-        prelude.def("method",             new method(this, prelude));
-        prelude.def("classOf",            new classOf(this));
-        prelude.def("methodsOf",          NIL);
-        prelude.def("fieldsOf",           NIL);
+        prelude.def("class",      new class_(this));
+        prelude.def("new",        new new_(this));
+        prelude.def("method",     new method(this, prelude));
+        prelude.def("classOf",    new classOf(this));
+        prelude.def("methodsOf",  NIL);
+        prelude.def("fieldsOf",   NIL);
 
         
-        prelude.defFix("[...]",           12, true, false);
-        prelude.defFix("(...)",           12, true, false);
-        prelude.defFix("(..)",            12, false, false);   // gathering?
-        prelude.defFix("(.)",             12, false, false );  // gathering?
-        prelude.defFix("(^^)",            11, true,  false);
-        prelude.defFix("(^)",             11, true,  false);
-        prelude.defFix("(%)",             10, true,  false);
-        prelude.defFix("(%%)",            10, true,  false);
-        prelude.defFix("(/)",             10, true,  false);
-        prelude.defFix("(*)",             10, true,  false);
-        prelude.defFix("(-)",             9,  true,  false);
-        prelude.defFix("(+)",             9,  true,  false);
-        prelude.defFix("(++)",            9,  true,  false);
-        prelude.defFix("[,]",             8,  true,  true);
-        prelude.defFix("{,}",             8,  true,  true);
-        prelude.defFix("(,)",             8,  true,  true);
-        prelude.defFix("(&)",             7,  true,  false);  // assoc?
-        prelude.defFix("(|)",             6,  true,  false);  // assoc?
-        prelude.defFix("(->)",            5,  false, false);
-        prelude.defFix("(<->)",           4,  false, false);
-        prelude.defFix("(<)",             3,  true,  false);
-        prelude.defFix("(<=)",            3,  true,  false);
-        prelude.defFix("(>=)",            3,  true,  false);
-        prelude.defFix("(>)",             3,  true,  false);
-        prelude.defFix("(!=)",            3,  true,  false);
-        prelude.defFix("(==)",            3,  true,  false);
-        prelude.defFix("(&&)",            2,  false, false);
-        prelude.defFix("(||)",            1,  false, false);
-        prelude.defFix("($!)",            0,  true,  false);
-        prelude.defFix("($)",             0,  false, false);
+        prelude.defFix("[...]",   12, true,  false);
+        prelude.defFix("(...)",   12, true,  false);
+        prelude.defFix("(..)",    12, false, false);  // gathering?
+        prelude.defFix("(.)",     12, false, false);  // gathering?
+        prelude.defFix("(^^)",    11, true,  false);
+        prelude.defFix("(^)",     11, true,  false);
+        prelude.defFix("(%)",     10, true,  false);
+        prelude.defFix("(%%)",    10, true,  false);
+        prelude.defFix("(/)",     10, true,  false);
+        prelude.defFix("(*)",     10, true,  false);
+        prelude.defFix("(-)",     9,  true,  false);
+        prelude.defFix("(+)",     9,  true,  false);
+        prelude.defFix("(++)",    9,  true,  false);
+        prelude.defFix("[,]",     8,  true,  true);
+        prelude.defFix("{,}",     8,  true,  true);
+        prelude.defFix("(,)",     8,  true,  true);
+        prelude.defFix("(&)",     7,  true,  false);  // assoc?
+        prelude.defFix("(|)",     6,  true,  false);  // assoc?
+        prelude.defFix("(->)",    5,  false, false);
+        prelude.defFix("(<->)",   4,  false, false);
+        prelude.defFix("(<)",     3,  true,  false);
+        prelude.defFix("(<=)",    3,  true,  false);
+        prelude.defFix("(>=)",    3,  true,  false);
+        prelude.defFix("(>)",     3,  true,  false);
+        prelude.defFix("(!=)",    3,  true,  false);
+        prelude.defFix("(==)",    3,  true,  false);
+        prelude.defFix("(&&)",    2,  false, false);
+        prelude.defFix("(||)",    1,  false, false);
+        prelude.defFix("($!)",    0,  true,  false);
+        prelude.defFix("($)",     0,  false, false);
     }
 
     
@@ -400,6 +377,10 @@ public final class VitryRuntime
             internedClasses.define(name, c);
         }
         return internedClasses.lookup(name);
+    }
+    
+    public static List getVersion() {
+        return listOf(Build.MAJOR_VERSION, Build.MINOR_VERSION, Build.RELEASE_VERSION);
     }
 
 

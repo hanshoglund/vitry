@@ -50,7 +50,7 @@ public final class method extends StandardFunction
                             catch (ClassNotFoundException _)
                             {
                             }
-                            return throwResolve(n);
+                            return throwResolveClass(n);
                         }
                     }), dummy);
             }
@@ -178,12 +178,18 @@ public final class method extends StandardFunction
                 default:
                     throw new RuntimeException("Has not implemented reflection for arity > 5");
             }
-
-
         }
-        catch (Exception cause)
+        catch (ClassNotFoundException e)
         {
-            throw new ResolveError("Could not find class " + className, cause);
+            return throwResolveClass(className);
+        }
+        catch (SecurityException e)
+        {
+            return throwResolveMethod(methodName);
+        }
+        catch (NoSuchMethodException e)
+        {
+            return throwResolveMethod(methodName);
         }
     }
 
@@ -191,19 +197,26 @@ public final class method extends StandardFunction
     {
         return Modifier.isStatic(m.getModifiers());
     }
+    
+    
 
-    <T> T throwInvoke(Method m)
+    <T> T throwInvoke(Method method)
     {
-        throw new InvocationError("Could not call method " + m + " for no arguments");
+        throw new InvocationError("Could not call method " + method + " for no arguments");
     }
 
-    <T> T throwInvoke(Method m, Object a) throws InvocationError
+    <T> T throwInvoke(Method method, Object args) throws InvocationError
     {
-        throw new InvocationError("Could not call method " + m + " for arguments " + a);
+        throw new InvocationError("Could not call method " + method + " for arguments " + args);
+    }
+    
+    <T> T throwResolveMethod(Object name) throws ResolveError
+    {
+        throw new ResolveError("Could not find method " + name);
     }
 
-    <T> T throwResolve(Object n) throws ResolveError
+    <T> T throwResolveClass(Object name) throws ResolveError
     {
-        throw new ResolveError("Could not find class " + n);
+        throw new ResolveError("Could not find class " + name);
     }
 }

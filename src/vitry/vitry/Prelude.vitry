@@ -22,31 +22,69 @@
 
 
 module Vitry.Prelude
-     
+
+
+; TODO non-double versions (where appropriate)
+
+
+Math       = class "Math"
+BigInteger = class "java.math.BigInteger"
+
+sqrt    = method Math "sqrt"  [`double]
+ln      = method Math "log"   [`double]
+logn n  = ln .. (* (1. / ln n))
+log     = logn 10.
+log2    = logn 2.
+abs     = method Math "abs"   [`double]
+sin     = method Math "sin"   [`double]
+tan     = method Math "tan"   [`double]
+cos     = method Math "cos"   [`double]
+asin    = method Math "asin"  [`double]
+atan    = method Math "atan"  [`double]
+acos    = method Math "acos"  [`double]
+round   = method Math "round" [`double] .. method BigInteger "valueOf" [`long]
+ceil    = method Math "ceil"  [`double]
+floor   = method Math "floor" [`double]
+
+isOdd x  = x % 2 == 1
+isEven x = x % 2 == 0
+; isPrime
+isZero x = match x
+    _:0  = true
+    _:0. = true
+    _    = false
+isPositive x   = x > 0
+isNegative x   = x < 0
+ 
 sum     = foldl (+) 0
 product = foldl (*) 1
+
+
+
 
 
 length    = foldl (fn (x y) x+1) 0
 find pred = foldl (fn (x y) if (pred y) y else x) ()
 
+
+; interleave xs ys = foldr (fn (a b) xxx) [] (xs ys)
+    
 zipWith f xs ys =
     match (f, xs, ys)
         (f, (x, xs), (y, ys))     = cons (f x y) (zipWith f xs ys)
         (_, _, _)                 = ()
-    
-map_ f    = foldr (cons . f) ()
+
+zip = zipWith (,)
+interleave xs ys = foldr (fn ((x,y) zs) [x] ++ [y] ++ zs) [] (zip xs ys)
 
 
-(&&) x y =
-    match (x, y)
-        (_:true, _:true) = true
-        (_:bool, _:bool) = false
+; map_ f    = foldr (cons . f) ()
 
-(||) x y =
-    match (x, y)
-        (_:true, _:bool) = true
-        (_:bool, _:true) = true
-        (_:bool, _:bool) = false
 
+(&&) x y = match true (_ : (x & y) = true) (_ = false)
+(||) x y = match true (_ : (x | y) = true) (_ = false)
 (!=) x y = not (x == y)
+
+
+
+version = method (class "VitryRuntime") "getVersion" []

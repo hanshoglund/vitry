@@ -223,8 +223,8 @@ isPrime x      = ...
 isZero 0       = true
        _       = false
 
-isPositive n   = n > 0
-isNegative     = n < 0
+isPositive x   = x > 0
+isNegative x   = x < 0
 
 isReal (r, i) = (i == 0) : complex -> bool
        num    = true     : num -> bool
