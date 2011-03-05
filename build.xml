@@ -80,6 +80,14 @@
         </javac>
     </target>
     
+    <target name="copy-src" description="">
+        <copy todir="bin">
+            <fileset dir="src/vitry">
+                <filename name="**/*"/>
+            </fileset>
+        </copy>
+    </target>
+    
     <target name="doc" description="">
         <exec dir="." executable="doxygen">
         </exec>
@@ -93,7 +101,15 @@
         </jar>
     </target>
     
-    <target name="debug" depends="clean, dirs, generate-build, generate-antlr, compile-src, compile-test" description=""></target>
+    <target 
+        name="debug" depends="clean, 
+                              dirs, 
+                              generate-build, 
+                              generate-antlr, 
+                              compile-src, 
+                              compile-test,
+                              copy-src" 
+        description=""></target>
     
     <target name="usage" description="">
         <echo>Usage:                                                 </echo>
