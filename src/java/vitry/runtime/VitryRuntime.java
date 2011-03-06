@@ -187,10 +187,8 @@ public final class VitryRuntime
         prelude.def("str",        STR);
         
         prelude.def("(==)",       new eq());
-        prelude.def("(<)",        NIL);                   // TODO
-        prelude.def("(<=)",       NIL);                   // TODO
-        prelude.def("(=>)",       NIL);                   // TODO
-        prelude.def("(>)",        NIL);                   // TODO
+        prelude.def("(<)",        new lt());
+        prelude.def("(>)",        new gt());
 
         prelude.def("arity",      new arity_());
         prelude.def("id",         new id());
@@ -435,23 +433,23 @@ public final class VitryRuntime
     
     
     public static Product productOf(Object... args) {
-        return productFrom(Native.wrap(new ArraySeq<Object>(args)));
+        return productFrom(Native.wrapAll(new ArraySeq<Object>(args)));
     }
 
     public static List listOf(Object... args) {
-        return listFrom(Native.wrap(new ArraySeq<Object>(args)));
+        return listFrom(Native.wrapAll(new ArraySeq<Object>(args)));
     }
 
     public static Set setOf(Object... args) {
-        return setFrom(Native.wrap(new ArraySeq<Object>(args)));
+        return setFrom(Native.wrapAll(new ArraySeq<Object>(args)));
     }
 
     public static Union unionOf(Object... args) {
-        return unionFrom(Native.wrap(new ArraySeq<Object>(args)));
+        return unionFrom(Native.wrapAll(new ArraySeq<Object>(args)));
     }
 
     public static Intersection intersectionOf(Object... args) {
-        return intersectionFrom(Native.wrap(new ArraySeq<Object>(args)));
+        return intersectionFrom(Native.wrapAll(new ArraySeq<Object>(args)));
     }
     
     
@@ -710,6 +708,16 @@ final class Nil extends Atom implements List, Finite<Pattern>
         return ITER;
     }
 
+    public boolean canDestruct()
+    {
+        return false;
+    }
+
+    public Seq<Pattern> destruct()
+    {
+        return throwUnsupported();
+    }
+
     static <T> T throwUnsupported()
     {
         throw new UnsupportedOperationException("() has no members.");
@@ -741,6 +749,7 @@ final class Nil extends Atom implements List, Finite<Pattern>
             Nil.throwUnsupported();
         }
     }
+
 }
 
 
@@ -919,21 +928,27 @@ final class eq extends Binary
 
 final class product_ extends InvertibleRestFunction
 {
-    public Seq<?> applyVarInverse(Object a) throws InvocationError
+    public Seq<?> applyVarInverse(Object obj) throws InvocationError
     {
-        if (isNil(a))
+        if (isNil(obj))
         {
-            TypeError.throwWrongStructor(a, this);
+            TypeError.throwWrongStructor(obj, this);
         }
-        if (a instanceof Product)
+        if (obj instanceof Product)
         {
-            return ((Destructible) a).destruct();
+            return Native.unwrapAll(((Destructible) obj).destruct());
         }
-        if (a instanceof List)
+        if (obj instanceof List)
         {
-            return VitryRuntime.productOf( ((List) a).head(), list((List) a).tail());
+            List l = (List) obj;
+            Object x        = Native.unwrap(l.head());
+            Seq<Pattern> xs = list((List) obj).tail();
+
+            // FIXME should wrap in Native
+//            return VitryRuntime.productOf(x, xs);
+            return new ArraySeq<Object>(new Object[]{x, xs});
         }
-        return TypeError.throwWrongStructor(a, this);
+        return TypeError.throwWrongStructor(obj, this);
     }
 
     public Object applyVar(Seq<?> args)
@@ -953,7 +968,9 @@ final class list_ extends InvertibleRestFunction
     public Seq<?> applyVarInverse(Object a) throws InvocationError
     {
         if (a instanceof List)
-            return ((Destructible) a).destruct();
+        {
+            return Native.unwrapAll(((List) a).destruct());
+        }
         return TypeError.throwWrongStructor(a, this);
     }
 
@@ -1104,12 +1121,11 @@ final class prepend extends Binary
     public Object apply(Object x, Object xs)
     {
         if (xs instanceof String) {
-            xs = list(Native.wrap(CharSeq.from((String) xs)));
+            xs = list(Native.wrapAll(CharSeq.from((String) xs)));
         }
         return list(Seqs.cons(Native.wrap(x), (List) xs));
     }
 }
-
 
 final class head extends Unary
 {
@@ -1118,7 +1134,7 @@ final class head extends Unary
         if (xs instanceof String) {
             xs = CharSeq.from((String) xs);
         }
-        return ((Seq) xs).head();
+        return Native.unwrap(((Seq<?>) xs).head());
     }
 }
 
@@ -1128,7 +1144,7 @@ final class tail extends Unary
     public Object apply(Object xs)
     {
         if (xs instanceof String) {
-            xs = list(Native.wrap(CharSeq.from((String) xs)));
+            xs = list(Native.wrapAll(CharSeq.from((String) xs)));
         }
         return ((List) xs).tail();
     }
@@ -1139,6 +1155,7 @@ final class conc extends Binary
 {
     public Object apply(Object a, Object b)
     {
+        // TODO is unwrapping necessary?
         if (a instanceof List)
         {
             if (b instanceof List)
@@ -1147,7 +1164,7 @@ final class conc extends Binary
             }
             else
             {
-                String a2 = CharSeq.toString(Native.unwrap((Seq<Pattern>) a));
+                String a2 = CharSeq.toString(Native.unwrapAll((Seq<Pattern>) a));
                 String b2 = (String) Native.unwrap(b);
                 return (a2).concat(b2);
             }
@@ -1158,7 +1175,7 @@ final class conc extends Binary
             if (b instanceof List)
             {
                 String a2 = (String) Native.unwrap(a);
-                String b2 = CharSeq.toString(Native.unwrap((Seq<Pattern>) b));
+                String b2 = CharSeq.toString(Native.unwrapAll((Seq<Pattern>) b));
                 return (a2).concat(b2);
             }
             else
@@ -1181,7 +1198,7 @@ final class map extends Binary
     public Object apply(Object f, Object xs)
     {
         if (xs instanceof String) {
-            xs = list(Native.wrap(CharSeq.from((String) xs)));
+            xs = list(Native.wrapAll(CharSeq.from((String) xs)));
         }
         if (Seqs.isNil(xs)) return NIL;
         return ((List) xs).mapList((Function) f);
@@ -1198,10 +1215,10 @@ final class foldl extends StandardFunction
     public Object apply(Object f, Object u, Object xs)
     {
         if (xs instanceof String) {
-            xs = list(Native.wrap(CharSeq.from((String) xs)));
+            xs = list(Native.wrapAll(CharSeq.from((String) xs)));
         }
         if (Seqs.isNil((Seq<?>) xs)) return u;
-        return Seqs.foldl((Function) f, u, (List) xs);
+        return Seqs.foldlUnwrap((Function) f, u, (List) xs);
     }
 }
 
@@ -1215,9 +1232,9 @@ final class foldr extends StandardFunction
     public Object apply(Object f, Object u, Object xs)
     {
         if (xs instanceof String) {
-            xs = list(Native.wrap(CharSeq.from((String) xs)));
+            xs = list(Native.wrapAll(CharSeq.from((String) xs)));
         }
-        return Seqs.foldr((Function) f, u, (List) xs);
+        return Seqs.foldrUnwrap((Function) f, u, (List) xs);
     }
 }
 
@@ -1232,7 +1249,7 @@ final class nth extends StandardFunction
         if (xs instanceof String) {
             xs = CharSeq.from((String) xs);
         }
-        return Seqs.nth((Seq<?>) xs, ((Number) n).intValue());
+        return Native.unwrap(Seqs.nth((Seq<?>) xs, ((Number) n).intValue()));
     }
 }
 
@@ -1244,7 +1261,7 @@ final class range extends Binary
         BigInteger minNum = (BigInteger) min;
         BigInteger maxNum = (BigInteger) max;
         if (minNum.compareTo(maxNum) >= 0) return NIL;
-        return list(Native.wrap(new Range(minNum, maxNum)));
+        return list(Native.wrapAll(new Range(minNum, maxNum)));
     }
 }
 
@@ -1280,7 +1297,7 @@ final class seq extends StandardFunction.Unary
 final class array extends StandardFunction.Unary
 {
     public Object apply(Object a) {
-        return Seqs.toArray((Seq<?>) a);
+        return Seqs.toArray(Native.unwrapAll((Seq<?>) a));
     }
 }
 
@@ -1289,7 +1306,7 @@ final class random extends Unary
 
     public Object apply(Object a) throws InvocationError
     {
-        a = Native.unwrap(a);
+//        a = Native.unwrap(a);
         return BigInteger.valueOf((long) (Math.random() * ((Number) a).longValue()));
     }
 }
@@ -1508,7 +1525,7 @@ final class method extends StandardFunction
                     return new StandardFunction(1) {
                         public Object apply(Object a) throws InvocationError
                         {
-                            a = Native.unwrap(a);
+//                            a = Native.unwrap(a);
                             try
                             {
                                 if (isStatic(m))
@@ -1526,8 +1543,8 @@ final class method extends StandardFunction
                     return new StandardFunction(2) {
                         public Object apply(Object a, Object b) throws InvocationError
                         {
-                            a = Native.unwrap(a);
-                            b = Native.unwrap(b);
+//                            a = Native.unwrap(a);
+//                            b = Native.unwrap(b);
                             try
                             {
                                 if (isStatic(m))
@@ -1545,9 +1562,9 @@ final class method extends StandardFunction
                     return new StandardFunction(3) {
                         public Object apply(Object a, Object b, Object c) throws InvocationError
                         {
-                            a = Native.unwrap(a);
-                            b = Native.unwrap(b);
-                            c = Native.unwrap(c);
+//                            a = Native.unwrap(a);
+//                            b = Native.unwrap(b);
+//                            c = Native.unwrap(c);
                             try
                             {
                                 if (isStatic(m))
@@ -1565,10 +1582,10 @@ final class method extends StandardFunction
                     return new StandardFunction(4) {
                         public Object apply(Object a, Object b, Object c, Object d) throws InvocationError
                         {
-                            a = Native.unwrap(a);
-                            b = Native.unwrap(b);
-                            c = Native.unwrap(c);
-                            d = Native.unwrap(d);
+//                            a = Native.unwrap(a);
+//                            b = Native.unwrap(b);
+//                            c = Native.unwrap(c);
+//                            d = Native.unwrap(d);
                             try
                             {
                                 if (isStatic(m))
@@ -1586,11 +1603,11 @@ final class method extends StandardFunction
                     return new StandardFunction(5) {
                         public Object apply(Object a, Object b, Object c, Object d, Object e) throws InvocationError
                         {
-                            a = Native.unwrap(a);
-                            b = Native.unwrap(b);
-                            c = Native.unwrap(c);
-                            d = Native.unwrap(d);
-                            e = Native.unwrap(e);
+//                            a = Native.unwrap(a);
+//                            b = Native.unwrap(b);
+//                            c = Native.unwrap(c);
+//                            d = Native.unwrap(d);
+//                            e = Native.unwrap(e);
                             try
                             {
                                 if (isStatic(m))

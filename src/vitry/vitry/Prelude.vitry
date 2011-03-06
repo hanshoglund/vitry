@@ -49,19 +49,27 @@ iter f n = match (f, n)
 ;         double complex 
 ;         char str
 
-prec = nat
-     | int
-     | rat
-real = float
-     | double
-     | complex
-num  = prec
-     | real
+prec = nat   | int    | rat
+real = float | double | complex
+num  = prec  | real
         
 
 __Math       = class "Math"
 __BigInteger = class "java.math.BigInteger"
 __abs        =  method __Math "abs" [ `double ]
+
+(>=) x y = x > y || x == y
+(<=) x y = x < y || x == y                           
+zeroth = 0
+succ x = x + 1
+pred x = x - 1
+largest  x y = if (x > y) x else y
+smallest x y = if (x < y) x else y
+max xs = foldl largest (head xs) (tail xs)
+min xs = foldl smallest (head xs) (tail xs)
+
+e       = 2.718281828459045
+pi      = 3.141592653589793
 
 sqrt    =  method __Math        "sqrt"    [ `double ]
 ln      =  method __Math        "log"     [ `double ]
@@ -77,8 +85,8 @@ ceil    =  method __Math        "ceil"    [ `double ]
 floor   =  method __Math        "floor"   [ `double ]
 
 abs x = match x
-    x:real = __abs x
     x:prec = if (x < 0) (-x) else x
+    x:real = __abs x
 
 negate x = -x
 
@@ -110,6 +118,9 @@ product = foldl (*) 1
 
 
 
+
+
+
 isEmpty xs = xs == {} || xs == ()
 
 
@@ -122,14 +133,14 @@ find pred = foldl (fn (x y) if (pred y) y else x) ()
     
 zipWith f xs ys =
     match (f, xs, ys)
-        (f, (x, xs), (y, ys))     = cons (f x y) (zipWith f xs ys)
+        (f, (x, xs), (y, ys))     = prepend (f x y) (zipWith f xs ys)
         (_, _, _)                 = ()
 
 zip = zipWith (,)
 interleave xs ys = foldr (fn ((x,y) zs) [x] ++ [y] ++ zs) [] (zip xs ys)
 
 
-; map_ f    = foldr (cons . f) ()
+; map_ f    = foldr (prepend . f) ()
 
 
 

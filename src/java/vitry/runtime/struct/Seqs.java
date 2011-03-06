@@ -19,6 +19,7 @@
 package vitry.runtime.struct;
 
 import vitry.runtime.Function;
+import vitry.runtime.Native;
 import vitry.runtime.VitryRuntime;
 import vitry.runtime.misc.Utils;
 
@@ -180,14 +181,34 @@ public final class Seqs
 
     public static <U, T> U foldr(Function f, U z, Seq<T> xs)
     {
-//        if (isNil(xs)) return z;
-//        return (U) f.apply(head(xs), foldr(f, z, tail(xs)));
-        
         U res = z;
         xs = reverse(xs);
         while (!isNil(xs))
         {
             res = Utils.<U> unsafe(f.apply(xs.head(), res));
+            xs = xs.tail();
+        }
+        return res;
+    }
+    
+    public static <U, T> U foldlUnwrap(Function f, U z, Seq<T> xs)
+    {
+        U res = z;
+        while (!isNil(xs))
+        {
+            res = Utils.<U> unsafe(f.apply(res, Native.unwrap(xs.head())));
+            xs = xs.tail();
+        }
+        return res;
+    }
+
+    public static <U, T> U foldrUnwrap(Function f, U z, Seq<T> xs)
+    {
+        U res = z;
+        xs = reverse(xs);
+        while (!isNil(xs))
+        {
+            res = Utils.<U> unsafe(f.apply(Native.unwrap(xs.head()), res));
             xs = xs.tail();
         }
         return res;

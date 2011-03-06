@@ -1,0 +1,51 @@
+
+
+Strategy:
+
+
+    TailCall extends Throwable
+        @Override fillInStackTrace()
+        Function f
+        Object[] as
+        
+    ThreadLocal<Int> stackDepth {    
+        initialValue = 0
+    }
+    
+    
+    To tail call:
+            
+        sd = stackDepth.get()
+        if (sd < MAX_STACK_SIZE)
+        {       
+            stackDepth.set(sd++)
+            return fn.call(args)
+        }
+        else
+        {
+            throw new TailCall(fn, args)
+        }
+        
+    Eventually, it may be faster to always throw than to check
+    the ThreadLocal. Could we get the stack size in a faster way?
+    E.g. by passing it around as an extra param?        
+        
+    At other call sites:
+
+        while(true)
+        {
+            try
+            {
+                res = fn.call(args);
+                break;
+            }             
+            catch (TailCall tc)
+            {
+                fn = tc.fn;
+                args = tc.args;
+            }
+            catch (Throwable e)
+            {
+                throw e;
+            }
+        }

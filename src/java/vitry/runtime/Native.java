@@ -101,7 +101,7 @@ public final class Native extends Atom
             return o;
     }
 
-    public static Seq<Pattern> wrap(Seq<?> values)
+    public static Seq<Pattern> wrapAll(Seq<?> values)
     {
         return values.map(new StandardFunction.Unary()
             {
@@ -112,7 +112,7 @@ public final class Native extends Atom
             });
     }
 
-    public static Seq<Object> unwrap(Seq<?> values)
+    public static Seq<Pattern> unwrapAll(Seq<?> values)
     {
         return values.map(new StandardFunction.Unary()
             {

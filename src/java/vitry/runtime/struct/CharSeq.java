@@ -35,6 +35,7 @@ public class CharSeq extends AbstractSeq<Character> implements Finite<Character>
     
     
     public static CharSeq from(Seq<?> source) {
+        // TODO unwrapping necessary?
         StringBuilder sb = new StringBuilder();
         while (!Seqs.isNil(source)) {
             sb.append((Character) Native.unwrap(source.head()));

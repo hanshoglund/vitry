@@ -21,7 +21,7 @@ package vitry.runtime;
 import vitry.runtime.struct.Seq;
 
 
-public interface Product extends Pattern, Seq<Pattern>
+public interface Product extends Pattern, Seq<Pattern>, Destructible
 {
     Product mapProduct(Function fn);
 

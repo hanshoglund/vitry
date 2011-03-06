@@ -167,8 +167,7 @@ import java.math.BigInteger;
 *
 */
 // @Immutable
-public class BigRational extends Number implements Cloneable
-//        , Comparable<Number>
+public class BigRational extends Number implements Cloneable, Comparable<BigRational>
     {
 
         /**

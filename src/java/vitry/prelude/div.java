@@ -16,8 +16,8 @@ public class div extends StandardFunction
         
 
         public Object apply(Object a, Object b) {
-            a = Native.unwrap(a);
-            b = Native.unwrap(b);
+//            a = Native.unwrap(a);
+//            b = Native.unwrap(b);
             
             if (a instanceof BigRational) {
                 if (b instanceof BigRational) 

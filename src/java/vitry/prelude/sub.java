@@ -27,7 +27,7 @@ public class sub extends RestFunction
         }
 
         private Object negate(Object a) {
-            a = Native.unwrap(a);
+//            a = Native.unwrap(a);
             
             if (a instanceof BigRational)
                 return ((BigRational) a).negate();
@@ -39,8 +39,8 @@ public class sub extends RestFunction
         }
 
         public Object apply(Object a, Object b) {
-            a = Native.unwrap(a);
-            b = Native.unwrap(b);
+//            a = Native.unwrap(a);
+//            b = Native.unwrap(b);
             
             if (a instanceof BigRational) {
                 if (b instanceof BigRational) 

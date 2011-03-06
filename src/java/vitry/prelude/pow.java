@@ -15,8 +15,8 @@ public class pow extends StandardFunction
         }
 
         public Object apply(Object a, Object b) {
-            a = Native.unwrap(a);
-            b = Native.unwrap(b);
+//            a = Native.unwrap(a);
+//            b = Native.unwrap(b);
 
             if (a instanceof BigRational) return ((BigRational) a).pow(((Number) b).intValue());
             if (a instanceof BigInteger)  return ((BigInteger) a).pow(((Number) b).intValue());

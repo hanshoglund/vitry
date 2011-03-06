@@ -275,4 +275,14 @@ class VitryTree extends CommonTree implements Product
     {
         return delegee.toString();
     }
+
+    public boolean canDestruct()
+    {
+        return delegee.canDestruct();
+    }
+
+    public Seq<Pattern> destruct()
+    {
+        return delegee.destruct();
+    }
 }
