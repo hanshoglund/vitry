@@ -193,9 +193,9 @@ public final class VitryRuntime
         prelude.def("arity",      new arity_());
         prelude.def("id",         new id());
         prelude.def("const",      new const_());
+        prelude.def("flip",       new flip());
         prelude.def("(.)",        new compose());
         prelude.def("(..)",       new follow());
-        prelude.def("flip",       new flip());
 
         prelude.def("(+)",        new add());
         prelude.def("(-)",        new sub());
@@ -204,60 +204,56 @@ public final class VitryRuntime
         prelude.def("(%)",        new mod());
         prelude.def("(%%)",       new modp());
         prelude.def("(^)",        new pow());
-        prelude.def("random",     new random());
-        prelude.def("signum",     NIL);                   // TODO
-        prelude.def("recip",      NIL);                   // TODO
-        prelude.def("gcd",        NIL);                   // TODO
-        prelude.def("lcm",        NIL);                   // TODO
         prelude.def("NaN",        Double.NaN);
         prelude.def("Infinity",   Double.POSITIVE_INFINITY);
 
         prelude.def("(++)",       new conc());
         prelude.def("cons",       new prepend());
-        prelude.def("append",     NIL);                   // TODO
+        prelude.def("append",     NIL);
         prelude.def("head",       new head());
         prelude.def("tail",       new tail());
-        prelude.def("last",       NIL);                   // TODO
-        prelude.def("init",       NIL);                   // TODO
+        prelude.def("last",       NIL);
+        prelude.def("init",       NIL);
 
-        prelude.def("rank",       NIL);                   // TODO
-        prelude.def("isSingle",   NIL);                   // TODO
+        prelude.def("rank",       NIL);
+        prelude.def("isSingle",   NIL);
 
         prelude.def("nth",        new nth());
         prelude.def("map",        new map());
-        prelude.def("apply",      NIL);                   // TODO
+        prelude.def("apply",      NIL);
         prelude.def("foldl",      new foldl());
         prelude.def("foldr",      new foldr());
 
-        prelude.def("insert",     NIL);                   // TODO
-        prelude.def("substr",     NIL);                   // TODO
-        prelude.def("subseq",     NIL);                   // TODO
-        prelude.def("drop",       NIL);                   // TODO
-        prelude.def("take",       NIL);                   // TODO
-        prelude.def("remove",     NIL);                   // TODO
-        prelude.def("retain",     NIL);                   // TODO
+        prelude.def("insert",     NIL);
+        prelude.def("substr",     NIL);
+        prelude.def("subseq",     NIL);
+        prelude.def("drop",       NIL);
+        prelude.def("take",       NIL);
+        prelude.def("remove",     NIL);
+        prelude.def("retain",     NIL);
         prelude.def("range",      new range());
         prelude.def("(...)",      new range());
         prelude.def("[...]",      new range());
 
-        prelude.def("reverse",    NIL);                   // TODO
-        prelude.def("sort",       NIL);                   // TODO
-        prelude.def("search",     NIL);                   // TODO
-        prelude.def("shuffle",    NIL);                   // TODO
-        prelude.def("permute",    NIL);                   // TODO
-        prelude.def("partition",  NIL);                   // TODO
+        prelude.def("reverse",    NIL);
+        prelude.def("sort",       NIL);
+        prelude.def("search",     NIL);
+        prelude.def("shuffle",    NIL);
+        prelude.def("permute",    NIL);
+        prelude.def("partition",  NIL);
 
-        prelude.def("some",       NIL);                   // TODO
-        prelude.def("every",      NIL);                   // TODO
-        prelude.def("none",       NIL);                   // TODO
+        prelude.def("some",       NIL);
+        prelude.def("every",      NIL);
+        prelude.def("none",       NIL);
 
-        prelude.def("now",        new now(this));
+        prelude.def("now",        new now());
 
+        prelude.def("random",     new random());
         prelude.def("parse",      new parse(this));
-        prelude.def("print",      new print(this));
+        prelude.def("print",      new print());
         prelude.def("parseFile",  new parseFile(this));
         prelude.def("eval",       new eval_(this));
-        prelude.def("error",      new error_(this));
+        prelude.def("error",      new error_());
         prelude.def("writeFile",  new writeFile(this));
 
         prelude.def("repl",       new repl(this, prelude));
@@ -659,7 +655,7 @@ final class Nil extends Atom implements List, Finite<Pattern>
     public List cons(Pattern head)
     {
         // TODO product by default?
-        return list(new Pair<Pattern>(head, this));
+        return list(new PairSeq<Pattern>(head, this));
     }
 
     public boolean hasTail()
@@ -926,6 +922,8 @@ final class eq extends Binary
 }
 
 
+// Constructors
+
 final class product_ extends InvertibleRestFunction
 {
     public Seq<?> applyVarInverse(Object obj) throws InvocationError
@@ -944,8 +942,6 @@ final class product_ extends InvertibleRestFunction
             Object x        = Native.unwrap(l.head());
             Seq<Pattern> xs = list((List) obj).tail();
 
-            // FIXME should wrap in Native
-//            return VitryRuntime.productOf(x, xs);
             return new ArraySeq<Object>(new Object[]{x, xs});
         }
         return TypeError.throwWrongStructor(obj, this);
@@ -1028,18 +1024,7 @@ final class intersection_ extends RestFunction
 }
 
 
-//final class not extends Unary
-//{
-//    public Object apply(Object a) throws InvocationError
-//    {
-//        if (a.equals(TRUE))
-//            return FALSE;
-//        if (a.equals(FALSE))
-//            return TRUE;
-//        throw new TypeError("Expected bool");
-//    }
-//}
-
+// Function primitives
 
 final class arity_ extends Unary
 {
@@ -1049,7 +1034,6 @@ final class arity_ extends Unary
     }
 }
 
-
 final class id extends Unary
 {
     public Object apply(Object a)
@@ -1057,7 +1041,6 @@ final class id extends Unary
         return a;
     }
 }
-
 
 final class const_ extends Unary
 {
@@ -1073,7 +1056,6 @@ final class const_ extends Unary
     }
 }
 
-
 final class flip extends Unary
 {
     public Object apply(final Object f)
@@ -1086,11 +1068,6 @@ final class flip extends Unary
         };
     }
 }
-
-
-
-
-
 
 final class compose extends Binary
 {
@@ -1116,6 +1093,10 @@ final class follow extends Binary
         };
     }
 }
+
+
+// Seq primitives
+
 final class prepend extends Binary
 {
     public Object apply(Object x, Object xs)
@@ -1138,7 +1119,6 @@ final class head extends Unary
     }
 }
 
-
 final class tail extends Unary
 {
     public Object apply(Object xs)
@@ -1149,7 +1129,6 @@ final class tail extends Unary
         return ((List) xs).tail();
     }
 }
-
 
 final class conc extends Binary
 {
@@ -1188,11 +1167,6 @@ final class conc extends Binary
     }
 }
 
-
-
-
-
-
 final class map extends Binary
 {
     public Object apply(Object f, Object xs)
@@ -1222,7 +1196,6 @@ final class foldl extends StandardFunction
         return Seqs.foldlUnwrap((Function) f, u, (List) xs);
     }
 }
-
 
 final class foldr extends StandardFunction
 {
@@ -1254,7 +1227,6 @@ final class nth extends StandardFunction
     }
 }
 
-
 final class range extends Binary
 {
     public Object apply(Object min, Object max)
@@ -1262,13 +1234,14 @@ final class range extends Binary
         BigInteger minNum = (BigInteger) min;
         BigInteger maxNum = (BigInteger) max;
         if (minNum.compareTo(maxNum) >= 0) return NIL;
-        return list(Native.wrapAll(new Range(minNum, maxNum)));
+        return list(Native.wrapAll(new RangeSeq(minNum, maxNum)));
     }
 }
 
 
 
 
+// Internal
 
 final class symbol_ extends Unary
 {
@@ -1304,10 +1277,8 @@ final class array extends StandardFunction.Unary
 
 final class random extends Unary
 {
-
     public Object apply(Object a) throws InvocationError
     {
-//        a = Native.unwrap(a);
         return BigInteger.valueOf((long) (Math.random() * ((Number) a).longValue()));
     }
 }
@@ -1327,41 +1298,23 @@ final class eval_ extends StandardFunction
     }
 }
 
-class print extends StandardFunction
+class print extends Unary
 {
-    private VitryRuntime rt;
-
-    public print(VitryRuntime rt) {
-        super(1, rt.getPrelude());
-        this.rt = rt;
-    }
-
     public Object apply(Object a) {
         System.out.println(a);
         return a;
     }
 }
 
-class error_ extends StandardFunction
+class error_ extends Unary
 {
-    private VitryRuntime rt;
-
-    public error_(VitryRuntime rt) {
-        super(1, rt.getPrelude());
-        this.rt = rt;
-    }
-
     public Object apply(Object a) {
         throw new StandardError((String) a);
     }
 }
 
-class quit extends StandardFunction
+class quit extends Unary
 {
-    public quit() {
-        super(1);
-    }
-
     public Object apply(Object a) throws InvocationError {
         if (a instanceof Number)
             System.exit(((Number) a).intValue());
@@ -1369,19 +1322,12 @@ class quit extends StandardFunction
             System.exit(-1);
 
         // Never reached
-        throw new AssertionError();
+        return NIL;
     }
 }
 
-class now extends StandardFunction
+class now extends Unary
 {
-    private VitryRuntime rt;
-
-    public now(VitryRuntime rt) {
-        super(1, rt.getPrelude());
-        this.rt = rt;
-    }
-
     public Object apply(Object a) {
         return BigInteger.valueOf(System.currentTimeMillis());
     }
@@ -1403,15 +1349,6 @@ class class_ extends StandardFunction
         this.rt = rt;
     }
 
-
-    /**
-     * type class = symbol
-     * 
-     * class : str -> class
-     * 
-     * Loads the given class using reflection and returns a symbol
-     * referencing it.
-     */
     public Object apply(Object nameStr) throws InvocationError
     {
         Object res = null;
@@ -1441,10 +1378,6 @@ class classOf extends StandardFunction
         this.rt = rt;
     }
 
-    /**
-     * a:_ -> class
-     * Returns a reference to the class of a.
-     */
     public Object apply(Object obj) throws InvocationError {
         Symbol ref = Symbol.intern(obj.getClass().getName());
         try {
@@ -1468,11 +1401,6 @@ final class method extends StandardFunction
         this.rt = rt;
     }
 
-    /**
-     * class, name:str, [types] -> (... -> a)
-     * 
-     * Returns a function wrapping a method.
-     */
     public Object apply(Object r, Object n, Object t) throws InvocationError
     {
         Symbol className = Utils.maybeIntern(r);
@@ -1505,8 +1433,6 @@ final class method extends StandardFunction
             m = clazz.getMethod(methodName, types);
             final int arity = types.length + (isStatic(m) ? 0 : 1);
 
-//            System.err.println(m);
-
             switch (arity) {
                 case 0:
                     return new StandardFunction(1) {
@@ -1526,7 +1452,6 @@ final class method extends StandardFunction
                     return new StandardFunction(1) {
                         public Object apply(Object a) throws InvocationError
                         {
-//                            a = Native.unwrap(a);
                             try
                             {
                                 if (isStatic(m))
@@ -1544,8 +1469,6 @@ final class method extends StandardFunction
                     return new StandardFunction(2) {
                         public Object apply(Object a, Object b) throws InvocationError
                         {
-//                            a = Native.unwrap(a);
-//                            b = Native.unwrap(b);
                             try
                             {
                                 if (isStatic(m))
@@ -1563,9 +1486,6 @@ final class method extends StandardFunction
                     return new StandardFunction(3) {
                         public Object apply(Object a, Object b, Object c) throws InvocationError
                         {
-//                            a = Native.unwrap(a);
-//                            b = Native.unwrap(b);
-//                            c = Native.unwrap(c);
                             try
                             {
                                 if (isStatic(m))
@@ -1583,10 +1503,6 @@ final class method extends StandardFunction
                     return new StandardFunction(4) {
                         public Object apply(Object a, Object b, Object c, Object d) throws InvocationError
                         {
-//                            a = Native.unwrap(a);
-//                            b = Native.unwrap(b);
-//                            c = Native.unwrap(c);
-//                            d = Native.unwrap(d);
                             try
                             {
                                 if (isStatic(m))
@@ -1604,11 +1520,6 @@ final class method extends StandardFunction
                     return new StandardFunction(5) {
                         public Object apply(Object a, Object b, Object c, Object d, Object e) throws InvocationError
                         {
-//                            a = Native.unwrap(a);
-//                            b = Native.unwrap(b);
-//                            c = Native.unwrap(c);
-//                            d = Native.unwrap(d);
-//                            e = Native.unwrap(e);
                             try
                             {
                                 if (isStatic(m))
@@ -1644,8 +1555,6 @@ final class method extends StandardFunction
     {
         return Modifier.isStatic(m.getModifiers());
     }
-    
-    
 
     <T> T throwInvoke(Method method)
     {
@@ -1677,14 +1586,11 @@ class new_ extends StandardFunction
         this.rt = rt;
     }
 
-    /**
-     * sym -> instance
-     * 
-     * TODO arguments to constructors 
-     */
+
     public Object apply(Object c) {
         try
         {
+            // TODO arguments to constructors 
             return rt.internClass((Symbol) c).newInstance();
         }
         catch (Exception _)

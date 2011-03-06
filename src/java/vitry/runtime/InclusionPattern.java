@@ -24,7 +24,7 @@ import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.*;
 
 
-abstract public class InclusionPattern extends BasePattern implements Seq<Pattern>
+abstract class InclusionPattern extends BasePattern implements Seq<Pattern>
 {
     public boolean eq(Set o)
     {
@@ -69,7 +69,7 @@ abstract public class InclusionPattern extends BasePattern implements Seq<Patter
 
     public Seq<Pattern> cons(Pattern head)
     {
-        return new Pair<Pattern>(head, this);
+        return new PairSeq<Pattern>(head, this);
     }
 
     public <U> MappedSeq<Pattern, U> map(Function fn)

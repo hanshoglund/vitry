@@ -19,9 +19,9 @@
 package vitry.runtime.struct;
 
 /**
- * A sequence whose length is known at compile-time.
+ * A sequence known to be finite at compile-time.
  */
 public interface Finite<T> extends Seq<T>
-    {
-        int length();
-    }
+{
+    int length();
+}

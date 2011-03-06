@@ -18,6 +18,7 @@
  */
 package vitry.runtime.struct;
 
+
 /**
  * A SequenceIterator that remembers its starting point.
  */

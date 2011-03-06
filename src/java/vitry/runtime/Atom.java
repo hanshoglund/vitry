@@ -19,6 +19,9 @@
 package vitry.runtime;
 
 
+/**
+ * Basic atomic value.
+ */
 abstract public class Atom extends BasePattern
 {
     @Override

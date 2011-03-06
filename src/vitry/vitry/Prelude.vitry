@@ -18,10 +18,23 @@
 
 module Vitry.Prelude
 
+; Core reflectors
+__mprim  = class "Math"
+__bigint = class "java.math.BigInteger"
+
+
 ; native: nil true false bool empty
 ;         () [] {} _
 ;         (,) [,] {,} (|) (&) (->) (<->)
 ;         ==
+
+; native: arity id const flip (.) (..)
+
+iter f n = match (f, n)
+    (f, 0) = id
+    (f, i) = f . (iter f (i - 1))
+
+; native < >
 
 not  x = match x
     _ : true = false
@@ -30,20 +43,13 @@ not  x = match x
 (!=) x y = not (x == y)
 
 (&&) x y = match (x, y)
-    ( _ : true, _ : true ) = true
-    ( _ : bool, _ : bool ) = false
+    (_ : true, _ : true) = true
+    (_ : bool, _ : bool) = false
 
 (||) x y = match (x, y)
-    ( _ : true, _ : bool ) = true
-    ( _ : bool, _ : true ) = true
-    ( _ : bool, _ : bool ) = false
-
-; native: arity id const flip (.) (..)
-
-iter f n = match (f, n)
-    (f, 0) = f
-    (f, i) = f . (iter f (i - 1))
-
+    (_ : true, _ : bool) = true
+    (_ : bool, _ : true) = true
+    (_ : bool, _ : bool) = false
 
 ; native: nat int rat float
 ;         double complex 
@@ -53,12 +59,11 @@ prec = nat   | int    | rat
 real = float | double | complex
 num  = prec  | real
 
-; native: + - * / % ^
+; native: (+) (-) (*) (/) (%) (^) 
+;         NaN Infinity
 
-e     = 2.718281828459045
-pi    = 3.141592653589793
-
-; native < >
+e  = 2.718281828459045
+pi = 3.141592653589793
 
 (>=) x y = x > y || x == y
 (<=) x y = x < y || x == y                           
@@ -70,9 +75,6 @@ smallest x y = if (x < y) x else y
 max xs = foldl largest (head xs) (tail xs)
 min xs = foldl smallest (head xs) (tail xs)
 
-__mprim = class "Math"
-__int   = class "java.math.BigInteger"
-
 sqrt  =  method __mprim "sqrt"  [ `double ]
 ln    =  method __mprim "log"   [ `double ]
 sin   =  method __mprim "sin"   [ `double ]
@@ -81,17 +83,19 @@ cos   =  method __mprim "cos"   [ `double ]
 asin  =  method __mprim "asin"  [ `double ]
 atan  =  method __mprim "atan"  [ `double ]
 acos  =  method __mprim "acos"  [ `double ]
-round =  method __mprim "round" [ `double ] .. method __int "valueOf" [ `long ]
+round =  method __mprim "round" [ `double ] .. method __bigint "valueOf" [ `long ]
 ceil  =  method __mprim "ceil"  [ `double ]
 floor =  method __mprim "floor" [ `double ]
-
-__abs =  method __mprim "abs" [ `double ]
+__abs =  method __mprim "abs"   [ `double ]
 
 abs x = match x
     x:prec = if (x < 0) (-x) else x
     x:real = __abs x
 
 negate x = -x
+         
+; TODO signum recip gcd lcm
+
 
 logn n  =  ln .. (* (1. / ln n))
 log     =  logn 10.
@@ -117,7 +121,7 @@ product = foldl (*) 1
 
 
 
-
+; primitive: 
 
 
 

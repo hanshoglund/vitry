@@ -21,6 +21,10 @@ package vitry.runtime;
 import vitry.runtime.error.BindingError;
 
 
+/**
+ * Environment with convenience methods to lookup attributes related
+ * to evaluation.
+ */
 public class Context extends HashEnv<Symbol, Symbol>
 {
 

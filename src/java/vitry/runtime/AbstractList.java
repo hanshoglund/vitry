@@ -29,7 +29,7 @@ import vitry.runtime.struct.Seqs;
  *
  * @author Hans Hoglund
  */
-abstract public class AbstractList extends ConstructionPattern implements List
+abstract class AbstractList extends ConstructionPattern implements List
 {
     // Eq and match
 

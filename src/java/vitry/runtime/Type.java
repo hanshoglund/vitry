@@ -23,6 +23,9 @@ import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.Seq;
 
 
+/**
+ * Runtime representation of a type.
+ */
 public class Type extends BasePattern implements TypeExpr
 {
 

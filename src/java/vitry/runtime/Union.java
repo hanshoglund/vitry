@@ -21,6 +21,9 @@ package vitry.runtime;
 import vitry.runtime.misc.Utils;
 
 
+/**
+ * Pattern matching one of its elements.
+ */
 abstract public class Union extends InclusionPattern
 {
 

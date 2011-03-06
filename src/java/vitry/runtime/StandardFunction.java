@@ -42,9 +42,9 @@ abstract public class StandardFunction extends AbstractFunction implements Arity
      */
     protected final int arity;
 
-
-    // Bootstrap prelude
-
+    /**
+     * Convenient subclass of StandardFunction.
+     */
     public static abstract class Unary extends StandardFunction
     {
         public Unary() {
@@ -52,8 +52,9 @@ abstract public class StandardFunction extends AbstractFunction implements Arity
         }
     }
 
-    // Bootstrap prelude
-
+    /**
+     * Convenient subclass of StandardFunction.
+     */
     public static abstract class Binary extends StandardFunction
     {
         public Binary() {

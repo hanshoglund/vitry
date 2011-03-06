@@ -38,9 +38,6 @@ public class MappedSeq<A, B> extends AbstractSeq<B>
     private final Seq<A> input;
 
     public MappedSeq(Function fn, Seq<A> input) {
-        Checks.checkNotNull(fn, input);
-        if (fn instanceof Arity)
-            Checks.checkArity((Arity) fn, 1);
         this.fn = fn;
         this.input = input;
     }

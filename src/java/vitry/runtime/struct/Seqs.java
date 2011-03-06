@@ -18,6 +18,7 @@
  */
 package vitry.runtime.struct;
 
+import static vitry.runtime.struct.Seqs.isNil;
 import vitry.runtime.Function;
 import vitry.runtime.Native;
 import vitry.runtime.VitryRuntime;
@@ -32,8 +33,7 @@ public final class Seqs
 
     private static final Object[] EMPTY_ARRAY = new Object[0];
 
-    private Seqs() {
-    }
+    private Seqs() {}
 
 
     public static <T> Seq<T> single(T x)
@@ -301,5 +301,31 @@ class Single<T> extends AbstractSeq<T> implements Finite<T>
     public boolean hasTail()
     {
         return false;
+    }
+}
+
+class ConcedSeq<T> extends AbstractSeq<T>
+{
+    final Seq<T> xs; // Always non-nil
+    final Seq<T> ys;
+    
+    ConcedSeq(Seq<T> xs, Seq<T> ys) {
+        this.xs = xs;
+        this.ys = ys;
+    }
+
+    public T head()
+    {
+        return xs.head();
+    }
+
+    public Seq<T> tail()
+    {
+        return Seqs.concat(xs.tail(), ys);
+    }
+
+    public boolean hasTail()
+    {
+        return !isNil(ys) || !isNil(xs.tail());
     }
 }

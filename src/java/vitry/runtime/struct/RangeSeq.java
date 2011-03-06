@@ -18,18 +18,36 @@
  */
 package vitry.runtime.struct;
 
-import vitry.runtime.Product;
+import java.math.BigInteger;
 
 
-/**
- * Generatates concrete <em>n</em>-tuples.
- */
-public class Blocks
+public class RangeSeq extends AbstractSeq<BigInteger>
 {
+    private final BigInteger min;
+    private final BigInteger max;
+    private final BigInteger last;
 
-    public static Product generate(int n)
-    {
-        throw new UnsupportedOperationException("Not implemented");
+    public RangeSeq(BigInteger min, BigInteger max) {
+        this.min = min;
+        this.max = max;
+        this.last = max.subtract(BigInteger.ONE);
     }
 
+    public BigInteger head()
+    {
+        return min;
+    }
+
+    public Seq<BigInteger> tail()
+    {
+        if (!hasTail())
+            return null;
+        else
+            return new RangeSeq(min.add(BigInteger.ONE), max);
+    }
+
+    public boolean hasTail()
+    {
+        return last.compareTo(min) > 0;
+    }
 }

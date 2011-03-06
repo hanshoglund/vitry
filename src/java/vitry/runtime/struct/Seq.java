@@ -21,6 +21,9 @@ package vitry.runtime.struct;
 import vitry.runtime.Function;
 
 
+/**
+ * Core sequential abstraction.
+ */
 public interface Seq<T> extends Iterable<T>
 {
     T head();

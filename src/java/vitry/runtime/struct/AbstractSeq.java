@@ -43,7 +43,7 @@ abstract public class AbstractSeq<T> implements Seq<T>
 
     public Seq<T> cons(T head)
     {
-        return new Pair<T>(head, this);
+        return new PairSeq<T>(head, this);
     }
 
     public <U> Seq<U> map(Function fn)
@@ -59,7 +59,6 @@ abstract public class AbstractSeq<T> implements Seq<T>
     }
 
 
-    // DEBUG
     public String toString()
     {
         return Seqs.printable(this).toString();

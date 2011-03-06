@@ -24,7 +24,7 @@ import vitry.runtime.struct.Seqs;
 
 
 /**
- * Function with variable number of arguments.
+ * Function or constructor with variable number of arguments.
  * 
  * All methods delegate to applyVar(Sequence)
  *

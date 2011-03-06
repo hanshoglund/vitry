@@ -19,12 +19,12 @@
 package vitry.runtime.struct;
 
 
-public class Pair<T> extends AbstractSeq<T>
+public class PairSeq<T> extends AbstractSeq<T>
 {
     private T head;
     private Seq<T> tail;
 
-    public Pair(T head, Seq<T> tail) {
+    public PairSeq(T head, Seq<T> tail) {
         this.head = head;
         this.tail = tail;
     }

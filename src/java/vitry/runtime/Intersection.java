@@ -21,6 +21,9 @@ package vitry.runtime;
 import vitry.runtime.misc.*;
 
 
+/**
+ * Pattern matching all of its elements.
+ */
 abstract public class Intersection extends InclusionPattern
 {
 

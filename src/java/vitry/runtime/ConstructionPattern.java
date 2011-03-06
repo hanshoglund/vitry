@@ -21,12 +21,12 @@ package vitry.runtime;
 import java.util.Iterator;
 
 import vitry.runtime.struct.MappedSeq;
-import vitry.runtime.struct.Pair;
+import vitry.runtime.struct.PairSeq;
 import vitry.runtime.struct.Seq;
 import vitry.runtime.struct.SeqIterator;
 
 
-abstract public class ConstructionPattern extends BasePattern
+abstract class ConstructionPattern extends BasePattern
 implements Seq<Pattern>, Destructible
 {
     public Seq<Pattern> destruct()
@@ -41,7 +41,7 @@ implements Seq<Pattern>, Destructible
 
     public Seq<Pattern> cons(Pattern head)
     {
-        return new Pair<Pattern>(head, this);
+        return new PairSeq<Pattern>(head, this);
     }
 
     public <U> Seq<U> map(Function fn)

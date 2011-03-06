@@ -22,7 +22,7 @@ import vitry.runtime.error.*;
 import vitry.runtime.misc.*;
 
 
-abstract public class AbstractEnv<K, V> implements Env<K, V>
+abstract class AbstractEnv<K, V> implements Env<K, V>
 {
     private static Env<?, ?> GLOBAL = new GlobalEnvironment();
     private final Env<K, V> parent;
