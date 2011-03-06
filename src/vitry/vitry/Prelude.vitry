@@ -52,11 +52,13 @@ iter f n = match (f, n)
 prec = nat   | int    | rat
 real = float | double | complex
 num  = prec  | real
-        
 
-__Math       = class "Math"
-__BigInteger = class "java.math.BigInteger"
-__abs        =  method __Math "abs" [ `double ]
+; native: + - * / % ^
+
+e     = 2.718281828459045
+pi    = 3.141592653589793
+
+; native < >
 
 (>=) x y = x > y || x == y
 (<=) x y = x < y || x == y                           
@@ -68,21 +70,22 @@ smallest x y = if (x < y) x else y
 max xs = foldl largest (head xs) (tail xs)
 min xs = foldl smallest (head xs) (tail xs)
 
-e       = 2.718281828459045
-pi      = 3.141592653589793
+__mprim = class "Math"
+__int   = class "java.math.BigInteger"
 
-sqrt    =  method __Math        "sqrt"    [ `double ]
-ln      =  method __Math        "log"     [ `double ]
-sin     =  method __Math        "sin"     [ `double ]
-tan     =  method __Math        "tan"     [ `double ]
-cos     =  method __Math        "cos"     [ `double ]
-asin    =  method __Math        "asin"    [ `double ]
-atan    =  method __Math        "atan"    [ `double ]
-acos    =  method __Math        "acos"    [ `double ]
-round   =  method __Math        "round"   [ `double ] 
-        .. method __BigInteger  "valueOf" [ `long   ]
-ceil    =  method __Math        "ceil"    [ `double ]
-floor   =  method __Math        "floor"   [ `double ]
+sqrt  =  method __mprim "sqrt"  [ `double ]
+ln    =  method __mprim "log"   [ `double ]
+sin   =  method __mprim "sin"   [ `double ]
+tan   =  method __mprim "tan"   [ `double ]
+cos   =  method __mprim "cos"   [ `double ]
+asin  =  method __mprim "asin"  [ `double ]
+atan  =  method __mprim "atan"  [ `double ]
+acos  =  method __mprim "acos"  [ `double ]
+round =  method __mprim "round" [ `double ] .. method __int "valueOf" [ `long ]
+ceil  =  method __mprim "ceil"  [ `double ]
+floor =  method __mprim "floor" [ `double ]
+
+__abs =  method __mprim "abs" [ `double ]
 
 abs x = match x
     x:prec = if (x < 0) (-x) else x

@@ -1,60 +1,39 @@
 package vitry.prelude;
 
+import static vitry.runtime.VitryRuntime.FALSE;
+
 import java.math.BigInteger;
 
 import vitry.runtime.BigRational;
-import vitry.runtime.Native;
-import vitry.runtime.StandardFunction;
+import vitry.runtime.Symbol;
 
-public class mod extends StandardFunction
+
+public class mod extends MathPrimitive
+{
+    final Symbol withBool(Symbol x, Symbol y)
     {
-        
-        public mod() {
-            super(2);
-        }
-        
-
-        public Object apply(Object a, Object b) {
-//            a = Native.unwrap(a);
-//            b = Native.unwrap(b);
-            
-            if (a instanceof BigRational) {
-                if (b instanceof BigRational) 
-                    return ((BigRational) a).intValue() % ((BigRational) b).intValue();
-
-                else if (b instanceof Number) 
-                    return ((BigRational) a).intValue() % (((Number) b).intValue());
-
-                return throwArithmetic();
-            }
-            
-            if (a instanceof BigInteger)  {
-                if (b instanceof BigInteger)
-                    return ((BigInteger) a).mod((BigInteger) b);
-
-                // TODO
-                return throwArithmetic();
-            }
-            
-            if (a instanceof Double)      {
-                if (b instanceof Number)
-                    return ((Double) a) % ((Number) b).doubleValue();
-                
-                return throwArithmetic();
-            }
-            
-            if (a instanceof Float)      {
-                if (b instanceof Number)
-                    return ((Float) a) % ((Number) b).floatValue();
-                
-                return throwArithmetic();
-            }   
-            
-            return throwArithmetic();
-        }
-        
-        
-        <T> T throwArithmetic() {
-            throw new ArithmeticException("Expected number type");
-        }
+        if (y == FALSE) throw new ArithmeticException("Divide by 0");
+        return FALSE;
     }
+
+    final BigInteger withInt(BigInteger x, BigInteger y)
+    {
+        if (y.equals(BigInteger.ZERO)) throw new ArithmeticException("Divide by 0");
+        return x.mod(y);
+    }
+
+    final BigRational withRat(BigRational x, BigRational y)
+    {
+        return x.mod(y);
+    }
+
+    final Float withFloat(float x, float y)
+    {
+        return x % y;
+    }
+
+    final Double withDouble(double x, double y)
+    {
+        return x % y;
+    }
+}

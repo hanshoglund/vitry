@@ -1,62 +1,38 @@
 package vitry.prelude;
 
+import static vitry.runtime.VitryRuntime.FALSE;
+import static vitry.runtime.VitryRuntime.TRUE;
+
 import java.math.BigInteger;
 
 import vitry.runtime.BigRational;
-import vitry.runtime.Native;
-import vitry.runtime.StandardFunction;
+import vitry.runtime.Symbol;
 
-public class add extends StandardFunction
+
+public class add extends MathPrimitive
+{
+    final Symbol withBool(Symbol x, Symbol y)
     {
-        
-        public add() {
-            super(2);
-        }
-        
-
-        public Object apply(Object a, Object b) {
-//            a = Native.unwrap(a);
-//            b = Native.unwrap(b);
-            
-            if (a instanceof BigRational) {
-                if (b instanceof BigRational) 
-                    return ((BigRational) a).add((BigRational) b);
-
-                else if (b instanceof Number) 
-                    return ((BigRational) a).add(((Number) b).longValue());
-
-                return throwArithmetic();
-            }
-            
-            if (a instanceof BigInteger)  {
-                if (b instanceof BigInteger)
-                    return ((BigInteger) a).add((BigInteger) b);
-                if (b instanceof Number)
-                    return ((Number) a).doubleValue() + ((Number) b).doubleValue();
-
-                // TODO
-                return throwArithmetic();
-            }
-            
-            if (a instanceof Double)      {
-                if (b instanceof Number)
-                    return ((Double) a) + ((Number) b).doubleValue();
-                
-                return throwArithmetic();
-            }
-            
-            if (a instanceof Float)      {
-                if (b instanceof Number)
-                    return ((Float) a) + ((Number) b).floatValue();
-                
-                return throwArithmetic();
-            }   
-            
-            return throwArithmetic();
-        }
-        
-        
-        <T> T throwArithmetic() {
-            throw new ArithmeticException("Expected number type");
-        }
+        return x != y ? TRUE : FALSE;
     }
+
+    final BigInteger withInt(BigInteger x, BigInteger y)
+    {
+        return x.add(y);
+    }
+
+    final BigRational withRat(BigRational x, BigRational y)
+    {
+        return x.add(y);
+    }
+
+    final Float withFloat(float x, float y)
+    {
+        return x + y;
+    }
+
+    final Double withDouble(double x, double y)
+    {
+        return x + y;
+    }
+}

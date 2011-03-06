@@ -1,20 +1,38 @@
 package vitry.prelude;
 
-import vitry.runtime.StandardFunction;
-import vitry.runtime.VitryRuntime;
+import static vitry.runtime.VitryRuntime.FALSE;
+import static vitry.runtime.VitryRuntime.TRUE;
 
-public class gt extends StandardFunction
-    {        
-        public gt() {
-            super(2);
-        }
+import java.math.BigInteger;
 
-        public Object apply(Object a, Object b) {
-            return VitryRuntime.toVitryBool(((Comparable) a).compareTo(b) > 0);
-        }
-        
-        
-        <T> T throwArithmetic() {
-            throw new ArithmeticException("Expected number type");
-        }
+import vitry.runtime.BigRational;
+import vitry.runtime.Symbol;
+
+
+public class gt extends MathPrimitive
+{
+    final Symbol withBool(Symbol x, Symbol y)
+    {
+        return (x == TRUE && y == FALSE) ? TRUE : FALSE;
     }
+
+    final Symbol withInt(BigInteger x, BigInteger y)
+    {
+        return x.compareTo(y) > 0 ? TRUE : FALSE;
+    }
+
+    final Symbol withRat(BigRational x, BigRational y)
+    {
+        return x.compareTo(y) > 0 ? TRUE : FALSE;
+    }
+
+    final Symbol withFloat(float x, float y)
+    {
+        return x > y ? TRUE : FALSE;
+    }
+
+    final Symbol withDouble(double x, double y)
+    {
+        return x > y ? TRUE : FALSE;
+    }
+}

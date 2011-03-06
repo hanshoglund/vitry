@@ -22,6 +22,7 @@ import java.util.Iterator;
 
 import vitry.runtime.Arity;
 import vitry.runtime.Function;
+import vitry.runtime.Native;
 import vitry.runtime.misc.Checks;
 import vitry.runtime.misc.Utils;
 
@@ -52,9 +53,7 @@ public class MappedSeq<A, B> extends AbstractSeq<B>
     public B head()
     {
         A head = input.head();
-
-//        if (head == null) return null;
-        return Utils.<B> unsafe(fn.apply(head));
+        return Utils.<B> unsafe(fn.apply(Native.unwrap(head)));
     }
 
     public Seq<B> tail()
@@ -96,7 +95,7 @@ class MapIterator<T> implements Iterator<T>
 
     public T next()
     {
-        return Utils.<T> unsafe(fn.apply(input.next()));
+        return Utils.<T> unsafe(fn.apply(Native.unwrap(input.next())));
     }
 
     public void remove()
