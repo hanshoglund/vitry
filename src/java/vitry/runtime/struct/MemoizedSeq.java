@@ -36,7 +36,7 @@ public class MemoizedSeq<T> extends AbstractSeq<T>
 
     public T head()
     {
-        if ( ~(this.state & HEADED) == HEADED)
+        if ((this.state & HEADED) != HEADED)
         {
             this.x = seq.head();
             this.state |= HEADED;
@@ -47,7 +47,7 @@ public class MemoizedSeq<T> extends AbstractSeq<T>
 
     public Seq<T> tail()
     {
-        if ( ~(this.state & TAILED) == TAILED)
+        if ((this.state & TAILED) != TAILED)
         {
             this.xs = seq.tail();
             this.state |= TAILED;
