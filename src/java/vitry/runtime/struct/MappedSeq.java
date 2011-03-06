@@ -53,7 +53,7 @@ public class MappedSeq<A, B> extends AbstractSeq<B>
     public B head()
     {
         A head = input.head();
-        return Utils.<B> unsafe(fn.apply(Native.unwrap(head)));
+        return Utils.<B> unsafe(fn.apply(head));
     }
 
     public Seq<B> tail()
@@ -95,7 +95,7 @@ class MapIterator<T> implements Iterator<T>
 
     public T next()
     {
-        return Utils.<T> unsafe(fn.apply(Native.unwrap(input.next())));
+        return Utils.<T> unsafe(fn.apply(input.next()));
     }
 
     public void remove()

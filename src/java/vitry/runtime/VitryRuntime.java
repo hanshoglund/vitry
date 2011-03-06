@@ -1201,7 +1201,8 @@ final class map extends Binary
             xs = list(Native.wrapAll(CharSeq.from((String) xs)));
         }
         if (Seqs.isNil(xs)) return NIL;
-        return ((List) xs).mapList((Function) f);
+        return listFrom(Native.wrapAll(Native.unwrapAll((List) xs).map((Function) f)));
+//        return ((List) xs).mapList((Function) f);
     }
 }
 
