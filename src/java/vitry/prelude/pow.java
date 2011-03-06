@@ -1,26 +1,40 @@
 package vitry.prelude;
 
+import static vitry.runtime.VitryRuntime.FALSE;
+import static vitry.runtime.VitryRuntime.TRUE;
+
 import java.math.BigInteger;
 
 import vitry.runtime.BigRational;
-import vitry.runtime.Native;
-import vitry.runtime.StandardFunction;
+import vitry.runtime.Symbol;
 
-public class pow extends StandardFunction
+
+public class pow extends MathPrimitive
+{
+    final Symbol withBool(Symbol x, Symbol y)
     {
-        /**
-         */
-        public pow() {
-            super(2);
-        }
-
-        public Object apply(Object a, Object b) {
-//            a = Native.unwrap(a);
-//            b = Native.unwrap(b);
-
-            if (a instanceof BigRational) return ((BigRational) a).pow(((Number) b).intValue());
-            if (a instanceof BigInteger)  return ((BigInteger) a).pow(((Number) b).intValue());
-            if (a instanceof Number)      return Math.pow(((Number) a).doubleValue(), ((Number) b).doubleValue());
-            throw new RuntimeException("Expected number type.");
-        }
+        return (x == FALSE && y == TRUE) ? FALSE : TRUE;
     }
+
+    final BigInteger withInt(BigInteger x, BigInteger y)
+    {
+        // TODO
+        return x.pow(y.intValue());
+    }
+
+    final BigRational withRat(BigRational x, BigRational y)
+    {
+        // TODO
+        return x.power(y.intValue());
+    }
+
+    final Double withFloat(float x, float y)
+    {
+        return Math.pow(x, y);
+    }
+
+    final Double withDouble(double x, double y)
+    {
+        return Math.pow(x, y);
+    }
+}

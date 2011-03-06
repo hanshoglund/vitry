@@ -28,7 +28,9 @@ Strategy:
         
     Eventually, it may be faster to always throw than to check
     the ThreadLocal. Could we get the stack size in a faster way?
-    E.g. by passing it around as an extra param?        
+    E.g. by passing it around as an extra param?
+    
+    See benchmarks below:
         
     At other call sites:
 
@@ -49,3 +51,37 @@ Strategy:
                 throw e;
             }
         }
+        
+     
+Much faster to use Map<Thread, Integer> than ThreadLocal!
+     
+    
+At 1024 interations:
+Always jumping took 2 ms
+Depth checking took 1 ms
+
+At 8192 interations:
+Always jumping took 7 ms
+Depth checking took 8 ms
+
+At 16384 interations:
+Always jumping took 15 ms
+Depth checking took 17 ms
+
+At 65536 interations:
+Always jumping took 23 ms
+Depth checking took 26 ms
+  
+At 1 048576 interations:
+Always jumping took 95 ms
+Depth checking took 51 ms
+
+At 2 097152 interations:
+Always jumping took 172 ms
+Depth checking took 79 ms
+
+At 33 554432 interations:
+Always jumping took 1915 ms
+Depth checking took 842 ms
+
+
