@@ -220,22 +220,63 @@ none  = not . some
 zipWith f xs ys = match [f, xs, ys]
     [ f, (x, xs), (y, ys) ] = prepend (f x y) (zipWith f xs ys)
     [ _, _, _ ]             = ()
+                                  
 
-zip = zipWith (,)
-
+zip3With f xs ys zs = match [f, xs, ys, zs]
+    [ f, (x, xs), (y, ys), (z, zs) ] = prepend (f x y z) (zip3With f xs ys zs)
+    [ _, _, _, _ ]                   = ()
 
 
 ; lazy!
-interl xs ys = delay 
-    fn (x) 
+zipWithL f xs ys = delay (fn (_) 
+    prepend 
+        f (head xs) (head ys)
+        zipWithL f (tail xs) (tail ys))
+
+zip3WithL f xs ys zs = delay (fn (_) 
+    prepend 
+        f (head xs) (head ys) (head zs)
+        zip3WithL f (tail xs) (tail ys) (tail zs))
+
+
+zip = zipWith (,)
+zip3 = zip3With (,)
+zipL = zipWithL (,)
+zip3L = zip3WithL (,)
+
+
+dup = foldr (fn (x y) [x, x] ++ y) []
+
+dupL xs = delay 
+    fn (_)
+        let x = head xs
+            [x, x] ++ dupL (tail xs)
+
+; lazy!
+interlL xs ys = delay 
+    fn (_) 
         let x = head xs
             y = head ys
-            [x, y] ++ interl (tail xs) (tail ys)
+            [x, y] ++ interlL (tail xs) (tail ys)
+
+interl3L xs ys zs = delay 
+    fn (_) 
+        let x = head xs
+            y = head ys
+            y = head zs
+            [x, y, zs] ++ interl3L (tail xs) (tail ys) (tail zs)
+
 
 interp y xs = prepend (head xs) (foldl (fn (zs x) zs ++ [y] ++ [x]) [] (tail xs))
 
 ; str -> [a] -> str
 join s = foldr (++) "" . interp s . map string
+
+
+; Force and buffer n values
+buffer n xs = force (take n xs) ++ drop n xs
+    
+bufferStream n xs = force (take n xs) ++ delay (fn (_) bufferStream n (drop n xs))
 
 
 ; native: now random

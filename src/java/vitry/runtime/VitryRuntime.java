@@ -228,6 +228,7 @@ public final class VitryRuntime
         prelude.def("drop",       new drop());
         prelude.def("sort",       new sort());
         prelude.def("delay",      new delay());
+        prelude.def("force",      new force());
 
         prelude.def("now",        new now());
         prelude.def("random",     new random());
@@ -1332,6 +1333,18 @@ final class delay extends Unary
     public Object apply(Object thunk) throws InvocationError
     {
         return listFrom(new ThunkSeq<Pattern>((Function) thunk));
+    }
+}
+
+/**
+ * Force evaluation of a lazy seq.
+ */
+final class force extends Binary
+{
+    public Object apply(Object xs) throws InvocationError
+    {
+        Pattern[] elements = Seqs.toArray((Seq<Pattern>) xs, new Pattern[0]);
+        return listFrom(Seqs.<Pattern>from(elements));
     }
 }
 
