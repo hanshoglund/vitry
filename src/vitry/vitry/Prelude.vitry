@@ -18,7 +18,6 @@
 module Vitry.Prelude
 
 
-
 ; internal functions (not part of the prelude definition):
 ;         rewrite seq array symbol string
 ;         class new method classOf
@@ -37,9 +36,14 @@ module Vitry.Prelude
 
 ; native: arity id const flip (.) (..)
 
-iter f n = match (f, n)
-    (f, 0) = id
-    (f, i) = f . (iter f (i - 1))
+iter f n = match [f, n]
+    [f, 0] = id
+    [f, i] = f . (iter f (i - 1))
+
+(.')  f g = (fn (x y) f (g x y))
+(..') g f = (fn (x y) f (g x y))
+first  x y = x
+second x y = y
 
 
 
@@ -48,19 +52,19 @@ iter f n = match (f, n)
 ; native (==)
 
 not  x = match x
-    _:true  = false
-    _:false = true
+    _ : true  = false
+    _ : false = true
 
 (!=) x y = not (x == y)
 
-(&&) x y = match (x, y)
-    (_:true, _:true) = true
-    (_:bool, _:bool) = false
+(&&) x y = match [x, y]
+    [ _ : true, _ : true ] = true
+    [ _ : bool, _ : bool ] = false
 
-(||) x y = match (x, y)
-    (_:true, _:bool) = true
-    (_:bool, _:true) = true
-    (_:bool, _:bool) = false
+(||) x y = match [x, y]
+    [ _ : true, _ : bool ] = true
+    [ _ : bool, _ : true ] = true
+    [ _ : bool, _ : bool ] = false
 
 
 
@@ -91,6 +95,7 @@ num  = prec
 zeroth = 0
 succ x = x + 1
 pred x = x - 1
+compare x y = if (x < y) `smaller else if (x == y) `equal else `larger
 largest  x y = if (x > y) x else y
 smallest x y = if (x < y) x else y
 max xs = foldl largest (head xs) (tail xs)
@@ -100,19 +105,22 @@ min xs = foldl smallest (head xs) (tail xs)
 
 ; Arithmetic
 
+MATH           = class "Math"
+INT            = class "java.math.BigInteger"
+ABS            = method MATH "abs" [ `double ]
+LONG_TO_INT    = method INT "valueOf" [ `long ]
+INT_TO_LONG    = method INT "longValue" []
+MATH_PRIM name = method MATH name [ `double ]
+
 ; native: (+) (-) (*) (/) (%) (^)
 ;         NaN Infinity
 
 e  = 2.718281828459045
 pi = 3.141592653589793
 
-_math   = class "Math"
-_bigint = class "java.math.BigInteger"
-_abs    = method _math "abs" [ `double ]
-
 abs x = match x
-    x:prec = if (x < 0) (-x) else x
-    x:real = _abs x
+    x : prec = if (x < 0) (-x) else x
+    x : real = ABS x
 
 negate x = -x
 
@@ -120,19 +128,18 @@ negate x = -x
 ;      gcd lcm
 ;      approx rationalize
 
-_mathPrim name = method _math name [ `double ]
 
-sqrt  =  _mathPrim "sqrt"
-ln    =  _mathPrim "log" 
-sin   =  _mathPrim "sin" 
-tan   =  _mathPrim "tan" 
-cos   =  _mathPrim "cos" 
-asin  =  _mathPrim "asin"
-atan  =  _mathPrim "atan"
-acos  =  _mathPrim "acos"
-ceil  =  _mathPrim "ceil"
-floor =  _mathPrim "floor"
-round =  _mathPrim "round" .. method _bigint "valueOf" [ `long ]
+sqrt  =  MATH_PRIM "sqrt"
+ln    =  MATH_PRIM "log" 
+sin   =  MATH_PRIM "sin" 
+tan   =  MATH_PRIM "tan" 
+cos   =  MATH_PRIM "cos" 
+asin  =  MATH_PRIM "asin"
+atan  =  MATH_PRIM "atan"
+acos  =  MATH_PRIM "acos"
+ceil  =  MATH_PRIM "ceil"
+floor =  MATH_PRIM "floor"
+round =  MATH_PRIM "round" .. LONG_TO_INT
 
 logn n : real = ln .. (* (1. / ln n))
 log           = logn 10.
@@ -140,12 +147,9 @@ log2          = logn 2.
 
 isOdd      x : num = x % 2 == 1
 isEven     x : num = x % 2 == 0
-isZero     x = match x
-                   0       = true
-                   0.0     = true
-                   _ : num = false
-isPositive x : num = x > 0
-isNegative x : num = x < 0
+isZero     x : num = match x (0 = true) (0.0 = true) (_ = false)
+isPositive x : num = match x (x : prec = x > 0) (x : real = x > 0.0) 
+isNegative x : num = match x (x : prec = x < 0) (x : real = x < 0.0)
 isNan      x : num = (x == NaN)
 isInfinite x : num = (x == Infinity)
 isNumber   x : num = not (isNan x)
@@ -158,41 +162,42 @@ product = foldl (*) 1
 
 ; Lists
 
-; native eager: prepend head tail
-;               foldl foldr nth
+; TODO Naive implementations
+; TODO Assure all work for strings
+
+; native: prepend head tail
+
+append x = (flip (++)) [x]
+last     = foldl second [] . tail
+init xs  = match xs
+    (x, xs : []) = []
+    (x, xs)      = prepend x (init xs)
 
 
-; native lazy: unfold (++) map (...) 
+length   = foldr ((+ 1) .' second) 0
+rank xs  = match xs
+    _ : [] = 1
+    _      = (succ . max . (map
+                 fn (xs) match xs
+                     _  : []    = 1
+                     xs : [ _ ] = rank xs
+                     _          = 0)) 
+              xs 
 
-
-
-; TODO append
-last = foldl (fn (x y) y) []
-; TODO init (lazy)
-
-length = foldr (+ 1) 0
-; TODO rank
-isEmpty xs = match xs
-    _ : []  = true
-    _ : [_] = false
+isEmpty xs  = match xs
+    _ : ()    = true
+    _ : [ _ ] = false
 isSingle xs = match xs
-    [_]     = true
-    _ : [_] = false
+    _ : ()    = false
+    _         = (tail xs) == ()
 
-; TODO apply
+substr m n = take n . drop m
 
-; TODO insert
-; TODO substr
-; TODO subseq
-; TODO drop
-; TODO take
-; TODO remove
-; TODO retain
 
-zipWith f xs ys =
-    match (f, xs, ys)
-        (f, (x, xs), (y, ys)) = prepend (f x y) (zipWith f xs ys)
-        (_, _, _)             = ()
+
+zipWith f xs ys = match [f, xs, ys]
+    [ f, (x, xs), (y, ys) ] = prepend (f x y) (zipWith f xs ys)
+    [ _, _, _ ]             = ()
 
 zip = zipWith (,)
 
@@ -201,24 +206,26 @@ intersperse y xs = prepend (head xs) (foldl (fn (zs x) zs ++ [y] ++ [x]) [] (tai
 
 
 reverse   = foldl (flip prepend) []
+; remove
+; retain
 ; sort
 ; search
 
 find pred = foldl (fn (x y) if (pred y) y else x) ()
-; filter
 ; partition
 
 ; shuffle
 ; permute
 
-repeat   = unfoldl (fn (x) (x, x))
-cycle xs = unfoldl (fn ((orig, (x, xs))) (x, (xs, (if (xs == ()) orig else xs)))) (xs, xs)
+repeat   = unfold (fn (x) (x, x))
+cycle xs = unfold (fn ((orig, (x, xs))) (x, (xs, (if (xs == ()) orig else xs)))) (xs, xs)
 
 some  = foldr (||) false
 every = foldr (&&) true
 none  = not . some
 
-join  = foldr (++) ""
+; str -> [a] -> str
+join s = foldr (++) "" . intersperse s . map string
 
 
 
@@ -230,3 +237,11 @@ join  = foldr (++) ""
 version = (method (class "VitryRuntime") "getVersion" []) ()
 versionStr = join
     intersperse "." (map string version)
+
+sleep time = do time = INT_TO_LONG time
+                (method (class "Thread") "sleep" [ `long ]) time
+                time
+    
+timer f    = do start = now ()
+                f ()
+                now () - start

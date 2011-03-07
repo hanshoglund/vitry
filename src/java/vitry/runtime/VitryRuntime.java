@@ -21,9 +21,12 @@ package vitry.runtime;
 import static vitry.runtime.VitryRuntime.*;
 import static vitry.runtime.struct.Seqs.isNil;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -214,15 +217,16 @@ public final class VitryRuntime
         prelude.def("tail",       new tail());
         prelude.def("foldl",      new foldl());
         prelude.def("foldr",      new foldr());
-        prelude.def("nth",        new nth());
+        prelude.def("index",      new index());
         prelude.def("range",      new range());
         prelude.def("(...)",      new range());
         prelude.def("[...]",      new range());
         prelude.def("(++)",       new conc());
         prelude.def("map",        new map());
-        prelude.def("unfoldl",    new unfoldl());
+        prelude.def("unfold",     new unfold());
         prelude.def("take",       new take());
         prelude.def("drop",       new drop());
+        prelude.def("sort",       new sort());
 
         prelude.def("now",        new now());
         prelude.def("random",     new random());
@@ -258,6 +262,8 @@ public final class VitryRuntime
 
         prelude.defFix("[...]",   12, true,  false);
         prelude.defFix("(...)",   12, true,  false);
+        prelude.defFix("(..')",   12, false, false);
+        prelude.defFix("(.')",    12, false, false);
         prelude.defFix("(..)",    12, false, false);
         prelude.defFix("(.)",     12, false, false);
         prelude.defFix("(^^)",    11, true,  false);
@@ -480,36 +486,67 @@ final class Any extends Atom
     Any() {
     }
 
+    @Override
     public boolean eq(Atom o)
     {
         return o == this;
     }
 
+    @Override
     public boolean match(Atom o)
     {
         return true;
     }
 
+    @Override
+    public boolean match(Object o)
+    {
+        return true;
+    }
+
+    @Override
+    public boolean match(Tagged p)
+    {
+        return true;
+    }
+
+    @Override
     public boolean match(Product p)
     {
         return true;
     }
 
-    public boolean match(Union p)
+    @Override
+    public boolean match(Function p)
     {
         return true;
     }
 
+    @Override
+    public boolean match(List p)
+    {
+        return true;
+    }
+
+    @Override
     public boolean match(Set p)
     {
         return true;
     }
 
-    public boolean match(Intersection p)
+    @Override
+    public boolean match(Union p)
     {
         return true;
     }
 
+    @Override
+    public boolean match(Intersection a)
+    {
+        return true;
+    }
+
+    @Override
     public boolean match(Type p)
     {
         return true;
@@ -527,21 +564,25 @@ final class Bottom extends AbstractSet
     Bottom() {
     }
 
+    @Override
     public boolean eq(Set o)
     {
         return o == this;
     }
 
+    @Override
     public boolean match(Set a)
     {
         return a == this;
     }
 
+    @Override
     public boolean match(Union a)
     {
         return false;
     }
 
+    @Override
     public boolean match(Intersection a)
     {
         return false;
@@ -626,6 +667,11 @@ final class Nil extends Atom implements List, Finite<Pattern>
         return "()";
     }
 
+    public void toString(Appendable a) throws IOException
+    {
+        a.append(toString());
+    }
+
     public List cons(Pattern head)
     {
         // TODO product by default?
@@ -645,7 +691,7 @@ final class Nil extends Atom implements List, Finite<Pattern>
 
     public Product mapProduct(Function fn)
     {
-        return throwUnsupported();
+        return throwDeconstruct();
     }
 
     public List mapList(Function fn)
@@ -660,12 +706,12 @@ final class Nil extends Atom implements List, Finite<Pattern>
     
     public Pattern head()
     {
-        return throwUnsupported();
+        return throwDeconstruct();
     }
 
     public Product tail()
     {
-        return throwUnsupported();
+        return throwDeconstruct();
     }
 
     public Iterator<Pattern> iterator()
@@ -685,10 +731,10 @@ final class Nil extends Atom implements List, Finite<Pattern>
 
     public Seq<Pattern> destruct()
     {
-        return throwUnsupported();
+        return throwDeconstruct();
     }
 
-    static <T> T throwUnsupported()
+    static <T> T throwDeconstruct()
     {
         throw new TypeError("Can not deconstruct ()");
     }
@@ -710,13 +756,13 @@ final class Nil extends Atom implements List, Finite<Pattern>
         @Override
         public Pattern next()
         {
-            return Nil.throwUnsupported();
+            return Nil.throwDeconstruct();
         }
         
         @Override
         public void remove()
         {
-            Nil.throwUnsupported();
+            Nil.throwDeconstruct();
         }
     }
 
@@ -1086,8 +1132,10 @@ final class head extends Unary
 {
     public Object apply(Object xs)
     {
-        if (xs instanceof String) {
-            xs = CharSeq.from((String) xs);
+        if (xs instanceof CharSequence) {
+            CharSequence chars = (CharSequence) xs;
+            if (chars.length() == 0) Nil.throwDeconstruct();
+            return chars.charAt(0);
         }
         return Native.unwrap(((Seq<?>) xs).head());
     }
@@ -1097,8 +1145,11 @@ final class tail extends Unary
 {
     public Object apply(Object xs)
     {
-        if (xs instanceof String) {
-            xs = list(Native.wrapAll(CharSeq.from((String) xs)));
+        if (xs instanceof CharSequence) {
+            CharSequence chars = (CharSequence) xs;
+            if (chars.length() == 0) Nil.throwDeconstruct();
+            if (chars.length() == 1) return NIL;
+            return list(Native.wrapAll(CharSeq.from(((CharSequence) xs).subSequence(1, chars.length()))));
         }
         return ((List) xs).tail();
     }
@@ -1186,9 +1237,9 @@ final class foldr extends StandardFunction
     }
 }
 
-final class nth extends StandardFunction
+final class index extends StandardFunction
 {
-    public nth() {
+    public index() {
         super(2);
     }
 
@@ -1212,7 +1263,39 @@ final class range extends Binary
     }
 }
 
-final class unfoldl extends Binary
+final class sort extends Binary
+{
+    static final Symbol LT = Symbol.intern("smaller");
+    static final Symbol EQ = Symbol.intern("equal");
+    static final Symbol GT = Symbol.intern("larger");
+
+    public Object apply(Object f, Object xs) throws InvocationError
+    {
+        Object[] a = Seqs.toArray(Native.unwrapAll((Seq<?>) xs));
+        Arrays.sort(a, new Comp((Function) f));
+        return listFrom(Native.wrapAll(Seqs.from(a)));
+    }
+    
+    static class Comp implements Comparator<Object>
+    {
+        private final Function f;
+
+        public Comp(Function f) {
+            this.f = f;
+        }
+
+        public int compare(Object x, Object y)
+        {
+            Symbol res = (Symbol) f.apply(x, y);
+            if (res.eq(LT)) return -1;
+            if (res.eq(EQ)) return 0;
+            if (res.eq(GT)) return 1;
+            throw new TypeError(res + " does not conform to ordering");
+        }   
+    }
+}
+
+final class unfold extends Binary
 {
     public Object apply(Object f, Object init) throws InvocationError
     {
@@ -1225,6 +1308,9 @@ final class take extends Binary
     public Object apply(Object n, Object xs) throws InvocationError
     {
         if (Seqs.isNil(xs) || ((Number) n).intValue() < 1) return NIL;
+        if (xs instanceof String) {
+            xs = list(Native.wrapAll(CharSeq.from((String) xs)));
+        }
         return list(new TakeSeq((Seq) xs, ((Number) n).intValue()));
     }
 }
@@ -1232,6 +1318,9 @@ final class drop extends Binary
 {
     public Object apply(Object n, Object xs) throws InvocationError
     {
+        if (xs instanceof String) {
+            xs = list(Native.wrapAll(CharSeq.from((String) xs)));
+        }
         return list(new DropSeq((Seq) xs, ((Number) n).intValue()));
     }
 }
@@ -1298,7 +1387,26 @@ final class eval_ extends StandardFunction
 class print extends Unary
 {
     public Object apply(Object a) {
-        System.out.println(a);
+
+        if (a instanceof List) {
+            try
+            {
+                ((List) a).toString(System.out);
+                System.out.println();
+            }
+            catch (IOException e)
+            {
+                // Fall back on standard printing
+                System.out.println(a);
+            }
+            catch (RuntimeException e)
+            {
+                System.out.println();
+                throw e;
+            }
+            return a;
+        }
+        System.out.println(a);            
         return a;
     }
 }

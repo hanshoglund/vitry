@@ -19,6 +19,9 @@
 package vitry.runtime;
 
 import static vitry.runtime.VitryRuntime.*;
+
+import java.io.IOException;
+
 import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.Seq;
 import vitry.runtime.struct.Seqs;
@@ -134,4 +137,21 @@ abstract class AbstractList extends ConstructionPattern implements List
     {
         return Utils.join(this, "[", ", ", "]");
     }
+
+    public void toString(Appendable a) throws IOException
+    {
+        boolean first = true;
+        a.append("[");
+        
+        for (Pattern e : this) {
+            if (!first) {
+                a.append(", ");
+            }
+            a.append(e.toString());
+            first = false;
+        }
+        a.append("]");
+    }
+    
+    
 }

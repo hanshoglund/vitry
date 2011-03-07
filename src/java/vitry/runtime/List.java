@@ -18,6 +18,8 @@
  */
 package vitry.runtime;
 
+import java.io.IOException;
+
 import vitry.runtime.struct.*;
 
 public interface List extends Pattern, Seq<Pattern>, Destructible
@@ -26,4 +28,6 @@ public interface List extends Pattern, Seq<Pattern>, Destructible
     List cons(Pattern p);
     
     List mapList(Function fn);
+    
+    void toString(Appendable a) throws IOException;
 }
