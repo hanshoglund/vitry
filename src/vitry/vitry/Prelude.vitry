@@ -15,18 +15,16 @@
 ;
 ; See COPYING.txt for details.
 
-
 module Vitry.Prelude
 
-; Core reflectors
-__mprim  = class "Math"
-__bigint = class "java.math.BigInteger"
+; internals functions (not part of the prelude definition): 
+;         rewrite seq array symbol string
+;         class new method classOf
 
 
 ; native: nil true false bool empty
 ;         () [] {} _
 ;         (,) [,] {,} (|) (&) (->) (<->)
-;         ==
 
 ; native: arity id const flip (.) (..)
 
@@ -34,22 +32,22 @@ iter f n = match (f, n)
     (f, 0) = id
     (f, i) = f . (iter f (i - 1))
 
-; native < >
+; native (==)
 
 not  x = match x
-    _ : true = false
-    _ : false = true
+    _:true  = false
+    _:false = true
 
 (!=) x y = not (x == y)
 
 (&&) x y = match (x, y)
-    (_ : true, _ : true) = true
-    (_ : bool, _ : bool) = false
+    (_:true, _:true) = true
+    (_:bool, _:bool) = false
 
 (||) x y = match (x, y)
-    (_ : true, _ : bool) = true
-    (_ : bool, _ : true) = true
-    (_ : bool, _ : bool) = false
+    (_:true, _:bool) = true
+    (_:bool, _:true) = true
+    (_:bool, _:bool) = false
 
 ; native: nat int rat float
 ;         double complex 
@@ -59,14 +57,11 @@ prec = nat   | int    | rat
 real = float | double | complex
 num  = prec  | real
 
-; native: (+) (-) (*) (/) (%) (^) 
-;         NaN Infinity
-
-e  = 2.718281828459045
-pi = 3.141592653589793
+; native: (<) (>)
 
 (>=) x y = x > y || x == y
 (<=) x y = x < y || x == y                           
+
 zeroth = 0
 succ x = x + 1
 pred x = x - 1
@@ -75,82 +70,116 @@ smallest x y = if (x < y) x else y
 max xs = foldl largest (head xs) (tail xs)
 min xs = foldl smallest (head xs) (tail xs)
 
-sqrt  =  method __mprim "sqrt"  [ `double ]
-ln    =  method __mprim "log"   [ `double ]
-sin   =  method __mprim "sin"   [ `double ]
-tan   =  method __mprim "tan"   [ `double ]
-cos   =  method __mprim "cos"   [ `double ]
-asin  =  method __mprim "asin"  [ `double ]
-atan  =  method __mprim "atan"  [ `double ]
-acos  =  method __mprim "acos"  [ `double ]
-round =  method __mprim "round" [ `double ] .. method __bigint "valueOf" [ `long ]
-ceil  =  method __mprim "ceil"  [ `double ]
-floor =  method __mprim "floor" [ `double ]
-__abs =  method __mprim "abs"   [ `double ]
+; native: (+) (-) (*) (/) (%) (^) 
+;         NaN Infinity
+
+e  = 2.718281828459045
+pi = 3.141592653589793
+
+_math   = class "Math"
+_bigint = class "java.math.BigInteger"
+_abs    =  method _math "abs" [ `double ]
 
 abs x = match x
     x:prec = if (x < 0) (-x) else x
-    x:real = __abs x
+    x:real = _abs x
 
 negate x = -x
          
-; TODO signum recip gcd lcm
+; TODO signum recip gcd lcm approx rationalize
 
+sqrt  =  method _math "sqrt"  [ `double ]
+ln    =  method _math "log"   [ `double ]
+sin   =  method _math "sin"   [ `double ]
+tan   =  method _math "tan"   [ `double ]
+cos   =  method _math "cos"   [ `double ]
+asin  =  method _math "asin"  [ `double ]
+atan  =  method _math "atan"  [ `double ]
+acos  =  method _math "acos"  [ `double ]
+ceil  =  method _math "ceil"  [ `double ]
+floor =  method _math "floor" [ `double ]
+round =  method _math "round" [ `double ] .. method _bigint "valueOf" [ `long ]
 
-logn n  =  ln .. (* (1. / ln n))
-log     =  logn 10.
-log2    =  logn 2.
+logn n : real =  ln .. (* (1. / ln n))
+log           =  logn 10.
+log2          =  logn 2.
 
-isOdd      x = x % 2 == 1
-isEven     x = x % 2 == 0
+isOdd      x : num = x % 2 == 1
+isEven     x : num = x % 2 == 0
 isZero     x = match x
-                   _ : 0   = true
-                   _ : 0.0 = true
-                   _       = false
-isPositive x = x > 0
-isNegative x = x < 0 
-isNan      x = (x == NaN)
-isInfinite x = (x == Infinity)
-isNumber   x = not (isNan x)
-isFinite   x = not (isInfinite x)
-; TODO isPrime
+                   0       = true
+                   0.0     = true
+                   _ : num = false
+isPositive x : num = x > 0
+isNegative x : num = x < 0 
+isNan      x : num = (x == NaN)
+isInfinite x : num = (x == Infinity)
+isNumber   x : num = not (isNan x)
+isFinite   x : num = not (isInfinite x) && not (isNan x)
 
 sum     = foldl (+) 0
 product = foldl (*) 1
 
 
+; native: prepend head tail
+;         foldl foldr nth (eager)
+;         (...) (++) map (lazy)
+
+; TODO append
+last = foldl (fn (x y) y) []
+; TODO init (lazy)
+
+length = foldr (+ 1) 0
+; TODO rank
+isEmpty xs = match xs
+    _ : []  = true
+    _ : [_] = false
+isSingle xs = match xs
+    [_]     = true
+    _ : [_] = false
+
+; TODO apply
 
 
-; primitive: 
-
-
-
-
-
-
-isEmpty xs = xs == {} || xs == ()
-
-
-
-length    = foldl (fn (x y) x + 1) 0
-find pred = foldl (fn (x y) if (pred y) y else x) ()
-
-
-; interleave xs ys = foldr (fn (a b) xxx) [] (xs ys)
+; TODO insert
+; TODO substr
+; TODO subseq
+; TODO drop
+; TODO take
+; TODO remove
+; TODO retain
     
 zipWith f xs ys =
     match (f, xs, ys)
-        (f, (x, xs), (y, ys))     = prepend (f x y) (zipWith f xs ys)
-        (_, _, _)                 = ()
+        (f, (x, xs), (y, ys)) = prepend (f x y) (zipWith f xs ys)
+        (_, _, _)             = ()
 
 zip = zipWith (,)
 interleave xs ys = foldr (fn ((x,y) zs) [x] ++ [y] ++ zs) [] (zip xs ys)
+intersperse y xs = prepend (head xs) (foldl (fn (zs x) zs ++ [y] ++ [x]) [] (tail xs))
 
 
-; map_ f    = foldr (prepend . f) ()
+reverse   = foldl (flip prepend) []
+; sort
+; search
+find pred = foldl (fn (x y) if (pred y) y else x) ()
+; shuffle
+; permute
+; partition
+
+some  = foldr (||) false
+every = foldr (&&) true
+none  = not . some
+
+join  = foldr (++) ""
 
 
 
+; native: now random
+;         parse print parseFile eval error
+;         readFile writeFile
+;         repl load quit
 
-
-version = method (class "VitryRuntime") "getVersion" []
+version = (method (class "VitryRuntime") "getVersion" []) ()
+versionStr = join
+    intersperse "." (map string version) 

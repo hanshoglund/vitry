@@ -60,9 +60,9 @@ public class Type extends BasePattern implements TypeExpr
         if (value instanceof Tagged)
             return ((Tagged) value).retag(this);
 
+        // TODO memoize to speed up equality checks
         if (value.matchFor(this))
         {
-            // TODO memoize to speed up equality checks
             return new Tagged(value, this);
         }
         else
@@ -75,8 +75,9 @@ public class Type extends BasePattern implements TypeExpr
 
     public boolean eq(Type o)
     {
-        return (o == this || (o.pattern.eqFor(this.pattern) && o.name.eqFor(this.name) && o.vars
-                .equals(this.vars))); // TODO seq equality?
+        return o == this 
+            || (o.pattern.eqFor(this.pattern) && o.vars.equals(this.vars));
+            // TODO seq equality?
     }
 
     public boolean match(Tagged p)

@@ -138,7 +138,7 @@ public final class VitryRuntime
 
     private Module bootstrapPrelude()
     {
-        return new Module(Seqs.seq(Symbol.intern("Vitry"), Symbol.intern("Prelude")));
+        return new Module(Seqs.from(Symbol.intern("Vitry"), Symbol.intern("Prelude")));
     }
     
     private Module loadPrelude(Module bootstrapPrelude)
@@ -160,8 +160,13 @@ public final class VitryRuntime
 
     private void initPrelude(Module prelude) 
     {    
+        prelude.def("nil",        NIL);
+        prelude.def("true",       TRUE);
+        prelude.def("false",      FALSE);
+        prelude.def("bool",       BOOL);
+        prelude.def("empty",      BOTTOM);        
         prelude.def("()",         NIL);
-        prelude.def("[]",         productOf(NIL,    new list_()));
+        prelude.def("[]",         productOf(NIL, new list_()));
         prelude.def("{}",         productOf(BOTTOM, new set_()));
         prelude.def("_",          ANY);
         
@@ -170,13 +175,18 @@ public final class VitryRuntime
         prelude.def("{,}",        new set_());            
         prelude.def("(|)",        new union_());          
         prelude.def("(&)",        new intersection_());   
-        prelude.def("(->)",       NIL);                   // TODO 
-        prelude.def("(<->)",      NIL);                   // TODO 
+        // prelude.def("(->)",       NIL);                   // TODO 
+        // prelude.def("(<->)",      NIL);                   // TODO 
         
-        prelude.def("nil",        NIL);
-        prelude.def("true",       TRUE);
-        prelude.def("false",      FALSE);
-        prelude.def("bool",       BOOL);
+        prelude.def("arity",      new arity_());
+        prelude.def("id",         new id());
+        prelude.def("const",      new const_());
+        prelude.def("flip",       new flip());
+        prelude.def("(.)",        new compose());
+        prelude.def("(..)",       new follow());
+        
+        prelude.def("(==)",       new eq());
+
         prelude.def("nat",        NAT);
         prelude.def("int",        INT);
         prelude.def("rat",        RAT);
@@ -186,16 +196,8 @@ public final class VitryRuntime
         prelude.def("char",       CHAR);
         prelude.def("str",        STR);
         
-        prelude.def("(==)",       new eq());
         prelude.def("(<)",        new lt());
         prelude.def("(>)",        new gt());
-
-        prelude.def("arity",      new arity_());
-        prelude.def("id",         new id());
-        prelude.def("const",      new const_());
-        prelude.def("flip",       new flip());
-        prelude.def("(.)",        new compose());
-        prelude.def("(..)",       new follow());
 
         prelude.def("(+)",        new add());
         prelude.def("(-)",        new sub());
@@ -207,47 +209,19 @@ public final class VitryRuntime
         prelude.def("NaN",        Double.NaN);
         prelude.def("Infinity",   Double.POSITIVE_INFINITY);
 
-        prelude.def("(++)",       new conc());
-        prelude.def("cons",       new prepend());
-        prelude.def("append",     NIL);
+        prelude.def("prepend",    new prepend());
         prelude.def("head",       new head());
         prelude.def("tail",       new tail());
-        prelude.def("last",       NIL);
-        prelude.def("init",       NIL);
-
-        prelude.def("rank",       NIL);
-        prelude.def("isSingle",   NIL);
-
-        prelude.def("nth",        new nth());
-        prelude.def("map",        new map());
-        prelude.def("apply",      NIL);
         prelude.def("foldl",      new foldl());
         prelude.def("foldr",      new foldr());
-
-        prelude.def("insert",     NIL);
-        prelude.def("substr",     NIL);
-        prelude.def("subseq",     NIL);
-        prelude.def("drop",       NIL);
-        prelude.def("take",       NIL);
-        prelude.def("remove",     NIL);
-        prelude.def("retain",     NIL);
+        prelude.def("nth",        new nth());
         prelude.def("range",      new range());
         prelude.def("(...)",      new range());
         prelude.def("[...]",      new range());
-
-        prelude.def("reverse",    NIL);
-        prelude.def("sort",       NIL);
-        prelude.def("search",     NIL);
-        prelude.def("shuffle",    NIL);
-        prelude.def("permute",    NIL);
-        prelude.def("partition",  NIL);
-
-        prelude.def("some",       NIL);
-        prelude.def("every",      NIL);
-        prelude.def("none",       NIL);
+        prelude.def("(++)",       new conc());
+        prelude.def("map",        new map());
 
         prelude.def("now",        new now());
-
         prelude.def("random",     new random());
         prelude.def("parse",      new parse(this));
         prelude.def("print",      new print());
@@ -255,13 +229,12 @@ public final class VitryRuntime
         prelude.def("eval",       new eval_(this));
         prelude.def("error",      new error_());
         prelude.def("writeFile",  new writeFile(this));
-
         prelude.def("repl",       new repl(this, prelude));
         prelude.def("load",       new load(prelude));
         prelude.def("quit",       new quit());
         
 
-        // Non-standard
+        // Internal
         
         prelude.def("__rt",       this);
         prelude.def("rewrite",    new rewrite(this));
@@ -276,8 +249,6 @@ public final class VitryRuntime
         prelude.def("new",        new new_(this));
         prelude.def("method",     new method(this, prelude));
         prelude.def("classOf",    new classOf(this));
-        prelude.def("methodsOf",  NIL);
-        prelude.def("fieldsOf",   NIL);
 
 
         // Fixities
@@ -716,7 +687,7 @@ final class Nil extends Atom implements List, Finite<Pattern>
 
     static <T> T throwUnsupported()
     {
-        throw new UnsupportedOperationException("() has no members.");
+        throw new TypeError("Can not deconstruct ()");
     }
 
     static final SeqIterator<Pattern> ITER = new Iter();

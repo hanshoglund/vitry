@@ -26,7 +26,7 @@ import vitry.runtime.misc.Utils;
 
 
 /**
- * Basic sequence operations.
+ * Sequence operations used by runtime.
  */
 public final class Seqs
 {
@@ -34,6 +34,12 @@ public final class Seqs
     private static final Object[] EMPTY_ARRAY = new Object[0];
 
     private Seqs() {}
+
+
+    public static boolean isNil(Object xs)
+    {
+        return xs == null || xs == VitryRuntime.NIL;
+    }
 
 
     public static <T> Seq<T> single(T x)
@@ -49,12 +55,7 @@ public final class Seqs
             return xs.cons(x);
     }
 
-    public static <T> Seq<T> seq(T... a)
-    {
-        return from(a);
-    }
-
-    public static <T> Seq<T> from(T[] a)
+    public static <T> Seq<T> from(T... a)
     {
         if (a.length == 0)
             return null;
@@ -102,29 +103,14 @@ public final class Seqs
         }
     }
 
-    public static <T> Seq<T> until(Seq<T> xs, Seq<T> ys)
-    {
-        // TODO non-stack consuming version
-        if (isNil(xs) || xs == ys)
-            return null;
-        else
-            return cons(head(xs), until(tail(xs), ys));
-    }
-
     public static <T> Seq<T> untilElement(Seq<T> xs, T y)
     {
-        // TODO non-stack consuming version
         if (isNil(xs) || xs.head().equals(y))
             return null;
         else
             return cons(head(xs), untilElement(tail(xs), y));
     }
 
-
-    public static boolean isNil(Object xs)
-    {
-        return xs == null || xs == VitryRuntime.NIL;
-    }
 
     public static int length(Finite<?> xs) {
         return xs.length();        
@@ -163,11 +149,6 @@ public final class Seqs
         return xs.head();
     }
 
-    public static <T> T nthLast(Seq<T> xs, int n)
-    {
-        return nth(reverse(xs), n);
-    }
-
     public static <U, T> U foldl(Function f, U z, Seq<T> xs)
     {
         U res = z;
@@ -182,7 +163,7 @@ public final class Seqs
     public static <U, T> U foldr(Function f, U z, Seq<T> xs)
     {
         U res = z;
-        xs = reverse(xs);
+        xs = eagerlyReverse(xs);
         while (!isNil(xs))
         {
             res = Utils.<U> unsafe(f.apply(xs.head(), res));
@@ -205,7 +186,7 @@ public final class Seqs
     public static <U, T> U foldrUnwrap(Function f, U z, Seq<T> xs)
     {
         U res = z;
-        xs = reverse(xs);
+        xs = eagerlyReverse(xs);
         while (!isNil(xs))
         {
             res = Utils.<U> unsafe(f.apply(Native.unwrap(xs.head()), res));
@@ -214,7 +195,14 @@ public final class Seqs
         return res;
     }
 
-    public static <T> Seq<T> reverse(Seq<T> xs)
+    public static <T> Seq<T> concat(Seq<T> xs, Seq<T> ys)
+    {
+        if (isNil(xs)) return ys;
+        return new ConcedSeq<T>(xs, ys);
+    }
+
+
+    private static <T> Seq<T> eagerlyReverse(Seq<T> xs)
     {
         Seq<T> ys = null;
         while (!isNil(xs)) {
@@ -224,12 +212,10 @@ public final class Seqs
         return ys;
     }
     
-    public static <T> Seq<T> concat(Seq<T> xs, Seq<T> ys)
-    {
-        if (isNil(xs)) return ys;
-        return new ConcedSeq<T>(xs, ys);
-    }
-
+    
+    
+    // Utils
+    
     public static <T> Seq<T> printable(Seq<T> s)
     {
         return new PrintableSeq<T>(s);

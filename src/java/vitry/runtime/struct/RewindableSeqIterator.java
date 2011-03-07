@@ -41,12 +41,12 @@ public class RewindableSeqIterator<T> extends SeqIterator<T>
         this.seq = start;
     }
 
-    /**
-     * Returns  all elements leeding up to the current sequence
-     * from the starting point.
-     */
-    public Seq<T> preceding()
-    {
-        return Seqs.until(start, seq);
-    }
+//    /**
+//     * Returns  all elements leeding up to the current sequence
+//     * from the starting point.
+//     */
+//    public Seq<T> preceding()
+//    {
+//        return Seqs.until(start, seq);
+//    }
 }

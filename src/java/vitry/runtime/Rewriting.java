@@ -82,13 +82,13 @@ class TopLevelRewriter extends Rewriting
                     {
                         public Object apply(Object a) throws InvocationError
                         {
-                            Object res = product(seq(Left,(Pattern) a));
+                            Object res = product(Seqs.from(Left,(Pattern) a));
                             return res;
                         }
                     });
                 Product r = product(single(right));
                 Pattern val = product(concat(params.cons(Fn), r));
-                return product(seq(assign, product(seq(left, name)), val));
+                return product(Seqs.from(assign, product(Seqs.from(left, name)), val));
             }
         }
         return seq;
