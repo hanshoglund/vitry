@@ -227,6 +227,7 @@ public final class VitryRuntime
         prelude.def("take",       new take());
         prelude.def("drop",       new drop());
         prelude.def("sort",       new sort());
+        prelude.def("delay",      new delay());
 
         prelude.def("now",        new now());
         prelude.def("random",     new random());
@@ -1314,6 +1315,7 @@ final class take extends Binary
         return list(new TakeSeq((Seq) xs, ((Number) n).intValue()));
     }
 }
+
 final class drop extends Binary
 {
     public Object apply(Object n, Object xs) throws InvocationError
@@ -1322,6 +1324,14 @@ final class drop extends Binary
             xs = list(Native.wrapAll(CharSeq.from((String) xs)));
         }
         return list(new DropSeq((Seq) xs, ((Number) n).intValue()));
+    }
+}
+
+final class delay extends Unary
+{
+    public Object apply(Object thunk) throws InvocationError
+    {
+        return listFrom(new ThunkSeq<Pattern>((Function) thunk));
     }
 }
 

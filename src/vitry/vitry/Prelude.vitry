@@ -195,14 +195,6 @@ substr m n = take n . drop m
 
 
 
-zipWith f xs ys = match [f, xs, ys]
-    [ f, (x, xs), (y, ys) ] = prepend (f x y) (zipWith f xs ys)
-    [ _, _, _ ]             = ()
-
-zip = zipWith (,)
-
-interleave xs ys = foldr (fn ((x,y) zs) [x] ++ [y] ++ zs) [] (zip xs ys)
-intersperse y xs = prepend (head xs) (foldl (fn (zs x) zs ++ [y] ++ [x]) [] (tail xs))
 
 
 reverse   = foldl (flip prepend) []
@@ -218,15 +210,32 @@ find pred = foldl (fn (x y) if (pred y) y else x) ()
 ; permute
 
 repeat   = unfold (fn (x) (x, x))
-cycle xs = unfold (fn ((orig, (x, xs))) (x, (xs, (if (xs == ()) orig else xs)))) (xs, xs)
+; cycle
+
 
 some  = foldr (||) false
 every = foldr (&&) true
 none  = not . some
 
-; str -> [a] -> str
-join s = foldr (++) "" . intersperse s . map string
+zipWith f xs ys = match [f, xs, ys]
+    [ f, (x, xs), (y, ys) ] = prepend (f x y) (zipWith f xs ys)
+    [ _, _, _ ]             = ()
 
+zip = zipWith (,)
+
+
+
+; lazy!
+interl xs ys = delay 
+    fn (x) 
+        let x = head xs
+            y = head ys
+            [x, y] ++ interl (tail xs) (tail ys)
+
+interp y xs = prepend (head xs) (foldl (fn (zs x) zs ++ [y] ++ [x]) [] (tail xs))
+
+; str -> [a] -> str
+join s = foldr (++) "" . interp s . map string
 
 
 ; native: now random
@@ -236,7 +245,7 @@ join s = foldr (++) "" . intersperse s . map string
 
 version = (method (class "VitryRuntime") "getVersion" []) ()
 versionStr = join
-    intersperse "." (map string version)
+    interp "." (map string version)
 
 sleep time = do time = INT_TO_LONG time
                 (method (class "Thread") "sleep" [ `long ]) time
