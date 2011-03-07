@@ -209,9 +209,10 @@ find pred = foldl (fn (x y) if (pred y) y else x) ()
 ; shuffle
 ; permute
 
-repeat   = unfold (fn (x) (x, x))
-; cycle
-
+repeat    = unfold (fn (x) (x, x))
+cycle  xs = xs ++ delay (fn (_) cycle xs)
+palindrome xs = let sx = reverse xs
+                    xs ++ sx ++ delay (fn (_) palindrome xs)
 
 some  = foldr (||) false
 every = foldr (&&) true
@@ -269,9 +270,11 @@ interl3L xs ys zs = delay
 
 interp y xs = prepend (head xs) (foldl (fn (zs x) zs ++ [y] ++ [x]) [] (tail xs))
 
+
+
+
 ; str -> [a] -> str
 join s = foldr (++) "" . interp s . map string
-
 
 ; Force and buffer n values
 buffer n xs = force (take n xs) ++ drop n xs
