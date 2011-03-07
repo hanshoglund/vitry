@@ -220,6 +220,9 @@ public final class VitryRuntime
         prelude.def("[...]",      new range());
         prelude.def("(++)",       new conc());
         prelude.def("map",        new map());
+        prelude.def("unfoldl",    new unfoldl());
+        prelude.def("take",       new take());
+        prelude.def("drop",       new drop());
 
         prelude.def("now",        new now());
         prelude.def("random",     new random());
@@ -1209,6 +1212,29 @@ final class range extends Binary
     }
 }
 
+final class unfoldl extends Binary
+{
+    public Object apply(Object f, Object init) throws InvocationError
+    {
+        return listFrom(Native.wrapAll(new LeftUnfoldSeq<Object>((Function) f, init)));
+    }
+}
+
+final class take extends Binary
+{
+    public Object apply(Object n, Object xs) throws InvocationError
+    {
+        if (Seqs.isNil(xs) || ((Number) n).intValue() < 1) return NIL;
+        return list(new TakeSeq((Seq) xs, ((Number) n).intValue()));
+    }
+}
+final class drop extends Binary
+{
+    public Object apply(Object n, Object xs) throws InvocationError
+    {
+        return list(new DropSeq((Seq) xs, ((Number) n).intValue()));
+    }
+}
 
 
 

@@ -233,7 +233,7 @@ public class Interpreter implements Eval {
             switch (branch) {
 
                 case NAT_EXPR:      return evalNat(exOp);
-                case FLOAT_EXPR:    return evalFloat(exOp);
+                case FLOAT_EXPR:    return evalDouble(exOp);
                 case COMPLEX_EXPR:  return evalComplex(exOp);
                 case STR_EXPR:      return evalString(exOp);
 
@@ -565,9 +565,9 @@ public class Interpreter implements Eval {
         return new BigInteger(expr.toString());
     }
 
-    static Float evalFloat(Object expr)
+    static Double evalDouble(Object expr)
     {
-        return Float.valueOf(expr.toString());
+        return Double.valueOf(expr.toString());
     }
 
     static Object evalComplex(Object expr)

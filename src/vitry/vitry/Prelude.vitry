@@ -17,20 +17,33 @@
 
 module Vitry.Prelude
 
-; internals functions (not part of the prelude definition): 
+
+
+; internal functions (not part of the prelude definition):
 ;         rewrite seq array symbol string
 ;         class new method classOf
 
 
+
+; Core types and constructors
+
 ; native: nil true false bool empty
 ;         () [] {} _
 ;         (,) [,] {,} (|) (&) (->) (<->)
+
+
+
+; Functions
 
 ; native: arity id const flip (.) (..)
 
 iter f n = match (f, n)
     (f, 0) = id
     (f, i) = f . (iter f (i - 1))
+
+
+
+; Booleans
 
 ; native (==)
 
@@ -49,18 +62,31 @@ not  x = match x
     (_:bool, _:true) = true
     (_:bool, _:bool) = false
 
+
+
+; Number and string types
+
 ; native: nat int rat float
-;         double complex 
+;         double complex
 ;         char str
 
-prec = nat   | int    | rat
-real = float | double | complex
-num  = prec  | real
+prec = nat
+     | int
+     | rat
+real = float
+     | double
+     | complex
+num  = prec
+     | real
+
+
+
+; Enumeration and comparison
 
 ; native: (<) (>)
 
 (>=) x y = x > y || x == y
-(<=) x y = x < y || x == y                           
+(<=) x y = x < y || x == y
 
 zeroth = 0
 succ x = x + 1
@@ -70,7 +96,11 @@ smallest x y = if (x < y) x else y
 max xs = foldl largest (head xs) (tail xs)
 min xs = foldl smallest (head xs) (tail xs)
 
-; native: (+) (-) (*) (/) (%) (^) 
+
+
+; Arithmetic
+
+; native: (+) (-) (*) (/) (%) (^)
 ;         NaN Infinity
 
 e  = 2.718281828459045
@@ -78,31 +108,35 @@ pi = 3.141592653589793
 
 _math   = class "Math"
 _bigint = class "java.math.BigInteger"
-_abs    =  method _math "abs" [ `double ]
+_abs    = method _math "abs" [ `double ]
 
 abs x = match x
     x:prec = if (x < 0) (-x) else x
     x:real = _abs x
 
 negate x = -x
-         
-; TODO signum recip gcd lcm approx rationalize
 
-sqrt  =  method _math "sqrt"  [ `double ]
-ln    =  method _math "log"   [ `double ]
-sin   =  method _math "sin"   [ `double ]
-tan   =  method _math "tan"   [ `double ]
-cos   =  method _math "cos"   [ `double ]
-asin  =  method _math "asin"  [ `double ]
-atan  =  method _math "atan"  [ `double ]
-acos  =  method _math "acos"  [ `double ]
-ceil  =  method _math "ceil"  [ `double ]
-floor =  method _math "floor" [ `double ]
-round =  method _math "round" [ `double ] .. method _bigint "valueOf" [ `long ]
+; TODO signum recip
+;      gcd lcm
+;      approx rationalize
 
-logn n : real =  ln .. (* (1. / ln n))
-log           =  logn 10.
-log2          =  logn 2.
+_mathPrim name = method _math name [ `double ]
+
+sqrt  =  _mathPrim "sqrt"
+ln    =  _mathPrim "log" 
+sin   =  _mathPrim "sin" 
+tan   =  _mathPrim "tan" 
+cos   =  _mathPrim "cos" 
+asin  =  _mathPrim "asin"
+atan  =  _mathPrim "atan"
+acos  =  _mathPrim "acos"
+ceil  =  _mathPrim "ceil"
+floor =  _mathPrim "floor"
+round =  _mathPrim "round" .. method _bigint "valueOf" [ `long ]
+
+logn n : real = ln .. (* (1. / ln n))
+log           = logn 10.
+log2          = logn 2.
 
 isOdd      x : num = x % 2 == 1
 isEven     x : num = x % 2 == 0
@@ -111,7 +145,7 @@ isZero     x = match x
                    0.0     = true
                    _ : num = false
 isPositive x : num = x > 0
-isNegative x : num = x < 0 
+isNegative x : num = x < 0
 isNan      x : num = (x == NaN)
 isInfinite x : num = (x == Infinity)
 isNumber   x : num = not (isNan x)
@@ -121,9 +155,16 @@ sum     = foldl (+) 0
 product = foldl (*) 1
 
 
-; native: prepend head tail
-;         foldl foldr nth (eager)
-;         (...) (++) map (lazy)
+
+; Lists
+
+; native eager: prepend head tail
+;               foldl foldr nth
+
+
+; native lazy: unfold (++) map (...) 
+
+
 
 ; TODO append
 last = foldl (fn (x y) y) []
@@ -140,7 +181,6 @@ isSingle xs = match xs
 
 ; TODO apply
 
-
 ; TODO insert
 ; TODO substr
 ; TODO subseq
@@ -148,13 +188,14 @@ isSingle xs = match xs
 ; TODO take
 ; TODO remove
 ; TODO retain
-    
+
 zipWith f xs ys =
     match (f, xs, ys)
         (f, (x, xs), (y, ys)) = prepend (f x y) (zipWith f xs ys)
         (_, _, _)             = ()
 
 zip = zipWith (,)
+
 interleave xs ys = foldr (fn ((x,y) zs) [x] ++ [y] ++ zs) [] (zip xs ys)
 intersperse y xs = prepend (head xs) (foldl (fn (zs x) zs ++ [y] ++ [x]) [] (tail xs))
 
@@ -162,10 +203,16 @@ intersperse y xs = prepend (head xs) (foldl (fn (zs x) zs ++ [y] ++ [x]) [] (tai
 reverse   = foldl (flip prepend) []
 ; sort
 ; search
+
 find pred = foldl (fn (x y) if (pred y) y else x) ()
+; filter
+; partition
+
 ; shuffle
 ; permute
-; partition
+
+repeat   = unfoldl (fn (x) (x, x))
+cycle xs = unfoldl (fn ((orig, (x, xs))) (x, (xs, (if (xs == ()) orig else xs)))) (xs, xs)
 
 some  = foldr (||) false
 every = foldr (&&) true
@@ -182,4 +229,4 @@ join  = foldr (++) ""
 
 version = (method (class "VitryRuntime") "getVersion" []) ()
 versionStr = join
-    intersperse "." (map string version) 
+    intersperse "." (map string version)

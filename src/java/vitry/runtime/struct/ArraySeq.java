@@ -30,10 +30,10 @@ import vitry.runtime.misc.ArrayIterator;
  */
 public class ArraySeq<T> extends AbstractSeq<T> implements Finite<T>
 {
-    private final T[] array;
+    private final T[] ar;
     private final int offset;
-    private Seq<T> tail;
-    private boolean tailed = false;
+    private Seq<T>    tail;
+    private boolean   tailed = false;
 
     public ArraySeq(T... elements) {
         this(elements, 0);
@@ -42,23 +42,23 @@ public class ArraySeq<T> extends AbstractSeq<T> implements Finite<T>
     public ArraySeq(T[] elements, int offset) {
         if (offset >= elements.length)
             throw new IllegalArgumentException("Offset must be less than than length");
-        this.array = elements;
+        this.ar = elements;
         this.offset = offset;
     }
 
     private ArraySeq(T[] elements, int offset, Object dummy) {
-        this.array = elements;
+        this.ar = elements;
         this.offset = offset;
     }
 
     public Iterator<T> iterator()
     {
-        return new ArrayIterator<T>(array, offset);
+        return new ArrayIterator<T>(ar, offset);
     }
 
     public T head()
     {
-        return array[offset];
+        return ar[offset];
     }
 
     public Seq<T> tail()
@@ -67,7 +67,7 @@ public class ArraySeq<T> extends AbstractSeq<T> implements Finite<T>
         {
             if (hasTail())
             {
-                tail = new ArraySeq<T>(array, offset + 1, null);
+                tail = new ArraySeq<T>(ar, offset + 1, null);
             }
             tailed = true;
         }
@@ -76,11 +76,11 @@ public class ArraySeq<T> extends AbstractSeq<T> implements Finite<T>
 
     public boolean hasTail()
     {
-        return offset + 1 < array.length;
+        return offset + 1 < ar.length;
     }
 
     public int length()
     {
-        return array.length - offset;
+        return ar.length - offset;
     }
 }

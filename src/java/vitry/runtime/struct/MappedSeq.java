@@ -34,30 +34,30 @@ import vitry.runtime.misc.Utils;
  */
 public class MappedSeq<A, B> extends AbstractSeq<B>
 {
-    private final Function fn;
-    private final Seq<A> input;
+    private final Function f;
+    private final Seq<A> xs;
 
-    public MappedSeq(Function fn, Seq<A> input) {
-        this.fn = fn;
-        this.input = input;
+    public MappedSeq(Function f, Seq<A> xs) {
+        this.f = f;
+        this.xs = xs;
     }
 
     public Iterator<B> iterator()
     {
-        return new MapIterator<B>(fn, input.iterator());
+        return new MapIterator<B>(f, xs.iterator());
     }
 
     public B head()
     {
-        A head = input.head();
-        return Utils.<B> unsafe(fn.apply(head));
+        A head = xs.head();
+        return Utils.<B> unsafe(f.apply(head));
     }
 
     public Seq<B> tail()
     {
-        if (input.hasTail())
+        if (xs.hasTail())
         {
-            return new MappedSeq<A, B>(fn, input.tail());
+            return new MappedSeq<A, B>(f, xs.tail());
         }
         else
         {
@@ -67,7 +67,7 @@ public class MappedSeq<A, B> extends AbstractSeq<B>
 
     public boolean hasTail()
     {
-        return input.hasTail();
+        return xs.hasTail();
     }
 }
 

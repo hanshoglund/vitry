@@ -68,7 +68,7 @@ public class sub extends RestFunction
         if (x instanceof Float)
             return ((Float) x).floatValue() * -1;
         if (x instanceof Double)
-            return ((Float) x).floatValue() * -1;
+            return ((Double) x).doubleValue() * -1;
         throw new TypeError("Can not apply " + this + " to " + x);
     }
 
