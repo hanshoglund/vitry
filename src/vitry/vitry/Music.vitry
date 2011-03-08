@@ -1,0 +1,10 @@
+
+module Vitry.Music
+
+
+
+
+modeFrom xs range = fn (i) 
+    index (i % length xs) xs + floor (i / length xs) * range
+
+diatonic = modeFrom [0, 2, 4, 5, 7, 9, 11] 12
