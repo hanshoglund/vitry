@@ -129,7 +129,11 @@ implements Function, Scope, TypableFunction
     {
         return this.getRange();
     }
-
+    
+    public boolean isNil()
+    {
+        return false;
+    }
 
     public boolean hasTail()
     {
@@ -140,7 +144,6 @@ implements Function, Scope, TypableFunction
     {
         return p.eq(this);
     }
-
 
     public String toString()
     {

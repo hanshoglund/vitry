@@ -36,6 +36,11 @@ abstract class AbstractList extends ConstructionPattern implements List
 {
     // Eq and match
 
+    public boolean eq(Atom o)
+    {
+        return this.isNil() && ((Seq<?>) o).isNil();
+    }
+
     public boolean eq(List o)
     {
         Seq<Pattern> left = o;
@@ -49,6 +54,12 @@ abstract class AbstractList extends ConstructionPattern implements List
             right = right.tail();
         }
         return (Seqs.isNil(left) && Seqs.isNil(right));
+    }
+    
+
+    public boolean match(Atom o)
+    {
+        return this.isNil() && ((Seq<?>) o).isNil();
     }
 
     public boolean match(List o)

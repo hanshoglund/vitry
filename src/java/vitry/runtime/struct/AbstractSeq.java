@@ -36,6 +36,11 @@ abstract public class AbstractSeq<T> implements Seq<T>
         return new SeqIterator<T>(this);
     }
 
+    public boolean isNil()
+    {
+        return false;
+    }
+
     public boolean hasTail()
     {
         return !Seqs.isNil(this.tail());

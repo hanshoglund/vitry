@@ -38,9 +38,4 @@ public class PairSeq<T> extends AbstractSeq<T>
     {
         return tail;
     }
-
-    public boolean hasTail()
-    {
-        return !Seqs.isNil(tail);
-    }
 }

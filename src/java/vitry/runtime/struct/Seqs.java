@@ -18,10 +18,8 @@
  */
 package vitry.runtime.struct;
 
-import static vitry.runtime.struct.Seqs.isNil;
 import vitry.runtime.Function;
 import vitry.runtime.Native;
-import vitry.runtime.VitryRuntime;
 import vitry.runtime.misc.Utils;
 
 
@@ -38,7 +36,12 @@ public final class Seqs
 
     public static boolean isNil(Object xs)
     {
-        return xs == null || xs == VitryRuntime.NIL;
+        if (xs == null) return true;
+        if (xs instanceof Seq)
+        {
+            return ((Seq<?>) xs).isNil();
+        }
+        else return false;
     }
 
 
@@ -312,6 +315,6 @@ class ConcedSeq<T> extends AbstractSeq<T>
 
     public boolean hasTail()
     {
-        return !isNil(ys) || !isNil(xs.tail());
+        return !Seqs.isNil(ys) || !Seqs.isNil(xs.tail());
     }
 }

@@ -19,7 +19,6 @@
 package vitry.runtime;
 
 import static vitry.runtime.VitryRuntime.*;
-import static vitry.runtime.struct.Seqs.isNil;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -476,6 +475,11 @@ public final class VitryRuntime
         advanceUniqueState();
         return Symbol.intern(new String(str));
     }
+
+    public static <T> T throwDeconstructNil()
+    {
+        throw new TypeError("Can not deconstruct ()");
+    }
 }
 
 
@@ -600,6 +604,11 @@ final class Bottom extends AbstractSet
         return -1;
     }
 
+    public boolean isNil()
+    {
+        return false;
+    }    
+
     public boolean hasTail()
     {
         return false;
@@ -661,7 +670,17 @@ final class Nil extends Atom implements List, Finite<Pattern>
 
     public boolean eq(Atom o)
     {
-        return o == this;
+        return o == this || ((Seq<?>) o).isNil();
+    }
+
+    public boolean eq(List o)
+    {
+        return o.isNil();
+    }
+
+    public boolean match(List p)
+    {
+        return p.isNil();
     }
 
     public String toString()
@@ -680,6 +699,11 @@ final class Nil extends Atom implements List, Finite<Pattern>
         return list(new PairSeq<Pattern>(head, this));
     }
 
+    public boolean isNil()
+    {
+        return true;
+    }    
+
     public boolean hasTail()
     {
         return false;
@@ -693,7 +717,7 @@ final class Nil extends Atom implements List, Finite<Pattern>
 
     public Product mapProduct(Function fn)
     {
-        return throwDeconstruct();
+        return VitryRuntime.throwDeconstructNil();
     }
 
     public List mapList(Function fn)
@@ -708,12 +732,12 @@ final class Nil extends Atom implements List, Finite<Pattern>
     
     public Pattern head()
     {
-        return throwDeconstruct();
+        return VitryRuntime.throwDeconstructNil();
     }
 
     public Product tail()
     {
-        return throwDeconstruct();
+        return VitryRuntime.throwDeconstructNil();
     }
 
     public Iterator<Pattern> iterator()
@@ -733,12 +757,7 @@ final class Nil extends Atom implements List, Finite<Pattern>
 
     public Seq<Pattern> destruct()
     {
-        return throwDeconstruct();
-    }
-
-    static <T> T throwDeconstruct()
-    {
-        throw new TypeError("Can not deconstruct ()");
+        return throwDeconstructNil();
     }
 
     static final SeqIterator<Pattern> ITER = new Iter();
@@ -758,13 +777,13 @@ final class Nil extends Atom implements List, Finite<Pattern>
         @Override
         public Pattern next()
         {
-            return Nil.throwDeconstruct();
+            return VitryRuntime.throwDeconstructNil();
         }
         
         @Override
         public void remove()
         {
-            Nil.throwDeconstruct();
+            VitryRuntime.throwDeconstructNil();
         }
     }
 
@@ -796,6 +815,11 @@ final class StdProduct extends AbstractProduct
         return product(elements.tail());
     }
 
+    public boolean isNil()
+    {
+        return elements.isNil();
+    }    
+
     public boolean hasTail()
     {
         return elements.hasTail();
@@ -825,6 +849,11 @@ final class StdList extends AbstractList
     {
         return list(elements.tail());
     }
+
+    public boolean isNil()
+    {
+        return elements.isNil();
+    }    
 
     public boolean hasTail()
     {
@@ -856,6 +885,11 @@ final class StdSet extends AbstractSet
         return set(elements.tail());
     }
 
+    public boolean isNil()
+    {
+        return elements.isNil();
+    }    
+
     public boolean hasTail()
     {
         return elements.hasTail();
@@ -886,6 +920,11 @@ final class StdUnion extends Union
         return union(elements.tail());
     }
 
+    public boolean isNil()
+    {
+        return elements.isNil();
+    }    
+
     public boolean hasTail()
     {
         return elements.hasTail();
@@ -915,6 +954,11 @@ final class StdIntersection extends Intersection
     {
         return intersection(elements.tail());
     }
+
+    public boolean isNil()
+    {
+        return elements.isNil();
+    }    
 
     public boolean hasTail()
     {
@@ -950,7 +994,7 @@ final class product_ extends InvertibleRestFunction
 {
     public Seq<?> applyVarInverse(Object obj) throws InvocationError
     {
-        if (isNil(obj))
+        if (Seqs.isNil(obj))
         {
             TypeError.throwWrongStructor(obj, this);
         }
@@ -1136,7 +1180,7 @@ final class head extends Unary
     {
         if (xs instanceof CharSequence) {
             CharSequence chars = (CharSequence) xs;
-            if (chars.length() == 0) Nil.throwDeconstruct();
+            if (chars.length() == 0) VitryRuntime.throwDeconstructNil();
             return chars.charAt(0);
         }
         return Native.unwrap(((Seq<?>) xs).head());
@@ -1149,7 +1193,7 @@ final class tail extends Unary
     {
         if (xs instanceof CharSequence) {
             CharSequence chars = (CharSequence) xs;
-            if (chars.length() == 0) Nil.throwDeconstruct();
+            if (chars.length() == 0) VitryRuntime.throwDeconstructNil();
             if (chars.length() == 1) return NIL;
             return list(Native.wrapAll(CharSeq.from(((CharSequence) xs).subSequence(1, chars.length()))));
         }

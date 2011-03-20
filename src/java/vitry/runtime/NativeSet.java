@@ -158,11 +158,15 @@ public final class NativeSet extends InclusionPattern implements Set
     {
         throw new UnsupportedOperationException("Can not enumerate a native type");
     }
+    
+    public boolean isNil()
+    {
+        return false;
+    }    
 
     public boolean hasTail()
     {
         return false;
-        // TODO Auto-generated method stub
     }
 
     public String toString()

@@ -30,6 +30,9 @@ public interface Seq<T> extends Iterable<T>
 
     Seq<T> tail();
 
+    // TODO unify these two methods?
+    boolean isNil();
+    
     boolean hasTail();
 
     Seq<T> cons(T head);
