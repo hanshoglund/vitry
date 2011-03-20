@@ -1305,7 +1305,7 @@ final class range extends Binary
         BigInteger minNum = (BigInteger) min;
         BigInteger maxNum = (BigInteger) max;
         if (minNum.compareTo(maxNum) >= 0) return NIL;
-        return list(Native.wrapAll(new RangeSeq(minNum, maxNum)));
+        return list(Native.wrapAll(RangeSeq.create(minNum, maxNum)));
     }
 }
 

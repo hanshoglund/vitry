@@ -24,13 +24,16 @@ import java.math.BigInteger;
 public class RangeSeq extends AbstractSeq<BigInteger>
 {
     private final BigInteger min;
-    private final BigInteger max;
     private final BigInteger last;
 
-    public RangeSeq(BigInteger min, BigInteger max) {
+    private RangeSeq(BigInteger min, BigInteger last) {
         this.min = min;
-        this.max = max;
-        this.last = max.subtract(BigInteger.ONE);
+        this.last = last;
+    }
+    
+    public static RangeSeq create(BigInteger min, BigInteger max)
+    {
+        return new RangeSeq(min, max.subtract(BigInteger.ONE));
     }
 
     public BigInteger head()
@@ -43,7 +46,7 @@ public class RangeSeq extends AbstractSeq<BigInteger>
         if (!hasTail())
             return null;
         else
-            return new RangeSeq(min.add(BigInteger.ONE), max);
+            return new RangeSeq(min.add(BigInteger.ONE), last);
     }
 
     public boolean hasTail()
