@@ -34,16 +34,15 @@ module Vitry.Prelude
 
 ; Functions
 
-; native: arity id const flip (.) (..)
+; native: arity id const flip (.)
 
 iter f n = match [f, n]
     [f, 0] = id
     [f, i] = f . (iter f (i - 1))
 
-(.')  f g = (fn (x y) f (g x y))
-(..') g f = (fn (x y) f (g x y))
-first  x y = x
-second x y = y
+(.')  f g = fn (x y) f (g x y)
+left  x y = x
+right x y = y
 
 
 
@@ -149,13 +148,13 @@ floor x : num = match x
     x : rat = (method RAT "floor" []) x 
     x : int = x
 
-round  = MATH_PRIM "round" .. LONG_TO_INT
+round  = LONG_TO_INT . MATH_PRIM "round"
 approx = NUM_TO_DOUBLE
 rationalize = DOUBLE_TO_RAT
 
-logn n : real = ln .. (* (1. / ln n))
-log           = logn 10.
-log2          = logn 2.
+logn n : real = (* (1.0 / ln n)) . ln
+log           = logn 10.0
+log2          = logn 2.0
 
 isOdd      x : num = x % 2 == 1
 isEven     x : num = x % 2 == 0
@@ -178,16 +177,19 @@ mean xs = sum xs / length xs
 ; TODO Naive implementations
 ; TODO Assure all work for strings
 
-; native: prepend head tail
+; native: prepend head tail (..)
 
-append x = (flip (++)) [x]
-last     = foldl second [] . tail
+; FIXME naive implementations
+; Should init work for infinite lists?
+
+append x = flip (++) [x]
+last     = foldl right [] . tail
 init xs  = match xs
-    (x, xs : []) = []
-    (x, xs)      = prepend x (init xs)
+    (y, ys : []) = []
+    (y, ys)      = prepend y (init ys)
 
+length   = foldr ((+ 1) .' right) 0
 
-length   = foldr ((+ 1) .' second) 0
 rank xs  = match xs
     _ : [] = 1
     _      = (succ . max . (map
@@ -197,41 +199,41 @@ rank xs  = match xs
                      _          = 0)) 
               xs 
 
-isEmpty xs  = match xs
-    _ : ()    = true
-    _ : [ _ ] = false
+; FIXME doesn't work for infinites
+isEmpty xs = match xs
+    _ : ()      = true
+    _           = false
 isSingle xs = match xs
-    _ : ()    = false
-    _         = (tail xs) == ()
-
+    _ : ()      = false
+    (x, _ : ()) = true
+    _           = false
+      
+; native: drop take sort
 substr m n = take n . drop m
-
-
-
-
-
 reverse   = foldl (flip prepend) []
 ; remove
 ; retain
-; sort
 ; search
-
 find pred = foldl (fn (x y) if (pred y) y else x) ()
+
 ; partition
-
-; shuffle
 ; permute
-
-randoms n = (map (fn (x) random n) (repeat 1))
-
-repeat    = unfold (fn (x) (x, x))
-cycle  xs = xs ++ delay (fn (_) cycle xs)
-palindrome xs = let sx = reverse xs
-                    xs ++ sx ++ delay (fn (_) palindrome xs)
 
 some  = foldr (||) false
 every = foldr (&&) true
 none  = not . some
+
+arith d   = unfold (fn (x) (x, x + d))
+geom  d   = unfold (fn (x) (x, x * d))
+harm      = map (/ 1) (arith 1 1) 
+randoms n = map (fn (x) random n) (repeat 1)
+
+repeat        = unfold (fn (x) (x, x))
+cycle      xs = xs ++ delay (fn (_) cycle xs)
+palindrome xs = let sx = reverse xs
+                    xs ++ sx ++ delay (fn (_) palindrome xs)
+
+
 
 zipWith f xs ys = match [f, xs, ys]
     [ f, (x, xs), (y, ys) ] = prepend (f x y) (zipWith f xs ys)
@@ -243,7 +245,7 @@ zip3With f xs ys zs = match [f, xs, ys, zs]
     [ _, _, _, _ ]                   = ()
 
 
-; lazy!
+; FIXME accept ()
 zipWithL f xs ys = delay (fn (_) 
     prepend 
         f (head xs) (head ys)
@@ -302,17 +304,18 @@ bufferStream n xs = force (take n xs) ++ delay (fn (_) bufferStream n (drop n xs
 ;         readFile writeFile
 ;         repl load quit
 
-version = (method (class "VitryRuntime") "getVersion" []) ()
-versionStr = join
-    interp "." (map string version)
+version    = (method (class "VitryRuntime") "getVersion" []) ()
+versionStr = join "." (map string version)
 
 RANDOM        = class "java.util.Random"
 RANDOM_INST   = new RANDOM
 RAND_FLOAT    = method RANDOM "nextFloat" ()
+
+randomFloat _ = RAND_FLOAT RANDOM_INST
     
 pick xs       = index (random (length xs)) xs
 decide f g x  = match (random 2) (0 = f x) (1 = g x)
-randomFloat _ = RAND_FLOAT RANDOM_INST
+; shuffle
 
 
 OBJECT           = class "java.lang.Object"

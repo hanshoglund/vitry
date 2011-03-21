@@ -25,6 +25,7 @@ import static vitry.runtime.struct.Seqs.*;
 import java.math.BigInteger;
 import java.util.Iterator;
 
+import vitry.Build;
 import vitry.runtime.error.*;
 import vitry.runtime.misc.*;
 import vitry.runtime.parse.*;
@@ -562,8 +563,7 @@ public class Interpreter implements Eval {
 
     static BigInteger evalNat(Object expr)
     {
-//        return new BigInteger(expr.toString());
-        return VitryRuntime.intFrom(expr.toString());
+        return VitryRuntime.intFrom(expr.toString());            
     }
 
     static Double evalDouble(Object expr)

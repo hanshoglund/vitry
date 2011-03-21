@@ -3,6 +3,7 @@
 
     <property name="debug"              value="true"/>
     <property name="memoize-sequences"  value="true"/>
+    <property name="memoize-numbers"    value="true"/>
     <property name="trace-limit"        value="50"/>
     <property name="major-version"      value="0"/>
     <property name="minor-version"      value="1"/>
@@ -22,6 +23,7 @@
             var props = [
               ["boolean", "debug"], 
               ["boolean", "memoize-sequences"], 
+              ["boolean", "memoize-numbers"], 
               ["int",     "trace-limit"], 
               ["int",     "major-version"], 
               ["int",     "minor-version"],

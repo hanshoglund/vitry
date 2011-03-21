@@ -186,7 +186,6 @@ public final class VitryRuntime
         prelude.def("const",      new const_());
         prelude.def("flip",       new flip());
         prelude.def("(.)",        new compose());
-        prelude.def("(..)",       new follow());
         
         prelude.def("(==)",       new eq());
 
@@ -218,9 +217,8 @@ public final class VitryRuntime
         prelude.def("foldl",      new foldl());
         prelude.def("foldr",      new foldr());
         prelude.def("index",      new index());
-        prelude.def("range",      new range());
-        prelude.def("(...)",      new range());
-        prelude.def("[...]",      new range());
+        prelude.def("(..)",       new range());
+        prelude.def("[..]",       new range());
         prelude.def("(++)",       new conc());
         prelude.def("map",        new map());
         prelude.def("unfold",     new unfold());
@@ -262,8 +260,6 @@ public final class VitryRuntime
 
         // Fixities
 
-        prelude.defFix("[...]",   12, true,  false);
-        prelude.defFix("(...)",   12, true,  false);
         prelude.defFix("(..')",   12, false, false);
         prelude.defFix("(.')",    12, false, false);
         prelude.defFix("(..)",    12, false, false);
@@ -451,37 +447,38 @@ public final class VitryRuntime
         return new StdIntersection(s);
     }
     
-    private static Map<String, BigInteger> ints = new java.util.WeakHashMap<String, BigInteger>();
+    private static Map<String, BigInteger> ints;
     static
     {
-        ints.put("0",  BigInteger.ZERO);
-        ints.put("1",  BigInteger.ONE);
-        ints.put("10", BigInteger.TEN);
-    }
-
-    public static BigInteger intFrom(String s)
-    {
-        BigInteger v = ints.get(s);
-
-        if (v == null)
+        if (Build.MEMOIZE_NUMBERS)
         {
-            v = new BigInteger(s);
-            ints.put(s, v);
+            ints = new java.util.WeakHashMap<String, BigInteger>();
+            ints.put("0",  BigInteger.ZERO);
+            ints.put("1",  BigInteger.ONE);
+            ints.put("10", BigInteger.TEN);            
         }
-        return v;
+    }
+
+    public static final BigInteger intFrom(String s)
+    {
+        if (Build.MEMOIZE_NUMBERS)
+        {
+            BigInteger v = ints.get(s);
+
+            if (v == null)
+            {
+                v = new BigInteger(s);
+                ints.put(s, v);
+            }
+            return v;
+        }
+        else
+        {
+            return new BigInteger(s);
+        }
     }
 
 
-
-    // Private
-
-//    private void def(Module mod, String name, Object val) {
-//        mod.addValue(Symbol.intern(name), val);
-//    }
-//
-//    private void defFix(Module mod, String name, int precedence, boolean assoc, boolean gathering) {
-//        mod.addFixity(Symbol.intern(name), new Fixity(precedence, assoc, gathering));
-//    }
 
     private Symbol nextUnique() {
         byte[] val = uniqueState.toByteArray();
