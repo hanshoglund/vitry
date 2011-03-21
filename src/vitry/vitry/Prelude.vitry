@@ -229,9 +229,9 @@ harm      = map (/ 1) (arith 1 1)
 randoms n = map (fn (x) random n) (repeat 1)
 
 repeat        = unfold (fn (x) (x, x))
-cycle      xs = xs ++ __delay (fn (_) cycle xs)
+cycle      xs = xs ++ (delay cycle xs)
 palindrome xs = let sx = reverse xs
-                    xs ++ sx ++ __delay (fn (_) palindrome xs)
+                    xs ++ sx ++ (delay palindrome xs)
 
 
 
@@ -246,12 +246,12 @@ zip3With f xs ys zs = match [f, xs, ys, zs]
 
 
 ; FIXME accept ()
-zipWithL f xs ys = __delay (fn (_) 
+zipWithL f xs ys = (delay 
     prepend 
         f (head xs) (head ys)
         zipWithL f (tail xs) (tail ys))
 
-zip3WithL f xs ys zs = __delay (fn (_) 
+zip3WithL f xs ys zs = (delay
     prepend 
         f (head xs) (head ys) (head zs)
         zip3WithL f (tail xs) (tail ys) (tail zs))
@@ -265,24 +265,21 @@ zip3L = zip3WithL (,)
 
 dup = foldr (fn (x y) [x, x] ++ y) []
 
-dupL xs = __delay 
-    fn (_)
-        let x = head xs
-            [x, x] ++ dupL (tail xs)
+dupL xs = delay
+    let x = head xs
+        [x, x] ++ dupL (tail xs)
 
 ; lazy!
-interlL xs ys = __delay 
-    fn (_) 
-        let x = head xs
-            y = head ys
-            [x, y] ++ interlL (tail xs) (tail ys)
+interlL xs ys = delay
+    let x = head xs
+        y = head ys
+        [x, y] ++ interlL (tail xs) (tail ys)
 
-interl3L xs ys zs = __delay 
-    fn (_) 
-        let x = head xs
-            y = head ys
-            y = head zs
-            [x, y, zs] ++ interl3L (tail xs) (tail ys) (tail zs)
+interl3L xs ys zs = delay 
+    let x = head xs
+        y = head ys
+        y = head zs
+        [x, y, zs] ++ interl3L (tail xs) (tail ys) (tail zs)
 
 
 interp y xs = prepend (head xs) (foldl (fn (zs x) zs ++ [y] ++ [x]) [] (tail xs))
@@ -296,7 +293,7 @@ join s = foldr (++) "" . interp s . map string
 ; Force and buffer n values
 buffer n xs = force (take n xs) ++ drop n xs
     
-bufferStream n xs = force (take n xs) ++ __delay (fn (_) bufferStream n (drop n xs))
+bufferStream n xs = force (take n xs) ++ (delay bufferStream n (drop n xs))
 
 
 ; native: now random
