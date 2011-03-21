@@ -33,23 +33,46 @@ import vitry.runtime.struct.*;
  */
 abstract public class Rewriting
 {
-    private static final TopLevelRewriter TOP_LEVEL_REWRITER = new TopLevelRewriter();
+    private static final Rewriting TOP_LEVEL_REWRITER = new TopLevelRewriter();
+    private static final Rewriting DELAY_REWRITER     = new DelayRewriter();
+    
+    static final Symbol _ = Symbol.intern("_");
+    static final Symbol Fn = Symbol.intern("Fn");
+    static final Symbol Left = Symbol.intern("Left");
+    static final Symbol Apply = Symbol.intern("Apply");
+    static final Symbol __delay = Symbol.intern("__delay");
 
 
     abstract public Seq<?> rewrite(Seq<Pattern> seq);
     
 
-    public static final Rewriting topLevel()
+    public static Rewriting delayRewriter()
+    {
+        return DELAY_REWRITER;
+    }
+
+    public static final Rewriting topLevelRewriter()
     {
         return TOP_LEVEL_REWRITER;
     }
-
     
-    public static final Rewriting ops(Env<Symbol, Fixity> fix, 
+    public static final Rewriting opsRewriter(Env<Symbol, Fixity> fix, 
                                       Env<Symbol, Symbol> ctxt) 
     {
         return new OpRewriter(fix, ctxt);
     }
+}
+
+/**
+ * Rewrites
+ *   delay M  -> __delay (fn (_) M)
+ */
+class DelayRewriter extends Rewriting
+{
+    public Seq<?> rewrite(Seq<Pattern> seq)
+    {
+        return productOf(Apply, __delay, productOf(Fn, productOf(Left, _), seq.head()));
+    }   
 }
 
 
@@ -75,9 +98,7 @@ class TopLevelRewriter extends Rewriting
                 Pattern apply    = applySeq.head();
                 Pattern name     = applySeq.tail().head();
                 Product params   = product(applySeq.tail().tail());
-//System.err.println(name);
-//System.err.println(params);
-//System.err.println(right);
+                
                 params = params.mapProduct(new StandardFunction.Unary()
                     {
                         public Object apply(Object a) throws InvocationError
@@ -109,9 +130,6 @@ class TopLevelRewriter extends Rewriting
         }
         return false;
     }
-    
-    static final Symbol Fn = Symbol.intern("Fn");
-    static final Symbol Left = Symbol.intern("Left");
 }
 
 
@@ -360,6 +378,4 @@ class OpRewriter extends Rewriting
         });
         return product(cons(Apply, map));
     }
-    
-    static final Symbol Apply = Symbol.intern("Apply");
 }

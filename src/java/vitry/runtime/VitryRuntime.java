@@ -225,7 +225,6 @@ public final class VitryRuntime
         prelude.def("take",       new take());
         prelude.def("drop",       new drop());
         prelude.def("sort",       new sort());
-        prelude.def("delay",      new delay());
         prelude.def("force",      new force());
 
         prelude.def("now",        new now());
@@ -244,6 +243,7 @@ public final class VitryRuntime
         // Internal
         
         prelude.def("__rt",       this);
+        prelude.def("__delay",    new delay());
         prelude.def("rewrite",    new rewrite(this));
 
         prelude.def("seq",        new seq());

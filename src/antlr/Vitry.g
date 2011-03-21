@@ -34,8 +34,9 @@ tokens {
     Fn;
     Let; 
     Assign;
-    Apply; 
+    Apply;
     Ops; 
+    Delay; 
     If; 
     Match;    
     Do;
@@ -99,7 +100,8 @@ expr
               ( ('(' left '=')=> assignOrExpr+=assign 
                 | assignOrExpr+=type) )+           -> ^(Do $assignOrExpr+)
     | 'if' type type 'else'? expr                  -> ^(If type type expr)
-    | 'match' type assign+                         -> ^(Match type assign+)    
+    | 'match' type assign+                         -> ^(Match type assign+)
+    | 'delay' expr                                 -> ^(Delay expr)    
     | inline
     ;
 

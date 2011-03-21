@@ -64,6 +64,7 @@ public class Interpreter implements Eval {
     private static final int ASSIGN_EXPR  = VitryParser.Assign;
     private static final int IF_EXPR      = VitryParser.If;
     private static final int MATCH_EXPR   = VitryParser.Match;
+    private static final int DELAY_EXPR   = VitryParser.Delay;
     private static final int APPLY_EXPR   = VitryParser.Apply;
     private static final int OPS_EXPR     = VitryParser.Ops;
     private static final int TYPE_EXPR    = VitryParser.Type;
@@ -288,7 +289,11 @@ public class Interpreter implements Eval {
                 case OPS_EXPR:
                     // FIXME only prelude fixities
 //                    expr = Rewriting.ops(module.getFixities(), context).rewrite(exTail);
-                    expr = Rewriting.ops(getRuntime().getPrelude().getFixities(), context).rewrite(exTail);
+                    expr = Rewriting.opsRewriter(getRuntime().getPrelude().getFixities(), context).rewrite(exTail);
+                    continue;
+                    
+                case DELAY_EXPR:
+                    expr = Rewriting.delayRewriter().rewrite(exTail);
                     continue;
                     
                 case IF_EXPR:
@@ -363,7 +368,7 @@ public class Interpreter implements Eval {
                     return right;
                 }
 
-
+                
                 case APPLY_EXPR:
                 {
                     Function fn = (Function) eval(exTail.head(), context.extend(SIDE, RIGHT), frame, module);
@@ -862,7 +867,7 @@ final class InterpretedModule extends Module
          *  - values
          */
         for (Object expr : declExprs) {
-            Object decl = Rewriting.topLevel().rewrite((Seq<Pattern>) expr);
+            Object decl = Rewriting.topLevelRewriter().rewrite((Seq<Pattern>) expr);
             Object val = interpreter.eval(decl, interpreter.getStandardContext(), values, this);
         }
 
