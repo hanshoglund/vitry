@@ -36,6 +36,8 @@ abstract class AbstractProduct extends ConstructionPattern implements Product
 {
     public boolean eq(Product o)
     {
+        if (o == this) return true;
+
         Seq<Pattern> left = o;
         Seq<Pattern> right = this;
 

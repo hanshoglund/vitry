@@ -562,7 +562,8 @@ public class Interpreter implements Eval {
 
     static BigInteger evalNat(Object expr)
     {
-        return new BigInteger(expr.toString());
+//        return new BigInteger(expr.toString());
+        return VitryRuntime.intFrom(expr.toString());
     }
 
     static Double evalDouble(Object expr)

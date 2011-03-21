@@ -27,6 +27,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 
 import vitry.Build;
@@ -449,7 +450,26 @@ public final class VitryRuntime
     public static Intersection intersectionFrom(Seq<Pattern> s) {
         return new StdIntersection(s);
     }
+    
+    private static Map<String, BigInteger> ints = new java.util.WeakHashMap<String, BigInteger>();
+    static
+    {
+        ints.put("0",  BigInteger.ZERO);
+        ints.put("1",  BigInteger.ONE);
+        ints.put("10", BigInteger.TEN);
+    }
 
+    public static BigInteger intFrom(String s)
+    {
+        BigInteger v = ints.get(s);
+
+        if (v == null)
+        {
+            v = new BigInteger(s);
+            ints.put(s, v);
+        }
+        return v;
+    }
 
 
 
@@ -1349,26 +1369,32 @@ final class unfold extends Binary
     }
 }
 
+
 final class take extends Binary
 {
     public Object apply(Object n, Object xs) throws InvocationError
     {
         if (Seqs.isNil(xs) || ((Number) n).intValue() < 1) return NIL;
-        if (xs instanceof String) {
+        if (xs instanceof String)
+        {
             xs = list(Native.wrapAll(CharSeq.from((String) xs)));
         }
-        return list(new TakeSeq((Seq) xs, ((Number) n).intValue()));
+        // Must memoize so that stateful lazy seqs doesn't change themselves
+        return list(new MemoizedSeq(new TakeSeq((Seq) xs, ((Number) n).intValue())));
     }
 }
+
 
 final class drop extends Binary
 {
     public Object apply(Object n, Object xs) throws InvocationError
     {
-        if (xs instanceof String) {
+        if (xs instanceof String)
+        {
             xs = list(Native.wrapAll(CharSeq.from((String) xs)));
         }
-        return list(new DropSeq((Seq) xs, ((Number) n).intValue()));
+        // See above
+        return list(new MemoizedSeq(new DropSeq((Seq) xs, ((Number) n).intValue())));
     }
 }
 

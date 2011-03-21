@@ -43,6 +43,8 @@ abstract class AbstractList extends ConstructionPattern implements List
 
     public boolean eq(List o)
     {
+        if (o == this) return true;
+        
         Seq<Pattern> left = o;
         Seq<Pattern> right = this;
 

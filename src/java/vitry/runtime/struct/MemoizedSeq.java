@@ -21,24 +21,24 @@ package vitry.runtime.struct;
 
 public class MemoizedSeq<T> extends AbstractSeq<T>
 {
-    private static final int HEADED   = 0x1;
-    private static final int TAILED   = 0x2;
-    private static final int FINISHED = HEADED | TAILED;
+    private static final int HEADED = 1;
+    private static final int TAILED = 2;
+    private static final int FINISHED = 3;
 
-    private Seq<T> seq;
-    private T      x;
+    private int state = 0;
+    private Seq<T> ys;
+    private T x;
     private Seq<T> xs;
-    private int    state = 0;
 
     public MemoizedSeq(Seq<T> s) {
-        this.seq = s;
+        this.ys = s;
     }
 
     public T head()
     {
-        if ((this.state & HEADED) != HEADED)
+        if ( (this.state & HEADED) != HEADED)
         {
-            this.x = seq.head();
+            this.x = ys.head();
             this.state |= HEADED;
             maybeFinish();
         }
@@ -47,9 +47,16 @@ public class MemoizedSeq<T> extends AbstractSeq<T>
 
     public Seq<T> tail()
     {
-        if ((this.state & TAILED) != TAILED)
+        if ( (this.state & TAILED) != TAILED)
         {
-            this.xs = seq.tail();
+            if (ys.hasTail())
+            {
+                this.xs = new MemoizedSeq<T>(ys.tail());
+            }
+            else
+            {
+                this.xs = null;
+            }
             this.state |= TAILED;
             maybeFinish();
         }
@@ -64,7 +71,7 @@ public class MemoizedSeq<T> extends AbstractSeq<T>
         }
         else
         {
-            return seq.hasTail();
+            return ys.hasTail();
         }
     }
 
@@ -72,7 +79,7 @@ public class MemoizedSeq<T> extends AbstractSeq<T>
     {
         if (this.state == FINISHED)
         {
-            this.seq = null;
+            this.ys = null;
         }
     }
 }

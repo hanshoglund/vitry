@@ -222,6 +222,8 @@ find pred = foldl (fn (x y) if (pred y) y else x) ()
 ; shuffle
 ; permute
 
+randoms n = (map (fn (x) random n) (repeat 1))
+
 repeat    = unfold (fn (x) (x, x))
 cycle  xs = xs ++ delay (fn (_) cycle xs)
 palindrome xs = let sx = reverse xs
@@ -304,24 +306,30 @@ version = (method (class "VitryRuntime") "getVersion" []) ()
 versionStr = join
     interp "." (map string version)
 
-RANDOM = class "java.util.Random"
-RANDOM_INST = new RANDOM
-RAND_FLOAT = method RANDOM "nextFloat" ()
+RANDOM        = class "java.util.Random"
+RANDOM_INST   = new RANDOM
+RAND_FLOAT    = method RANDOM "nextFloat" ()
     
 pick xs       = index (random (length xs)) xs
 decide f g x  = match (random 2) (0 = f x) (1 = g x)
 randomFloat _ = RAND_FLOAT RANDOM_INST
 
-OBJECT       = class "java.lang.Object"
-THREAD_LOCAL = class "java.lang.ThreadLocal"
+
+OBJECT           = class "java.lang.Object"
+THREAD_LOCAL     = class "java.lang.ThreadLocal"
+THREAD_LOCAL_GET = method THREAD_LOCAL "get" []
+THREAD_LOCAL_SET = method THREAD_LOCAL "set" [ OBJECT ]
 
 ref _   = new THREAD_LOCAL
-get r   = (method THREAD_LOCAL "get" []) r
-set r x = do (method THREAD_LOCAL "set" [ OBJECT ]) r x
-          r
+get r   = THREAD_LOCAL_GET r
+set r x = 
+    do THREAD_LOCAL_SET r x
+       r
+
+THREAD_SLEEP = method (class "Thread") "sleep" [ `long ]
 
 sleep time = do time = NUM_TO_LONG time
-                (method (class "Thread") "sleep" [ `long ]) time
+                THREAD_SLEEP time
                 time
     
 timer f    = do start = now ()
