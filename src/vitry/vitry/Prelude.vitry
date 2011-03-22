@@ -209,7 +209,6 @@ isSingle xs = match xs
 ; native: drop take
 ;         map foldl foldr
 ;         (..) sort reverse
-;         unfold
 
 substr m n = take n . drop m
 ; reverse   = foldl (flip prepend) []

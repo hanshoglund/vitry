@@ -218,6 +218,7 @@ public final class VitryRuntime
         prelude.def("tail",       new tail());
         prelude.def("last",       new last());
         prelude.def("init",       new init());
+        prelude.def("index",      new index());
         prelude.def("drop",       new drop());
         prelude.def("take",       new take());
         prelude.def("map",        new map());
@@ -227,8 +228,6 @@ public final class VitryRuntime
         prelude.def("[..]",       new range());
         prelude.def("reverse",    new reverse());
         prelude.def("sort",       new sort());
-        prelude.def("index",      new index());
-        prelude.def("unfold",     new unfold());
         prelude.def("force",      new force());
 
         prelude.def("now",        new now());
@@ -1439,13 +1438,13 @@ final class index extends StandardFunction
     }
 }
 
-final class unfold extends Binary
-{
-    public Object apply(Object f, Object init) throws InvocationError
-    {
-        return listFrom(Native.wrapAll(new UnfoldSeq<Object>((Function) f, init)));
-    }
-}
+//final class unfold extends Binary
+//{
+//    public Object apply(Object f, Object init) throws InvocationError
+//    {
+//        return listFrom(Native.wrapAll(new UnfoldSeq<Object>((Function) f, init)));
+//    }
+//}
 
 
 final class delay extends Unary
