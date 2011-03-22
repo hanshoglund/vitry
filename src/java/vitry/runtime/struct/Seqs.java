@@ -52,7 +52,8 @@ public final class Seqs
 
     public static <T> Seq<T> cons(T x, Seq<T> xs)
     {
-        if (isNil(xs))
+//        if (isNil(xs))
+        if (xs == null)
             return new SingleSeq<T>(x);
         else
             return xs.prepend(x);

@@ -218,14 +218,16 @@ substr m n = take n . drop m
 ; TODO search
 find pred = foldl (fn (x y) if (pred y) y else x) ()
 
-; partition
-; permute
+; TODO partition
+; TODO permute
 
 some  = foldr (||) false
 every = foldr (&&) true
 none  = not . some
+     
 
-; native: unfold
+unfold  f x = let (y, x) = f x
+                  prepend y (delay unfold f x)
 
 arith d   = unfold (fn (x) (x, x + d))
 geom  d   = unfold (fn (x) (x, x * d))
