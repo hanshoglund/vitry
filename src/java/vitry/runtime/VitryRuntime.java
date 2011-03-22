@@ -33,6 +33,7 @@ import java.util.Properties;
 import vitry.Build;
 import vitry.runtime.StandardFunction.Binary;
 import vitry.runtime.StandardFunction.Unary;
+import vitry.runtime.sort.Comp;
 
 import vitry.prelude.*;
 import vitry.runtime.error.*;
@@ -211,20 +212,23 @@ public final class VitryRuntime
         prelude.def("NaN",        Double.NaN);
         prelude.def("Infinity",   Double.POSITIVE_INFINITY);
 
+        prelude.def("(++)",       new conc());
         prelude.def("prepend",    new prepend());
         prelude.def("head",       new head());
         prelude.def("tail",       new tail());
+        prelude.def("last",       new last());
+        prelude.def("init",       new init());
+        prelude.def("drop",       new drop());
+        prelude.def("take",       new take());
+        prelude.def("map",        new map());
         prelude.def("foldl",      new foldl());
         prelude.def("foldr",      new foldr());
-        prelude.def("index",      new index());
         prelude.def("(..)",       new range());
         prelude.def("[..]",       new range());
-        prelude.def("(++)",       new conc());
-        prelude.def("map",        new map());
-        prelude.def("unfold",     new unfold());
-        prelude.def("take",       new take());
-        prelude.def("drop",       new drop());
+        prelude.def("reverse",    new reverse());
         prelude.def("sort",       new sort());
+        prelude.def("index",      new index());
+        prelude.def("unfold",     new unfold());
         prelude.def("force",      new force());
 
         prelude.def("now",        new now());
@@ -1164,28 +1168,54 @@ final class compose extends Binary
         };
     }
 }
-final class follow extends Binary
+
+
+
+// Lists
+
+final class conc extends Binary
 {
-    public Object apply(final Object f, final Object g)
+    public Object apply(Object a, Object b)
     {
-        return new Unary() {
-            public Object apply(Object x) throws InvocationError
+        // TODO is unwrapping necessary?
+        if (a instanceof List)
+        {
+            if (b instanceof List)
             {
-                return ((Function) g).apply( ((Function) f).apply(x));
+                return list(Seqs.concat((List) a, (List) b));
             }
-        };
+            else
+            {
+                String a2 = CharSeq.toString(Native.unwrapAll((List) a));
+                String b2 = (String) Native.unwrap(b);
+                return (a2).concat(b2);
+            }
+        }
+        else
+        {
+
+            if (b instanceof List)
+            {
+                String a2 = (String) Native.unwrap(a);
+                String b2 = CharSeq.toString(Native.unwrapAll((List) b));
+                return (a2).concat(b2);
+            }
+            else
+            {
+                a = Native.unwrap(a);
+                b = Native.unwrap(b);
+                return ((String) a).concat((String) b);
+            }
+        }
     }
 }
-
-
-// Seq primitives
 
 final class prepend extends Binary
 {
     public Object apply(Object x, Object xs)
     {
-        if (xs instanceof String) {
-            xs = list(Native.wrapAll(CharSeq.from((String) xs)));
+        if (xs instanceof CharSequence) {
+            xs = list(Native.wrapAll(CharSeq.from((CharSequence) xs)));
         }
         return list(Seqs.cons(Native.wrap(x), (List) xs));
     }
@@ -1200,7 +1230,7 @@ final class head extends Unary
             if (chars.length() == 0) VitryRuntime.throwDeconstructNil();
             return chars.charAt(0);
         }
-        return Native.unwrap(((Seq<?>) xs).head());
+        return Native.unwrap(((List) xs).head());
     }
 }
 
@@ -1218,40 +1248,58 @@ final class tail extends Unary
     }
 }
 
-final class conc extends Binary
+final class last extends Unary 
 {
-    public Object apply(Object a, Object b)
+    public Object apply(Object xs)
     {
-        // TODO is unwrapping necessary?
-        if (a instanceof List)
-        {
-            if (b instanceof List)
-            {
-                return list(Seqs.concat((List) a, (List) b));
-            }
-            else
-            {
-                String a2 = CharSeq.toString(Native.unwrapAll((Seq<Pattern>) a));
-                String b2 = (String) Native.unwrap(b);
-                return (a2).concat(b2);
-            }
+        if (xs instanceof CharSequence) {
+            CharSequence chars = (CharSequence) xs;
+            if (chars.length() == 0) VitryRuntime.throwDeconstructNil();
+            return chars.charAt(chars.length() - 1);
         }
-        else
-        {
+        if (Seqs.isNil(xs)) VitryRuntime.throwDeconstructNil();
+        return Native.unwrap(Seqs.last(((List) xs)));
+    }
+}
 
-            if (b instanceof List)
-            {
-                String a2 = (String) Native.unwrap(a);
-                String b2 = CharSeq.toString(Native.unwrapAll((Seq<Pattern>) b));
-                return (a2).concat(b2);
-            }
-            else
-            {
-                a = Native.unwrap(a);
-                b = Native.unwrap(b);
-                return ((String) a).concat((String) b);
-            }
+final class init extends Unary
+{
+    public Object apply(Object xs)
+    {
+        if (xs instanceof CharSequence) {
+            CharSequence chars = (CharSequence) xs;
+            if (chars.length() == 0) VitryRuntime.throwDeconstructNil();
+            if (chars.length() == 1) return NIL;
+            return list(Native.wrapAll(CharSeq.from(((CharSequence) xs).subSequence(0, chars.length() - 1))));
         }
+        if (Seqs.isNil(xs)) VitryRuntime.throwDeconstructNil();
+        return list(Seqs.init((List)xs));
+    }
+}
+
+final class drop extends Binary
+{
+    public Object apply(Object n, Object xs) throws InvocationError
+    {
+        if (xs instanceof CharSequence)
+        {
+            xs = list(Native.wrapAll(CharSeq.from((CharSequence) xs)));
+        }
+        // Must memoize so that stateful lazy seqs doesn't change themselves
+        return list(new MemoizedSeq<Pattern>(new DropSeq<Pattern>((List) xs, ((Number) n).intValue())));
+    }
+}
+
+final class take extends Binary
+{
+    public Object apply(Object n, Object xs) throws InvocationError
+    {
+        if (Seqs.isNil(xs) || ((Number) n).intValue() < 1) return NIL;
+        if (xs instanceof CharSequence)
+        {
+            xs = list(Native.wrapAll(CharSeq.from((CharSequence) xs)));
+        }
+        return list(new MemoizedSeq<Pattern>(new TakeSeq<Pattern>((List) xs, ((Number) n).intValue())));
     }
 }
 
@@ -1259,15 +1307,13 @@ final class map extends Binary
 {
     public Object apply(Object f, Object xs)
     {
-        if (xs instanceof String) {
-            xs = list(Native.wrapAll(CharSeq.from((String) xs)));
+        if (xs instanceof CharSequence) {
+            xs = list(Native.wrapAll(CharSeq.from((CharSequence) xs)));
         }
         if (Seqs.isNil(xs)) return NIL;
         return listFrom(Native.wrapAll(Native.unwrapAll((List) xs).map((Function) f)));
-//        return ((List) xs).mapList((Function) f);
     }
 }
-
 
 final class foldl extends StandardFunction
 {
@@ -1277,8 +1323,8 @@ final class foldl extends StandardFunction
 
     public Object apply(Object f, Object u, Object xs)
     {
-        if (xs instanceof String) {
-            xs = list(Native.wrapAll(CharSeq.from((String) xs)));
+        if (xs instanceof CharSequence) {
+            xs = list(Native.wrapAll(CharSeq.from((CharSequence) xs)));
         }
         if (Seqs.isNil((Seq<?>) xs)) return u;
         return Seqs.foldlUnwrap((Function) f, u, (List) xs);
@@ -1293,25 +1339,10 @@ final class foldr extends StandardFunction
 
     public Object apply(Object f, Object u, Object xs)
     {
-        if (xs instanceof String) {
-            xs = list(Native.wrapAll(CharSeq.from((String) xs)));
+        if (xs instanceof CharSequence) {
+            xs = list(Native.wrapAll(CharSeq.from((CharSequence) xs)));
         }
         return Seqs.foldrUnwrap((Function) f, u, (List) xs);
-    }
-}
-
-final class index extends StandardFunction
-{
-    public index() {
-        super(2);
-    }
-
-    public Object apply(Object n, Object xs)
-    {
-        if (xs instanceof String) {
-            xs = CharSeq.from((String) xs);
-        }
-        return Native.unwrap(Seqs.nth((Seq<?>) xs, ((Number) n).intValue()));
     }
 }
 
@@ -1326,6 +1357,18 @@ final class range extends Binary
     }
 }
 
+final class reverse extends Unary
+{
+    public Object apply(Object xs)
+    {
+        if (xs instanceof CharSequence) {
+            throw new UnsupportedOperationException("str reverse TODO"); // TODO
+        }
+        if (Seqs.isNil(xs)) return NIL;
+        return list(Seqs.reverse((List) xs));
+    }
+}
+
 final class sort extends Binary
 {
     static final Symbol LT = Symbol.intern("smaller");
@@ -1334,6 +1377,9 @@ final class sort extends Binary
 
     public Object apply(Object f, Object xs) throws InvocationError
     {
+        if (xs instanceof CharSequence) {
+            throw new UnsupportedOperationException("str sort TODO"); // TODO
+        }
         Object[] a = Seqs.toArray(Native.unwrapAll((Seq<?>) xs));
         Arrays.sort(a, new Comp((Function) f));
         return listFrom(Native.wrapAll(Seqs.from(a)));
@@ -1358,6 +1404,22 @@ final class sort extends Binary
     }
 }
 
+
+final class index extends StandardFunction
+{
+    public index() {
+        super(2);
+    }
+
+    public Object apply(Object n, Object xs)
+    {
+        if (xs instanceof String) {
+            xs = CharSeq.from((String) xs);
+        }
+        return Native.unwrap(Seqs.nth((Seq<?>) xs, ((Number) n).intValue()));
+    }
+}
+
 final class unfold extends Binary
 {
     public Object apply(Object f, Object init) throws InvocationError
@@ -1366,34 +1428,6 @@ final class unfold extends Binary
     }
 }
 
-
-final class take extends Binary
-{
-    public Object apply(Object n, Object xs) throws InvocationError
-    {
-        if (Seqs.isNil(xs) || ((Number) n).intValue() < 1) return NIL;
-        if (xs instanceof String)
-        {
-            xs = list(Native.wrapAll(CharSeq.from((String) xs)));
-        }
-        // Must memoize so that stateful lazy seqs doesn't change themselves
-        return list(new MemoizedSeq(new TakeSeq((Seq) xs, ((Number) n).intValue())));
-    }
-}
-
-
-final class drop extends Binary
-{
-    public Object apply(Object n, Object xs) throws InvocationError
-    {
-        if (xs instanceof String)
-        {
-            xs = list(Native.wrapAll(CharSeq.from((String) xs)));
-        }
-        // See above
-        return list(new MemoizedSeq(new DropSeq((Seq) xs, ((Number) n).intValue())));
-    }
-}
 
 final class delay extends Unary
 {
@@ -1404,13 +1438,13 @@ final class delay extends Unary
 }
 
 /**
- * Force evaluation of a lazy seq.
+ * Force evaluation of a list.
  */
 final class force extends Binary
 {
     public Object apply(Object xs) throws InvocationError
     {
-        Pattern[] elements = Seqs.toArray((Seq<Pattern>) xs, new Pattern[0]);
+        Pattern[] elements = Seqs.toArray((List) xs, new Pattern[0]);
         return listFrom(Seqs.<Pattern>from(elements));
     }
 }
@@ -1584,6 +1618,9 @@ class classOf extends StandardFunction
     }
 }
 
+/**
+ * Return a function wrapping a method.
+ */
 final class method extends StandardFunction
 {
 

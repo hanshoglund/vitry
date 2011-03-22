@@ -87,7 +87,7 @@ num  = prec
 
 
 
-; Ordering
+; Ordering and enumeration
 
 ; native: (<) (>)
 
@@ -97,7 +97,7 @@ num  = prec
 zeroth x = match x (x : prec = 0) (x : real = 0.0)
 succ x   = match x (x : prec = x + 1) (x : real = x + 1.0)
 pred x   = match x (x : prec = x - 1) (x : real = x - 1.0)
-nth x n    = (iter succ n) (zeroth x)
+order x n = (iter succ n) (zeroth x)
 compare  x y = if (x < y) `smaller else if (x == y) `equal else `larger
 largest  x y = if (x > y) x else y
 smallest x y = if (x < y) x else y
@@ -170,30 +170,24 @@ isInfinite x : num = (x == Infinity)
 isNumber   x : num = not (isNan x)
 isFinite   x : num = not (isInfinite x) && not (isNan x)
 
-sum     = foldl (+) 0
-product = foldl (*) 1
+sum     = foldr (+) 0
+product = foldr (*) 1
 mean xs = sum xs / length xs
+
 
 
 
 ; Lists
 
-; TODO Naive implementations
 ; TODO Assure all work for strings
 
-; native: prepend head tail (..)
-
-; FIXME naive implementations
-; Should init work for infinite lists?
+; native: (++)
+;         prepend head tail 
+;         init last
+;         index
 
 append x = flip (++) [x]
-last     = foldl right [] . tail
-init xs  = match xs
-    (y, ys : []) = []
-    (y, ys)      = prepend y (init ys)
-
 length   = foldr ((+ 1) .' right) 0
-
 rank xs  = match xs
     _ : [] = 1
     _      = (succ . max . (map
@@ -203,21 +197,29 @@ rank xs  = match xs
                      _          = 0)) 
               xs 
 
-; FIXME doesn't work for infinites
 isEmpty xs = match xs
     _ : ()      = true
+    _ : ""      = true
     _           = false
 isSingle xs = match xs
     _ : ()      = false
     (x, _ : ()) = true
     _           = false
       
-; native: drop take sort
+
+
+
+; native: drop take
+;         map foldl foldr
+;         range sort reverse
+;         unfold
+
 substr m n = take n . drop m
-reverse   = foldl (flip prepend) []
-; remove
-; retain
-; search
+; reverse   = foldl (flip prepend) []
+
+; TODO remove
+; TODO retain
+; TODO search
 find pred = foldl (fn (x y) if (pred y) y else x) ()
 
 ; partition
@@ -226,6 +228,8 @@ find pred = foldl (fn (x y) if (pred y) y else x) ()
 some  = foldr (||) false
 every = foldr (&&) true
 none  = not . some
+
+; native: unfold
 
 arith d   = unfold (fn (x) (x, x + d))
 geom  d   = unfold (fn (x) (x, x * d))
@@ -248,8 +252,6 @@ zip3With f xs ys zs = match [f, xs, ys, zs]
     [ f, (x, xs), (y, ys), (z, zs) ] = prepend (f x y z) (zip3With f xs ys zs)
     [ _, _, _, _ ]                   = ()
 
-
-; FIXME accept ()
 zipWithL f xs ys = delay 
     prepend 
         f (head xs) (head ys)
@@ -299,6 +301,10 @@ buffer n xs = force (take n xs) ++ drop n xs
     
 bufferStream n xs = force (take n xs) ++ (delay bufferStream n (drop n xs))
 
+
+
+
+; System
 
 ; native: now random
 ;         parse print parseFile eval error

@@ -96,14 +96,7 @@ public final class Seqs
 
     public static <T> Seq<T> init(Seq<T> xs)
     {
-        if (isNil(xs.tail()))
-        {
-            return null;
-        }
-        else
-        {
-            return cons(head(xs), init(tail(xs)));
-        }
+        return reverse(reverse(xs).tail());
     }
 
     public static <T> Seq<T> untilElement(Seq<T> xs, T y)
@@ -166,7 +159,7 @@ public final class Seqs
     public static <U, T> U foldr(Function f, U z, Seq<T> xs)
     {
         U res = z;
-        xs = eagerlyReverse(xs);
+        xs = reverse(xs);
         while (!isNil(xs))
         {
             res = Utils.<U> unsafe(f.apply(xs.head(), res));
@@ -189,7 +182,7 @@ public final class Seqs
     public static <U, T> U foldrUnwrap(Function f, U z, Seq<T> xs)
     {
         U res = z;
-        xs = eagerlyReverse(xs);
+        xs = reverse(xs);
         while (!isNil(xs))
         {
             res = Utils.<U> unsafe(f.apply(Native.unwrap(xs.head()), res));
@@ -205,7 +198,7 @@ public final class Seqs
     }
 
 
-    private static <T> Seq<T> eagerlyReverse(Seq<T> xs)
+    public static <T> Seq<T> reverse(Seq<T> xs)
     {
         Seq<T> ys = null;
         while (!isNil(xs)) {

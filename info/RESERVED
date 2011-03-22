@@ -8,6 +8,7 @@ Reserved words:
     if      
     then
     else
+    delay
     match
     module
     import
