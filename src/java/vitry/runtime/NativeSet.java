@@ -102,15 +102,27 @@ public final class NativeSet extends InclusionPattern implements Set
             return this.hostClass.isAssignableFrom( ((NativeSet) a).hostClass);
         return false;
     }
-
-    public boolean eq(Product o)
+    
+    public static boolean match(NativeSet a, Pattern b)
     {
-        return false;
-    }
-
-    public boolean eq(Tagged o)
-    {
-        // ?
+        if (b instanceof NativeSet)
+        {
+            return b.match(a);
+        }
+        if (b instanceof Set || b instanceof Union)
+        {
+            for (Pattern x : (InclusionPattern) b)
+                if (x.match(a))
+                    return true;
+            return false;
+        }
+        if (b instanceof Intersection)
+        {
+            for (Pattern x : (InclusionPattern) b)
+                if (!x.match(a))
+                    return false;
+            return true;
+        }
         return false;
     }
 

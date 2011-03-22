@@ -45,6 +45,8 @@ abstract class InclusionPattern extends BasePattern implements Seq<Pattern>
     {
         if (a == VitryRuntime.BOTTOM)
             return true;
+        if (a instanceof NativeSet)
+            return NativeSet.match((NativeSet) a, this);
         for (Pattern x : a)
             if (!x.matchFor(this))
                 return false;
