@@ -1227,7 +1227,9 @@ final class prepend extends Binary
         if (xs instanceof CharSequence) {
             xs = list(Native.wrapAll(CharSeq.from((CharSequence) xs)));
         }
-        return Seqs.cons(Native.wrap(x), (List) xs);
+        // TODO figure out why wrapping is necessary
+//        return Seqs.cons(Native.wrap(x), (List) xs);
+        return list(Seqs.cons(Native.wrap(x), (List) xs));
     }
 }
 

@@ -195,22 +195,20 @@ rank xs  = match xs
                      _  : []    = 1
                      xs : [ _ ] = rank xs
                      _          = 0)) 
-              xs 
-           
-
-isEmpty xs = xs == ()
-
+              xs
+              
+isEmpty xs = match xs
+    _ : ()      = true
+    _           = false
 isSingle xs = match xs
     _ : ()      = false
     (x, _ : ()) = true
     _           = false
-      
-
 
 
 ; native: drop take
 ;         map foldl foldr
-;         range sort reverse
+;         (..) sort reverse
 ;         unfold
 
 substr m n = take n . drop m
