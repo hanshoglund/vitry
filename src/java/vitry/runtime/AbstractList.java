@@ -22,9 +22,11 @@ import static vitry.runtime.VitryRuntime.listFrom;
 
 import java.io.IOException;
 
+import vitry.Build;
 import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.Seq;
 import vitry.runtime.struct.Seqs;
+import vitry.runtime.struct.TakeSeq;
 
 
 /**
@@ -149,26 +151,60 @@ abstract class AbstractList extends ConstructionPattern implements List
 
     public String toString()
     {
-return "[...]";
-//        return Utils.join(this, "[", ", ", "]");
+        StringBuilder sb = new StringBuilder();
+        try
+        {
+            toString(sb);
+        }
+        catch (IOException e)
+        {
+            // It is a StringBuilder
+        }
+        return sb.toString();
+    }
+    
+    public String toFiniteString()
+    {
+        StringBuilder sb = new StringBuilder();
+        try
+        {
+            toFiniteString(sb);
+        }
+        catch (IOException e)
+        {
+        }
+        return sb.toString();        
     }
 
     public void toString(Appendable a) throws IOException
     {
-        boolean first = true;
         a.append("[");
-
-a.append("...");
-//        for (Pattern e : this)
-//        {
-//            if (!first)
-//            {
-//                a.append(", ");
-//            }
-//            a.append(e.toString());
-//            first = false;
-//        }
+        appendAll(a, this);
         a.append("]");
+    }
+
+    public void toFiniteString(Appendable a) throws IOException
+    {
+        Seq<?> xs = new TakeSeq<Pattern>(this, Build.PRINT_SEQ_LIMIT);
+        a.append("[");
+        appendAll(a, xs);
+        if (Seqs.length(xs) >= Build.PRINT_SEQ_LIMIT)
+            a.append(", ...");
+        a.append("]");        
+    }
+
+    protected void appendAll(Appendable a, Iterable<?> xs) throws IOException
+    {
+        boolean first = true;
+        for (Object e : xs)
+        {
+            if (!first)
+            {
+                a.append(", ");
+            }
+            a.append(e.toString());
+            first = false;
+        }
     }
 
 

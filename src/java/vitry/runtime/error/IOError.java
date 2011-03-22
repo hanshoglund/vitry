@@ -18,7 +18,6 @@
  */
 package vitry.runtime.error;
 
-import java.io.File;
 
 public class IOError extends VitryError
 {

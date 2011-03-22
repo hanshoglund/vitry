@@ -177,21 +177,21 @@ public class Interpreter implements Eval {
 
     
     public Object eval(Object expr)
-    throws ParseError, TypeError, ResolveError
+    throws ParseError, VitryError, ResolveError
     {
         return eval(expr, runtime.getPrelude());
     }
     
 
     public final Object eval(Object expr, Module module)
-    throws ParseError, LinkageError, TypeError 
+    throws ParseError, LinkageError, VitryError 
     {
         return eval(expr, this.standardContext, module.getValues(), module);
     }
 
 
     public final Object eval(Object expr, Context context, Env<Symbol, Object> frame, Module module) 
-    throws ParseError, LinkageError, TypeError
+    throws ParseError, LinkageError, VitryError
     {   
         Object       exOp   = null;
         Seq<Pattern> exTail = null;
@@ -474,7 +474,7 @@ public class Interpreter implements Eval {
                                 }
                             }
                         } 
-                        catch (TypeError e)
+                        catch (VitryError e)
                         {
                             continue match;
                         }
@@ -538,7 +538,7 @@ public class Interpreter implements Eval {
         }
     }
 
-    static void match(Object a, Object b) throws TypeError
+    static void match(Object a, Object b) throws VitryError
     {
         Pattern bp;
         boolean m;

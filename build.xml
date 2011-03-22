@@ -4,7 +4,8 @@
     <property name="debug"              value="true"/>
     <property name="memoize-sequences"  value="true"/>
     <property name="memoize-numbers"    value="true"/>
-    <property name="trace-limit"        value="50"/>
+    <property name="trace-limit"        value="30"/>
+    <property name="print-seq-limit"    value="5"/>
     <property name="major-version"      value="0"/>
     <property name="minor-version"      value="1"/>
     <property name="release-version"    value="1"/>
@@ -25,6 +26,7 @@
               ["boolean", "memoize-sequences"], 
               ["boolean", "memoize-numbers"], 
               ["int",     "trace-limit"], 
+              ["int",     "print-seq-limit"], 
               ["int",     "major-version"], 
               ["int",     "minor-version"],
               ["int",     "release-version"]
@@ -38,7 +40,7 @@
             for each (p in props) {
               sb.append("\tpublic static final ");
               sb.append(p[0] + " ");
-              sb.append(p[1].toUpperCase().replace("-", "_") + " = ");
+              sb.append(p[1].toUpperCase().replace(/-/g, "_") + " = ");
               sb.append(project.getProperty(p[1]));
               sb.append(";\n");
             }

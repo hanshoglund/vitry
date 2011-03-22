@@ -31,27 +31,25 @@ public class TypeError extends VitryError
         public TypeError(String msg) {
             super(msg);
         }
-        
-        public TypeError(Type tag, Pattern v) {
-            super("Can not apply tag " + tag + " to " + v);
-        }
-        
         public synchronized Throwable fillInStackTrace() {
             return this;
         }
         
+        public TypeError(Type tag, Pattern v) {
+            super("Can not apply tag " + tag + " to " + makeFinite(v));
+        }
+                
         public static <T> T throwMismatch(Object v, Object p) {
-            throw new TypeError("" + v + " does not conform to " + p);            
+            throw new TypeError("" + makeFinite(v) + " does not conform to " + makeFinite(p));            
         }
         
         public static <T> T throwWrongStructor(Object v, Function structor) {
-            throw new TypeError("Could not destruct " + v + " using " + structor);
+            throw new TypeError("Could not destruct " + makeFinite(v) + " using " + structor);
         }
         
         public static <T> T throwWrongCount(Object v) {
-            throw new TypeError("Mismatching number of elements in " + v);
+            throw new TypeError("Mismatching number of elements in " + makeFinite(v));
         }
-
 
         private static final long serialVersionUID = 3634069213260367204L;
     }

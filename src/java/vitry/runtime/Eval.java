@@ -50,9 +50,9 @@ public interface Eval {
      * @throws ParseError
      * @throws ResolveError
      */
-    public Object eval(Object expr) throws ParseError, ResolveError, TypeError;
+    public Object eval(Object expr) throws ParseError, ResolveError, VitryError;
 
-    public Object eval(Object expr, Module module) throws ParseError, ResolveError, TypeError;
+    public Object eval(Object expr, Module module) throws ParseError, ResolveError, VitryError;
 
 
     /**

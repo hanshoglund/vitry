@@ -714,6 +714,16 @@ final class Nil extends Atom implements List, Finite<Pattern>
         a.append(toString());
     }
 
+    public String toFiniteString()
+    {
+        return toString();
+    }
+
+    public void toFiniteString(Appendable a) throws IOException
+    {
+        a.append(toString());
+    }
+
     public List prepend(Pattern head)
     {
         // TODO product by default?

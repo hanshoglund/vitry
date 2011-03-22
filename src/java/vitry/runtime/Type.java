@@ -19,6 +19,7 @@
 package vitry.runtime;
 
 import vitry.runtime.error.TypeError;
+import vitry.runtime.error.VitryError;
 import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.Seq;
 
@@ -55,7 +56,7 @@ public class Type extends BasePattern implements TypeExpr
         return vars;
     }
 
-    public Tagged tag(Pattern value) throws TypeError
+    public Tagged tag(Pattern value) throws VitryError
     {
         if (value instanceof Tagged)
             return ((Tagged) value).retag(this);

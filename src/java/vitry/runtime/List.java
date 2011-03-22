@@ -29,5 +29,7 @@ public interface List extends Pattern, Seq<Pattern>, Destructible
     
     List mapList(Function fn);
     
+    String toFiniteString();
     void toString(Appendable a) throws IOException;
+    void toFiniteString(Appendable a) throws IOException;
 }

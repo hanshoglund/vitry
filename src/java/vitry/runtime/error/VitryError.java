@@ -18,6 +18,8 @@
  */
 package vitry.runtime.error;
 
+import vitry.runtime.List;
+
 /**
  * Indicates all language errors.
  *
@@ -36,10 +38,16 @@ abstract public class VitryError extends RuntimeException
             super(string, cause);
         }
 
-        /**
-         * @param e
-         */
         public VitryError(ClassNotFoundException e) {
             super(e);
+        }
+
+        protected static String makeFinite(Object v)
+        {
+            if (v instanceof List)
+            {
+                return ((List) v).toFiniteString();
+            }
+            return v.toString();
         }
     }

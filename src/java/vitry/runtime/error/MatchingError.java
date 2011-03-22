@@ -25,8 +25,8 @@ package vitry.runtime.error;
 public class MatchingError extends VitryError
     {
 
-        public MatchingError(Object value) {
-            super("No viable alternative for " + value);
+        public MatchingError(Object v) {
+            super("No viable alternative for " + makeFinite(v));
         }
 
         private static final long serialVersionUID = 2898202248351761101L;
