@@ -235,7 +235,8 @@ geom  d   = unfold (fn (x) (x, x * d))
 harm      = map (/ 1) (arith 1 1) 
 randoms n = map (fn (x) random n) (repeat 1)
 
-repeat        = unfold (fn (x) (x, x))
+; repeat        = unfold (fn (x) (x, x))
+repeat     x  = [x] ++ (delay repeat x)
 cycle      xs = xs ++ (delay cycle xs)
 palindrome xs = let sx = reverse xs
                     xs ++ sx ++ (delay palindrome xs)

@@ -53,9 +53,9 @@ public final class Seqs
     public static <T> Seq<T> cons(T x, Seq<T> xs)
     {
         if (isNil(xs))
-            return new Single<T>(x);
+            return new SingleSeq<T>(x);
         else
-            return xs.cons(x);
+            return xs.prepend(x);
     }
 
     public static <T> Seq<T> from(T... a)
@@ -253,61 +253,5 @@ public final class Seqs
             s = tail(s);
         } while (!isNil(s));
         return l.toArray(dummy);
-    }
-}
-
-
-class Single<T> extends AbstractSeq<T> implements Finite<T>
-{
-    private final T obj;
-
-    public Single(T obj) {
-        this.obj = obj;
-    }
-
-    public T head()
-    {
-        return obj;
-    }
-
-    public Seq<T> tail()
-    {
-        return null;
-    }
-
-    public int length()
-    {
-        return 1;
-    }
-
-    public boolean hasTail()
-    {
-        return false;
-    }
-}
-
-class ConcedSeq<T> extends AbstractSeq<T>
-{
-    final Seq<T> xs; // Always non-nil
-    final Seq<T> ys;
-    
-    ConcedSeq(Seq<T> xs, Seq<T> ys) {
-        this.xs = xs;
-        this.ys = ys;
-    }
-
-    public T head()
-    {
-        return xs.head();
-    }
-
-    public Seq<T> tail()
-    {
-        return Seqs.concat(xs.tail(), ys);
-    }
-
-    public boolean hasTail()
-    {
-        return !Seqs.isNil(ys) || !Seqs.isNil(xs.tail());
     }
 }

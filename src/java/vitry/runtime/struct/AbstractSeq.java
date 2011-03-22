@@ -36,7 +36,7 @@ abstract public class AbstractSeq<T> implements Seq<T>
         return !Seqs.isNil(this.tail());
     }
 
-    public Seq<T> cons(T head)
+    public Seq<T> prepend(T head)
     {
         return new PairSeq<T>(head, this);
     }

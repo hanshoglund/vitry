@@ -156,9 +156,9 @@ class VitryTree extends CommonTree implements Product
         return delegee.eq(o);
     }
 
-    public Product cons(Pattern p)
+    public Product prepend(Pattern p)
     {
-        return delegee.cons(p);
+        return delegee.prepend(p);
     }
 
     public boolean eq(Tagged o)

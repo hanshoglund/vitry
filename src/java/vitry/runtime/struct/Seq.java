@@ -22,40 +22,59 @@ import vitry.runtime.Function;
 
 
 /**
- * An immutable sequence of values.
+ * An immutable sequence of values. Seqs may be thunks; methods forcing evaluation
+ * are explicitly marked in this interface.
+ *
+ * Because of lazy evaluation, nil may be represented either by null, or by an
+ * instance of Seq. Check using Seqs.isNil().
+ * 
+ * @author Hans Hoglund
  */
 public interface Seq<T> extends Iterable<T>
 {
     /**
-     * Returns the head of this seq. Forces evaluation of this seq.
+     * Returns the head of this seq. 
+     * Forces evaluation of this.
+     * 
+     * @throws TypeError if this is nil.
      */
     T head();
 
     /**
-     * Returns the tail of this seq. Forces evaluation of this seq (but the tail may be lazy).
+     * Returns the tail of this seq. 
+     * Forces evaluation of this.
+     * 
+     * @throws TypeError if this is nil.
      */
     Seq<T> tail();
 
     /**
-     * Whether this seq represents nil or not. Forces evaluation of this seq.
+     * Whether this seq represents nil or not. 
+     * Forces evaluation of this.
+     *
+     * Should not be called directly, use Seqs.isNil instead.
      */
     boolean isNil();
-    
+
     /**
-     * Whether the tail of this seq represents nil or not. Forces evaluation of this seq and its tail.
+     * Whether the tail of this seq represents nil or not. Implies !isNil.
+     * 
+     * Forces evaluation of this.
      */
     boolean hasTail();
 
     /**
-     * Returns a new seq that is the result of consing the given value onto this seq. Not forcing.
+     * Returns a new seq that is the result of consing the given value 
+     * onto this seq. Not forcing.
      */
-    Seq<T> cons(T head);
+    Seq<T> prepend(T head);
 
     /**
-     * Returns a new seq that is the result of mapping the given function against this seq. Not forcing.
+     * Returns a new seq that is the result of mapping the given function 
+     * against this seq. Not forcing.
      */
     <U> Seq<U> map(Function fn);
 
-    
+
     SeqIterator<T> seqIterator();
 }

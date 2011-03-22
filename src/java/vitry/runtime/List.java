@@ -25,7 +25,7 @@ import vitry.runtime.struct.*;
 public interface List extends Pattern, Seq<Pattern>, Destructible
 {
 
-    List cons(Pattern p);
+    List prepend(Pattern p);
     
     List mapList(Function fn);
     

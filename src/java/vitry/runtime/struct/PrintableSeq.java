@@ -44,9 +44,9 @@ class PrintableSeq<T> extends AbstractSeq<T>
         return delegee.hasTail();
     }
 
-    public Seq<T> cons(T head)
+    public Seq<T> prepend(T head)
     {
-        return delegee.cons(head);
+        return delegee.prepend(head);
     }
 
     public Iterator<T> iterator()
@@ -66,6 +66,7 @@ class PrintableSeq<T> extends AbstractSeq<T>
 
     public String toString()
     {
-        return Utils.join(this, "(", ", ", ")");
+return "[...]";
+//        return Utils.join(this, "(", ", ", ")");
     }
 }

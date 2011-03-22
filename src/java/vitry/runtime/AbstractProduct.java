@@ -84,9 +84,9 @@ abstract class AbstractProduct extends ConstructionPattern implements Product
         return p.match(this);
     }
 
-    public Product cons(Pattern head)
+    public Product prepend(Pattern head)
     {
-        return productFrom(super.cons(head));
+        return productFrom(super.prepend(head));
     }
 
     public Product mapProduct(Function fn)

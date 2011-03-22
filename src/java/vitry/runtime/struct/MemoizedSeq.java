@@ -72,7 +72,7 @@ public class MemoizedSeq<T> extends AbstractSeq<T>
         }
         else
         {
-            return ys.hasTail();
+            return this.ys.hasTail();
         }
     }
     
@@ -84,7 +84,7 @@ public class MemoizedSeq<T> extends AbstractSeq<T>
         }
         else
         {
-            return ys.isNil();
+            return this.ys.isNil();
         }
         
     }

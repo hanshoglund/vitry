@@ -25,5 +25,5 @@ public interface Product extends Pattern, Seq<Pattern>, Destructible
 
     Product mapProduct(Function fn);
 
-    Product cons(Pattern p);
+    Product prepend(Pattern p);
 }

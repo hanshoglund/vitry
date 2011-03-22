@@ -108,7 +108,7 @@ class TopLevelRewriter extends Rewriting
                         }
                     });
                 Product r = product(single(right));
-                Pattern val = product(concat(params.cons(Fn), r));
+                Pattern val = product(concat(params.prepend(Fn), r));
                 return product(Seqs.from(assign, product(Seqs.from(left, name)), val));
             }
         }

@@ -18,7 +18,7 @@
  */
 package vitry.runtime;
 
-import static vitry.runtime.VitryRuntime.*;
+import static vitry.runtime.VitryRuntime.listFrom;
 
 import java.io.IOException;
 
@@ -38,13 +38,14 @@ abstract class AbstractList extends ConstructionPattern implements List
 
     public boolean eq(Atom o)
     {
-        return this.isNil() && ((Seq<?>) o).isNil();
+        return this.isNil() && Seqs.isNil(o);
     }
 
     public boolean eq(List o)
     {
-        if (o == this) return true;
-        
+        if (o == this)
+            return true;
+
         Seq<Pattern> left = o;
         Seq<Pattern> right = this;
 
@@ -57,11 +58,11 @@ abstract class AbstractList extends ConstructionPattern implements List
         }
         return (Seqs.isNil(left) && Seqs.isNil(right));
     }
-    
+
 
     public boolean match(Atom o)
     {
-        return this.isNil() && ((Seq<?>) o).isNil();
+        return this.isNil() && Seqs.isNil(o);
     }
 
     public boolean match(List o)
@@ -119,9 +120,9 @@ abstract class AbstractList extends ConstructionPattern implements List
         return p.match(this);
     }
 
-    public List cons(Pattern head)
+    public List prepend(Pattern head)
     {
-        return listFrom(super.cons(head));
+        return listFrom(super.prepend(head));
     }
 
     public List mapList(Function fn)
@@ -148,23 +149,27 @@ abstract class AbstractList extends ConstructionPattern implements List
 
     public String toString()
     {
-        return Utils.join(this, "[", ", ", "]");
+return "[...]";
+//        return Utils.join(this, "[", ", ", "]");
     }
 
     public void toString(Appendable a) throws IOException
     {
         boolean first = true;
         a.append("[");
-        
-        for (Pattern e : this) {
-            if (!first) {
-                a.append(", ");
-            }
-            a.append(e.toString());
-            first = false;
-        }
+
+a.append("...");
+//        for (Pattern e : this)
+//        {
+//            if (!first)
+//            {
+//                a.append(", ");
+//            }
+//            a.append(e.toString());
+//            first = false;
+//        }
         a.append("]");
     }
-    
-    
+
+
 }

@@ -69,7 +69,7 @@ abstract class InclusionPattern extends BasePattern implements Seq<Pattern>
         return false;
     }
 
-    public Seq<Pattern> cons(Pattern head)
+    public Seq<Pattern> prepend(Pattern head)
     {
         return new PairSeq<Pattern>(head, this);
     }

@@ -4,56 +4,45 @@ import vitry.runtime.Function;
 import vitry.runtime.VitryRuntime;
 import vitry.runtime.misc.Utils;
 
-public class ThunkSeq<T> extends AbstractSeq<T> implements Thunk
+public class ThunkSeq<T> extends AbstractSeq<T>
 {
-    private final Function f;
-    private T x;
-    private Seq<T> xs;
+    private final Function thunk;
+    private Seq<T> result;
     private boolean isNil;
     private boolean done;
 
     public ThunkSeq(Function f) {
-        this.f = f;
+        this.thunk = f;
     }
 
     public T head()
     {
         if (!this.done) eval();
         if (this.isNil) VitryRuntime.throwDeconstructNil();
-        return this.x;
+        return this.result.head();
     }
 
     public Seq<T> tail()
     {
         if (!this.done) eval();
         if (this.isNil) VitryRuntime.throwDeconstructNil();
-        return this.xs;
+        return this.result.tail();
     }
 
     public boolean isNil()
     {
-        if (!done) eval();
+        if (!this.done) eval();
         return this.isNil;
     }
 
     private void eval()
     {
-        Seq<T> ys = (Seq<T>) f.apply(VitryRuntime.NIL);
+        this.result = Utils . <Seq<T>> unsafe(thunk.apply(null));
         
-        if (Seqs.isNil(ys))
+        if (Seqs.isNil(result))
         {
             this.isNil = true;
         }
-        else
-        {
-            this.x = ys.head();
-            this.xs = ys.tail();            
-        }        
         this.done = true;
-    }
-
-    public boolean isDone()
-    {
-        return done;
     }
 }

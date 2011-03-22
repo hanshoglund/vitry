@@ -156,7 +156,7 @@ public final class NativeSet extends InclusionPattern implements Set
         return throwEnumeration();
     }
 
-    public Seq<Pattern> cons(Pattern head)
+    public Seq<Pattern> prepend(Pattern head)
     {
         return throwEnumeration();
     }

@@ -212,7 +212,7 @@ public final class VitryRuntime
         prelude.def("NaN",        Double.NaN);
         prelude.def("Infinity",   Double.POSITIVE_INFINITY);
 
-        prelude.def("(++)",       new conc());
+        prelude.def("(++)",       new concatenate());
         prelude.def("prepend",    new prepend());
         prelude.def("head",       new head());
         prelude.def("tail",       new tail());
@@ -691,17 +691,17 @@ final class Nil extends Atom implements List, Finite<Pattern>
 
     public boolean eq(Atom o)
     {
-        return o == this || ((Seq<?>) o).isNil();
+        return o == this || Seqs.isNil(o);
     }
 
     public boolean eq(List o)
     {
-        return o.isNil();
+        return Seqs.isNil(o);
     }
 
     public boolean match(List p)
     {
-        return p.isNil();
+        return Seqs.isNil(p);
     }
 
     public String toString()
@@ -714,7 +714,7 @@ final class Nil extends Atom implements List, Finite<Pattern>
         a.append(toString());
     }
 
-    public List cons(Pattern head)
+    public List prepend(Pattern head)
     {
         // TODO product by default?
         return list(new PairSeq<Pattern>(head, this));
@@ -1173,7 +1173,7 @@ final class compose extends Binary
 
 // Lists
 
-final class conc extends Binary
+final class concatenate extends Binary
 {
     public Object apply(Object a, Object b)
     {
@@ -1217,7 +1217,7 @@ final class prepend extends Binary
         if (xs instanceof CharSequence) {
             xs = list(Native.wrapAll(CharSeq.from((CharSequence) xs)));
         }
-        return list(Seqs.cons(Native.wrap(x), (List) xs));
+        return Seqs.cons(Native.wrap(x), (List) xs);
     }
 }
 
@@ -1286,7 +1286,8 @@ final class drop extends Binary
             xs = list(Native.wrapAll(CharSeq.from((CharSequence) xs)));
         }
         if (Seqs.isNil(xs)) return NIL;
-        // Must memoize so that stateful lazy seqs doesn't change themselves
+        
+        // Must memoize as xs may be a stream
         return list(new MemoizedSeq<Pattern>(new DropSeq<Pattern>((List) xs, ((Number) n).intValue())));
     }
 }
@@ -1295,11 +1296,14 @@ final class take extends Binary
 {
     public Object apply(Object n, Object xs) throws InvocationError
     {
-        if (Seqs.isNil(xs) || ((Number) n).intValue() < 1) return NIL;
         if (xs instanceof CharSequence)
         {
             xs = list(Native.wrapAll(CharSeq.from((CharSequence) xs)));
         }
+        // TODO handle nil case in TakeSeq instead
+        if (Seqs.isNil(xs) || ((Number) n).intValue() < 1) return NIL;
+
+        // Must memoize as xs may be a stream
         return list(new MemoizedSeq<Pattern>(new TakeSeq<Pattern>((List) xs, ((Number) n).intValue())));
     }
 }
@@ -1311,7 +1315,9 @@ final class map extends Binary
         if (xs instanceof CharSequence) {
             xs = list(Native.wrapAll(CharSeq.from((CharSequence) xs)));
         }
+        // TODO handle nil case in MapSeq instead
         if (Seqs.isNil(xs)) return NIL;
+
         return listFrom(Native.wrapAll(Native.unwrapAll((List) xs).map((Function) f)));
     }
 }
