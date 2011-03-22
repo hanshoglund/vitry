@@ -34,13 +34,16 @@ module Vitry.Prelude
 
 ; Functions
 
-; native: arity id const flip (.)
+; native: arity 
+;         id const flip (.)
 
 iter f n = match [f, n]
     [f, 0] = id
     [f, i] = f . (iter f (i - 1))
 
 (.')  f g = fn (x y) f (g x y)
+
+; Church booleans
 left  x y = x
 right x y = y
 
@@ -48,7 +51,7 @@ right x y = y
 
 ; Booleans
 
-; native (==)
+; native: (==)
 
 not  x = match x
     _ : true  = false
@@ -56,14 +59,14 @@ not  x = match x
 
 (!=) x y = not (x == y)
 
-(&&) x y = match [x, y]
-    [ _ : true, _ : true ] = true
-    [ _ : bool, _ : bool ] = false
+(||) x y = match (x, y)
+    ( _ : true , _ ) = true
+    ( _ , _ : true ) = true
+    _                = false
 
-(||) x y = match [x, y]
-    [ _ : true, _ : bool ] = true
-    [ _ : bool, _ : true ] = true
-    [ _ : bool, _ : bool ] = false
+(&&) x y = match (x, y)
+    ( _ : true, _ : true ) = true
+    _                      = false
 
 
 
@@ -84,17 +87,18 @@ num  = prec
 
 
 
-; Enumeration and comparison
+; Ordering
 
 ; native: (<) (>)
 
 (>=) x y = x > y || x == y
 (<=) x y = x < y || x == y
 
-zeroth = 0
-succ x = x + 1
-pred x = x - 1
-compare x y = if (x < y) `smaller else if (x == y) `equal else `larger
+zeroth x = match x (x : prec = 0) (x : real = 0.0)
+succ x   = match x (x : prec = x + 1) (x : real = x + 1.0)
+pred x   = match x (x : prec = x - 1) (x : real = x - 1.0)
+nth x n    = (iter succ n) (zeroth x)
+compare  x y = if (x < y) `smaller else if (x == y) `equal else `larger
 largest  x y = if (x > y) x else y
 smallest x y = if (x < y) x else y
 max xs = foldl largest (head xs) (tail xs)
@@ -246,15 +250,15 @@ zip3With f xs ys zs = match [f, xs, ys, zs]
 
 
 ; FIXME accept ()
-zipWithL f xs ys = (delay 
+zipWithL f xs ys = delay 
     prepend 
         f (head xs) (head ys)
-        zipWithL f (tail xs) (tail ys))
+        zipWithL f (tail xs) (tail ys)
 
-zip3WithL f xs ys zs = (delay
+zip3WithL f xs ys zs = delay
     prepend 
         f (head xs) (head ys) (head zs)
-        zip3WithL f (tail xs) (tail ys) (tail zs))
+        zip3WithL f (tail xs) (tail ys) (tail zs)
 
 
 zip = zipWith (,)
