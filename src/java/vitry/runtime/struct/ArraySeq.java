@@ -32,8 +32,6 @@ public class ArraySeq<T> extends AbstractSeq<T> implements Finite<T>
 {
     private final T[] ar;
     private final int offset;
-    private Seq<T>    tail;
-    private boolean   tailed = false;
 
     public ArraySeq(T... elements) {
         this(elements, 0);
@@ -42,6 +40,7 @@ public class ArraySeq<T> extends AbstractSeq<T> implements Finite<T>
     public ArraySeq(T[] elements, int offset) {
         if (offset >= elements.length)
             throw new IllegalArgumentException("Offset must be less than than length");
+        
         this.ar = elements;
         this.offset = offset;
     }
@@ -63,15 +62,14 @@ public class ArraySeq<T> extends AbstractSeq<T> implements Finite<T>
 
     public Seq<T> tail()
     {
-        if (!tailed)
+        if (hasTail())
         {
-            if (hasTail())
-            {
-                tail = new ArraySeq<T>(ar, offset + 1, null);
-            }
-            tailed = true;
+            return new ArraySeq<T>(ar, offset + 1, null);
         }
-        return tail;
+        else
+        {
+            return null;
+        }
     }
 
     public boolean hasTail()

@@ -84,6 +84,5 @@ public class IterableSeq<T> extends AbstractSeq<T>
         if (!tailed)
             tail();
         return !Seqs.isNil(tail);
-//        return tail != null;
     }
 }

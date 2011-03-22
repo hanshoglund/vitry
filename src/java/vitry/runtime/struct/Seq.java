@@ -22,22 +22,40 @@ import vitry.runtime.Function;
 
 
 /**
- * Core sequential abstraction.
+ * An immutable sequence of values.
  */
 public interface Seq<T> extends Iterable<T>
 {
+    /**
+     * Returns the head of this seq. Forces evaluation of this seq.
+     */
     T head();
 
+    /**
+     * Returns the tail of this seq. Forces evaluation of this seq (but the tail may be lazy).
+     */
     Seq<T> tail();
 
-    // TODO unify these two methods?
+    /**
+     * Whether this seq represents nil or not. Forces evaluation of this seq.
+     */
     boolean isNil();
     
+    /**
+     * Whether the tail of this seq represents nil or not. Forces evaluation of this seq and its tail.
+     */
     boolean hasTail();
 
+    /**
+     * Returns a new seq that is the result of consing the given value onto this seq. Not forcing.
+     */
     Seq<T> cons(T head);
 
+    /**
+     * Returns a new seq that is the result of mapping the given function against this seq. Not forcing.
+     */
     <U> Seq<U> map(Function fn);
 
+    
     SeqIterator<T> seqIterator();
 }

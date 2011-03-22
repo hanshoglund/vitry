@@ -3,8 +3,8 @@ package vitry.runtime.struct;
 
 public class TakeSeq<T> extends AbstractSeq<T>
 {
-    final Seq<T> xs;
-    final int n;
+    private final Seq<T> xs;
+    private final int n;
 
     public TakeSeq(Seq<T> xs, int n) {
         this.xs = xs;
@@ -33,4 +33,5 @@ public class TakeSeq<T> extends AbstractSeq<T>
         return n > 1 && xs.hasTail();
     }
     
+    // TODO isNil
 }

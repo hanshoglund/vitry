@@ -1285,6 +1285,7 @@ final class drop extends Binary
         {
             xs = list(Native.wrapAll(CharSeq.from((CharSequence) xs)));
         }
+        if (Seqs.isNil(xs)) return NIL;
         // Must memoize so that stateful lazy seqs doesn't change themselves
         return list(new MemoizedSeq<Pattern>(new DropSeq<Pattern>((List) xs, ((Number) n).intValue())));
     }
@@ -1424,7 +1425,7 @@ final class unfold extends Binary
 {
     public Object apply(Object f, Object init) throws InvocationError
     {
-        return listFrom(Native.wrapAll(new LeftUnfoldSeq<Object>((Function) f, init)));
+        return listFrom(Native.wrapAll(new UnfoldSeq<Object>((Function) f, init)));
     }
 }
 
@@ -1517,18 +1518,17 @@ class print extends Unary
             {
                 ((List) a).toString(System.out);
                 System.out.println();
+                return a;
             }
             catch (IOException e)
             {
                 // Fall back on standard printing
-                System.out.println(a);
             }
             catch (RuntimeException e)
             {
                 System.out.println();
                 throw e;
             }
-            return a;
         }
         System.out.println(a);            
         return a;
@@ -1549,9 +1549,9 @@ class quit extends Unary
             System.exit(((Number) a).intValue());
         else
             System.exit(-1);
-
-        // Never reached
-        return NIL;
+        
+        assert false : "never reached";
+        return null;
     }
 }
 

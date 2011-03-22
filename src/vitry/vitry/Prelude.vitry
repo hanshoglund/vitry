@@ -196,11 +196,10 @@ rank xs  = match xs
                      xs : [ _ ] = rank xs
                      _          = 0)) 
               xs 
+           
 
-isEmpty xs = match xs
-    _ : ()      = true
-    _ : ""      = true
-    _           = false
+isEmpty xs = xs == ()
+
 isSingle xs = match xs
     _ : ()      = false
     (x, _ : ()) = true

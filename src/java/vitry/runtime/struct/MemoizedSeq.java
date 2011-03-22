@@ -29,6 +29,7 @@ public class MemoizedSeq<T> extends AbstractSeq<T>
     private Seq<T> ys;
     private T x;
     private Seq<T> xs;
+    private boolean isNil;
 
     public MemoizedSeq(Seq<T> s) {
         this.ys = s;
@@ -74,11 +75,25 @@ public class MemoizedSeq<T> extends AbstractSeq<T>
             return ys.hasTail();
         }
     }
+    
+    public boolean isNil()
+    {
+        if (this.state == FINISHED)
+        {
+            return this.isNil;
+        }
+        else
+        {
+            return ys.isNil();
+        }
+        
+    }
 
     private void maybeFinish()
     {
         if (this.state == FINISHED)
         {
+            this.isNil = this.ys.isNil();
             this.ys = null;
         }
     }

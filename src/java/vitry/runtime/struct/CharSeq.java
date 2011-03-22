@@ -22,21 +22,21 @@ import vitry.runtime.Native;
 
 public class CharSeq extends AbstractSeq<Character> implements Finite<Character>
 {
-    private final CharSequence source;
+    private final CharSequence cs;
     
     private CharSeq(CharSequence source) {
-        this.source = source;
+        this.cs = source;
     }
 
     public Character head()
     {
-        return source.charAt(0);
+        return cs.charAt(0);
     }
 
     public Seq<Character> tail()
     {
         if (!hasTail()) return null;
-        return new CharSeq(source.subSequence(1, length()));
+        return new CharSeq(cs.subSequence(1, length()));
     }
     
     public boolean hasTail()
@@ -46,10 +46,9 @@ public class CharSeq extends AbstractSeq<Character> implements Finite<Character>
 
     public int length()
     {
-        return source.length();
+        return cs.length();
     }
-    
-    
+
     
     
     public static CharSeq from(Seq<?> source) {
@@ -71,7 +70,7 @@ public class CharSeq extends AbstractSeq<Character> implements Finite<Character>
 
     public String toString()
     {
-        return source.toString();
+        return cs.toString();
     }
     
     public static String toString(Seq<?> s) {

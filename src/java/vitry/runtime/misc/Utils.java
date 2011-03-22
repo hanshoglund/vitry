@@ -212,6 +212,16 @@ public class Utils
     {
         return;
     }
+    
+    public static <T> T assertFalse()
+    {
+        return assertFalse("");
+    }
+
+    public static <T> T assertFalse(String msg)
+    {
+        throw new AssertionError(msg);
+    }
 
 
     public static int hash(int seed, int val)

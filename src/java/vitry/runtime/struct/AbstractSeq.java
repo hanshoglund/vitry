@@ -26,16 +26,6 @@ import vitry.runtime.Function;
 
 abstract public class AbstractSeq<T> implements Seq<T>
 {
-    public Iterator<T> iterator()
-    {
-        return new SeqIterator<T>(this);
-    }
-
-    public SeqIterator<T> seqIterator()
-    {
-        return new SeqIterator<T>(this);
-    }
-
     public boolean isNil()
     {
         return false;
@@ -63,6 +53,15 @@ abstract public class AbstractSeq<T> implements Seq<T>
         }
     }
 
+    public Iterator<T> iterator()
+    {
+        return new SeqIterator<T>(this);
+    }
+
+    public SeqIterator<T> seqIterator()
+    {
+        return new SeqIterator<T>(this);
+    }
 
     public String toString()
     {

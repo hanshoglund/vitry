@@ -21,21 +21,21 @@ package vitry.runtime.struct;
 
 public class PairSeq<T> extends AbstractSeq<T>
 {
-    private T head;
-    private Seq<T> tail;
+    private T x;
+    private Seq<T> xs;
 
     public PairSeq(T head, Seq<T> tail) {
-        this.head = head;
-        this.tail = tail;
+        this.x = head;
+        this.xs = tail;
     }
 
     public T head()
     {
-        return head;
+        return x;
     }
 
     public Seq<T> tail()
     {
-        return tail;
+        return xs;
     }
 }
