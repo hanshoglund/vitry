@@ -157,8 +157,8 @@ floor x : num = match x
     x : rat = (method RAT "floor" []) x 
     x : int = x
 
-round  = LONG_TO_INT . MATH_PRIM "round"
-approx = NUM_TO_DOUBLE
+round       = LONG_TO_INT . MATH_PRIM "round"
+approx      = NUM_TO_DOUBLE
 rationalize = DOUBLE_TO_RAT
 
 logn n : real = (* (1.0 / ln n)) . ln
