@@ -200,7 +200,6 @@ mean xs = sum xs / length xs
 ; native: (++)
 ;         prepend head tail 
 ;         init last
-;         index
 
 append x = flip (++) [x]
 length   = foldr ((+ 1) .' right) 0
@@ -221,9 +220,13 @@ isSingle xs = match xs
     _           = false
 
 
-; native: drop take
+; native: index drop take
 ;         map foldl foldr
 ;         (..) sortBy reverse
+
+; Remove the given index
+; int -> [a] -> [a]
+remove n xs = (take n xs) ++ (drop (succ n) xs)
 
 ; int -> int -> [a] -> [a]
 substr m n = take n . drop m
@@ -346,22 +349,33 @@ bufferStream n xs = force (take n xs) ++ (delay bufferStream n (drop n xs))
 version    = (method (class "VitryRuntime") "getVersion" []) ()
 versionStr = join "." (map string version)
 
-randomFloat _ = RAND_FLOAT RANDOM_INST
-    
-pick xs       = index (random (length xs)) xs
-decide f g x  = match (random 2) (0 = f x) (1 = g x)
-; TODO shuffle
-
 ref _   = new THREAD_LOCAL
 get r   = THREAD_LOCAL_GET r
 set r x = 
     do THREAD_LOCAL_SET r x
        r
 
+
+randomFloat _ = RAND_FLOAT RANDOM_INST
+
+pick    xs    = index (random (length xs)) xs
+decide  f g x = match (random 2) (0 = f x) (1 = g x)
+shuffle xs    = match xs
+    _ : ()      = ()
+    (x, _ : ()) = [x]
+    (_, _    )  = do n = (random (length xs))
+                     prepend (index n xs) (shuffle (remove n xs))
+                  
+
+
+; Sleep the current thread for time milliseconds
+; int -> int
 sleep time = do time = NUM_TO_LONG time
                 THREAD_SLEEP time
                 time
-    
-timer f    = do start = now ()
+
+; Invoke a function and return execution time
+; (a -> b) -> int    
+bench f    = do start = now ()
                 f ()
                 now () - start
