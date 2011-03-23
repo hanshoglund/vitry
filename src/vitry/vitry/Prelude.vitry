@@ -107,6 +107,8 @@ num  = prec | real
 (>=) x y = x > y || x == y
 (<=) x y = x < y || x == y
 
+; Enumeration functions
+; To be used with case-extension
 zeroth x = match x (x : prec = 0) (x : real = 0.0)
 succ x   = match x (x : prec = x + 1) (x : real = x + 1.0)
 pred x   = match x (x : prec = x - 1) (x : real = x - 1.0)
@@ -117,10 +119,15 @@ equal   = `equal
 larger  = `larger
 order   =  smaller | equal | larger
 
+; Standard comparison, used by sort
+; May be used by extending (<) and (>), or by extending compare
+; a -> a -> order 
 compare  x y = if (x < y) `smaller else if (x == y) `equal else `larger
+
+; Utility comparison
+; TODO define in terms of compare?
 largest  x y = if (x > y) x else y
 smallest x y = if (x < y) x else y
-
 max xs = foldl largest (head xs) (tail xs)
 min xs = foldl smallest (head xs) (tail xs)
 
@@ -216,15 +223,16 @@ isSingle xs = match xs
 
 ; native: drop take
 ;         map foldl foldr
-;         (..) sort reverse
+;         (..) sortBy reverse
 
+; int -> int -> [a] -> [a]
 substr m n = take n . drop m
 
 ; TODO scanl
 ; TODO scanr
              
 ; a -> [a] -> int
-; TODO search
+; native: search
 
 ; (a -> bool) -> [a] -> (a | ())
 find pred = foldl (fn (x y) if (pred y) y else x) ()
@@ -237,6 +245,9 @@ filter pred xs = match (pred, xs)
                        filter pred xs
 ; (a -> bool) -> [a] -> [a]                       
 retain pred = filter (not . pred)
+
+; [a] -> [a]
+sort = sortBy compare
 
 ; [bool] -> bool
 some  = foldr (||) false

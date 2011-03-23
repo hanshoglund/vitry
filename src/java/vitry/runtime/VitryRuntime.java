@@ -33,7 +33,7 @@ import java.util.Properties;
 import vitry.Build;
 import vitry.runtime.StandardFunction.Binary;
 import vitry.runtime.StandardFunction.Unary;
-import vitry.runtime.sort.Comp;
+import vitry.runtime.sortBy.Comp;
 
 import vitry.prelude.*;
 import vitry.runtime.error.*;
@@ -227,7 +227,8 @@ public final class VitryRuntime
         prelude.def("(..)",       new range());
         prelude.def("[..]",       new range());
         prelude.def("reverse",    new reverse());
-        prelude.def("sort",       new sort());
+        prelude.def("search",     new search());
+        prelude.def("sortBy",     new sortBy());
         prelude.def("force",      new force());
 
         prelude.def("now",        new now());
@@ -1387,7 +1388,18 @@ final class reverse extends Unary
     }
 }
 
-final class sort extends Binary
+final class search extends Binary
+{
+    public Object apply(Object e, Object xs) throws InvocationError
+    {
+        Object[] a = Seqs.toArray(Native.unwrapAll((Seq<?>) xs));
+        int n = Arrays.binarySearch(a, e);
+        return BigInteger.valueOf(n);
+    }
+    
+}
+
+final class sortBy extends Binary
 {
     static final Symbol LT = Symbol.intern("smaller");
     static final Symbol EQ = Symbol.intern("equal");
