@@ -374,8 +374,7 @@ shuffle xs    = match xs
     _ : ()      = ()
     (x, _ : ()) = [x]
     (_, _    )  = do n = (random (length xs))
-                     prepend (index n xs) 
-                             (delay shuffle (take n xs) ++ shuffle (drop (succ n) xs))
+                     prepend (index n xs) (delay shuffle (remove n xs))
 
 
 
