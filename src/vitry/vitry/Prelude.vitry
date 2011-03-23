@@ -349,32 +349,43 @@ bufferStream n xs = force (take n xs) ++ (delay bufferStream n (drop n xs))
 version    = (method (class "VitryRuntime") "getVersion" []) ()
 versionStr = join "." (map string version)
 
+; Thread-bound mutable values
 ref _   = new THREAD_LOCAL
 get r   = THREAD_LOCAL_GET r
 set r x = 
     do THREAD_LOCAL_SET r x
        r
 
+; (a -> b) -> a -> (() -> b)
+pluck f x = (fn (_) f x)
 
+; TODO decide proper strategy for random values
 randomFloat _ = RAND_FLOAT RANDOM_INST
 
-pick    xs    = index (random (length xs)) xs
+; Return a function that invokes one of the given functions
+; for each invocation
+; (a -> b) -> (a -> b) -> a -> b
 decide  f g x = match (random 2) (0 = f x) (1 = g x)
+
+; [a] -> a
+pick    xs    = index (random (length xs)) xs
+; [a] -> [a]
 shuffle xs    = match xs
     _ : ()      = ()
     (x, _ : ()) = [x]
     (_, _    )  = do n = (random (length xs))
-                     prepend (index n xs) (shuffle (remove n xs))
-                  
+                     prepend (index n xs) 
+                             (delay shuffle (take n xs) ++ shuffle (drop (succ n) xs))
 
 
-; Sleep the current thread for time milliseconds
+
+; Sleep the current thread for time ms
 ; int -> int
 sleep time = do time = NUM_TO_LONG time
                 THREAD_SLEEP time
                 time
 
-; Invoke a function and return execution time
+; Invoke a function and return execution time in ms
 ; (a -> b) -> int    
 bench f    = do start = now ()
                 f ()
