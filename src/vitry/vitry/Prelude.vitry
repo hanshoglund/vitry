@@ -215,41 +215,50 @@ isSingle xs = match xs
 ;         (..) sort reverse
 
 substr m n = take n . drop m
-; reverse   = foldl (flip prepend) []
 
-; TODO remove
-; TODO retain
+; TODO scanl
+; TODO scanr
+             
+; a -> [a] -> int
 ; TODO search
+
+; (a -> bool) -> [a] -> (a | ())
 find pred = foldl (fn (x y) if (pred y) y else x) ()
 
-; TODO partition
-; TODO permute
+; (a -> bool) -> [a] -> [a]
+filter pred xs = match (pred, xs)
+    _,     _ : () = ()
+    pred, (x, xs) = if (pred x)
+                       prepend x (filter pred xs)
+                       filter pred xs
+; (a -> bool) -> [a] -> [a]                       
+retain pred = filter (not . pred)
 
+; [bool] -> bool
 some  = foldr (||) false
 every = foldr (&&) true
 none  = not . some
 
+; a -> [a]
+loop       x  = prepend x (delay loop x)
 
-repeat     x  = prepend x (delay repeat x)
+; [a] -> [a]
 cycle      xs = xs ++ (delay cycle xs)
 palindrome xs = let sx = reverse xs
                     xs ++ sx ++ (delay palindrome xs)    
 
-; Inverse of fold
+; Make a stream by unfolding
 ; (a -> (a, a)) -> a -> [a]
 unfold  f x = let (y, x) = f x
                   prepend y (delay unfold f x)
 
-; Arithmetic progression 
+; Common progressions 
 ; prec -> prec -> prec
 arith d = unfold (fn (x) (x, x + d))
-
-; Geometric progression 
-; prec -> prec -> prec
 geom  d = unfold (fn (x) (x, x * d))
 
 fib x y = prepend x (delay fib y (x + y))
-rands n = map (fn (x) random n) (repeat 1)
+rands n = map (fn (x) random n) (loop 1)
 
 harm    = map (/ 1) (arith 1 1)
 fibs    = fib 0 1
@@ -269,29 +278,35 @@ zip3With f xs ys zs = match (f, xs, ys, zs)
     _,  _,       _,       _ : () = ()
     f, (x, xs), (y, ys), (z, zs) = prepend (f x y z) (delay zip3With f xs ys zs)
 
-zip = zipWith (,)
+zip  = zipWith  (,)
 zip3 = zip3With (,)
 
-dup xs = match xs
+; Repeat each element n times
+; int -> [a] -> [a]
+repeat n xs = match xs
     _ : ()  = ()
-    (x, xs) = [x, x] ++ (delay dup xs)
+    (x, xs) = (take n (loop x)) ++ (delay repeat n xs)
+
+dup  = repeat 2
+tri  = repeat 3
+quad = repeat 4
+
+interl xs ys = match (xs, ys)
+     _ : (),  _      = ()
+     _,       _ : () = ()
+    (x, xs), (y, ys) = [x, y] ++ (delay interl xs ys)
+
+interl3 xs ys zs = match (xs, ys, zs)
+     _ : (),  _,       _      = ()
+     _,       _ : (),  _      = ()
+     _,       _,       _ : () = ()
+    (x, xs), (y, ys), (z, zs) = [x, y, z] ++ (delay interl3 xs ys zs)
 
 
-; interlL xs ys = delay
-;     let x = head xs
-;         y = head ys
-;         [x, y] ++ interlL (tail xs) (tail ys)
-; 
-; interl3L xs ys zs = delay 
-;     let x = head xs
-;         y = head ys
-;         y = head zs
-;         [x, y, zs] ++ interl3L (tail xs) (tail ys) (tail zs)
-
-
-interp y xs = prepend (head xs) (foldl (fn (zs x) zs ++ [y] ++ [x]) [] (tail xs))
-
-
+interp y xs = match (y, xs)
+    _,  _ : ()     = ()
+    _, (x, _ : ()) = [x]
+    y, (x, xs    ) = [x, y] ++ (delay interp y xs)
 
 
 ; str -> [a] -> str
