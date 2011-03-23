@@ -62,9 +62,9 @@ RAND_FLOAT       = method RANDOM "nextFloat" ()
 ; native: arity 
 ;         id const flip (.)
 
-iter f n = match [f, n]
-    [f, 0] = id
-    [f, i] = f . (iter f (i - 1))
+iter f n = match (f, n) 
+    (f, 0) = id
+    (f, i) = f . (iter f (i - 1))
 
 (.')  f g = fn (x y) f (g x y)
 
@@ -110,7 +110,12 @@ num  = prec | real
 zeroth x = match x (x : prec = 0) (x : real = 0.0)
 succ x   = match x (x : prec = x + 1) (x : real = x + 1.0)
 pred x   = match x (x : prec = x - 1) (x : real = x - 1.0)
-order x n = (iter succ n) (zeroth x)
+enum x n = (iter succ n) (zeroth x)
+
+smaller = `smaller
+equal   = `equal
+larger  = `larger
+order   =  smaller | equal | larger
 
 compare  x y = if (x < y) `smaller else if (x == y) `equal else `larger
 largest  x y = if (x > y) x else y
