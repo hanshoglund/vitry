@@ -193,13 +193,12 @@ mean xs = sum xs / length xs
 append x = flip (++) [x]
 length   = foldr ((+ 1) .' right) 0
 rank xs  = match xs
-    _ : [] = 1
-    _      = (succ . max . (map
-                 fn (xs) match xs
-                     _  : []    = 1
-                     xs : [ _ ] = rank xs
-                     _          = 0)) 
-              xs
+    _ : []     = 1
+    _          = (succ . max . (map rank_)) xs
+rank_ xs =  match xs
+    _  : ()    = 1
+    xs : [ _ ] = rank xs
+    _          = 0
               
 isEmpty xs = match xs
     _ : ()      = true
@@ -335,7 +334,7 @@ randomFloat _ = RAND_FLOAT RANDOM_INST
     
 pick xs       = index (random (length xs)) xs
 decide f g x  = match (random 2) (0 = f x) (1 = g x)
-; shuffle
+; TODO shuffle
 
 ref _   = new THREAD_LOCAL
 get r   = THREAD_LOCAL_GET r
