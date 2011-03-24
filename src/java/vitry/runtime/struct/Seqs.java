@@ -222,6 +222,17 @@ public final class Seqs
     {
         return new SeqIterator<T>(s);
     }
+    
+    public static <T> java.util.List<T> toCollection(Seq<T> s)
+    {
+        java.util.List<T> l = new java.util.LinkedList<T>();
+        while (!isNil(s))
+        {
+            l.add(s.head());
+            s = tail(s);
+        }
+        return l;
+    }
 
     public static Object[] toArray(Seq<?> s)
     {

@@ -33,8 +33,6 @@ import java.util.Properties;
 import vitry.Build;
 import vitry.runtime.StandardFunction.Binary;
 import vitry.runtime.StandardFunction.Unary;
-import vitry.runtime.sortBy.Comp;
-
 import vitry.prelude.*;
 import vitry.runtime.error.*;
 import vitry.runtime.misc.Utils;
@@ -89,10 +87,10 @@ public final class VitryRuntime
      */
     private ClassLoader classLoader;
     
-    /**
-     * Loaded modules.
-     */
-    private Seq<Module> modules;
+//    /**
+//     * Loaded modules.
+//     */
+//    private Seq<Module> modules;
 
     /**
      * Used to execute interpreted code.
@@ -252,6 +250,7 @@ public final class VitryRuntime
 
         prelude.def("seq",        new seq());
         prelude.def("array",      new array());
+        prelude.def("sarray",     new sarray());
         prelude.def("symbol",     new symbol_());
         prelude.def("string",     new string_());
         prelude.def("parseDecl",  new parseDecl(this));
@@ -483,19 +482,18 @@ public final class VitryRuntime
     }
 
 
-
-    private Symbol nextUnique() {
-        byte[] val = uniqueState.toByteArray();
-        char[] str = new char[val.length / 2 + 1];
-        for (int i = 0; i < val.length; i += 2) {
-            if ( (str.length & 1) == 1) str[i / 2] = (char) (val[i]);
-            else
-                str[i / 2] = (char) ( (val[i] << 8) | val[i + 1]);
-
-        }
-        advanceUniqueState();
-        return Symbol.intern(new String(str));
-    }
+//    private Symbol nextUnique() {
+//        byte[] val = uniqueState.toByteArray();
+//        char[] str = new char[val.length / 2 + 1];
+//        for (int i = 0; i < val.length; i += 2) {
+//            if ( (str.length & 1) == 1) str[i / 2] = (char) (val[i]);
+//            else
+//                str[i / 2] = (char) ( (val[i] << 8) | val[i + 1]);
+//
+//        }
+//        advanceUniqueState();
+//        return Symbol.intern(new String(str));
+//    }
 
     public static <T> T throwDeconstructNil()
     {
@@ -1515,6 +1513,13 @@ final class array extends StandardFunction.Unary
     }
 }
 
+final class sarray extends StandardFunction.Unary
+{
+    public Object apply(Object a) {
+        return Seqs.toArray(Native.<String>unwrapAll((Seq<?>) a), new String[0]);
+    }
+}
+
 final class random extends Unary
 {
     public Object apply(Object a) throws InvocationError
@@ -1664,8 +1669,10 @@ final class method extends StandardFunction
 
     public Object apply(Object r, Object n, Object t) throws InvocationError
     {
-        Symbol className = Utils.maybeIntern(r);
-        String methodName = n.toString();
+        Symbol className      = Utils.maybeIntern(r);
+        String methodName     = n.toString();
+        
+        @SuppressWarnings("unchecked")
         Seq<Symbol> typeNames = (Seq<Symbol>) t;
         final Method m;
 
@@ -1838,25 +1845,38 @@ final class method extends StandardFunction
     }
 }
 
-class new_ extends StandardFunction
+class new_ extends Binary
 {
     private VitryRuntime rt;
 
     public new_(VitryRuntime rt) {
-        super(1, rt.getPrelude());
         this.rt = rt;
     }
 
 
-    public Object apply(Object c) {
+    public Object apply(Object c, Object a) {
         try
         {
-            // TODO arguments to constructors 
-            return rt.internClass((Symbol) c).newInstance();
+            Class<?> cl = rt.internClass((Symbol) c);
+            if (Seqs.isNil(a))
+            {
+                return cl.newInstance();
+            }
+            else
+            {
+                Seq<?> args = Native.unwrapAll((Seq<?>) a);
+                Seq<Class<?>> argTypes = args.map(new Unary(){
+                    public Object apply(Object a) throws InvocationError {
+                        return a.getClass();
+                    }
+                });
+                return cl.getConstructor(Seqs.<Class<?>>toArray(argTypes, new Class<?>[0]))
+                    .newInstance(Seqs.toArray(args));
+            }
         }
-        catch (Exception _)
+        catch (Exception e)
         {
-            throw new ResolveError("Could not initiate class" + c);
+            throw new ResolveError("Could not initiate class " + c, e);
         }
     }
 }

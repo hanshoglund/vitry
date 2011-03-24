@@ -25,30 +25,35 @@ module Vitry.Prelude
 ; native: rewrite seq array symbol string
 ;         class new method classOf
 
-OBJECT           = class "java.lang.Object"
+OBJECT           = class "Object"
+CLASS            = class "Class"
+STRING           = class "String"
+TO_NATIVE_CLASS  = (method CLASS "forName" [STRING]) . string
 
-THREAD_LOCAL     = class "java.lang.ThreadLocal"
+THREAD_LOCAL     = class "ThreadLocal"
 THREAD_LOCAL_GET = method THREAD_LOCAL "get" []
-THREAD_LOCAL_SET = method THREAD_LOCAL "set" [ OBJECT ]
-THREAD_SLEEP     = method (class "Thread") "sleep" [ `long ]
+THREAD_LOCAL_SET = method THREAD_LOCAL "set" [OBJECT]
+THREAD_SLEEP     = method (class "Thread") "sleep" [`long]
 
 MATH             = class "Math"
-NUM              = class "java.lang.Number"
+NUM              = class "Number"
 INT              = class "java.math.BigInteger"
-RAT              = class "vitry.runtime.BigRational"
+RAT              = class "BigRational"
 
-ABS              = method MATH "abs" [ `double ]
+ABS              = method MATH "abs" [`double]
 NUM_TO_LONG      = method NUM "longValue" []
 NUM_TO_DOUBLE    = method NUM "doubleValue" []
 RAT_TO_INT       = method RAT "bigIntegerValue" []
-LONG_TO_INT      = method INT "valueOf" [ `long ]
-DOUBLE_TO_RAT    = method RAT "valueOf" [ `double ]
-MATH_PRIM name   = method MATH name [ `double ]
+LONG_TO_INT      = method INT "valueOf" [`long]
+DOUBLE_TO_RAT    = method RAT "valueOf" [`double]
+MATH_PRIM name   = method MATH name [`double]
 
 RANDOM           = class "java.util.Random"
-RANDOM_INST      = new RANDOM
-RAND_FLOAT       = method RANDOM "nextFloat" ()
-
+RANDOM_INST      = new RANDOM []
+RAND_FLOAT       = method RANDOM "nextFloat" []
+         
+NATIVE_SET       = class "NativeSet"
+GET_NATIVE_SET   = method NATIVE_SET "forClass" [CLASS] . TO_NATIVE_CLASS
 
 
 ; ======================================================================
@@ -332,9 +337,7 @@ join s = foldr (++) "" . interp s . map string
 
 ; Force and buffer n values
 buffer n xs = force (take n xs) ++ drop n xs
-    
-bufferStream n xs = force (take n xs) ++ (delay bufferStream n (drop n xs))
-
+bufferStream n xs = (force (take n xs)) ++ (delay (bufferStream n (drop n xs)))
 
 
 ; ======================================================================
@@ -349,17 +352,18 @@ bufferStream n xs = force (take n xs) ++ (delay bufferStream n (drop n xs))
 version    = (method (class "VitryRuntime") "getVersion" []) ()
 versionStr = join "." (map string version)
 
-; Thread-bound mutable values
-ref _   = new THREAD_LOCAL
-get r   = THREAD_LOCAL_GET r
-set r x = 
+
+reference         = GET_NATIVE_SET THREAD_LOCAL
+createReference _ = new THREAD_LOCAL []
+get r             = THREAD_LOCAL_GET r
+set r x           = 
     do THREAD_LOCAL_SET r x
        r
 
 ; (a -> b) -> a -> (() -> b)
 pluck f x = (fn (_) f x)
 
-; TODO decide proper strategy for random values
+
 randomFloat _ = RAND_FLOAT RANDOM_INST
 
 ; Return a function that invokes one of the given functions
@@ -375,6 +379,28 @@ shuffle xs    = match xs
     (x, _ : ()) = [x]
     (_, _    )  = do n = (random (length xs))
                      prepend (index n xs) (delay shuffle (remove n xs))
+
+
+; TODO read
+; file -> [int]
+; file -> [char]
+           
+PROCESS         = class "Process"
+PROCESS_BUILDER = class "ProcessBuilder"
+START           = method PROCESS_BUILDER "start" []
+
+process = GET_NATIVE_SET PROCESS        
+
+; [str] -> file -> process
+createProcess command dir =
+    do pb = new PROCESS_BUILDER [sarray command]
+       ; TODO set directory if non-null
+       START pb
+
+waitFor = method PROCESS "waitFor" []
+
+cmd command = waitFor (createProcess command [])
+
 
 
 

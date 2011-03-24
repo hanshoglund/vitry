@@ -112,7 +112,7 @@ public final class Native extends Atom
             });
     }
 
-    public static Seq<Pattern> unwrapAll(Seq<?> values)
+    public static <T> Seq<T> unwrapAll(Seq<?> values)
     {
         return values.map(new StandardFunction.Unary()
             {
