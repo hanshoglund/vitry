@@ -1,3 +1,21 @@
+/*
+ * Vitry, copyright (C) Hans Hoglund 2011
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * See COPYING.txt for details.
+ */
 package vitry.runtime.util;
 
 import java.io.BufferedInputStream;
@@ -5,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+
 
 /**
  * Pushes input from one stream to another.
@@ -14,36 +33,33 @@ import java.io.PrintStream;
 public class Pusher
 {
     private static enum PusherState
-    {
-        INIT,
-        STARTED,
-        STOPPED,
-        STREAM_END
-    }
+        {
+            INIT, STARTED, STOPPED, STREAM_END
+        }
 
-    private final InputStream source;    
+    private final InputStream source;
     private final OutputStream sink;
     private volatile PusherState state = PusherState.INIT;
     private PushThread thread = null;
     private Throwable exception = null;
-    
+
     public Pusher(InputStream source, OutputStream sink) {
         this.source = source;
         this.sink = sink;
     }
+
     public Pusher(BufferedInputStream source, PrintStream sink) {
         this.source = source;
         this.sink = sink;
     }
-    
+
     /**
      * Start pushing asynchronously.
      * @throws IllegalStateException if the end of stream has been reached.
      */
     public void start()
     {
-        switch (state)
-        {
+        switch (state) {
             case INIT:
             case STOPPED:
                 thread = new PushThread();
@@ -53,7 +69,7 @@ public class Pusher
                 break;
             case STREAM_END:
                 throw new IllegalStateException("Nothing more to push");
-        }        
+        }
     }
 
     /**
@@ -61,8 +77,7 @@ public class Pusher
      */
     public void stop()
     {
-        switch (state)
-        {
+        switch (state) {
             case INIT:
             case STOPPED:
             case STREAM_END:
@@ -73,7 +88,7 @@ public class Pusher
         }
     }
 
-    
+
     /**
      * Whether the pusher completed normally.
      */
@@ -81,7 +96,7 @@ public class Pusher
     {
         return state == PusherState.STREAM_END;
     }
-    
+
     /**
      * If an exception has occured during push, return it, otherwise
      * return null.
@@ -90,41 +105,50 @@ public class Pusher
     {
         return exception;
     }
-    
+
     private class PushThread extends Thread
     {
         public void run()
         {
+            state = PusherState.STARTED;
+
             int chars;
             byte[] buffer = new byte[1024];
             try
             {
-                while ((chars = source.read(buffer, 0, buffer.length)) > 0)
+                try
                 {
-                    sink.write(buffer, 0, chars);
-                    
-                    synchronized (this) {
-                        // Wait for interrupt
-                        this.wait(1);
+                    while ((chars = source.read(buffer, 0, buffer.length)) > 0)
+                    {
+                        sink.write(buffer, 0, chars);
+
+                        synchronized (this)
+                        {
+                            // Wait for interrupt
+                            this.wait(1);
+                        }
                     }
+                    // No more input
+                    state = PusherState.STREAM_END;
+                    sink.flush();
                 }
-                // No more input
-                sink.flush();
-                state = PusherState.STREAM_END;
-            }
-            catch (InterruptedException e)
-            {
-                state = PusherState.STOPPED;
+                catch (InterruptedException e)
+                {
+                    state = PusherState.STOPPED;
+                    sink.flush();
+                }
             }
             catch (IOException e)
             {
+                state = PusherState.STOPPED;
                 exception = e;
             }
         }
     }
-    
-    
-    public static void main(String[] args) {
+
+
+    public static void main(String[] args)
+    {
         Pusher p = new Pusher(System.in, System.out);
         p.start();
     }
