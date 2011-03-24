@@ -18,8 +18,8 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.Seq;
+import vitry.runtime.util.StrUtils;
 
 
 /**
@@ -128,7 +128,7 @@ public class Module implements Scope, Compilable
 
     public String toString()
     {
-        return Utils.join(name, "", ".", "");
+        return StrUtils.join(name, "", ".", "");
     }
 
 

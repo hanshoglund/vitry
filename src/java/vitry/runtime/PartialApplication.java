@@ -19,7 +19,7 @@
 package vitry.runtime;
 
 import vitry.runtime.error.InvocationError;
-import vitry.runtime.misc.Utils;
+import vitry.runtime.util.ArrayUtils;
 
 
 class PartialApplication extends StandardFunction
@@ -58,7 +58,7 @@ class PartialApplication extends StandardFunction
     {
         super(original.arity - (oldArgs.length + newArgs.length));
         this.original = original;
-        this.args = Utils.conc(oldArgs, newArgs);
+        this.args = ArrayUtils.conc(oldArgs, newArgs);
         
         assert (this.arity > 0);
     }
@@ -67,7 +67,7 @@ class PartialApplication extends StandardFunction
     public Object apply(Object a0) throws InvocationError {
         switch (arity) {
             case 1:
-                return original.applyVar(Utils.conc(args, a0));
+                return original.applyVar(ArrayUtils.conc(args, a0));
             default:
                 return new PartialApplication(INTERNAL, this.original, this.args, a0);
         }
@@ -79,7 +79,7 @@ class PartialApplication extends StandardFunction
             case 1:
                 return ((Function) this.apply(a0)).apply(a1);
             case 2:
-                return original.applyVar(Utils.conc(args, a0, a1));
+                return original.applyVar(ArrayUtils.conc(args, a0, a1));
             default:
                 return new PartialApplication(INTERNAL, this.original, this.args, a0, a1);
         }
@@ -93,7 +93,7 @@ class PartialApplication extends StandardFunction
             case 2:
                 return ((Function) this.apply(a0, a1)).apply(a2);
             case 3:
-                return original.applyVar(Utils.conc(args, a0, a1, a2));
+                return original.applyVar(ArrayUtils.conc(args, a0, a1, a2));
             default:
                 return new PartialApplication(INTERNAL, this.original, this.args, a0, a1, a2);
         }
@@ -109,7 +109,7 @@ class PartialApplication extends StandardFunction
             case 3:
                 return ((Function) this.apply(a0, a1, a2)).apply(a3);
             case 4:
-                return original.applyVar(Utils.conc(args, a0, a1, a2, a3));
+                return original.applyVar(ArrayUtils.conc(args, a0, a1, a2, a3));
             default:
                 return new PartialApplication(INTERNAL, this.original, this.args, a0, a1, a2, a3);
         }
@@ -128,7 +128,7 @@ class PartialApplication extends StandardFunction
             case 4:
                 return ((Function) this.apply(a0, a1, a2, a3)).apply(a4);
             case 5:
-                return original.applyVar(Utils.conc(args, a0, a1, a2, a3, a4));
+                return original.applyVar(ArrayUtils.conc(args, a0, a1, a2, a3, a4));
             default:
                 return new PartialApplication(INTERNAL, this.original, this.args, a0, a1, a2, a3, a4);
         }
@@ -149,7 +149,7 @@ class PartialApplication extends StandardFunction
             case 5:
                 return ((Function) this.apply(a0, a1, a2, a3, a4)).apply(a5);
             case 6:
-                return original.applyVar(Utils.conc(args, a0, a1, a2, a3, a4, a5));
+                return original.applyVar(ArrayUtils.conc(args, a0, a1, a2, a3, a4, a5));
             default:
                 return new PartialApplication(INTERNAL, this.original, this.args, a0, a1, a2, a3, a4, a5);
         }
@@ -172,7 +172,7 @@ class PartialApplication extends StandardFunction
             case 6:
                 return ((Function) this.apply(a0, a1, a2, a3, a4, a5)).apply(a6);
             case 7:
-                return original.applyVar(Utils.conc(args, a0, a1, a2, a3, a4, a5, a6));
+                return original.applyVar(ArrayUtils.conc(args, a0, a1, a2, a3, a4, a5, a6));
             default:
                 return new PartialApplication(INTERNAL, this.original, this.args, a0, a1, a2, a3, a4, a5, a6);
         }
@@ -197,7 +197,7 @@ class PartialApplication extends StandardFunction
             case 7:
                 return ((Function) this.apply(a0, a1, a2, a3, a4, a5, a6)).apply(a7);
             case 8:
-                return original.applyVar(Utils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7));
+                return original.applyVar(ArrayUtils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7));
 
             default:
                 return new PartialApplication(INTERNAL, this.original, this.args, a0, a1, a2, a3, a4, a5, a6, a7);
@@ -225,7 +225,7 @@ class PartialApplication extends StandardFunction
             case 8:
                 return ((Function) this.apply(a0, a1, a2, a3, a4, a5, a6, a7)).apply(a8);
             case 9:
-                return original.applyVar(Utils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7,
+                return original.applyVar(ArrayUtils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7,
                         a8));
             default:
                 return new PartialApplication(INTERNAL, this.original, this.args, a0, a1, a2, a3, a4, a5, a6, a7, a8);
@@ -264,7 +264,7 @@ class PartialApplication extends StandardFunction
                 return ((Function) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8))
                         .apply(a9);
             case 10:
-                return original.applyVar(Utils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7,
+                return original.applyVar(ArrayUtils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7,
                         a8, a9));
             default:
                 return new PartialApplication(INTERNAL, this.original, this.args, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9);
@@ -306,7 +306,7 @@ class PartialApplication extends StandardFunction
                 return ((Function) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9))
                         .apply(a10);
             case 11:
-                return original.applyVar(Utils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7,
+                return original.applyVar(ArrayUtils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7,
                         a8, a9, a10));
             default:
                 return new PartialApplication(INTERNAL, this.original, this.args, a0, a1, a2, a3, a4, a5, a6, a7, a8,
@@ -353,7 +353,7 @@ class PartialApplication extends StandardFunction
                 return ((Function) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10))
                         .apply(a11);
             case 12:
-                return original.applyVar(Utils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7,
+                return original.applyVar(ArrayUtils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7,
                         a8, a9, a10, a11));
             default:
                 return new PartialApplication(INTERNAL, this.original, this.args, a0, a1, a2, a3, a4, a5, a6, a7, a8,
@@ -403,7 +403,7 @@ class PartialApplication extends StandardFunction
                 return ((Function) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10,
                         a11)).apply(a12);
             case 13:
-                return original.applyVar(Utils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7,
+                return original.applyVar(ArrayUtils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7,
                         a8, a9, a10, a11, a12));
             default:
                 return new PartialApplication(INTERNAL, this.original, this.args, a0, a1, a2, a3, a4, a5, a6, a7, a8,
@@ -456,7 +456,7 @@ class PartialApplication extends StandardFunction
                 return ((Function) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10,
                         a11, a12)).apply(a13);
             case 14:
-                return original.applyVar(Utils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7,
+                return original.applyVar(ArrayUtils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7,
                         a8, a9, a10, a11, a12, a13));
             default:
                 return new PartialApplication(INTERNAL, this.original, this.args, a0, a1, a2, a3, a4, a5, a6, a7, a8,
@@ -513,7 +513,7 @@ class PartialApplication extends StandardFunction
                         a11, a12, a13)).apply(a14);
 
             case 15:
-                return original.applyVar(Utils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7,
+                return original.applyVar(ArrayUtils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7,
                         a8, a9, a10, a11, a12, a13, a14));
             default:
                 return new PartialApplication(INTERNAL, this.original, this.args, a0, a1, a2, a3, a4, a5, a6, a7, a8,
@@ -572,7 +572,7 @@ class PartialApplication extends StandardFunction
                 return ((Function) this.apply(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10,
                         a11, a12, a13, a14)).apply(a15);
             case 16:
-                return original.applyVar(Utils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7,
+                return original.applyVar(ArrayUtils.conc(args, a0, a1, a2, a3, a4, a5, a6, a7,
                         a8, a9, a10, a11, a12, a13, a14, a15));
             default:
                 return new PartialApplication(INTERNAL, this.original, this.args, a0, a1, a2, a3, a4, a5, a6, a7, a8,

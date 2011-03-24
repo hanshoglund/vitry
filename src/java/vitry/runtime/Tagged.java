@@ -18,8 +18,8 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.Seq;
+import vitry.runtime.util.Utils;
 
 
 /**

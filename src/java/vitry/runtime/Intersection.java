@@ -18,7 +18,7 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.misc.*;
+import vitry.runtime.util.*;
 
 
 /**
@@ -97,6 +97,6 @@ abstract public class Intersection extends InclusionPattern
 
     public String toString()
     {
-        return Utils.join(this, "", " & ", "");
+        return StrUtils.join(this, "", " & ", "");
     }
 }

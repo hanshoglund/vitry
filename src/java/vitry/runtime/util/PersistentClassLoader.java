@@ -16,7 +16,7 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime.misc;
+package vitry.runtime.util;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -37,14 +37,14 @@ import java.util.Map;
  * 
  * @author Hans Hoglund
  */
-public class RecoverableClassLoader extends ClassLoader
+public class PersistentClassLoader extends ClassLoader
 {
 
-    public RecoverableClassLoader() {
+    public PersistentClassLoader() {
         this.classes = new HashMap<String, Class<?>>();
     }
 
-    public RecoverableClassLoader(Map<String, Class<?>> classes) {
+    public PersistentClassLoader(Map<String, Class<?>> classes) {
         this.classes = classes;
     }
 
@@ -109,18 +109,18 @@ public class RecoverableClassLoader extends ClassLoader
         return cl;
     }
 
-    public synchronized RecoverableClassLoader unloadClass(String name)
+    public synchronized PersistentClassLoader unloadClass(String name)
     {
         // TODO use persistent collection
         Map<String, Class<?>> removed = new HashMap<String, Class<?>>(classes);
         removed.remove(name);
-        return new RecoverableClassLoader(removed);
+        return new PersistentClassLoader(removed);
     }
 
-    public synchronized RecoverableClassLoader reloadClass(String name)
+    public synchronized PersistentClassLoader reloadClass(String name)
             throws ClassNotFoundException
     {
-        RecoverableClassLoader mcl = this.unloadClass(name);
+        PersistentClassLoader mcl = this.unloadClass(name);
         mcl.loadClass(name);
         return mcl;
     }
@@ -153,7 +153,7 @@ public class RecoverableClassLoader extends ClassLoader
             super(paths, null);
         }
 
-        private RecoverableClassLoader tempParent;
+        private PersistentClassLoader tempParent;
 
         public Class<?> loadClass(String name) throws ClassNotFoundException
         {
@@ -170,7 +170,7 @@ public class RecoverableClassLoader extends ClassLoader
             return c;
         }
 
-        public Class<?> loadClass(String name, RecoverableClassLoader parent)
+        public Class<?> loadClass(String name, PersistentClassLoader parent)
                 throws ClassNotFoundException
         {
             // Store parent temporarily for recursive invocations by the JVM                    

@@ -19,7 +19,7 @@
 package vitry.runtime;
 
 import vitry.runtime.error.*;
-import vitry.runtime.misc.*;
+import vitry.runtime.util.*;
 
 
 abstract class AbstractEnv<K, V> implements Env<K, V>

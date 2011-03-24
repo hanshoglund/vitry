@@ -20,7 +20,7 @@ package vitry.runtime.struct;
 
 import java.util.Iterator;
 
-import vitry.runtime.misc.ArrayIterator;
+import vitry.runtime.util.ArrayIterator;
 
 
 /**

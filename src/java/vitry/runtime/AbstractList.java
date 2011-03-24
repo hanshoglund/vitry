@@ -23,10 +23,10 @@ import static vitry.runtime.VitryRuntime.listFrom;
 import java.io.IOException;
 
 import vitry.Build;
-import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.Seq;
 import vitry.runtime.struct.Seqs;
 import vitry.runtime.struct.TakeSeq;
+import vitry.runtime.util.Utils;
 
 
 /**

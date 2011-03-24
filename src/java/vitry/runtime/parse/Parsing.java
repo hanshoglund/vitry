@@ -18,7 +18,7 @@
  */
 package vitry.runtime.parse;
 
-import static vitry.runtime.misc.Utils.linearSearch;
+import static vitry.runtime.util.ArrayUtils.linearSearch;
 
 import vitry.runtime.*;
 import vitry.runtime.error.*;

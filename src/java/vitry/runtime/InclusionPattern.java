@@ -20,8 +20,8 @@ package vitry.runtime;
 
 import java.util.Iterator;
 
-import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.*;
+import vitry.runtime.util.Utils;
 
 
 abstract class InclusionPattern extends BasePattern implements Seq<Pattern>

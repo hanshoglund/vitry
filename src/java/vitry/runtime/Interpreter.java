@@ -27,9 +27,9 @@ import java.util.Iterator;
 
 import vitry.Build;
 import vitry.runtime.error.*;
-import vitry.runtime.misc.*;
 import vitry.runtime.parse.*;
 import vitry.runtime.struct.*;
+import vitry.runtime.util.*;
 
 
 /**
@@ -598,7 +598,7 @@ public class Interpreter implements Eval {
 
     static String evalString(Object expr)
     {
-        String str = Utils.unescape(expr.toString());
+        String str = StrUtils.unescape(expr.toString());
         return str.substring(1, str.length() - 1);
     }
     
@@ -721,13 +721,13 @@ public class Interpreter implements Eval {
     static final void throwUnknownForm(Object tree)
     {
         throw new ParseError("Unknown form in tree "
-                + Utils.limit(tree.toString(), TRACE_LIMIT));
+                + StrUtils.limit(tree.toString(), TRACE_LIMIT));
     }
 
     static final void throwUnknownForm(Object tree, Object form)
     {
         throw new ParseError("Unkown form '" + form + "' in tree "
-                + Utils.limit(tree.toString(), TRACE_LIMIT));
+                + StrUtils.limit(tree.toString(), TRACE_LIMIT));
     }
 }
 

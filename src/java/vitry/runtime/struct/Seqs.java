@@ -20,7 +20,7 @@ package vitry.runtime.struct;
 
 import vitry.runtime.Function;
 import vitry.runtime.Native;
-import vitry.runtime.misc.Utils;
+import vitry.runtime.util.Utils;
 
 
 /**

@@ -22,8 +22,8 @@ import java.util.Iterator;
 
 import vitry.runtime.Arity;
 import vitry.runtime.Function;
-import vitry.runtime.misc.Checks;
-import vitry.runtime.misc.Utils;
+import vitry.runtime.util.Checks;
+import vitry.runtime.util.Utils;
 
 
 /**

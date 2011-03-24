@@ -35,8 +35,8 @@ import vitry.runtime.StandardFunction.Binary;
 import vitry.runtime.StandardFunction.Unary;
 import vitry.prelude.*;
 import vitry.runtime.error.*;
-import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.*;
+import vitry.runtime.util.Utils;
 
 
 /**
@@ -211,6 +211,7 @@ public final class VitryRuntime
         prelude.def("Infinity",   Double.POSITIVE_INFINITY);
 
         prelude.def("(++)",       new concatenate());
+        prelude.def("[++]",       new concatenate());
         prelude.def("prepend",    new prepend());
         prelude.def("head",       new head());
         prelude.def("tail",       new tail());
@@ -245,6 +246,9 @@ public final class VitryRuntime
         // Internal
         
         prelude.def("__rt",       this);
+        prelude.def("__stdin",    System.in);
+        prelude.def("__stdout",   System.out);
+        prelude.def("__stderr",   System.err);
         prelude.def("__delay",    new delay());
         prelude.def("rewrite",    new rewrite(this));
 
@@ -276,6 +280,7 @@ public final class VitryRuntime
         prelude.defFix("(-)",     9,  true,  false);
         prelude.defFix("(+)",     9,  true,  false);
         prelude.defFix("(++)",    9,  true,  false);
+        prelude.defFix("[++]",    9,  true,  false);
         prelude.defFix("[,]",     8,  true,  true);
         prelude.defFix("{,}",     8,  true,  true);
         prelude.defFix("(,)",     8,  true,  true);
@@ -1864,6 +1869,8 @@ class new_ extends Binary
             }
             else
             {
+                // TODO should accept subclasses of ctor args...
+                
                 Seq<?> args = Native.unwrapAll((Seq<?>) a);
                 Seq<Class<?>> argTypes = args.map(new Unary(){
                     public Object apply(Object a) throws InvocationError {

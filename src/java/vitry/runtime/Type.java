@@ -20,8 +20,8 @@ package vitry.runtime;
 
 import vitry.runtime.error.TypeError;
 import vitry.runtime.error.VitryError;
-import vitry.runtime.misc.Utils;
 import vitry.runtime.struct.Seq;
+import vitry.runtime.util.Utils;
 
 
 /**

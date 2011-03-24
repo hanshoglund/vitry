@@ -2,7 +2,7 @@ package vitry.runtime.struct;
 
 import vitry.runtime.Function;
 import vitry.runtime.VitryRuntime;
-import vitry.runtime.misc.Utils;
+import vitry.runtime.util.Utils;
 
 public class ThunkSeq<T> extends AbstractSeq<T>
 {

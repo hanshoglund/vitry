@@ -206,6 +206,8 @@ mean xs = sum xs / length xs
 ;         prepend head tail 
 ;         init last
 
+; [++] = (++)
+
 append x = flip (++) [x]
 length   = foldr ((+ 1) .' right) 0
 rank xs  = match xs
@@ -388,18 +390,25 @@ shuffle xs    = match xs
 PROCESS         = class "Process"
 PROCESS_BUILDER = class "ProcessBuilder"
 START           = method PROCESS_BUILDER "start" []
-
-process = GET_NATIVE_SET PROCESS        
+WAIT_FOR        = method PROCESS "waitFor" []
+GET_IN          = method PROCESS "getInputStream" []
+PRINT_STREAM    = class "java.io.PrintStream"
+SYSTEM          = class "System"
+PUSHER          = class "vitry.runtime.util.Pusher"
+PUSHER_START    = method PUSHER "start" []
+PUSHER_STOP     = method PUSHER "stop" []
 
 ; [str] -> file -> process
-createProcess command dir =
-    do pb = new PROCESS_BUILDER [sarray command]
-       ; TODO set directory if non-null
-       START pb
+run command =
+    do builder = new PROCESS_BUILDER [sarray command]
+       process = START builder
+       in = GET_IN process
+       pusher = new PUSHER [in, __stdout]
+       PUSHER_START pusher
+       WAIT_FOR process
+       PUSHER_STOP pusher
+       ()
 
-waitFor = method PROCESS "waitFor" []
-
-cmd command = waitFor (createProcess command [])
 
 
 

@@ -16,43 +16,19 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime.misc;
+package vitry.runtime.util;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import vitry.runtime.Symbol;
 import vitry.runtime.error.ParseError;
 
 
-public class Utils
+public class StrUtils
 {
-    private Utils() {
+    private StrUtils() {
     }
-
-    // Arrays
-
-    public static Object[] conc(Object[] a, Object... b)
-    {
-        Object[] res = new Object[a.length + b.length];
-        System.arraycopy(a, 0, res, 0, a.length);
-        System.arraycopy(b, 0, res, a.length, b.length);
-        return res;
-    }
-
-    public static int linearSearch(Object[] a, Object key)
-    {
-        for (int i = 0; i < a.length; i++)
-        {
-            if (a[i].equals(key))
-                return i;
-        }
-        return -1;
-    }
-
-
-    // Strings
 
     public static String join(Iterable<?> elements, String start, String delim, String end)
     {
@@ -72,7 +48,6 @@ public class Utils
         return strb.toString();
     }
 
-
     public static String limit(String s, int maxLength)
     {
         if (s.length() > maxLength)
@@ -80,7 +55,6 @@ public class Utils
         else
             return s;
     }
-
 
     public static String unescape(String str)
     {
@@ -93,7 +67,8 @@ public class Utils
         {
             writer = new StringWriter(str.length());
             unescapeJava(writer, str);
-        } catch (IOException ioe)
+        }
+        catch (IOException ioe)
         {
             // this should never ever happen while writing to a StringWriter
             assert false;
@@ -134,7 +109,8 @@ public class Utils
                         unicode.setLength(0);
                         inUnicode = false;
                         hadSlash = false;
-                    } catch (NumberFormatException nfe)
+                    }
+                    catch (NumberFormatException nfe)
                     {
                         throw new ParseError("Unable to parse unicode value: " + unicode);
                     }
@@ -194,52 +170,6 @@ public class Utils
             // string, let's output it anyway.
             out.write('\\');
         }
-    }
-    
-    public static Symbol maybeIntern(Object s) {
-        if (s instanceof Symbol) return (Symbol) s;
-        return Symbol.intern((String) s);
-    }
-
-    public static <U> U unsafe(Object val)
-    {
-        @SuppressWarnings("unchecked")
-        U casted = (U) val;
-        return casted;
-    }
-
-    public static <T> void nothing(T val)
-    {
-        return;
-    }
-    
-    public static <T> T assertFalse()
-    {
-        return assertFalse("");
-    }
-
-    public static <T> T assertFalse(String msg)
-    {
-        throw new AssertionError(msg);
-    }
-
-
-    public static int hash(int seed, int val)
-    {
-        return (seed * 65050 + val) % 2044508069;
-    }
-
-    public static int hash(int seed, Object val)
-    {
-        return hash(seed, val.hashCode());
-    }
-
-    public static int hash(int seed, Iterable<?> vals)
-    {
-        int hash = seed;
-        for (Object v : vals)
-            hash = hash(hash, v);
-        return hash;
     }
 
 }

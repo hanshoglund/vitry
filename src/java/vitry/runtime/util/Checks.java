@@ -16,45 +16,33 @@
  *
  * See COPYING.txt for details.
  */
-package vitry.runtime.misc;
+package vitry.runtime.util;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import vitry.runtime.Arity;
 
 
-public class ArrayIterator<T> implements Iterator<T>
+/**
+ * Static methods to check function arguments.
+ * 
+ * All throw IllegalArgumentException upon failure.
+ */
+public class Checks
 {
-    private final T[] array;
-
-    private int next;
-
-    public ArrayIterator(T[] array) {
-        this(array, 0);
+    private Checks() {
     }
 
-    public ArrayIterator(T[] array, int offset) {
-        this.array = array;
-        this.next = offset;
-    }
-
-    public boolean hasNext()
+    public static void checkArity(Arity a, int arity)
     {
-        return next < array.length;
+        if (a.getArity() != arity)
+            throw new IllegalArgumentException("Function must have arity " + arity);
     }
 
-    public T next()
+    public static void checkNotNull(Object... args)
     {
-        try
+        for (Object o : args)
         {
-            return array[next++];
-        } catch (IndexOutOfBoundsException e)
-        {
-            throw new NoSuchElementException();
+            if (o == null)
+                throw new IllegalArgumentException("Excepted non-null argument");
         }
-    }
-
-    public void remove()
-    {
-        throw new UnsupportedOperationException("Can not remove from array");
     }
 }
