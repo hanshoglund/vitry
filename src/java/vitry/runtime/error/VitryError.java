@@ -30,6 +30,9 @@ abstract public class VitryError extends RuntimeException
     {
         private static final long serialVersionUID = 1L;
 
+        protected VitryError() {
+            super();
+        }
         public VitryError(String string) {
             super(string);
         }

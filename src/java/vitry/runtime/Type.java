@@ -68,7 +68,7 @@ public class Type extends BasePattern implements TypeExpr
         }
         else
         {
-            throw new TypeError(this, value);
+            return TypeError.throwFailedTagging(this, value);
         }
     }
 

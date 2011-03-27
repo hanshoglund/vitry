@@ -22,34 +22,43 @@ import vitry.runtime.Function;
 import vitry.runtime.Pattern;
 import vitry.runtime.Type;
 
-/**
- * Thrown to indicate a typing error.
- */
+
 public class TypeError extends VitryError
-    {
+{
 
-        public TypeError(String msg) {
-            super(msg);
-        }
-        public synchronized Throwable fillInStackTrace() {
-            return this;
-        }
-        
-        public TypeError(Type tag, Pattern v) {
-            super("Can not apply tag " + tag + " to " + makeFinite(v));
-        }
-                
-        public static <T> T throwMismatch(Object v, Object p) {
-            throw new TypeError("" + makeFinite(v) + " does not conform to " + makeFinite(p));            
-        }
-        
-        public static <T> T throwWrongStructor(Object v, Function structor) {
-            throw new TypeError("Could not destruct " + makeFinite(v) + " using " + structor);
-        }
-        
-        public static <T> T throwWrongCount(Object v) {
-            throw new TypeError("Mismatching number of elements in " + makeFinite(v));
-        }
+    private static final long serialVersionUID = 3634069213260367204L;
 
-        private static final long serialVersionUID = 3634069213260367204L;
+    protected TypeError() {
+        super();
     }
+    public TypeError(String msg) {
+        super(msg);
+    }
+
+    @Override
+    public synchronized Throwable fillInStackTrace()
+    {
+        return this;
+    }
+
+    public static <T> T throwFailedTagging(Type tag, Pattern v)
+    {
+        throw new TypeError("Can not apply tag " + tag + " to " + makeFinite(v));
+    }
+
+    public static <T> T throwMismatch(Object v, Object p)
+    {
+        throw new Mismatch(v, p);
+    }
+
+    public static <T> T throwWrongStructor(Object value, Function structor)
+    {
+        throw new WrongStruct(value, structor);
+    }
+
+    public static <T> T throwWrongCount(Object value)
+    {
+        throw new WrongNumberOfElements(value);
+    }
+
+}
