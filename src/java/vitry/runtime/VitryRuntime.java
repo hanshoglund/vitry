@@ -238,6 +238,7 @@ public final class VitryRuntime
         prelude.def("eval",       new eval_(this));
         prelude.def("error",      new error_());
         prelude.def("writeFile",  new writeFile(this));
+        prelude.def("replaceFile",new replaceFile());
         prelude.def("repl",       new repl(this, prelude));
         prelude.def("load",       new load(prelude));
         prelude.def("quit",       new quit());

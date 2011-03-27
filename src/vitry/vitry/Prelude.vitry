@@ -29,6 +29,7 @@ OBJECT           = class "Object"
 CLASS            = class "Class"
 STRING           = class "String"
 TO_NATIVE_CLASS  = (method CLASS "forName" [STRING]) . string
+CAST cl          = (method CLASS "cast" [OBJECT]) (TO_NATIVE_CLASS cl)
 
 THREAD_LOCAL     = class "ThreadLocal"
 THREAD_LOCAL_GET = method THREAD_LOCAL "get" []
@@ -99,7 +100,7 @@ not  x = match x
 ;         char str
 
 prec = nat | int | rat
-real = float | double | complex
+real = float | double
 num  = prec | real
 
 
@@ -404,6 +405,7 @@ PUSHER          = class "vitry.runtime.util.Pusher"
 START           = method PROCESS_BUILDER "start" []
 WAIT_FOR        = method PROCESS "waitFor" []
 GET_IN          = method PROCESS "getInputStream" []
+GET_ERR         = method PROCESS "getErrorStream" []
 PUSHER_START    = method PUSHER "start" []
 PUSHER_STOP     = method PUSHER "stop" []
    
@@ -413,10 +415,12 @@ run command =
     do builder = new PROCESS_BUILDER [sarray command]
        process = START builder
        
-       ; Use a pusher to stdout       
+       ; Use a pusher to stdout
        in      = GET_IN process
        pusher  = new PUSHER [in, __stdout]
        PUSHER_START pusher
+       
+       ; TODO fix so that we can pass subclasses as new args to push err as well...
 
        ; TODO ideally we should block until the pusher
        ; has extracted all output or we may miss some...
