@@ -30,25 +30,25 @@ import vitry.runtime.util.Utils;
 public class Type extends BasePattern implements TypeExpr
 {
 
-    private final Pattern pattern;
     private final Symbol name;
+    private final Pattern pattern;
     private final Seq<TypeExpr> vars;
 
-    public Type(Pattern pattern, Symbol id, Seq<TypeExpr> vars) {
+    public Type(Symbol name, Pattern pattern, Seq<TypeExpr> vars) {
+        this.name = name;
         this.pattern = pattern;
-        this.name = id;
         this.vars = vars;
+    }
+
+    public Symbol getName()
+    {
+        return name;
     }
 
 
     public Pattern getPattern()
     {
         return pattern;
-    }
-
-    public Symbol getName()
-    {
-        return name;
     }
 
     Seq<TypeExpr> getTypeVariables()
@@ -59,9 +59,10 @@ public class Type extends BasePattern implements TypeExpr
     public Tagged tag(Pattern value) throws VitryError
     {
         if (value instanceof Tagged)
-            return ((Tagged) value).retag(this);
+        {
+            return ((Tagged) value).retag(this);            
+        }
 
-        // TODO memoize to speed up equality checks
         if (value.matchFor(this))
         {
             return new Tagged(value, this);
@@ -76,9 +77,8 @@ public class Type extends BasePattern implements TypeExpr
 
     public boolean eq(Type o)
     {
-        return o == this 
-            || (o.pattern.eqFor(this.pattern) && o.vars.equals(this.vars));
-            // TODO seq equality?
+        return o == this || (o.pattern.eqFor(this.pattern));
+        // TODO typevars?
     }
 
     public boolean match(Tagged p)
@@ -88,7 +88,7 @@ public class Type extends BasePattern implements TypeExpr
 
     public boolean match(Type p)
     {
-        return p.pattern.matchFor(this.pattern); // TODO correct ?
+        return this.eq(p);
     }
 
     public boolean eqFor(Pattern o)

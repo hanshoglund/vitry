@@ -46,11 +46,10 @@ public class TypeError extends VitryError
         throw new TypeError("Can not apply tag " + tag + " to " + makeFinite(v));
     }
 
-    public static <T> T throwMismatch(Object v, Object p)
-    {
-        throw new Mismatch(v, p);
+    public static <T> T throwMismatch(Object v, Object p) {
+        throw new TypeMismatchError(v, p);
     }
-
+    
     public static <T> T throwWrongStructor(Object value, Function structor)
     {
         throw new WrongStruct(value, structor);

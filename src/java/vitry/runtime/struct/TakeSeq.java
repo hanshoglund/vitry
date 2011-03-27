@@ -51,5 +51,8 @@ public class TakeSeq<T> extends AbstractSeq<T>
         return n > 1 && xs.hasTail();
     }
     
-    // TODO isNil
+    public boolean isNil()
+    {
+        return n == 0 || xs.isNil();
+    }
 }

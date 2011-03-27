@@ -36,6 +36,7 @@ import vitry.runtime.StandardFunction.Unary;
 import vitry.prelude.*;
 import vitry.runtime.error.*;
 import vitry.runtime.struct.*;
+import vitry.runtime.util.StrUtils;
 import vitry.runtime.util.Utils;
 
 
@@ -707,6 +708,18 @@ final class Nil extends Atom implements List, Finite<Pattern>
     {
         return Seqs.isNil(p);
     }
+    
+//    @Override
+//    public boolean eqFor(Pattern o)
+//    {
+//        return Seqs.isNil(o);
+//    }
+//
+//    @Override
+//    public boolean matchFor(Pattern p)
+//    {
+//        return Seqs.isNil(p);
+//    }
 
     public String toString()
     {
@@ -1570,6 +1583,11 @@ class print extends Unary
                 throw e;
             }
         }
+//        if (a instanceof String)
+//        {
+//            System.out.println("\"" + StrUtils.escape((String) a) + "\"");
+//            return a;
+//        }
         System.out.println(a);            
         return a;
     }
