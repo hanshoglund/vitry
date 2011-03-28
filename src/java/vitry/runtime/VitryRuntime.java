@@ -709,18 +709,6 @@ final class Nil extends Atom implements List, Finite<Pattern>
         return Seqs.isNil(p);
     }
     
-//    @Override
-//    public boolean eqFor(Pattern o)
-//    {
-//        return Seqs.isNil(o);
-//    }
-//
-//    @Override
-//    public boolean matchFor(Pattern p)
-//    {
-//        return Seqs.isNil(p);
-//    }
-
     public String toString()
     {
         return "()";

@@ -64,7 +64,12 @@ abstract class AbstractList extends ConstructionPattern implements List
 
     public boolean match(Atom o)
     {
-        return this.isNil() && Seqs.isNil(o);
+//        return this.isNil() && Seqs.isNil(o);
+        if (Seqs.isNil(o))
+        {
+            return this.isNil() || (!this.hasTail());
+        }
+        return false;
     }
 
     public boolean match(List o)
