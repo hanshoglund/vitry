@@ -41,16 +41,15 @@ public class replaceFile extends StandardFunction
                 String line = "", text = "";
                 while ( (line = reader.readLine()) != null)
                 {
+                    Iterator<String> x = xs2.iterator();
+                    Iterator<String> y = ys2.iterator();
+                    while (x.hasNext() && y.hasNext())
+                    {
+                        line = line.replaceAll(x.next(), y.next());                    
+                    }
                     text += line + "\n";
                 }
                 reader.close();
-                
-                Iterator<String> x = xs2.iterator();
-                Iterator<String> y = ys2.iterator();
-                while (x.hasNext() && y.hasNext())
-                {
-                    text = text.replaceAll(x.next(), y.next());                    
-                }
 
                 FileWriter writer = new FileWriter(file);
                 writer.write(text);
