@@ -282,8 +282,11 @@ palindrome xs = let sx = reverse xs
 
 ; Make an infinite list by unfolding
 ; (a -> (a, a)) -> a -> [a]
-unfold  f x = let (y, x) = f x
-                  prepend y (delay unfold f x)
+unfold f x = let (y, x) = f x
+                 prepend y (delay unfold f x)
+                  
+; Make a stateful infinite list
+unroll f = prepend (f ()) (delay unroll f)
 
 ; Common progressions 
 ; prec -> prec -> prec

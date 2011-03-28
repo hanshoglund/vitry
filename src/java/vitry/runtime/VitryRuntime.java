@@ -208,6 +208,13 @@ public final class VitryRuntime
         prelude.def("(%)",        new mod());
         prelude.def("(%%)",       new modp());
         prelude.def("(^)",        new pow());
+        prelude.def("[+]",        new add());
+        prelude.def("[-]",        new sub());
+        prelude.def("[*]",        new mul());
+        prelude.def("[/]",        new div());
+        prelude.def("[%]",        new mod());
+        prelude.def("[%%]",       new modp());
+        prelude.def("[^]",        new pow());
         prelude.def("NaN",        Double.NaN);
         prelude.def("Infinity",   Double.POSITIVE_INFINITY);
 
@@ -275,12 +282,17 @@ public final class VitryRuntime
         prelude.defFix("(.)",     12, false, false);
         prelude.defFix("(^^)",    11, true,  false);
         prelude.defFix("(^)",     11, true,  false);
-        prelude.defFix("(%)",     10, true,  false);
         prelude.defFix("(%%)",    10, true,  false);
+        prelude.defFix("(%)",     10, true,  false);
         prelude.defFix("(/)",     10, true,  false);
         prelude.defFix("(*)",     10, true,  false);
+        prelude.defFix("[%]",     10, true,  false);
+        prelude.defFix("[/]",     10, true,  false);
+        prelude.defFix("[*]",     10, true,  false);
         prelude.defFix("(-)",     9,  true,  false);
         prelude.defFix("(+)",     9,  true,  false);
+        prelude.defFix("[-]",     9,  true,  false);
+        prelude.defFix("[+]",     9,  true,  false);
         prelude.defFix("(++)",    9,  true,  false);
         prelude.defFix("[++]",    9,  true,  false);
         prelude.defFix("[,]",     8,  true,  true);
