@@ -52,7 +52,6 @@ public class repl extends RestFunction
                         if (line.length() == 0){
                             continue;
                         }
-
                         Object tree = read.apply(line);
                         Object value = rt.getInterpreter().eval(tree, module);
                         print.apply(value);

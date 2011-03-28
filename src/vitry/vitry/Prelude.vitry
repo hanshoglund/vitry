@@ -52,6 +52,7 @@ MATH_PRIM name   = method MATH name [`double]
 RANDOM           = class "java.util.Random"
 RANDOM_INST      = new RANDOM []
 RAND_FLOAT       = method RANDOM "nextFloat" []
+RAND_DOUBLE      = method RANDOM "nextDouble" []
          
 NATIVE_SET       = class "NativeSet"
 GET_NATIVE_SET   = method NATIVE_SET "forClass" [CLASS] . TO_NATIVE_CLASS
@@ -380,6 +381,7 @@ pluck f x = (fn (_) f x)
 
 
 randomFloat _ = RAND_FLOAT RANDOM_INST
+randomDouble _ = RAND_DOUBLE RANDOM_INST
 
 ; Return a function that invokes one of the given functions
 ; for each invocation
