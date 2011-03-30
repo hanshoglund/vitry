@@ -268,7 +268,11 @@ sort = sortBy compare
 ; [bool] -> bool
 some  = foldr (||) false
 every = foldr (&&) true
-none  = not . some
+
+; (a -> bool) -> [a] -> bool
+any pred = some  . map pred
+all pred = every . map pred
+none = not . all
 
 
 ; Infinite lists
