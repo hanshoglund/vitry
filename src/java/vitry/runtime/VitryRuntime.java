@@ -163,155 +163,156 @@ public final class VitryRuntime
 
     private void initPrelude(Module prelude) 
     {    
-        prelude.def("nil",        NIL);
-        prelude.def("true",       TRUE);
-        prelude.def("false",      FALSE);
-        prelude.def("bool",       BOOL);
-        prelude.def("empty",      BOTTOM);        
-        prelude.def("()",         NIL);
-        prelude.def("[]",         productOf(NIL, new list_()));
-        prelude.def("{}",         productOf(BOTTOM, new set_()));
-        prelude.def("_",          ANY);
+        prelude.def("nil",         NIL);
+        prelude.def("true",        TRUE);
+        prelude.def("false",       FALSE);
+        prelude.def("bool",        BOOL);
+        prelude.def("empty",       BOTTOM);        
+        prelude.def("()",          NIL);
+        prelude.def("[]",          productOf(NIL, new list_()));
+        prelude.def("{}",          productOf(BOTTOM, new set_()));
+        prelude.def("_",           ANY);
         
-        prelude.def("(,)",        new product_());        
-        prelude.def("[,]",        new list_());
-        prelude.def("{,}",        new set_());            
-        prelude.def("(|)",        new union_());          
-        prelude.def("(&)",        new intersection_());   
-        // prelude.def("(->)",       NIL);                   // TODO 
-        // prelude.def("(<->)",      NIL);                   // TODO 
+        prelude.def("(,)",         new product_());        
+        prelude.def("[,]",         new list_());
+        prelude.def("{,}",         new set_());            
+        prelude.def("(|)",         new union_());          
+        prelude.def("(&)",         new intersection_());   
+        // prelude.def("(->)",        NIL);                   // TODO 
+        // prelude.def("(<->)",       NIL);                   // TODO 
         
-        prelude.def("arity",      new arity_());
-        prelude.def("id",         new id());
-        prelude.def("const",      new const_());
-        prelude.def("flip",       new flip());
-        prelude.def("(.)",        new compose());
+        prelude.def("arity",       new arity_());
+        prelude.def("id",          new id());
+        prelude.def("const",       new const_());
+        prelude.def("flip",        new flip());
+        prelude.def("(.)",         new compose());
         
-        prelude.def("(==)",       new eq());
+        prelude.def("(==)",        new eq());
 
-        prelude.def("nat",        NAT);
-        prelude.def("int",        INT);
-        prelude.def("rat",        RAT);
-        prelude.def("float",      FLOAT);
-        prelude.def("double",     DOUBLE);
-        prelude.def("complex",    COMPLEX);
-        prelude.def("char",       CHAR);
-        prelude.def("str",        STR);
+        prelude.def("nat",         NAT);
+        prelude.def("int",         INT);
+        prelude.def("rat",         RAT);
+        prelude.def("float",       FLOAT);
+        prelude.def("double",      DOUBLE);
+        prelude.def("complex",     COMPLEX);
+        prelude.def("char",        CHAR);
+        prelude.def("str",         STR);
         
-        prelude.def("(<)",        new lt());
-        prelude.def("(>)",        new gt());
+        prelude.def("(<)",         new lt());
+        prelude.def("(>)",         new gt());
 
-        prelude.def("(+)",        new add());
-        prelude.def("(-)",        new sub());
-        prelude.def("(*)",        new mul());
-        prelude.def("(/)",        new div());
-        prelude.def("(%)",        new mod());
-        prelude.def("(%%)",       new modp());
-        prelude.def("(^)",        new pow());
-        prelude.def("[+]",        new add());
-        prelude.def("[-]",        new sub());
-        prelude.def("[*]",        new mul());
-        prelude.def("[/]",        new div());
-        prelude.def("[%]",        new mod());
-        prelude.def("[%%]",       new modp());
-        prelude.def("[^]",        new pow());
-        prelude.def("NaN",        Double.NaN);
-        prelude.def("Infinity",   Double.POSITIVE_INFINITY);
+        prelude.def("(+)",         new add());
+        prelude.def("(-)",         new sub());
+        prelude.def("(*)",         new mul());
+        prelude.def("(/)",         new div());
+        prelude.def("(%)",         new mod());
+        prelude.def("(%%)",        new modp());
+        prelude.def("(^)",         new pow());
+        prelude.def("[+]",         new add());
+        prelude.def("[-]",         new sub());
+        prelude.def("[*]",         new mul());
+        prelude.def("[/]",         new div());
+        prelude.def("[%]",         new mod());
+        prelude.def("[%%]",        new modp());
+        prelude.def("[^]",         new pow());
+        prelude.def("NaN",         Double.NaN);
+        prelude.def("Infinity",    Double.POSITIVE_INFINITY);
 
-        prelude.def("(++)",       new concatenate());
-        prelude.def("[++]",       new concatenate());
-        prelude.def("prepend",    new prepend());
-        prelude.def("head",       new head());
-        prelude.def("tail",       new tail());
-        prelude.def("last",       new last());
-        prelude.def("init",       new init());
-        prelude.def("index",      new index());
-        prelude.def("drop",       new drop());
-        prelude.def("take",       new take());
-        prelude.def("map",        new map());
-        prelude.def("foldl",      new foldl());
-        prelude.def("foldr",      new foldr());
-        prelude.def("(..)",       new range());
-        prelude.def("[..]",       new range());
-        prelude.def("reverse",    new reverse());
-        prelude.def("search",     new search());
-        prelude.def("sortBy",     new sortBy());
-        prelude.def("force",      new force());
+        prelude.def("(++)",        new concatenate());
+        prelude.def("[++]",        new concatenate());
+        prelude.def("prepend",     new prepend());
+        prelude.def("head",        new head());
+        prelude.def("tail",        new tail());
+        prelude.def("last",        new last());
+        prelude.def("init",        new init());
+        prelude.def("index",       new index());
+        prelude.def("drop",        new drop());
+        prelude.def("take",        new take());
+        prelude.def("map",         new map());
+        prelude.def("foldl",       new foldl());
+        prelude.def("foldr",       new foldr());
+        prelude.def("(..)",        new range());
+        prelude.def("[..]",        new range());
+        prelude.def("reverse",     new reverse());
+        prelude.def("search",      new search());
+        prelude.def("sortBy",      new sortBy());
+        prelude.def("force",       new force());
 
-        prelude.def("now",        new now());
-        prelude.def("random",     new random());
-        prelude.def("parse",      new parse(this));
-        prelude.def("print",      new print());
-        prelude.def("parseFile",  new parseFile(this));
-        prelude.def("eval",       new eval_(this));
-        prelude.def("error",      new error_());
-        prelude.def("writeFile",  new writeFile(this));
-        prelude.def("replaceFile",new replaceFile());
-        prelude.def("repl",       new repl(this, prelude));
-        prelude.def("load",       new load(prelude));
-        prelude.def("quit",       new quit());
+        prelude.def("now",         new now());
+        prelude.def("random",      new random());
+        prelude.def("parse",       new parse(this));
+        prelude.def("print",       new print());
+        prelude.def("parseFile",   new parseFile(this));
+        prelude.def("eval",        new eval_(this));
+        prelude.def("error",       new error_());
+        prelude.def("writeFile",   new writeFile(this));
+        prelude.def("replaceFile", new replaceFile());
+        prelude.def("repl",        new repl(this, prelude));
+        prelude.def("load",        new load(prelude));
+        prelude.def("quit",        new quit());
         
 
         // Internal
         
-        prelude.def("__rt",       this);
-        prelude.def("__stdin",    System.in);
-        prelude.def("__stdout",   System.out);
-        prelude.def("__stderr",   System.err);
-        prelude.def("__delay",    new delay());
-        prelude.def("rewrite",    new rewrite(this));
+        prelude.def("__rt",        this);
+        prelude.def("__stdin",     System.in);
+        prelude.def("__stdout",    System.out);
+        prelude.def("__stderr",    System.err);
+        prelude.def("__delay",     new delay());
+        prelude.def("rewrite",     new rewrite(this));
 
-        prelude.def("seq",        new seq());
-        prelude.def("array",      new array());
-        prelude.def("sarray",     new sarray());
-        prelude.def("symbol",     new symbol_());
-        prelude.def("string",     new string_());
-        prelude.def("parseDecl",  new parseDecl(this));
+        prelude.def("seq",         new seq());
+        prelude.def("array",       new array());
+        prelude.def("sarray",      new sarray());
+        prelude.def("symbol",      new symbol_());
+        prelude.def("string",      new string_());
+        prelude.def("errorString", new errorString());
+        prelude.def("parseDecl",   new parseDecl(this));
 
-        prelude.def("class",      new class_(this));
-        prelude.def("new",        new new_(this));
-        prelude.def("method",     new method(this, prelude));
-        prelude.def("classOf",    new classOf(this));
+        prelude.def("class",       new class_(this));
+        prelude.def("new",         new new_(this));
+        prelude.def("method",      new method(this, prelude));
+        prelude.def("classOf",     new classOf(this));
 
 
         // Fixities
 
-        prelude.defFix("(..')",   12, false, false);
-        prelude.defFix("(.')",    12, false, false);
-        prelude.defFix("(..)",    12, false, false);
-        prelude.defFix("(.)",     12, false, false);
-        prelude.defFix("(^^)",    11, true,  false);
-        prelude.defFix("(^)",     11, true,  false);
-        prelude.defFix("(%%)",    10, true,  false);
-        prelude.defFix("(%)",     10, true,  false);
-        prelude.defFix("(/)",     10, true,  false);
-        prelude.defFix("(*)",     10, true,  false);
-        prelude.defFix("[%]",     10, true,  false);
-        prelude.defFix("[/]",     10, true,  false);
-        prelude.defFix("[*]",     10, true,  false);
-        prelude.defFix("(-)",     9,  true,  false);
-        prelude.defFix("(+)",     9,  true,  false);
-        prelude.defFix("[-]",     9,  true,  false);
-        prelude.defFix("[+]",     9,  true,  false);
-        prelude.defFix("(++)",    9,  true,  false);
-        prelude.defFix("[++]",    9,  true,  false);
-        prelude.defFix("[,]",     8,  true,  true);
-        prelude.defFix("{,}",     8,  true,  true);
-        prelude.defFix("(,)",     8,  true,  true);
-        prelude.defFix("(&)",     7,  true,  false);
-        prelude.defFix("(|)",     6,  true,  false);
-        prelude.defFix("(->)",    5,  false, false);
-        prelude.defFix("(<->)",   4,  false, false);
-        prelude.defFix("(<)",     3,  true,  false);
-        prelude.defFix("(<=)",    3,  true,  false);
-        prelude.defFix("(>=)",    3,  true,  false);
-        prelude.defFix("(>)",     3,  true,  false);
-        prelude.defFix("(!=)",    3,  true,  false);
-        prelude.defFix("(==)",    3,  true,  false);
-        prelude.defFix("(&&)",    2,  false, false);
-        prelude.defFix("(||)",    1,  false, false);
-        prelude.defFix("($!)",    0,  true,  false);
-        prelude.defFix("($)",     0,  false, false);
+        prelude.defFix("(..')",    12, false, false);
+        prelude.defFix("(.')",     12, false, false);
+        prelude.defFix("(..)",     12, false, false);
+        prelude.defFix("(.)",      12, false, false);
+        prelude.defFix("(^^)",     11, true,  false);
+        prelude.defFix("(^)",      11, true,  false);
+        prelude.defFix("(%%)",     10, true,  false);
+        prelude.defFix("(%)",      10, true,  false);
+        prelude.defFix("(/)",      10, true,  false);
+        prelude.defFix("(*)",      10, true,  false);
+        prelude.defFix("[%]",      10, true,  false);
+        prelude.defFix("[/]",      10, true,  false);
+        prelude.defFix("[*]",      10, true,  false);
+        prelude.defFix("(-)",      9,  true,  false);
+        prelude.defFix("(+)",      9,  true,  false);
+        prelude.defFix("[-]",      9,  true,  false);
+        prelude.defFix("[+]",      9,  true,  false);
+        prelude.defFix("(++)",     9,  true,  false);
+        prelude.defFix("[++]",     9,  true,  false);
+        prelude.defFix("[,]",      8,  true,  true);
+        prelude.defFix("{,}",      8,  true,  true);
+        prelude.defFix("(,)",      8,  true,  true);
+        prelude.defFix("(&)",      7,  true,  false);
+        prelude.defFix("(|)",      6,  true,  false);
+        prelude.defFix("(->)",     5,  false, false);
+        prelude.defFix("(<->)",    4,  false, false);
+        prelude.defFix("(<)",      3,  true,  false);
+        prelude.defFix("(<=)",     3,  true,  false);
+        prelude.defFix("(>=)",     3,  true,  false);
+        prelude.defFix("(>)",      3,  true,  false);
+        prelude.defFix("(!=)",     3,  true,  false);
+        prelude.defFix("(==)",     3,  true,  false);
+        prelude.defFix("(&&)",     2,  false, false);
+        prelude.defFix("(||)",     1,  false, false);
+        prelude.defFix("($!)",     0,  true,  false);
+        prelude.defFix("($)",      0,  false, false);
     }
 
     
@@ -1515,6 +1516,18 @@ final class string_ extends Unary
     public Object apply(Object a) throws InvocationError
     {
         return a.toString();
+    }
+}
+
+final class errorString extends Unary
+{
+    public Object apply(Object v) throws InvocationError
+    {
+        if (v instanceof List)
+        {
+            return ((List) v).toFiniteString();
+        }
+        return v.toString();
     }
 }
 

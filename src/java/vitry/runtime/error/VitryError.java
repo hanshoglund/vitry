@@ -45,7 +45,7 @@ abstract public class VitryError extends RuntimeException
             super(e);
         }
 
-        protected static String makeFinite(Object v)
+        public static String makeFinite(Object v)
         {
             if (v instanceof List)
             {
