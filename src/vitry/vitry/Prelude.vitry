@@ -96,6 +96,11 @@ not  x = match x
     ( _ : true, _ : true ) = true
     _                      = false
 
+; Pattern to predicate
+matches p x = match x
+    _ : p = true
+    _     = false
+
 ; native: nat int rat float
 ;         double complex
 ;         char str
@@ -250,7 +255,19 @@ substr m n = take n . drop m
 ; native: search
 
 ; (a -> bool) -> [a] -> (a | ())
-find pred = foldl (fn (x y) if (pred y) y else x) ()
+find     pred = foldr (fn (x y) if (pred x) x else y) ()
+findLast pred = foldl (fn (x y) if (pred y) y else x) ()
+
+findIndexN n pred xs = match xs
+    _ : ()  = ()
+    (x, xs) = if (pred x) n else findIndexN (n + 1) pred xs 
+findLastIndexN n m pred xs = match xs
+    _ : ()  = m
+    (x, xs) = if (pred x) (findLastIndexN (n + 1) n pred xs) else (findLastIndexN (n + 1) m pred xs)
+
+findIndex     = findIndexN 0
+findLastIndex = findLastIndexN 0 ()
+
 
 ; (a -> bool) -> [a] -> [a]
 filter pred xs = match (pred, xs)
@@ -289,9 +306,6 @@ palindrome xs = let sx = reverse xs
 ; (a -> (a, a)) -> a -> [a]
 unfold f x = let (y, x) = f x
                  prepend y (delay unfold f x)
-                  
-; Make a stateful infinite list
-unroll f = prepend (f ()) (delay unroll f)
 
 ; Common progressions 
 ; prec -> prec -> prec
@@ -441,6 +455,9 @@ set r x           =
 
 ; (a -> b) -> a -> (() -> b)
 pluck f x = (fn (_) f x)
+
+; (() -> a) -> [a]
+unroll f = prepend (f ()) (delay unroll f)
 
 
 randomFloat _ = RAND_FLOAT RANDOM_INST
