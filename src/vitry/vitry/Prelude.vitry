@@ -259,14 +259,14 @@ find     pred = foldr (fn (x y) if (pred x) x else y) ()
 findLast pred = foldl (fn (x y) if (pred y) y else x) ()
 
 findIndexN n pred xs = match xs
-    _ : ()  = ()
+    _ : ()  = (-1)
     (x, xs) = if (pred x) n else findIndexN (n + 1) pred xs 
 findLastIndexN n m pred xs = match xs
     _ : ()  = m
     (x, xs) = if (pred x) (findLastIndexN (n + 1) n pred xs) else (findLastIndexN (n + 1) m pred xs)
 
 findIndex     = findIndexN 0
-findLastIndex = findLastIndexN 0 ()
+findLastIndex = findLastIndexN 0 (-1)
 
 
 ; (a -> bool) -> [a] -> [a]
