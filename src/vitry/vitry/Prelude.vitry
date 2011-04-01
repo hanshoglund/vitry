@@ -138,10 +138,10 @@ compare  x y = if (x < y) `smaller else if (x == y) `equal else `larger
 
 ; Utility comparison
 ; TODO define in terms of compare?
-largest  x y = if (x > y) x else y
-smallest x y = if (x < y) x else y
-max xs = foldl largest (head xs) (tail xs)
-min xs = foldl smallest (head xs) (tail xs)
+max  x y = if (x > y) x else y
+min x y  = if (x < y) x else y
+largest xs  = foldl max (head xs) (tail xs)
+smallest xs = foldl min (head xs) (tail xs)
 
 
 
@@ -219,7 +219,7 @@ append x = flip (++) [x]
 length   = foldr ((+ 1) .' right) 0
 rank xs  = match xs
     _ : []     = 1
-    _          = (succ . max . (map rank_)) xs
+    _          = (succ . largest . (map rank_)) xs
 rank_ xs =  match xs
     _  : ()    = 1
     xs : [ _ ] = rank xs
@@ -290,6 +290,7 @@ every = foldr (&&) true
 any pred = some  . map pred
 all pred = every . map pred
 none = not . all
+
 
 
 ; Infinite lists
