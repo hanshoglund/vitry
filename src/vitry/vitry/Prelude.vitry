@@ -45,6 +45,7 @@ ABS              = method MATH "abs" [`double]
 NUM_TO_LONG      = method NUM "longValue" []
 NUM_TO_DOUBLE    = method NUM "doubleValue" []
 RAT_TO_INT       = method RAT "bigIntegerValue" []
+INT_PRIM         = method NUM "intValue" []
 LONG_TO_INT      = method INT "valueOf" [`long]
 DOUBLE_TO_RAT    = method RAT "valueOf" [`double]
 MATH_PRIM name   = method MATH name [`double]
@@ -199,9 +200,15 @@ isInfinite x : num = (x == Infinity)
 isNumber   x : num = not (isNan x)
 isFinite   x : num = not (isInfinite x) && not (isNan x)
 
-sum     = foldr (+) 0
-product = foldr (*) 1
-mean xs = sum xs / length xs
+sum     xs = match xs
+    _ : [prec] = foldr (+) 0   xs
+    _ : [real] = foldr (+) 0.0 xs
+product xs = match xs
+    _ : [prec] = foldr (*) 1   xs
+    _ : [real] = foldr (*) 1.0 xs
+mean    xs = match xs
+    _ : [prec] = sum xs / length xs
+    _ : [real] = sum xs / (approx . length) xs
 
 
 
@@ -447,10 +454,10 @@ version    = (method (class "VitryRuntime") "getVersion" []) ()
 versionStr = join "." (map string version)
 
 
-reference         = GET_NATIVE_SET THREAD_LOCAL
-createReference _ = new THREAD_LOCAL []
-get r             = THREAD_LOCAL_GET r
-set r x           = 
+; reference         = GET_NATIVE_SET THREAD_LOCAL
+ref x   = set (new THREAD_LOCAL []) x 
+get r   = THREAD_LOCAL_GET r
+set r x = 
     do THREAD_LOCAL_SET r x
        r
 

@@ -263,6 +263,7 @@ public final class VitryRuntime
         prelude.def("seq",         new seq());
         prelude.def("array",       new array());
         prelude.def("sarray",      new sarray());
+        prelude.def("iarray",      new iarray());
         prelude.def("symbol",      new symbol_());
         prelude.def("string",      new string_());
         prelude.def("errorString", new errorString());
@@ -1553,6 +1554,18 @@ final class sarray extends StandardFunction.Unary
 {
     public Object apply(Object a) {
         return Seqs.toArray(Native.<String>unwrapAll((Seq<?>) a), new String[0]);
+    }
+}
+final class iarray extends StandardFunction.Unary
+{
+    public Object apply(Object a) {
+        BigInteger[] ints = Seqs.toArray(Native.<BigInteger>unwrapAll((Seq<?>) a), new BigInteger[0]);
+        int[] primInts = new int[ints.length];
+        for (int i = 0; i < ints.length; i++)
+        {
+            primInts[i] = ints[i].intValue();
+        }
+        return primInts;
     }
 }
 
