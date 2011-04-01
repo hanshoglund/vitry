@@ -36,8 +36,7 @@ import vitry.runtime.StandardFunction.Unary;
 import vitry.prelude.*;
 import vitry.runtime.error.*;
 import vitry.runtime.struct.*;
-import vitry.runtime.util.StrUtils;
-import vitry.runtime.util.Utils;
+import vitry.runtime.util.Strings;
 
 
 /**
@@ -379,6 +378,11 @@ public final class VitryRuntime
         return internedClasses.lookup(name);
     }
     
+    public static Symbol internIfNotSymbol(Object s) {
+        if (s instanceof Symbol) return (Symbol) s;
+        return Symbol.intern((String) s);
+    }
+
     public static List getVersion() {
         return listOf(Build.MAJOR_VERSION, Build.MINOR_VERSION, Build.RELEASE_VERSION);
     }
@@ -1706,7 +1710,7 @@ final class method extends StandardFunction
 
     public Object apply(Object r, Object n, Object t) throws InvocationError
     {
-        Symbol className      = Utils.maybeIntern(r);
+        Symbol className      = VitryRuntime.internIfNotSymbol(r);
         String methodName     = n.toString();
         
         @SuppressWarnings("unchecked")
@@ -1909,8 +1913,8 @@ class new_ extends Binary
                         return a.getClass();
                     }
                 });
-                return cl.getConstructor(Seqs.<Class<?>>toArray(argTypes, new Class<?>[0]))
-                    .newInstance(Seqs.toArray(args));
+                return vitry.runtime.util.Utils.getConstructor(cl, Seqs.<Class<?>>toArray(argTypes, new Class<?>[0]))
+                .newInstance(Seqs.toArray(args));
             }
         }
         catch (Exception e)

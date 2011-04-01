@@ -18,7 +18,7 @@
  */
 package vitry.runtime;
 
-import vitry.runtime.util.StrUtils;
+import vitry.runtime.util.Strings;
 
 
 /**
@@ -93,7 +93,7 @@ abstract public class Union extends InclusionPattern
     @Override
     public String toString()
     {
-        return StrUtils.join(this, "", " | ", "");
+        return Strings.join(this, "", " | ", "");
         //            return Util.join(this, "", " | ", "");
     }
 }

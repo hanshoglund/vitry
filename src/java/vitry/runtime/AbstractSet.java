@@ -19,7 +19,7 @@
 package vitry.runtime;
 
 import static vitry.runtime.VitryRuntime.*;
-import vitry.runtime.util.StrUtils;
+import vitry.runtime.util.Strings;
 
 
 abstract class AbstractSet extends InclusionPattern implements Set
@@ -79,7 +79,7 @@ abstract class AbstractSet extends InclusionPattern implements Set
 
     public String toString()
     {
-        return StrUtils.join(this, "{", ", ", "}");
+        return Strings.join(this, "{", ", ", "}");
     }
 
     public Pattern union(Set b)

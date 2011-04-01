@@ -18,12 +18,7 @@
  */
 package vitry.runtime.util;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
-
-import vitry.runtime.Symbol;
-import vitry.runtime.error.ParseError;
+import java.lang.reflect.Constructor;
 
 
 public class Utils
@@ -31,175 +26,44 @@ public class Utils
     private Utils() {
     }
 
-    // Arrays
-
-    public static Object[] conc(Object[] a, Object... b)
+    public static Constructor<?> getConstructor(Class<?> klass, Class<?>... parameterTypes)
+    throws NoSuchMethodException, SecurityException
     {
-        Object[] res = new Object[a.length + b.length];
-        System.arraycopy(a, 0, res, 0, a.length);
-        System.arraycopy(b, 0, res, a.length, b.length);
-        return res;
-    }
-
-    public static int linearSearch(Object[] a, Object key)
-    {
-        for (int i = 0; i < a.length; i++)
+        Constructor<?>[] constructors = klass.getConstructors();
+        SEARCH : for (Constructor<?> c : constructors)
         {
-            if (a[i].equals(key))
-                return i;
-        }
-        return -1;
-    }
-
-
-    // Strings
-
-    public static String join(Iterable<?> elements, String start, String delim, String end)
-    {
-        StringBuilder strb = new StringBuilder();
-        boolean first = true;
-
-        strb.append(start);
-        for (Object e : elements)
-        {
-            if (first)
-                first = false;
-            else
-                strb.append(delim);
-            strb.append(e);
-        }
-        strb.append(end);
-        return strb.toString();
-    }
-
-
-    public static String limit(String s, int maxLength)
-    {
-        if (s.length() > maxLength)
-            return s.substring(0, maxLength) + "...";
-        else
-            return s;
-    }
-
-
-    public static String unescape(String str)
-    {
-        if (str == null)
-        {
-            return null;
-        }
-        StringWriter writer = null;
-        try
-        {
-            writer = new StringWriter(str.length());
-            unescapeJava(writer, str);
-        } catch (IOException ioe)
-        {
-            // this should never ever happen while writing to a StringWriter
-            assert false;
-        }
-        return writer.toString();
-    }
-
-    public static void unescapeJava(Writer out, String str) throws IOException
-    {
-        if (out == null)
-        {
-            throw new IllegalArgumentException("The Writer must not be null");
-        }
-        if (str == null)
-        {
-            return;
-        }
-        int sz = str.length();
-        StringBuilder unicode = new StringBuilder(4);
-        boolean hadSlash = false;
-        boolean inUnicode = false;
-        for (int i = 0; i < sz; i++)
-        {
-            char ch = str.charAt(i);
-            if (inUnicode)
+            Class<?>[] constructorParameterTypes = c.getParameterTypes();
+            
+            if (constructorParameterTypes.length != parameterTypes.length)
+                continue SEARCH;
+            
+            for (int i = 0; i < parameterTypes.length; i++)
             {
-                // if in unicode, then we're reading unicode
-                // values in somehow
-                unicode.append(ch);
-                if (unicode.length() == 4)
-                {
-                    // unicode now contains the four hex digits
-                    // which represents our unicode character
-                    try
-                    {
-                        int value = Integer.parseInt(unicode.toString(), 16);
-                        out.write((char) value);
-                        unicode.setLength(0);
-                        inUnicode = false;
-                        hadSlash = false;
-                    } catch (NumberFormatException nfe)
-                    {
-                        throw new ParseError("Unable to parse unicode value: " + unicode);
-                    }
-                }
-                continue;
+                if (!constructorParameterTypes[i].isAssignableFrom(parameterTypes[i]))
+                    continue SEARCH;
             }
-            if (hadSlash)
-            {
-                // handle an escaped value
-                hadSlash = false;
-                switch (ch) {
-                    case '\\':
-                        out.write('\\');
-                        break;
-                    case '\'':
-                        out.write('\'');
-                        break;
-                    case '\"':
-                        out.write('"');
-                        break;
-                    case 'r':
-                        out.write('\r');
-                        break;
-                    case 'f':
-                        out.write('\f');
-                        break;
-                    case 't':
-                        out.write('\t');
-                        break;
-                    case 'n':
-                        out.write('\n');
-                        break;
-                    case 'b':
-                        out.write('\b');
-                        break;
-                    case 'u': {
-                        // uh-oh, we're in unicode country....
-                        inUnicode = true;
-                        break;
-                    }
-                    default:
-                        out.write(ch);
-                        break;
-                }
-                continue;
-            }
-            else if (ch == '\\')
-            {
-                hadSlash = true;
-                continue;
-            }
-            out.write(ch);
+            return c;
         }
-        if (hadSlash)
-        {
-            // then we're in the weird case of a \ at the end of the
-            // string, let's output it anyway.
-            out.write('\\');
-        }
+        throw new NoSuchMethodException(klass.getName() + ".<init>" 
+                + argumentTypesToString(parameterTypes));
     }
     
-    public static Symbol maybeIntern(Object s) {
-        if (s instanceof Symbol) return (Symbol) s;
-        return Symbol.intern((String) s);
+    private static String        argumentTypesToString(Class<?>[] argTypes) {
+        StringBuilder buf = new StringBuilder();
+        buf.append("(");
+        if (argTypes != null) {
+            for (int i = 0; i < argTypes.length; i++) {
+                if (i > 0) {
+                    buf.append(", ");
+                }
+        Class<?> c = argTypes[i];
+        buf.append((c == null) ? "null" : c.getName());
+            }
+        }
+        buf.append(")");
+        return buf.toString();
     }
+
 
     public static <U> U unsafe(Object val)
     {
@@ -212,10 +76,10 @@ public class Utils
     {
         return;
     }
-    
+
     public static <T> T assertFalse()
     {
-        return Utils.<T>assertFalse("");
+        return Utils.<T> assertFalse("");
     }
 
     public static <T> T assertFalse(String msg)

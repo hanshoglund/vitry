@@ -598,7 +598,7 @@ public class Interpreter implements Eval {
 
     static String evalString(Object expr)
     {
-        String str = StrUtils.unescape(expr.toString());
+        String str = Strings.unescape(expr.toString());
         return str.substring(1, str.length() - 1);
     }
     
@@ -721,13 +721,13 @@ public class Interpreter implements Eval {
     static final void throwUnknownForm(Object tree)
     {
         throw new ParseError("Unknown form in tree "
-                + StrUtils.limit(tree.toString(), TRACE_LIMIT));
+                + Strings.limit(tree.toString(), TRACE_LIMIT));
     }
 
     static final void throwUnknownForm(Object tree, Object form)
     {
         throw new ParseError("Unkown form '" + form + "' in tree "
-                + StrUtils.limit(tree.toString(), TRACE_LIMIT));
+                + Strings.limit(tree.toString(), TRACE_LIMIT));
     }
 }
 

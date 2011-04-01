@@ -22,7 +22,7 @@ import static vitry.runtime.VitryRuntime.*;
 import vitry.runtime.struct.Seq;
 import vitry.runtime.struct.Seqs;
 import vitry.runtime.util.Utils;
-import vitry.runtime.util.StrUtils;
+import vitry.runtime.util.Strings;
 
 
 /**
@@ -114,6 +114,6 @@ abstract class AbstractProduct extends ConstructionPattern implements Product
 
     public String toString()
     {
-        return StrUtils.join(this, "(", ", ", ")");
+        return Strings.join(this, "(", ", ", ")");
     }
 }
