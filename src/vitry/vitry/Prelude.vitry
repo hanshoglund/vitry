@@ -74,6 +74,7 @@ iter f n = match (f, n)
     (f, 0) = id
     (f, i) = f . (iter f (i - 1))
 
+; (c -> d) -> (a -> b -> c) -> a -> b -> d
 (.')  f g = fn (x y) f (g x y)
 
 left  x y = x
@@ -185,6 +186,9 @@ floor x : num = match x
 round       = LONG_TO_INT . MATH_PRIM "round"
 approx      = NUM_TO_DOUBLE
 rationalize = DOUBLE_TO_RAT
+recip x     = match x
+    x : prec = 1   / x
+    x : real = 1.0 / x
 
 logn n : real = (* (1.0 / ln n)) . ln
 log           = logn 10.0
@@ -251,6 +255,17 @@ remove n xs = (take n xs) ++ (drop (succ n) xs)
 
 ; int -> int -> [a] -> [a]
 substr m n = take n . drop m
+
+; Divide a list into sublists of length n (the last list may be shorter)
+; [a] -> [[a]]
+partition n xs = match xs
+    _ : () = ()
+    _      = prepend (take n xs) (delay partition n (drop n xs))
+    
+; Divide a list into at most n sublists
+; [a] -> [[a]]
+partitionInto n xs = partition (ceil (length xs / n)) xs
+
 
 ; TODO scanl
 ; TODO scanr

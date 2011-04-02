@@ -1559,7 +1559,7 @@ final class sarray extends StandardFunction.Unary
 final class iarray extends StandardFunction.Unary
 {
     public Object apply(Object a) {
-        BigInteger[] ints = Seqs.toArray(Native.<BigInteger>unwrapAll((Seq<?>) a), new BigInteger[0]);
+        Number[] ints = Seqs.toArray(Native.<Number>unwrapAll((Seq<?>) a), new Number[0]);
         int[] primInts = new int[ints.length];
         for (int i = 0; i < ints.length; i++)
         {
