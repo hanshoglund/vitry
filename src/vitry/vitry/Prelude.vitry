@@ -136,15 +136,17 @@ order   =  smaller | equal | larger
 ; Standard comparison, used by sort
 ; May be used by extending (<) and (>), or by extending compare
 ; a -> a -> order 
-compare  x y = if (x < y) `smaller else if (x == y) `equal else `larger
+compare  x y  = if (x < y) `smaller else if (x == y) `equal else `larger
 
-; Utility comparison
-; TODO define in terms of compare?
-max  x y = if (x > y) x else y
-min x y  = if (x < y) x else y
-largest xs  = foldl max (head xs) (tail xs)
-smallest xs = foldl min (head xs) (tail xs)
-
+; a -> a -> a
+max x y       = if (x > y) x else y
+min x y       = if (x < y) x else y
+    
+; [a] -> a
+maximum xs    = foldl max (head xs) (tail xs)
+minimum xs   = foldl min (head xs) (tail xs)
+maximumIndex  xs = findIndex (== maximum xs) xs
+minimumIndex xs = findIndex (== minimum xs) xs
 
 
 ; ======================================================================
@@ -230,7 +232,7 @@ append x = flip (++) [x]
 length   = foldr ((+ 1) .' right) 0
 rank xs  = match xs
     _ : []     = 1
-    _          = (succ . largest . (map rank_)) xs
+    _          = (succ . maximum . (map rank_)) xs
 rank_ xs =  match xs
     _  : ()    = 1
     xs : [ _ ] = rank xs
@@ -249,9 +251,9 @@ isSingle xs = match xs
 ;         map foldl foldr
 ;         (..) sortBy reverse
 
-; Remove the given index
 ; int -> [a] -> [a]
-remove n xs = (take n xs) ++ (drop (succ n) xs)
+remove n xs   = (take n xs) ++ (drop (succ n) xs)
+update n x xs = (take n xs) ++ [x] ++ (drop (succ n) xs)
 
 ; int -> int -> [a] -> [a]
 substr m n = take n . drop m
@@ -289,6 +291,7 @@ findLastIndexN n m pred xs = match xs
 
 findIndex     = findIndexN 0
 findLastIndex = findLastIndexN 0 (-1)
+
 
 
 ; (a -> bool) -> [a] -> [a]
