@@ -70,6 +70,8 @@ GET_NATIVE_SET   = method NATIVE_SET "forClass" [CLASS] . TO_NATIVE_CLASS
 ; native: arity 
 ;         id const flip (.)
 
+apply f x = f x
+
 iter f n = match (f, n) 
     (f, 0) = id
     (f, i) = f . (iter f (i - 1))
@@ -277,6 +279,9 @@ partitionInto n xs = partition (ceil (length xs / n)) xs
              
 ; a -> [a] -> int
 ; native: search
+
+elem    x = (!= ()) . find (== x)
+notElem x = (== ()) . find (== x)
 
 ; (a -> bool) -> [a] -> (a | ())
 find     pred = foldr (fn (x y) if (pred x) x else y) ()
