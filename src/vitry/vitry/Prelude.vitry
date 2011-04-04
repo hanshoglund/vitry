@@ -229,6 +229,7 @@ mean    xs = match xs
 ;         init last
 
 ; [++] = (++)
+ 
 
 append x = flip (++) [x]
 length   = foldr ((+ 1) .' right) 0
@@ -274,14 +275,19 @@ partitionInto n xs = partition (ceil (length xs / n)) xs
 ; TODO scanl
 ; TODO scanr
 
+; [[a]] -> [a]
+concat = foldr (++) []
+
 
 ; Searching
              
 ; a -> [a] -> int
 ; native: search
 
-elem    x = (!= ()) . find (== x)
-notElem x = (== ()) . find (== x)
+contains    x = (!= ()) . find (== x)
+notContains x = (== ()) . find (== x)
+elementOf    = flip contains
+notElementOf = flip notContains
 
 ; (a -> bool) -> [a] -> (a | ())
 find     pred = foldr (fn (x y) if (pred x) x else y) ()
@@ -309,6 +315,11 @@ filter pred xs = match (pred, xs)
 ; (a -> bool) -> [a] -> [a]                       
 retain pred = filter (not . pred)
 
+
+; a -> [(a, b)] -> b | ()
+lookup a = foldr (fn (x e) match x ((_ : a, e) = e) (_ = e)) ()
+
+
 ; [a] -> [a]
 sort = sortBy compare
 
@@ -319,8 +330,12 @@ every = foldr (&&) true
 ; (a -> bool) -> [a] -> bool
 any pred = some  . map pred
 all pred = every . map pred
-none = not . all
+none   pred = not . any pred
+notAll pred = not . all pred
 
+; [(a -> bool)] -> a -> bool
+anyPred preds x = some  (map ((flip apply) x) preds)
+allPred preds x = every (map ((flip apply) x) preds)
 
 
 ; Infinite lists

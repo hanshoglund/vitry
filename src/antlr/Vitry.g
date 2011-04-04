@@ -99,7 +99,7 @@ expr
     | 'do'  ( ('(' | '[' | '{' | '`' | literal )=> 
               ( ('(' left '=')=> assignOrExpr+=assign 
                 | assignOrExpr+=type) )+           -> ^(Do $assignOrExpr+)
-    | 'if' type type 'else'? expr                  -> ^(If type type expr)
+    | 'if' type 'then'? type 'else'? expr          -> ^(If type type expr)
     | 'match' type assign+                         -> ^(Match type assign+)
     | 'delay' expr                                 -> ^(Delay expr)    
     | inline
