@@ -109,14 +109,19 @@ implements Function, Scope, TypableFunction
         return p == this;
     }
 
-    public boolean isInvertible()
-    {
-        return false;
-    }
-
     public boolean eqFor(Pattern o)
     {
         return o.eq(this);
+    }
+
+    public boolean matchFor(Pattern p)
+    {
+        return p.match(this);
+    }
+
+    public boolean isInvertible()
+    {
+        return false;
     }
 
     public Pattern head()
@@ -138,11 +143,6 @@ implements Function, Scope, TypableFunction
     public boolean hasTail()
     {
         return this.getRange() != null;
-    }
-
-    public boolean matchFor(Pattern p)
-    {
-        return p.eq(this);
     }
 
     public String toString()
