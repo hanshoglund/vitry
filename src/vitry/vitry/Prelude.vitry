@@ -408,7 +408,7 @@ zip7With f xs ys zs ms ns os ps = match (f, xs, ys, zs, ms, ns, os, ps)
     _,  _,       _,       _,      _,      _ : (), _,      _      = ()
     _,  _,       _,       _,      _,      _,      _ : (), _      = ()
     _,  _,       _,       _,      _,      _,      _,      _ : () = ()
-    f, (x, xs), (y, ys), (z, zs), (m, ms), (n, ns), (o, os), (p, ps) = prepend (f x y z m n o p) (delay zip7With f xs ys zs ms ns os, ps)
+    f, (x, xs), (y, ys), (z, zs), (m, ms), (n, ns), (o, os), (p, ps) = prepend (f x y z m n o p) (delay zip7With f xs ys zs ms ns os ps)
 zip8With f xs ys zs ms ns os ps qs = match (f, xs, ys, zs, ms, ns, os, ps, qs)
     _,  _ : (),  _,       _,      _,      _,      _,      _,      _      = ()
     _,  _,       _ : (),  _,      _,      _,      _,      _,      _      = ()
@@ -418,7 +418,7 @@ zip8With f xs ys zs ms ns os ps qs = match (f, xs, ys, zs, ms, ns, os, ps, qs)
     _,  _,       _,       _,      _,      _,      _ : (), _,      _      = ()
     _,  _,       _,       _,      _,      _,      _,      _ : (), _      = ()
     _,  _,       _,       _,      _,      _,      _,      _,      _ : () = ()
-    f, (x, xs), (y, ys), (z, zs), (m, ms), (n, ns), (o, os), (p, ps), (q, qs) = prepend (f x y z m n o p q) (delay zip8With f xs ys zs ms ns os, ps, qs)
+    f, (x, xs), (y, ys), (z, zs), (m, ms), (n, ns), (o, os), (p, ps), (q, qs) = prepend (f x y z m n o p q) (delay zip8With f xs ys zs ms ns os ps qs)
 zip9With f xs ys zs ms ns os ps qs rs = match (f, xs, ys, zs, ms, ns, os, ps, qs, rs)
     _,  _ : (),  _,       _,      _,      _,      _,      _,      _,      _      = ()
     _,  _,       _ : (),  _,      _,      _,      _,      _,      _,      _      = ()
@@ -429,7 +429,7 @@ zip9With f xs ys zs ms ns os ps qs rs = match (f, xs, ys, zs, ms, ns, os, ps, qs
     _,  _,       _,       _,      _,      _,      _,      _ : (), _,      _      = ()
     _,  _,       _,       _,      _,      _,      _,      _,      _ : (), _      = ()
     _,  _,       _,       _,      _,      _,      _,      _,      _,      _ : () = ()
-    f, (x, xs), (y, ys), (z, zs), (m, ms), (n, ns), (o, os), (p, ps), (q, qs), (r, rs) = prepend (f x y z m n o p q r) (delay zip9With f xs ys zs ms ns os, ps, qs, rs)
+    f, (x, xs), (y, ys), (z, zs), (m, ms), (n, ns), (o, os), (p, ps), (q, qs), (r, rs) = prepend (f x y z m n o p q r) (delay zip9With f xs ys zs ms ns os ps qs rs)
     
 
 zip  = zipWith  (,)
@@ -493,9 +493,9 @@ versionStr = join "." (map string version)
 
 
 ; reference         = GET_NATIVE_SET THREAD_LOCAL
-ref x   = set (new THREAD_LOCAL []) x 
+ref x   = set x (new THREAD_LOCAL []) 
 get r   = THREAD_LOCAL_GET r
-set r x = 
+set x r = 
     do THREAD_LOCAL_SET r x
        r
 
