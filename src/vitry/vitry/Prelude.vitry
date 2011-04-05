@@ -148,10 +148,12 @@ max x y       = if (x > y) x else y
 min x y       = if (x < y) x else y
     
 ; [a] -> a
-maximum xs    = foldl max (head xs) (tail xs)
-minimum xs   = foldl min (head xs) (tail xs)
-maximumIndex  xs = findIndex (== maximum xs) xs
+maximum xs      = foldl max (head xs) (tail xs)
+minimum xs      = foldl min (head xs) (tail xs)
+maximumIndex xs = findIndex (== maximum xs) xs
 minimumIndex xs = findIndex (== minimum xs) xs
+anyMaximumIndex xs = findAnyIndex (== maximum xs) xs 
+anyMinimumIndex xs = findAnyIndex (== minimum xs) xs 
 
 
 ; ======================================================================
@@ -305,6 +307,12 @@ findLastIndexN n m pred xs = match xs
 
 findIndex     = findIndexN 0
 findLastIndex = findLastIndexN 0 (-1)
+
+; Non-deterministic version
+findAnyIndex pred xs = 
+    let indices = zipWith (fn (n x) if (pred x) then n else nil) (0 .. (length xs)) xs
+        pick (filter (== nil) indices)
+
 
 
 
