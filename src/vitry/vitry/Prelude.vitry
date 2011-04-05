@@ -71,6 +71,7 @@ GET_NATIVE_SET   = method NATIVE_SET "forClass" [CLASS] . TO_NATIVE_CLASS
 ;         id const flip (.)
 
 apply f x = f x
+($) = apply
 
 iter f n = match (f, n) 
     (f, 0) = id
@@ -78,6 +79,8 @@ iter f n = match (f, n)
 
 ; (c -> d) -> (a -> b -> c) -> a -> b -> d
 (.')  f g = fn (x y) f (g x y)
+(.'') f g = fn (x y z) f (g x y z)
+
 
 left  x y = x
 right x y = y

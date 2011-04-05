@@ -278,6 +278,7 @@ public final class VitryRuntime
         // Fixities
 
         prelude.defFix("(..')",    12, false, false);
+        prelude.defFix("(.'')",    12, false, false);
         prelude.defFix("(.')",     12, false, false);
         prelude.defFix("(..)",     12, false, false);
         prelude.defFix("(.)",      12, false, false);
