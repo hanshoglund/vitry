@@ -233,6 +233,8 @@ mean    xs = match xs
 ;         prepend head tail 
 ;         init last
 
+single = (flip prepend) []
+
 ; [++] = (++)
  
 
