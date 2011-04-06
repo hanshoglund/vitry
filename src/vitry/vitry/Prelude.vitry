@@ -190,7 +190,12 @@ ceil  x : num = match x
 floor x : num = match x
     x : real = (MATH_PRIM "floor") x
     x : rat = (method RAT "floor" []) x 
-    x : int = x
+    x : int = x  
+
+; Truncate to the given number of decimals
+;   int -> real -> real
+truncate d = let x = 10.0 ^ approx d
+             (flip (/) x) . floor . (* x)
 
 round       = LONG_TO_INT . MATH_PRIM "round"
 approx      = NUM_TO_DOUBLE
@@ -356,6 +361,10 @@ allPred preds x = every (map ((flip apply) x) preds)
 ; a -> [a]
 loop       x  = prepend x (delay loop x)
 
+; int -> a -> [a]
+loopTimes n = take n . loop
+
+
 ; [a] -> [a]
 cycle      xs = xs ++ (delay cycle xs)
 palindrome xs = let sx = reverse xs
@@ -453,6 +462,15 @@ zip6 = zip6With (,)
 zip7 = zip7With (,)
 zip8 = zip8With (,)
 zip9 = zip9With (,)
+
+fst (a, b)  = a
+snd (a, b)  = b                   
+    
+; [(a,b)] -> ([a],[b])
+unzip xs = (map fst xs, map snd xs)
+
+
+
 
 ; Repeat each element n times
 ; int -> [a] -> [a]
