@@ -1190,16 +1190,20 @@ final class flip extends Unary
     }
 }
 
+
 final class compose extends Binary
 {
     public Object apply(final Object f, final Object g)
     {
-        return new Unary() {
-            public Object apply(Object x) throws InvocationError
+        final Function f2 = (Function) f;
+        final Function g2 = (Function) g;
+        return new Unary()
             {
-                return ((Function) f).apply( ((Function) g).apply(x));
-            }
-        };
+                public Object apply(Object x) throws InvocationError
+                {
+                    return f2.apply(g2.apply(x));
+                }
+            };
     }
 }
 
