@@ -86,9 +86,13 @@ right x y = y
 fix   f = 
     let g = (fn (x) f (fn (y) (x x $ y))) 
         g g
-; (b -> c -> d) -> (a -> b) -> (a -> c) -> a -> d
-split f g h x = f (g x) (h x)
 
+; (b -> c -> d) -> (a -> b) -> (a -> c) -> a -> d
+splitWith  f g h   x = f (g x) (h x)
+splitWith3 f g h i x = f (g x) (h x) (i x)
+
+split  = splitWith (,)
+split3 = splitWith3 (,)
 
 ; native: (==)
 
