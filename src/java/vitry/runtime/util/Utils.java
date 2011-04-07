@@ -27,16 +27,16 @@ public class Utils
     }
 
     public static Constructor<?> getConstructor(Class<?> klass, Class<?>... parameterTypes)
-    throws NoSuchMethodException, SecurityException
+            throws NoSuchMethodException, SecurityException
     {
         Constructor<?>[] constructors = klass.getConstructors();
         SEARCH : for (Constructor<?> c : constructors)
         {
             Class<?>[] constructorParameterTypes = c.getParameterTypes();
-            
+
             if (constructorParameterTypes.length != parameterTypes.length)
                 continue SEARCH;
-            
+
             for (int i = 0; i < parameterTypes.length; i++)
             {
                 if (!constructorParameterTypes[i].isAssignableFrom(parameterTypes[i]))
@@ -44,20 +44,24 @@ public class Utils
             }
             return c;
         }
-        throw new NoSuchMethodException(klass.getName() + ".<init>" 
+        throw new NoSuchMethodException(klass.getName() + ".<init>"
                 + argumentTypesToString(parameterTypes));
     }
-    
-    private static String        argumentTypesToString(Class<?>[] argTypes) {
+
+    private static String argumentTypesToString(Class<?>[] argTypes)
+    {
         StringBuilder buf = new StringBuilder();
         buf.append("(");
-        if (argTypes != null) {
-            for (int i = 0; i < argTypes.length; i++) {
-                if (i > 0) {
+        if (argTypes != null)
+        {
+            for (int i = 0; i < argTypes.length; i++)
+            {
+                if (i > 0)
+                {
                     buf.append(", ");
                 }
-        Class<?> c = argTypes[i];
-        buf.append((c == null) ? "null" : c.getName());
+                Class<?> c = argTypes[i];
+                buf.append( (c == null) ? "null" : c.getName());
             }
         }
         buf.append(")");

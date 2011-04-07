@@ -79,11 +79,15 @@ iter f n = match (f, n)
 
 ; (c -> d) -> (a -> b -> c) -> a -> b -> d
 (.')  f g = fn (x y) f (g x y)
-(.'') f g = fn (x y z) f (g x y z)
-
+(.'') f g = fn (x y z) f (g x y z) 
 
 left  x y = x
 right x y = y
+fix   f = 
+    let g = (fn (x) f (fn (y) (x x $ y))) 
+        g g
+; (b -> c -> d) -> (a -> b) -> (a -> c) -> a -> d
+split f g h x = f (g x) (h x)
 
 
 ; native: (==)

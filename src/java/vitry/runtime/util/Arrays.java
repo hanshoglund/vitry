@@ -18,6 +18,8 @@
  */
 package vitry.runtime.util;
 
+import java.util.Iterator;
+
 
 public class Arrays
 {
@@ -40,6 +42,17 @@ public class Arrays
                 return i;
         }
         return -1;
+    }
+
+    public static <T> Iterable<T> asIterable(final T[] a)
+    {
+        return new Iterable<T>()
+        {
+            public Iterator<T> iterator()
+            {
+                return new ArrayIterator<T>(a, 0);
+            }
+        };
     }
 
 }
