@@ -561,6 +561,7 @@ shuffle xs    = match xs
     (x, _ : ()) = [x]
     (_, _    )  = do n = (random (length xs))
                      prepend (index n xs) (delay shuffle (remove n xs))
+loopShuffle xs = delay shuffle xs ++ loopShuffle xs
 
 
 ; TODO read
