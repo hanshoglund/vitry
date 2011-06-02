@@ -10,97 +10,92 @@ Core interfaces
 Some of these have typevars of N-ary elements.
 We auto-generate most cases above 2.
 
+----------
+
+
+
+something like:
+
+RT
+    Seq      arrayToSeq(Object[])
+    Object[] seqToArray(Seq)
+
+INTERFACES:
 
 Seq
-    isNil()
-    head()
-    tail()
-    iterator()
+    Object head()
+    Seq    tail()
 Tree
-    isNil()
-    isSingle()
-    get()
-    left()
-    right()
-Tree3
-    isNil()
-    isSingle()
-    get()
-    _1()
-    _2()
-    _3()
-[Tree3
-    isNil()
-    isSingle()
-    get()
-    _1()
-    _2()
-    ...
-    _N()]
-    
-Iterator<T>
-    ? hasNext()
-    T next()
-    
-Traversor<T>
-    ? hasNext()
-    T next()
-    Traversor<T> split()
-    join(Traversor<T> t)
-    
-        
-Value
-    Fn    getEq()
-    Fn    getMatch()
-    ? isAtom()
-    
-    ?     isCompound()
-    Fn    getStructor()
-    Iterator iterate()
-    Traversor traverse()
-    
-    ?     isTagged()
-    Value tag(t)
-    Value getForm()
-    Value getTag()
-
-    ?     isFunction()          ; We should allow ourselves to cast Values to Fns when necessary
-    
-Fn
-    ? isCompiled()
-    ? isInvertible()
-    T   applyVar(Seq)
-    Seq applyVarInverse(T)
-    T apply(T)
-    T applyInverse(T)
-    copyEnv(Env)                ; Called from constructor to capture current bindings when defined
-    
-Fn2
-    T apply(A,B)
-    Seq applyInverse(T)
-FnN
-    T apply(T,T...)
-    Seq applyInverse(T)
-
-
-
-Exceptions:
-    TrampolineException
-        value()
-
-                         
-
-The RT can generate:
-    SeqN
-    TreeN
-    FnN     for different type combinations
-    
-    
-The compiler generates:
-    One class for each module
-    One class for each fn
-    
+    Object node()
+    Object getSelf()
+    Seq    getChildren()
+    Seq    getGrandChildren()
+    Seq    inorderSeq()
+    Seq    preorderSeq()
+    Seq    postorderSeq()
+    Seq    breadthSeq()
+Binding
+    Object getKey()
+    Object getValue()
+Env
+    boolean hasBinding(Object k)
+    Env     getParent()
+    Env     extend(Object k, Binding b)
+    void    update(Object k, Binding b)
+    Seq     getBindings()
+    Seq     getKeys()
+    Seq     getValues()
+Eq
+    boolean eq(Object o)
+Match
+    boolean match(Object o)
+Function
+    Object   apply(Object[])
+    Object[] applyInverse(Object)
     
 
 
+                
+
+
+
+
+
+or:
+
+
+
+    
+    vitry.runtime   
+        P_N             
+        implements Destructible
+            Value   _1()
+            Value   _2()
+            ...
+            Value   _n()
+        F_N         
+        implements Invertible
+            Value   _1()
+            Value   _2
+            ...
+            Value   _n
+
+
+        Destructible
+            List    destruct()
+        List
+            Value   first()
+            List    rest()        
+        Tree
+            Value   node()
+            Tree    getSelf()
+            List    in()
+            List    pre()
+            List    post()
+            List    breadth()
+        Set    
+            values()    
+        Arrow
+            from()
+            to()    
 
