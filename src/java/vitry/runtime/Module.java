@@ -25,9 +25,8 @@ import vitry.runtime.util.Strings;
 /**
  * Implements run-time modules.
  * 
- * TODO
- *     import/export
- *     implicits
+ * TODO import/export
+ * TODO implicits
  *
  * @author Hans Hoglund
  */

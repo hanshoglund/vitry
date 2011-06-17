@@ -3,15 +3,13 @@
 Strategy:
 
 
-    TailCall extends Throwable
+    class TailCall extends Throwable {
         @Override fillInStackTrace()
         Function f
         Object[] as
-        
-    ThreadLocal<Int> stackDepth {    
-        initialValue = 0
     }
-    
+        
+    ThreadLocal<Int> stackDepth = 0;     
     
     To tail call:
             
@@ -30,11 +28,11 @@ Strategy:
     the ThreadLocal. Could we get the stack size in a faster way?
     E.g. by passing it around as an extra param?
     
-    See benchmarks below:
+    See benchmarks below.
         
-    At other call sites:
+    Calling GTCO-enabled code:
 
-        while(true)
+        while(true) // this is the trampoline
         {
             try
             {
@@ -45,10 +43,6 @@ Strategy:
             {
                 fn = tc.fn;
                 args = tc.args;
-            }
-            catch (Throwable e)
-            {
-                throw e;
             }
         }
         

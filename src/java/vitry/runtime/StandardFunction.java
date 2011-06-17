@@ -663,7 +663,7 @@ abstract public class StandardFunction extends AbstractFunction implements Arity
 class NoImplementationException extends RuntimeException
 {
     public NoImplementationException() {
-        // TODO
+        // TODO proper exception handling
     }
 
     private static final long serialVersionUID = 2787250838481872800L;

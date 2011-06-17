@@ -1,0 +1,90 @@
+Requirements:
+    Numbers (bin, nat, int, rat, float, double)
+    Unicode
+    Basic math
+    Randomness
+    Threads
+    Process control
+    Scheduling/Signals
+    Timers
+    Pipes
+    IO
+    Audio
+    MIDI
+    Network(UDP, TCP)
+    Console features (autocomplete, backtrack etc)
+    GUI
+        Windows
+        Basic widgets
+    2D graphics       
+        Screen
+        PostScript/PDF   
+
+
+JVM implementation
+==================
+Java SE
+    Numbers (bin, nat, int, rat, float, double)
+    Unicode
+    Basic math
+    Randomness
+    Threads
+    Process control
+    (Scheduling/Signals)
+    Timers
+    IO
+    Audio
+    MIDI
+    Network(UDP, TCP)
+    2D graphics       
+        Screen
+        PostScript/PDF (?)
+
+SWT/Swing?
+    GUI
+        Windows
+        Basic widgets
+JLine               
+    Console features (autocomplete, backtrack etc)
+
+N/A
+    Pipes
+
+     
+C implementation
+================                
+
+C
+    Unicode
+    Basic math
+    Randomness
+    IO
+GNU math
+    Numbers (bin, nat, int, rat, float, double)
+POSIX
+    Threads
+    Process control
+    Scheduling/Signals
+    Timers
+    Pipes
+    Network(UDP, TCP)
+    Console features (autocomplete, backtrack etc)
+    
+Jack? PortAudio?
+    Audio
+    MIDI
+
+Separate interfaces? Cocoa/Wx/GTK
+    GUI
+        Windows
+        Basic widgets
+        
+Native? OpenGL? Alternative?
+    2D graphics       
+        Screen
+        PostScript/PDF
+N/A
+
+
+    
+

@@ -857,7 +857,7 @@ final class InterpretedModule extends Module
     private void evalDeclarations()
     {
         /*
-         * TODO
+         * TODO finish evalDeclarations
          * 
          * We have to sort and evaluate in the rough order
          *  - exports
