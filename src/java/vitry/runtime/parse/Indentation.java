@@ -255,16 +255,21 @@ public class Indentation implements TokenSource
             carry--;
         }
 
-        while (levelStack.size() > 1 && indent < levelStack.peek() && lineCount >= 0)
+        while (levelStack.size() > 1 
+                && indent < levelStack.peek() 
+                && lineCount >= 0)
         {
             buffer.add(endToken);
             levelStack.pop();
         }
-        if (levelStack.size() > 0 && indent == levelStack.peek() && lineCount >= 0)
+        if (levelStack.size() > 0 
+                && indent == levelStack.peek() 
+                && lineCount >= 0)
         {
             buffer.add(endToken);
         }
-        if (levelStack.size() > 0 && indent > levelStack.peek())
+        if (levelStack.size() > 0 
+                && indent > levelStack.peek())
         {
             levelStack.push(indent);
         }

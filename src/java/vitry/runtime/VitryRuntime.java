@@ -1719,46 +1719,48 @@ final class method extends StandardFunction
 
     private static final Class<?>[] dummy = new Class<?>[0];
 
-    private final VitryRuntime rt;
+    private final VitryRuntime runtime;
 
-    public method(VitryRuntime rt, Scope prelude) {
+    public method(VitryRuntime runtime, Scope prelude) {
         super(3, prelude);
-        this.rt = rt;
+        this.runtime = runtime;
     }
 
     public Object apply(Object r, Object n, Object t) throws InvocationError
     {
-        Symbol className      = VitryRuntime.internIfNotSymbol(r);
-        String methodName     = n.toString();
+        Symbol className  = VitryRuntime.internIfNotSymbol(r);
+        String methodName = n.toString();
+        Seq<?> typeNames  = (Seq<?>) t;
+        Class<?>   actualClass;
+        Class<?>[] actualTypes;
         
-        @SuppressWarnings("unchecked")
-        Seq<Symbol> typeNames = (Seq<Symbol>) t;
         final Method m;
 
         try
         {
-            Class<?> clazz = rt.internClass(className);
-            Class<?>[] types = null;
+            actualClass = runtime.internClass(className);
+            actualTypes = null;
+            
             if (typeNames != null)
             {
-                types = Seqs.toArray(typeNames.<Class<?>> map(new StandardFunction.Unary()
+                actualTypes = Seqs.toArray(typeNames.<Class<?>> map(new StandardFunction.Unary()
                     {
-                        public Object apply(Object n) throws InvocationError
+                        public Object apply(Object name) throws InvocationError
                         {
                             try
                             {
-                                return rt.internClass((Symbol) n);
+                                return runtime.internClass((Symbol) name);
                             }
                             catch (ClassNotFoundException _)
                             {
                             }
-                            return throwResolveClass(n);
+                            return throwResolveClass(name);
                         }
                     }), dummy);
             }
 
-            m = clazz.getMethod(methodName, types);
-            final int arity = types.length + (isStatic(m) ? 0 : 1);
+            m = actualClass.getMethod(methodName, actualTypes);
+            final int arity = actualTypes.length + (isStatic(m) ? 0 : 1);
 
             switch (arity) {
                 case 0:
@@ -1806,7 +1808,7 @@ final class method extends StandardFunction
                             catch (Exception e)
                             {
                             }
-                            return throwInvoke(m, a);
+                            return throwInvoke(m, a, b);
                         }
                     };
                 case 3:
@@ -1823,7 +1825,7 @@ final class method extends StandardFunction
                             catch (Exception e)
                             {
                             }
-                            return throwInvoke(m, a);
+                            return throwInvoke(m, a, b, c);
                         }
                     };
                 case 4:
@@ -1840,7 +1842,7 @@ final class method extends StandardFunction
                             catch (Exception e)
                             {
                             }
-                            return throwInvoke(m, a);
+                            return throwInvoke(m, a, b, c, d);
                         }
                     };
                 case 5:
@@ -1857,7 +1859,7 @@ final class method extends StandardFunction
                             catch (Exception ex)
                             {
                             }
-                            return throwInvoke(m, a);
+                            return throwInvoke(m, a, b, c, d, e);
                         }
                     };
                 default:
@@ -1888,9 +1890,9 @@ final class method extends StandardFunction
         throw new InvocationError("Could not call method " + method + " for no arguments");
     }
 
-    <T> T throwInvoke(Method method, Object args) throws InvocationError
+    <T> T throwInvoke(Method method, Object... args) throws InvocationError
     {
-        throw new InvocationError("Could not call method " + method + " for arguments " + args);
+        throw new InvocationError("Could not call method " + method + " for arguments " + vitry.runtime.util.Strings.join(args));
     }
     
     <T> T throwResolveMethod(Object name) throws ResolveError

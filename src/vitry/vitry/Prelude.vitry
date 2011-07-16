@@ -87,6 +87,7 @@ fix   f =
     let g = (fn (x) f (fn (y) (x x $ y))) 
         g g
 
+; TODO change name and call separate split ?
 ; (b -> c -> d) -> (a -> b) -> (a -> c) -> a -> d
 splitWith  f g h   x = f (g x) (h x)
 splitWith3 f g h i x = f (g x) (h x) (i x)
@@ -274,8 +275,15 @@ isSingle xs = match xs
 ;         map foldl foldr
 ;         (..) sortBy reverse
 
+; int -> [a] -> ([a], [a])
+separate n xs = (take n xs, drop n xs)
+separateWhen pred xs = separate (findIndex pred xs) xs
+
 ; int -> [a] -> [a]
 remove n xs   = (take n xs) ++ (drop (succ n) xs)
+
+; int -> a -> [a] -> [a]
+; TODO rename to replace?
 update n x xs = (take n xs) ++ [x] ++ (drop (succ n) xs)
 
 ; int -> int -> [a] -> [a]
@@ -335,8 +343,8 @@ findAnyIndex pred xs =
 filter pred xs = match (pred, xs)
     _,     _ : () = ()
     pred, (x, xs) = if (pred x)
-                       filter pred xs
-                       prepend x (filter pred xs)
+                       delay filter pred xs
+                       prepend x (delay filter pred xs)
                        
 ; (a -> bool) -> [a] -> [a]                       
 retain pred = filter (not . pred)

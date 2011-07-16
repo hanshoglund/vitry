@@ -33,15 +33,14 @@ public final class Seqs
 
     private Seqs() {}
 
-
     public static boolean isNil(Object xs)
     {
-        if (xs == null) return true;
+        if (xs == null) 
+            return true;
         if (xs instanceof Seq)
-        {
             return ((Seq<?>) xs).isNil();
-        }
-        else return false;
+        else 
+            return false;
     }
 
 
@@ -52,8 +51,7 @@ public final class Seqs
 
     public static <T> Seq<T> cons(T x, Seq<T> xs)
     {
-//        if (isNil(xs))
-        if (xs == null)
+        if (xs == null)                 // non-null nil seqs implement prepend
             return new SingleSeq<T>(x);
         else
             return xs.prepend(x);
@@ -198,11 +196,11 @@ public final class Seqs
         return new ConcedSeq<T>(xs, ys);
     }
 
-
     public static <T> Seq<T> reverse(Seq<T> xs)
     {
         Seq<T> ys = null;
-        while (!isNil(xs)) {
+        while (!isNil(xs)) 
+        {
             ys = cons(xs.head(), ys);
             xs = xs.tail();
         }
@@ -222,30 +220,14 @@ public final class Seqs
     {
         return new SeqIterator<T>(s);
     }
-    
-    public static <T> java.util.List<T> toCollection(Seq<T> s)
-    {
-        java.util.List<T> l = new java.util.LinkedList<T>();
-        while (!isNil(s))
-        {
-            l.add(s.head());
-            s = tail(s);
-        }
-        return l;
-    }
 
     public static Object[] toArray(Seq<?> s)
     {
         if (isNil(s))
             return EMPTY_ARRAY;
 
-        Object[] a;
-        if (s instanceof Finite)
-            a = new Object[ ((Finite<?>) s).length()];
-        else
-            a = new Object[length(s)];
-
-        int i = 0;
+        Object[] a = new Object[length(s)];
+        int      i = 0;
         do
         {
             a[i++] = s.head();
@@ -253,17 +235,32 @@ public final class Seqs
         } while (!isNil(s));
         return a;
     }
+    
+    public static Object[] toArray(Finite<?> s)
+    {
+        if (isNil(s))
+            return EMPTY_ARRAY;
 
-    public static <T> T[] toArray(Seq<T> s, T[] dummy)
+        Object[] a = new Object[length(s)];
+        Seq<?>   t = s;
+        int      i = 0;
+        do
+        {
+            a[i++] = s.head();
+            t = t.tail();
+        } while (!isNil(t));
+        return a;
+    }
+
+
+    public static <T> T[] toArray(Seq<T> s, T[] proto)
     {
         java.util.List<T> l = new java.util.LinkedList<T>();
-        if (isNil(s))
-            return l.toArray(dummy);
-        do
+        while (!isNil(s))
         {
             l.add(s.head());
             s = tail(s);
-        } while (!isNil(s));
-        return l.toArray(dummy);
+        } 
+        return l.toArray(proto);
     }
 }
