@@ -98,7 +98,7 @@ public class Interpreter implements Eval {
     private final VitryRuntime runtime;
     private ModuleProvider moduleProvider;
     private Context standardContext;
-
+    private boolean interrupted;
     
     public Interpreter(VitryRuntime runtime) {
         this(runtime, null);
@@ -172,8 +172,11 @@ public class Interpreter implements Eval {
     {
         this.standardContext = standardContext;
     }
-
-
+        
+    public void interrupt()
+    {
+        this.interrupted = true;
+    }
 
     
     public Object eval(Object expr)
@@ -200,6 +203,11 @@ public class Interpreter implements Eval {
         main : while (true)
         {   
  
+            if (this.interrupted)
+            {
+                this.interrupted = false;
+                throw new Interrupt();
+            }
             
             if (branch >= 0)
             {

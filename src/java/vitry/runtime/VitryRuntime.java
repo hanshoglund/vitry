@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
+import sun.misc.Signal;
 import vitry.Build;
 import vitry.runtime.StandardFunction.Binary;
 import vitry.runtime.StandardFunction.Unary;
@@ -135,6 +136,8 @@ public final class VitryRuntime
         this.prelude = bootstrapPrelude();
         initPrelude(this.prelude);
         this.prelude = loadPrelude(this.prelude);
+        
+        registerSignalHandlers();
     }
 
 
@@ -378,6 +381,18 @@ public final class VitryRuntime
             internedClasses.define(name, c);
         }
         return internedClasses.lookup(name);
+    }
+    
+    public void registerSignalHandlers()
+    {
+        sun.misc.Signal.handle(new sun.misc.Signal("INT"), new sun.misc.SignalHandler()
+            {
+                public void handle(Signal arg0)
+                {
+//                    System.err.println("ctrl-C");
+                    VitryRuntime.this.interpreter.interrupt();
+                }
+            });
     }
     
     public static Symbol internIfNotSymbol(Object s) {

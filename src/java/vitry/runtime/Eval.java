@@ -65,4 +65,9 @@ public interface Eval {
      */
     public boolean acceptsUserTokens();
 
+    /**
+     * Interrupt evaluation.
+     */
+    public void interrupt();
+
 }
